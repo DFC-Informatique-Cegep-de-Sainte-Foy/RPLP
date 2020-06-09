@@ -21,7 +21,7 @@ USE `revupaire` ;
 -- Table `revupaire`.`Professeur`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `revupaire`.`Professeur` (
-  `idProfesseur` INT NOT NULL,
+  `idProfesseur` INT NOT NULL AUTO_INCREMENT,
   `nom` VARCHAR(45) NOT NULL,
   `prenom` VARCHAR(45) NULL,
   `email` VARCHAR(45) NOT NULL,
@@ -36,7 +36,7 @@ ENGINE = InnoDB;
 -- Table `revupaire`.`Cours`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `revupaire`.`Cours` (
-  `idCours` INT NOT NULL,
+  `idCours` INT NOT NULL AUTO_INCREMENT,
   `nom` VARCHAR(45) NOT NULL,
   `session` VARCHAR(10) NOT NULL,
   `Professeur_idProfesseur` INT NOT NULL,
@@ -55,7 +55,7 @@ ENGINE = InnoDB;
 -- Table `revupaire`.`Travail`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `revupaire`.`Travail` (
-  `idTravail` INT NOT NULL,
+  `idTravail` INT NOT NULL AUTO_INCREMENT,
   `nom` VARCHAR(45) NOT NULL,
   `nbPoints` INT NOT NULL,
   `dateRemise` DATETIME NOT NULL,
@@ -78,7 +78,7 @@ ENGINE = InnoDB;
 -- Table `revupaire`.`Etudiant`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `revupaire`.`Etudiant` (
-  `idEtudiant` INT NOT NULL,
+  `idEtudiant` INT NOT NULL AUTO_INCREMENT,
   `email` VARCHAR(45) NOT NULL,
   `nom` VARCHAR(45) NULL,
   `prenom` VARCHAR(45) NULL,
