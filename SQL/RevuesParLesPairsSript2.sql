@@ -21,7 +21,7 @@ USE `revupaire` ;
 -- Table `revupaire`.`Professeur`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `revupaire`.`Professeur` (
-  `idProfesseur` INT NOT NULL,
+  `idProfesseur` INT NOT NULL AUTO_INCREMENT,
   `nom` VARCHAR(45) NOT NULL,
   `prenom` VARCHAR(45) NULL,
   `email` VARCHAR(45) NOT NULL,
@@ -36,7 +36,7 @@ ENGINE = InnoDB;
 -- Table `revupaire`.`Cours`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `revupaire`.`Cours` (
-  `idCours` INT NOT NULL,
+  `idCours` INT NOT NULL AUTO_INCREMENT,
   `nom` VARCHAR(45) NOT NULL,
   `session` VARCHAR(10) NOT NULL,
   `Professeur_idProfesseur` INT NOT NULL,
@@ -55,7 +55,7 @@ ENGINE = InnoDB;
 -- Table `revupaire`.`Travail`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `revupaire`.`Travail` (
-  `idTravail` INT NOT NULL,
+  `idTravail` INT NOT NULL AUTO_INCREMENT,
   `nom` VARCHAR(45) NOT NULL,
   `nbPoints` INT NOT NULL,
   `dateRemise` DATETIME NOT NULL,
@@ -78,7 +78,7 @@ ENGINE = InnoDB;
 -- Table `revupaire`.`Etudiant`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `revupaire`.`Etudiant` (
-  `idEtudiant` INT NOT NULL,
+  `idEtudiant` INT NOT NULL AUTO_INCREMENT,
   `email` VARCHAR(45) NOT NULL,
   `nom` VARCHAR(45) NULL,
   `prenom` VARCHAR(45) NULL,
@@ -113,6 +113,7 @@ SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
+
 use revupaire;
 #----------------------------------------------------------------------------
 # Procédure pour ajouter le cours 
@@ -122,8 +123,7 @@ use revupaire;
 DELIMITER |
 
 DROP PROCEDURE IF EXISTS ajouterCours|
-CREATE PROCEDURE ajouterCours(in p_idCours VARCHAR(10),
-								 in p_nom VARCHAR(15) ,
+CREATE PROCEDURE ajouterCours(	 in p_nom VARCHAR(15) ,
                                  in p_session VARCHAR(15) ,
                                  in p_Professeur_idProfesseur VARCHAR(15)
                                  )
@@ -136,15 +136,15 @@ DECLARE violation_unicite CONDITION FOR 1062;
 			SELECT 'Violation de contrainte d''unicité' AS Erreur;
 		END;
 
-	INSERT INTO `revupaire`.`Cours` (`idCours`  , `nom`, `session`, `Professeur_idProfesseur`)
-	VALUES (p_idCours , p_nom , p_session , p_Professeur_idProfesseur);
+	INSERT INTO `revupaire`.`Cours` (`nom`, `session`, `Professeur_idProfesseur`)
+	VALUES (p_nom , p_session , p_Professeur_idProfesseur);
     SELECT 'Le cours est ajouté' AS Message;
 
 END |
 DELIMITER ;
 
--- call ajoutercours('1','POO', 'H2020', '1');
--- call ajoutercours('2','BD', 'H2020', '1');
+-- call ajoutercours('POO', 'H2020', '1');
+-- call ajoutercours('BD', 'H2020', '1');
 -- select * from `revupaire`.`Cours`;
 
 
@@ -157,7 +157,7 @@ DELIMITER ;
  DELIMITER |
 DROP PROCEDURE IF EXISTS ajouterTravail|
 
-CREATE PROCEDURE ajouterTravail(in p_idTravail INT ,
+CREATE PROCEDURE ajouterTravail(
 								 in p_nom  VARCHAR(45) ,
                                  in p_nbPoints INT ,                                
                                  in p_dateRemise DATETIME ,
@@ -174,13 +174,13 @@ DECLARE violation_unicite CONDITION FOR 1062;
 			SELECT 'Violation de contrainte d''unicité' AS Erreur;
 		END;
 
-	INSERT INTO `revupaire`.`Travail` (`idTravail`  , `nom`,   `nbPoints`,  `dateRemise`, `creeSurCodePost`,`nbRemise`,  `nbManquant`, `Cours_idCours`)
-	VALUES (p_idTravail , p_nom , p_nbPoints , p_dateRemise , p_creeSurCodePost, p_nbRemise, p_nbManquant,p_Cours_idCours);
+	INSERT INTO `revupaire`.`Travail` (`nom`,   `nbPoints`,  `dateRemise`, `creeSurCodePost`,`nbRemise`,  `nbManquant`, `Cours_idCours`)
+	VALUES (p_nom , p_nbPoints , p_dateRemise , p_creeSurCodePost, p_nbRemise, p_nbManquant,p_Cours_idCours);
     SELECT 'Travail est ajouté' AS Message;
 
 END |
 DELIMITER ;
 
- -- call ajouterTravail('1', 'ExerciceNo4', '100', '20200610', '1', '1', '0','1');
- -- call ajouterTravail('2', 'ExerciceNo5', '100', '20200610', '1', '1', '0','1');
+ -- call ajouterTravail('ExerciceNo4', '100', '20200610', '1', '1', '0','1');
+ -- call ajouterTravail('ExerciceNo5', '100', '20200610', '1', '1', '0','1');
  -- select * from `revupaire`.`Travail` ;
