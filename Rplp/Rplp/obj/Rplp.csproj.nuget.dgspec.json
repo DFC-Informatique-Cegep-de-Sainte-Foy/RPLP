@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\the_e\\source\\repos\\Rplp\\Rplp\\Rplp.csproj": {}
+    "C:\\Cegep Ste Foy\\Session V\\Projet Synthese\\TP2\\Revue_par_les_pairs\\Rplp\\Rplp\\Rplp.csproj": {}
   },
   "projects": {
-    "C:\\Users\\the_e\\source\\repos\\Rplp\\Rplp\\Rplp.csproj": {
+    "C:\\Cegep Ste Foy\\Session V\\Projet Synthese\\TP2\\Revue_par_les_pairs\\Rplp\\Rplp\\Rplp.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\the_e\\source\\repos\\Rplp\\Rplp\\Rplp.csproj",
+        "projectUniqueName": "C:\\Cegep Ste Foy\\Session V\\Projet Synthese\\TP2\\Revue_par_les_pairs\\Rplp\\Rplp\\Rplp.csproj",
         "projectName": "Rplp",
-        "projectPath": "C:\\Users\\the_e\\source\\repos\\Rplp\\Rplp\\Rplp.csproj",
-        "packagesPath": "C:\\Users\\the_e\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\the_e\\source\\repos\\Rplp\\Rplp\\obj\\",
+        "projectPath": "C:\\Cegep Ste Foy\\Session V\\Projet Synthese\\TP2\\Revue_par_les_pairs\\Rplp\\Rplp\\Rplp.csproj",
+        "packagesPath": "C:\\Users\\15813\\.nuget\\packages\\",
+        "outputPath": "C:\\Cegep Ste Foy\\Session V\\Projet Synthese\\TP2\\Revue_par_les_pairs\\Rplp\\Rplp\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\the_e\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\15813\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
