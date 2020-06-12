@@ -14,7 +14,8 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 -- -----------------------------------------------------
 -- Schema revupaire
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `revupaire` DEFAULT CHARACTER SET utf8 ;
+DROP SCHEMA IF EXISTS `revupaire`;
+CREATE SCHEMA `revupaire` DEFAULT CHARACTER SET utf8 ;
 USE `revupaire` ;
 
 -- -----------------------------------------------------
@@ -38,7 +39,7 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `revupaire`.`Cours` (
   `idCours` INT NOT NULL AUTO_INCREMENT,
   `nom` VARCHAR(45) NOT NULL,
-  `session` VARCHAR(10) NOT NULL,
+  `session` VARCHAR(25) NOT NULL,
   `Professeur_idProfesseur` INT NOT NULL,
   UNIQUE INDEX `idCours_UNIQUE` (`idCours` ASC),
   PRIMARY KEY (`idCours`, `Professeur_idProfesseur`),
