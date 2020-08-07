@@ -1,0 +1,47 @@
+﻿
+@{
+    ViewData["Title"] = "Student";
+}
+
+<h1>&Eacute;tudiant</h1>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+@{
+    ViewData["Title"] = "Home Page";
+    var nameUser = Context.User.Identity.Name;
+    ViewData["user"] = nameUser;
+    // Html.Label("Name", nameUser);
+}
+
+<div class="form-horizontal text-white">
+    <form action="/Unclaim/UnclaimResult/?IdSubmission" methode="post">
+
+        <br><br>
+        <label for="IdSubmission" class="control-label">Le numéro d'&eacute;tudiant:</label>
+        <input type="text" class="col-sm-2 form-control inputstl" pattern="\d+" name="IdSubmission" id="IdSubmission" placeholder="000000" required>
+        <br><br><br>
+        <div>
+            <input type="submit" class="col-sm-2 btn btn-info" id="btnUnclaim" value="Unclaim" onclick="submit_form()" />
+        </div>  
+    </form>
+
+    <br>
+
+</div>
+
+<script type="text/javascript">
+    function submit_form() {
+        var numero = document.getElementsByName("IdSubmission");
+        rgx = new Regexp("\d");
+        if (rgx.IsMatch(number)) {
+           location.href = '@Url.Action("UnclaimResult", "Unclaim")';
+        }
+        else {
+           window.history.back();
+        }
+    }
+</script>
+
+
+

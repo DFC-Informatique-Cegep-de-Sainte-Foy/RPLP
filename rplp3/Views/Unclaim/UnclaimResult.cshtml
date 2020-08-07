@@ -1,0 +1,21 @@
+﻿
+@{
+    ViewData["Title"] = "UnclaimResult";
+}
+<h1>Confirmation</h1>
+
+@{
+
+    if (ViewData["resultUnclaim"].Equals("Erreur"))
+    {
+        <h3 class="text-white"><span style="color:red">Erreur! <br>Votre travail <span style="color:dodgerblue">@ViewData["id"]</span> n'a pas ete unclaimer. <br>Verifier si le numero est correct.</span></h3>
+    }
+    else
+    {
+        <h3 class="text-white">Votre travail <span style="color: dodgerblue">@ViewData["id"]</span> a ete unclaimer!</h3>
+    }
+}
+
+<div>
+    <input type="button" class="btn btn-outline-primary" id="btnReturn" style="color:blue" value="Retour" onclick="location.href='@Url.Action("Index", "Home")'" />
+</div>
