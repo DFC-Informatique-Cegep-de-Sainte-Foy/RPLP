@@ -180,3 +180,5 @@ C:\Users\the_e\source\repos\rplp3\Revue_par_les_pairs\rplp3\obj\Debug\netcoreapp
 C:\Users\the_e\source\repos\rplp3\Revue_par_les_pairs\rplp3\obj\Debug\netcoreapp3.1\Razor\Views\Student\Student.cshtml.g.cs
 C:\Users\the_e\source\repos\rplp3\Revue_par_les_pairs\rplp3\obj\Debug\netcoreapp3.1\rplp3.csprojAssemblyReference.cache
 C:\Users\the_e\source\repos\rplp3\Revue_par_les_pairs\rplp3\obj\Debug\netcoreapp3.1\Razor\Views\Teacher\Upload.cshtml.g.cs
+C:\Users\the_e\source\repos\rplp3\Revue_par_les_pairs\rplp3\obj\Debug\netcoreapp3.1\Razor\Views\Home\Teacher.cshtml.g.cs
+C:\Users\the_e\source\repos\rplp3\Revue_par_les_pairs\rplp3\obj\Debug\netcoreapp3.1\Razor\Views\Teacher\KeyResult.cshtml.g.cs
