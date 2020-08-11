@@ -6,13 +6,19 @@
 <h1 class="text-white text-center">Clef api Codepost</h1>
 @if (ViewBag.key == null)
 {
-<div class="text-center text-white">
-    <br /><br />
-    <h5>Veuillez entrer votre api key CodePost</h5>
-    <input type="text" id="apiInput" pattern="[a-z0-9]" class="form-control" name="key" placeholder="0000000000000000000000000000000000000000" />
-    <br /><br />
-    <input type="submit" class="col-sm-2 btn btn-info" id="btnKey" value="Sauvegarder" onclick="submit_form()" />
-</div>
+    <div class="text-center text-white container">
+        <br /><br />
+        <h5>Veuillez entrer votre api key CodePost</h5>
+        <input type="text" id="apiInput" pattern="[a-z0-9]{40}" class="form-control" name="key" placeholder="0000000000000000000000000000000000000000" />
+        <br />
+        <input type="submit" class="col-sm-2 btn btn-info" id="btnKey" value="Sauvegarder" onclick="submit_form()" />
+        <br /> <br /><br /><br />
+        <h6 class="text-white text-center">D&eacute;marche pour obtenir votre api key :</h6>
+        <br />
+        <div class="row">
+            <img src="~/img/api-key-tutorial.gif" class="col col-md-12 col-sm-12" alt="sur codepost, obtenir votre api key dans les parametres de votre compte" />
+        </div>
+    </div>
 }
 else
 {
@@ -34,8 +40,8 @@ else
     // pour placer le curseur tout de suite dans le input du key
     document.getElementById("apiInput").focus();
     function submit_form() {
-        var key = document.getElementsByName("key");
-        rgx = new Regexp("[a-z0-9]");
+        var key = document.getElementById("apiInput");
+        rgx = new Regexp("[a-z0-9]{40}");
         if (rgx.IsMatch(number) && key.length == 40) {
            location.href = '@Url.Action("Teacher", "KeyResult")';
         }
