@@ -30,6 +30,18 @@ namespace Rplp_2
             services.AddAuthentication(AzureADDefaults.AuthenticationScheme)
                 .AddAzureAD(options => Configuration.Bind("AzureAd", options));
 
+            services.AddAuthorization(option =>
+            {
+                option.AddPolicy("estProfesseur", p1 =>
+                {
+                    p1.RequireClaim("groups", "955bcf43-9a4b-40de-9ddd-72aba52d3669");
+                });
+                option.AddPolicy("estEtudiant", p2 =>
+                {
+                    p2.RequireClaim("groups", "76d2a1f1-fa8a-4a15-8ada-2724d74ad571");
+                });
+            });
+
             services.AddControllersWithViews(options =>
             {
                 var policy = new AuthorizationPolicyBuilder()
@@ -69,6 +81,9 @@ namespace Rplp_2
                 endpoints.MapControllerRoute(
                     name: "unclaim",
                     pattern: "{consoller=Unclaim}/{action=UnclaimResult}/{IdSubmission?}");
+                endpoints.MapControllerRoute(
+                    name: "teacher",
+                    pattern: "{controller=Teacher}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
         }

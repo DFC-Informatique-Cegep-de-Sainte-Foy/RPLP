@@ -1,0 +1,46 @@
+﻿
+@{
+    ViewData["Title"] = "key codepost";
+}
+
+<h1 class="text-white text-center">Clef api Codepost</h1>
+@if (ViewBag.key == null)
+{
+<div class="text-center text-white">
+    <br /><br />
+    <h5>Veuillez entrer votre api key CodePost</h5>
+    <input type="text" id="apiInput" pattern="[a-z0-9]" class="form-control" name="key" placeholder="0000000000000000000000000000000000000000" />
+    <br /><br />
+    <input type="submit" class="col-sm-2 btn btn-info" id="btnKey" value="Sauvegarder" onclick="submit_form()" />
+</div>
+}
+else
+{
+
+}
+
+@if (ViewBag.Key == false)
+{
+    <p>veuillez entrer votre cle codepost</p>
+}
+
+
+@if (ViewBag.key == true)
+{
+    <p>Nous avons deja votre clef, voulez vous la modifier?</p>
+    <input type="button" asp-controller="Teacher" asp-action="Teacher" value="modifier clef"></input>
+}
+<script type="text/javascript">
+    // pour placer le curseur tout de suite dans le input du key
+    document.getElementById("apiInput").focus();
+    function submit_form() {
+        var key = document.getElementsByName("key");
+        rgx = new Regexp("[a-z0-9]");
+        if (rgx.IsMatch(number) && key.length == 40) {
+           location.href = '@Url.Action("Teacher", "KeyResult")';
+        }
+        else {
+           window.history.back();
+        }
+    }
+</script>

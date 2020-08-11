@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,6 +19,12 @@ namespace rplp3.Controllers
         {
             using (HttpClient c = new HttpClient())
             {
+                //string erreurMsg = null;
+                //if (!Regex.IsMatch(IdSubmission.ToString(), "/d"))
+                //{
+                //    @ViewBag.Error = "le IdSumbission recu par la page UnclaimResult ne respecte pas le format requis (entiers seulement)";
+                //}
+
                 c.BaseAddress = new Uri("https://api.codepost.io");
                 // olena e395e7df7d367ea5cc70cc802dd0f351fdafb695
                 // pf    7d9acea046111298c0971cb6b437ef74e6b89625
