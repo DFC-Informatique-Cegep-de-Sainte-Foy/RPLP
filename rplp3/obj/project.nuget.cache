@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "r3dfjaBfGuXh8ZkKhiN0taUGKL8utlLjfRvovMbl9eqnjw7A0O1/MD1s1+tEo7yI2htYTgZk1+2I7StuS04qJw==",
+  "dgSpecHash": "chiMRVTj5GsrDfv/Csv7Y4mT2Yr/WtC+UQch4lu+3+AIotEklM38FRchc3oEuPUEOMToP+4ERrShYLIvBGVsYw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\the_e\\source\\repos\\rplp3\\rplp3.csproj",
+  "projectFilePath": "C:\\Users\\the_e\\source\\repos\\rplp3\\Revue_par_les_pairs\\rplp3\\rplp3.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\the_e\\.nuget\\packages\\microsoft.aspnetcore.authentication.azuread.ui\\3.1.3\\microsoft.aspnetcore.authentication.azuread.ui.3.1.3.nupkg.sha512",
     "C:\\Users\\the_e\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\3.1.3\\microsoft.aspnetcore.authentication.jwtbearer.3.1.3.nupkg.sha512",

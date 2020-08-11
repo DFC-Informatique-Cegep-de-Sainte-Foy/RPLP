@@ -3677,11 +3677,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\the_e\\source\\repos\\rplp3\\rplp3.csproj",
+      "projectUniqueName": "C:\\Users\\the_e\\source\\repos\\rplp3\\Revue_par_les_pairs\\rplp3\\rplp3.csproj",
       "projectName": "rplp3",
-      "projectPath": "C:\\Users\\the_e\\source\\repos\\rplp3\\rplp3.csproj",
+      "projectPath": "C:\\Users\\the_e\\source\\repos\\rplp3\\Revue_par_les_pairs\\rplp3\\rplp3.csproj",
       "packagesPath": "C:\\Users\\the_e\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\the_e\\source\\repos\\rplp3\\obj\\",
+      "outputPath": "C:\\Users\\the_e\\source\\repos\\rplp3\\Revue_par_les_pairs\\rplp3\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
