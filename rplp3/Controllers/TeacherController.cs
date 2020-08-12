@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Security.Permissions;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -50,7 +51,6 @@ namespace rplp3.Controllers
         [HttpPost]
         public IActionResult Upload(Microsoft.AspNetCore.Http.IFormFile file)
         {
-
             // obtenir le nom du fichier
             string fileName = System.IO.Path.GetFileName(file.FileName);
 
@@ -68,14 +68,12 @@ namespace rplp3.Controllers
             }
             //confirmation de succes
             ViewBag.Message = "Téléchargement effectué avec succès";
-
-
+            string nomRepertoire = User.Identity.Name;
+            string path = ".\\Fichiers\\" + nomRepertoire;
             //decompresser le fichier recu (fichier source, destination)
-            Decompresser(fileName, ".\\Fichiers");
-
+            Decompresser(fileName, path);
             return View();
         }
-
         
         private void Decompresser(string fileName, string destinationFolder)
         {
@@ -85,10 +83,5 @@ namespace rplp3.Controllers
             ZipFile.ExtractToDirectory(fileName, destinationFolder);
             }
         }
-
-
-
-
-
     }
 }
