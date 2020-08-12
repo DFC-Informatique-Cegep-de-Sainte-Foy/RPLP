@@ -34,7 +34,7 @@
     function submit_form() {
         var numero = document.getElementsByName("IdSubmission");
         rgx = new Regexp("\d");
-        if (rgx.IsMatch(number)) {
+        if (rgx.IsMatch(numero)) {
            location.href = '@Url.Action("UnclaimResult", "Unclaim")';
         }
         else {

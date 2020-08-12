@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Net.Http;
 using System.Security.Permissions;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -14,12 +15,13 @@ namespace rplp3.Controllers
 {
     public class TeacherController : Controller
     {
-
+        private static readonly HttpClient client = new HttpClient();
         //[Authorize("estProfesseur")]
         public IActionResult Index()
         {
             return View();
         }
+
 
         public IActionResult Key()
         {
@@ -28,17 +30,29 @@ namespace rplp3.Controllers
 
         //[Authorize("estProfesseur")]
         [HttpPost]
-        public IActionResult Key(string apiKey)
-        {                 
-            //initialisation a faux
-            ViewBag.Key = false;
-            // verifie si on a le key du prof ... on ignore , VALIDATION A AMELIORER
-            if (apiKey.Length == 40 && Regex.IsMatch(apiKey, "[a-z0-9]"))
+        public IActionResult Key(ApiKey apiKey)
+        {
+            if (ModelState.IsValid)
             {
-                ViewBag.Key = true;
+            Console.WriteLine(apiKey.PrivateKey);
             }
+            else
+            {
+                Console.WriteLine("model invalide");
+            }
+            //initialisation a faux
+            //ViewBag.Key = false;
+            // verifie si on a le key du prof ... on ignore , VALIDATION A AMELIORER
+            //if (Regex.IsMatch(apiKey.Key, "[a-z0-9]{40}"))
+            //{
+            //    ViewBag.Key = true;
+            //}
+            
             return View();
         }
+
+
+
 
         public IActionResult Upload()
         {
@@ -74,7 +88,12 @@ namespace rplp3.Controllers
 
             return View();
         }
-        
+      
+        /// <summary>
+        /// fonction pour decompresser fichier zip recoit en parametre le nom du fichier et le path de destination
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="destinationFolder"></param>
         private void Decompresser(string fileName, string destinationFolder)
         {
             if (fileName != null)
