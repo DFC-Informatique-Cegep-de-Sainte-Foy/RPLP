@@ -68,10 +68,10 @@ namespace rplp3.Controllers
             }
             //confirmation de succes
             ViewBag.Message = "Téléchargement effectué avec succès";
-            string nomRepertoire = User.Identity.Name;
-            string path = ".\\Fichiers\\" + nomRepertoire;
+
             //decompresser le fichier recu (fichier source, destination)
-            Decompresser(fileName, path);
+            Decompresser(fileName, ObtenirPathDestinationFichier());
+
             return View();
         }
         
@@ -82,6 +82,13 @@ namespace rplp3.Controllers
             //".\\Fichiers"
             ZipFile.ExtractToDirectory(fileName, destinationFolder);
             }
+        }
+
+        private string ObtenirPathDestinationFichier()
+        {
+            string nomRepertoire = User.Identity.Name;
+            string pathDestination = ".\\Fichiers\\" + nomRepertoire;
+            return pathDestination;
         }
     }
 }
