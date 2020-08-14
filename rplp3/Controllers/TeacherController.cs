@@ -22,7 +22,7 @@ namespace rplp3.Controllers
             return View();
         }
 
-
+        //[Authorize("estProfesseur")]
         public IActionResult Key()
         {
             return View();
@@ -46,19 +46,15 @@ namespace rplp3.Controllers
             //if (Regex.IsMatch(apiKey.Key, "[a-z0-9]{40}"))
             //{
             //    ViewBag.Key = true;
-            //}
-            
+            //}            
             return View();
         }
 
-
-
-
+        //[Authorize("estProfesseur")]
         public IActionResult Upload()
         {
             return View();
         }
-
 
         // action Upload qui recoit en post le fichier 
         //[Authorize("estProfesseur")]
@@ -98,11 +94,14 @@ namespace rplp3.Controllers
         {
             if (fileName != null)
             {
-            //".\\Fichiers"
             ZipFile.ExtractToDirectory(fileName, destinationFolder);
             }
         }
 
+        /// <summary>
+        /// obtenir le path de destination (fichiers + matricule du prof)
+        /// </summary>
+        /// <returns> string path </returns>
         private string ObtenirPathDestinationFichier()
         {
             string nomRepertoire = User.Identity.Name;
