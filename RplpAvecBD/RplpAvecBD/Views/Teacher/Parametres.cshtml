@@ -1,0 +1,118 @@
+﻿@model RplpAvecBD.Model.Professeur
+
+@using Microsoft.AspNetCore.Http
+
+@{
+    ViewData["Title"] = "Paramètres";
+    RplpAvecBD.Model.Professeur professeurConnecte = (RplpAvecBD.Model.Professeur)ViewBag.InfosProfesseur;
+}
+
+<div class="text-left">
+    <br />
+    <h2>Paramètres</h2>
+    <hr />
+    <br />
+    @using (Html.BeginForm())
+    {
+        <p> </p>
+        <table>
+            <thead>
+                <tr>
+                    <th>
+                        <h6 style="width:220px;">@Html.LabelFor(model => model.courriel)</h6>
+                    </th>
+                    <th style="width:10px;"></th>
+                    <th>
+                        <h6 style="width:280px;">@Html.LabelFor(model => model.nom)</h6>
+                    </th>
+                    <th style="width:30px;"></th>
+                    <th>
+                        <h6 style="width:280px;">@Html.LabelFor(model => model.apiKey)</h6>
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (@professeurConnecte.nom == null || @professeurConnecte.nom == "" || @professeurConnecte.apiKey == null || @professeurConnecte.apiKey == "")
+                {
+                    <tr>
+                        <td>
+                            @professeurConnecte.courriel
+                        </td>
+                        <td style="width:10px;"></td>
+                        <td>
+
+                            @Html.TextBoxFor(model => model.nom, new { placeholder = "Votre nom complet", @class = "form-control" })
+
+                        </td>
+                        <td style="width:30px;"></td>
+                        <td>
+
+                            @Html.TextBoxFor(model => model.apiKey, new { placeholder = "******************************", @class = "form-control" })
+
+                        </td>
+                        <td></td>
+                        <td style="width:30px;"></td>
+                        <td>
+                            <input type="submit" class="btn btn-success" id="btnSauvegarder" value="Sauvegarder" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>@Html.ValidationMessageFor(model => model.nom, "", new { @class = "text-danger" })</td>
+                        <td></td>
+                        <td>@Html.ValidationMessageFor(model => model.apiKey, "", new { @class = "text-danger" })</td>
+                    </tr>
+                }
+                else
+                {
+                    <tr>
+                        <td>
+                            @professeurConnecte.courriel
+                        </td>
+                        <td style="width:10px;"></td>
+                        <td>
+                            @professeurConnecte.nom
+                        </td>
+                        <td style="width:30px;"></td>
+                        <td>
+                            @professeurConnecte.apiKey
+                        </td>
+                        
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>@Html.TextBoxFor(model => model.nom, new { placeholder = "Changer votre nom", @class = "form-control" })</td>
+                        <td></td>
+                        <td>@Html.TextBoxFor(model => model.apiKey, new { placeholder = "Changer votre API Key", @class = "form-control" })</td>
+                        <td></td>
+                        <td style="width:30px;"></td>
+                        <td>
+                            <input type="submit" class="btn btn-success" id="btnSauvegarder" value="Sauvegarder" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>@Html.ValidationMessageFor(model => model.nom, "", new { @class = "text-danger" })</td>
+                        <td></td>
+                        <td>@Html.ValidationMessageFor(model => model.apiKey, "", new { @class = "text-danger" })</td>
+                    </tr>
+
+
+                }
+
+
+            </tbody>
+        </table>
+    }
+
+    <br />
+    <hr />
+    <div>
+        <img src="~/img/api-key.gif" />
+    </div>
+
+</div>
