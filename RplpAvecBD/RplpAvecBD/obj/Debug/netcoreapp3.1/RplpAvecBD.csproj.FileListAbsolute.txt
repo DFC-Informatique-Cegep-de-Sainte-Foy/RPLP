@@ -1,0 +1,179 @@
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\appsettings.Development.json
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\appsettings.json
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\Properties\launchSettings.json
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\RplpAvecBD.exe
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Authentication.AzureAD.UI.Views.dll
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Authentication.AzureAD.UI.dll
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Authentication.OpenIdConnect.dll
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.IdentityModel.Logging.dll
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.IdentityModel.Protocols.dll
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.IdentityModel.Tokens.dll
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\Newtonsoft.Json.dll
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\obj\Debug\netcoreapp3.1\RplpAvecBD.csprojAssemblyReference.cache
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\obj\Debug\netcoreapp3.1\RplpAvecBD.AssemblyInfoInputs.cache
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\obj\Debug\netcoreapp3.1\RplpAvecBD.AssemblyInfo.cs
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\obj\Debug\netcoreapp3.1\RplpAvecBD.RazorAssemblyInfo.cache
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\obj\Debug\netcoreapp3.1\RplpAvecBD.RazorAssemblyInfo.cs
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\obj\Debug\netcoreapp3.1\RplpAvecBD.TagHelpers.input.cache
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\obj\Debug\netcoreapp3.1\RplpAvecBD.TagHelpers.output.cache
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\obj\Debug\netcoreapp3.1\RplpAvecBD.RazorCoreGenerate.cache
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\obj\Debug\netcoreapp3.1\Razor\Views\Shared\Error.cshtml.g.cs
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\obj\Debug\netcoreapp3.1\Razor\Views\Shared\_LoginPartial.cshtml.g.cs
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\obj\Debug\netcoreapp3.1\Razor\Views\Shared\_ValidationScriptsPartial.cshtml.g.cs
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\obj\Debug\netcoreapp3.1\Razor\Views\_ViewImports.cshtml.g.cs
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\obj\Debug\netcoreapp3.1\Razor\Views\_ViewStart.cshtml.g.cs
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\obj\Debug\netcoreapp3.1\RplpAvecBD.RazorTargetAssemblyInfo.cache
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\obj\Debug\netcoreapp3.1\RplpAvecBD.RazorTargetAssemblyInfo.cs
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\obj\Debug\netcoreapp3.1\RplpAvecBD.csproj.CopyComplete
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\obj\Debug\netcoreapp3.1\staticwebassets\RplpAvecBD.StaticWebAssets.Manifest.cache
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\obj\Debug\netcoreapp3.1\staticwebassets\RplpAvecBD.StaticWebAssets.xml
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.Bcl.AsyncInterfaces.dll
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.Bcl.HashCode.dll
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.Data.SqlClient.dll
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.dll
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.Abstractions.dll
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.Relational.dll
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.SqlServer.dll
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Caching.Abstractions.dll
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Caching.Memory.dll
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Configuration.dll
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Configuration.Abstractions.dll
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Configuration.Binder.dll
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.Extensions.DependencyInjection.dll
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Logging.dll
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Logging.Abstractions.dll
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Options.dll
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Primitives.dll
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.Identity.Client.dll
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\System.Collections.Immutable.dll
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\System.Configuration.ConfigurationManager.dll
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\System.Diagnostics.DiagnosticSource.dll
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\System.Runtime.Caching.dll
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\System.Security.Cryptography.ProtectedData.dll
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\runtimes\unix\lib\netcoreapp2.1\Microsoft.Data.SqlClient.dll
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp2.1\Microsoft.Data.SqlClient.dll
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\runtimes\win-arm64\native\sni.dll
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\runtimes\win-x64\native\sni.dll
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\runtimes\win-x86\native\sni.dll
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\runtimes\unix\lib\netcoreapp2.0\System.Runtime.Caching.dll
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp2.0\System.Runtime.Caching.dll
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.Design.dll
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\RplpAvecBD.deps.json
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\RplpAvecBD.runtimeconfig.json
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\RplpAvecBD.runtimeconfig.dev.json
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\RplpAvecBD.dll
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\RplpAvecBD.pdb
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\RplpAvecBD.Views.dll
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\bin\Debug\netcoreapp3.1\RplpAvecBD.Views.pdb
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\obj\Debug\netcoreapp3.1\RplpAvecBD.Views.pdb
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\obj\Debug\netcoreapp3.1\RplpAvecBD.dll
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\obj\Debug\netcoreapp3.1\RplpAvecBD.pdb
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\obj\Debug\netcoreapp3.1\RplpAvecBD.genruntimeconfig.cache
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\obj\Debug\netcoreapp3.1\Razor\Views\Shared\_LayoutStudent.cshtml.g.cs
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\obj\Debug\netcoreapp3.1\Razor\Views\Shared\_LayoutTeacher.cshtml.g.cs
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\obj\Debug\netcoreapp3.1\Razor\Views\Teacher\Index.cshtml.g.cs
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\obj\Debug\netcoreapp3.1\Razor\Views\Teacher\Parametres.cshtml.g.cs
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\obj\Debug\netcoreapp3.1\RplpAvecBD.csproj.CoreCompileInputs.cache
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\obj\Debug\netcoreapp3.1\RplpAvecBD.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\obj\Debug\netcoreapp3.1\RplpAvecBD.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\obj\Debug\netcoreapp3.1\Razor\Views\Student\Index.cshtml.g.cs
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\obj\Debug\netcoreapp3.1\Razor\Views\Student\ResultatUnclaim.cshtml.g.cs
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\obj\Debug\netcoreapp3.1\Razor\Views\Home\Index.cshtml.g.cs
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\obj\Debug\netcoreapp3.1\Razor\Views\Home\Index--.cshtml.g.cs
+C:\Users\Thiago\source\repos\RplpAvecBD\RplpAvecBD\obj\Debug\netcoreapp3.1\Razor\Views\Teacher\ResultatMiseAJourParametres.cshtml.g.cs
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\appsettings.Development.json
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\appsettings.json
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\Properties\launchSettings.json
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\RplpAvecBD.exe
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\RplpAvecBD.deps.json
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\RplpAvecBD.runtimeconfig.json
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\RplpAvecBD.runtimeconfig.dev.json
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\RplpAvecBD.dll
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\RplpAvecBD.pdb
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\RplpAvecBD.Views.dll
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\RplpAvecBD.Views.pdb
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Authentication.AzureAD.UI.Views.dll
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Authentication.AzureAD.UI.dll
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Authentication.OpenIdConnect.dll
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.Bcl.AsyncInterfaces.dll
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.Bcl.HashCode.dll
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.Data.SqlClient.dll
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.dll
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.Abstractions.dll
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.Design.dll
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.Relational.dll
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.SqlServer.dll
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Caching.Abstractions.dll
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Caching.Memory.dll
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Configuration.dll
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Configuration.Abstractions.dll
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Configuration.Binder.dll
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.Extensions.DependencyInjection.dll
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Logging.dll
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Logging.Abstractions.dll
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Options.dll
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Primitives.dll
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.Identity.Client.dll
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.IdentityModel.Logging.dll
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.IdentityModel.Protocols.dll
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\Microsoft.IdentityModel.Tokens.dll
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\Newtonsoft.Json.dll
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\System.Collections.Immutable.dll
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\System.Configuration.ConfigurationManager.dll
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\System.Diagnostics.DiagnosticSource.dll
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\System.Runtime.Caching.dll
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\System.Security.Cryptography.ProtectedData.dll
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\runtimes\unix\lib\netcoreapp2.1\Microsoft.Data.SqlClient.dll
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp2.1\Microsoft.Data.SqlClient.dll
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\runtimes\win-arm64\native\sni.dll
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\runtimes\win-x64\native\sni.dll
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\runtimes\win-x86\native\sni.dll
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\runtimes\unix\lib\netcoreapp2.0\System.Runtime.Caching.dll
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp2.0\System.Runtime.Caching.dll
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\bin\Debug\netcoreapp3.1\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\obj\Debug\netcoreapp3.1\RplpAvecBD.csprojAssemblyReference.cache
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\obj\Debug\netcoreapp3.1\RplpAvecBD.AssemblyInfoInputs.cache
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\obj\Debug\netcoreapp3.1\RplpAvecBD.AssemblyInfo.cs
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\obj\Debug\netcoreapp3.1\RplpAvecBD.csproj.CoreCompileInputs.cache
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\obj\Debug\netcoreapp3.1\RplpAvecBD.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\obj\Debug\netcoreapp3.1\RplpAvecBD.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\obj\Debug\netcoreapp3.1\RplpAvecBD.RazorAssemblyInfo.cache
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\obj\Debug\netcoreapp3.1\RplpAvecBD.RazorAssemblyInfo.cs
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\obj\Debug\netcoreapp3.1\RplpAvecBD.TagHelpers.input.cache
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\obj\Debug\netcoreapp3.1\RplpAvecBD.TagHelpers.output.cache
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\obj\Debug\netcoreapp3.1\RplpAvecBD.RazorCoreGenerate.cache
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\obj\Debug\netcoreapp3.1\Razor\Views\Home\Index--.cshtml.g.cs
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\obj\Debug\netcoreapp3.1\Razor\Views\Home\Index.cshtml.g.cs
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\obj\Debug\netcoreapp3.1\Razor\Views\Shared\Error.cshtml.g.cs
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\obj\Debug\netcoreapp3.1\Razor\Views\Shared\_LayoutStudent.cshtml.g.cs
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\obj\Debug\netcoreapp3.1\Razor\Views\Shared\_LayoutTeacher.cshtml.g.cs
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\obj\Debug\netcoreapp3.1\Razor\Views\Shared\_LoginPartial.cshtml.g.cs
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\obj\Debug\netcoreapp3.1\Razor\Views\Shared\_ValidationScriptsPartial.cshtml.g.cs
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\obj\Debug\netcoreapp3.1\Razor\Views\Student\Index.cshtml.g.cs
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\obj\Debug\netcoreapp3.1\Razor\Views\Student\ResultatUnclaim.cshtml.g.cs
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\obj\Debug\netcoreapp3.1\Razor\Views\Teacher\Index.cshtml.g.cs
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\obj\Debug\netcoreapp3.1\Razor\Views\Teacher\Parametres.cshtml.g.cs
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\obj\Debug\netcoreapp3.1\Razor\Views\Teacher\ResultatMiseAJourParametres.cshtml.g.cs
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\obj\Debug\netcoreapp3.1\Razor\Views\Teacher\Teachers.cshtml.g.cs
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\obj\Debug\netcoreapp3.1\Razor\Views\_ViewImports.cshtml.g.cs
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\obj\Debug\netcoreapp3.1\Razor\Views\_ViewStart.cshtml.g.cs
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\obj\Debug\netcoreapp3.1\RplpAvecBD.RazorTargetAssemblyInfo.cache
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\obj\Debug\netcoreapp3.1\RplpAvecBD.RazorTargetAssemblyInfo.cs
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\obj\Debug\netcoreapp3.1\RplpAvecBD.Views.pdb
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\obj\Debug\netcoreapp3.1\RplpAvecBD.csproj.CopyComplete
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\obj\Debug\netcoreapp3.1\staticwebassets\RplpAvecBD.StaticWebAssets.Manifest.cache
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\obj\Debug\netcoreapp3.1\staticwebassets\RplpAvecBD.StaticWebAssets.xml
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\obj\Debug\netcoreapp3.1\RplpAvecBD.dll
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\obj\Debug\netcoreapp3.1\RplpAvecBD.pdb
+C:\Users\Thiago\source\repos\RplpAvecBD - Copia (12)\RplpAvecBD\obj\Debug\netcoreapp3.1\RplpAvecBD.genruntimeconfig.cache

@@ -1,0 +1,105 @@
+﻿
+@{
+    ViewData["Title"] = "Professeur";
+}
+
+    <div class="text-left">
+        <br />
+        <br />
+
+        @using (Html.BeginForm())
+        {
+            <table>
+                <thead>
+                    <tr>
+                        <th>
+                            <h2 style="width:380px;">Selectionner un cours :</h2>
+                        </th>
+                        <th style="width:10px;"></th>
+                        <th>
+                            <a href="#"><img src="~/img/icon_refresh_19x19.png" title="Refresh" alt="Refresh" /></a>
+                        </th>
+                        <th style="width:50px;"></th>
+                        <th>
+                            <a href="#" class="text-gris">Besoin d'aide ?</a>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            DropDownList
+                            @*@Html.DropDownListFor(m => m.idProfesseur, new SelectList(@ViewBag.listeProfesseurs, "id", "nom"), "-- Selectionner un professeur --", new { @class = "form-control" })*@
+                        </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>
+                            <input type="submit" class="btn btn-success" id="btnAjouterTravail" value="Ajouter un travail" />
+                        </td>
+                    <tr>
+                        <td>
+                            @*<td>@Html.ValidationMessageFor(m => m.idProfesseur, "", new { @class = "text-danger" })</td>*@
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <br />
+            <br />
+            <br />
+            <p>Vérifier si les 3 options sont actives. Les actives au besoin</p>
+            <p>Vérifier s'il y a d'étudiants inscrits dans ce cours - Ajouter (étudiants/graders)</p>
+
+        }
+
+
+        <br />
+        <br />
+        <h2>Assignments<strong style="font-size:20px;"> (Travaux)</strong></h2>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        <h6>Nom</h6>
+                    </th>
+                    <th>
+                        <h6>No. travaux remis</h6>
+                    </th>
+                    <th>
+                        <h6>No. travaux manquants</h6>
+                    </th>
+                    <th>
+                        <h6>Date</h6>
+                    </th>
+                    <th>
+                        <h6>Créé sur CodePost</h6>
+                    </th>
+                    <th>
+                        <h6>Action</h6>
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            @*<tbody>
+                @foreach (var item in Model.Utilizateur)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.courriel)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.apiKey)
+                        </td>
+                        <td>
+                            <a asp-page="./Edit" asp-route-id="@item.id">Edit</a> |
+                            <a asp-page="./Details" asp-route-id="@item.id">Details</a> |
+                            <a asp-page="./Delete" asp-route-id="@item.id">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>*@
+        </table>
+
+    </div>

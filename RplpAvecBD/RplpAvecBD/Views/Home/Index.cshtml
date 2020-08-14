@@ -1,0 +1,43 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Revue par les pairs</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body style="background-image: url(img/background-home.jpg); background-repeat: no-repeat; background-size: cover">
+    <header>
+        <div class="text-center" style="margin-top:50px;">
+            <img src="img/logo-home.png" />
+        </div>
+    </header>
+
+    <div class="text-center text-white" style="margin-top:100px;">
+        <h1>Professeurs  |  Étudiants</h1>
+    </div>
+       
+    <div class="text-center" style="margin-top:50px;">
+        <a asp-area="AzureAD" asp-controller="Account" asp-action="SignIn"><img src="~/img/btn-connexion.png" /></a>
+      
+    </div>
+
+    <div class="text-center text-white" style="margin-top:50px;">
+        Utiliser les mêmes informations d'identification Omnivox.
+    </div>
+
+
+
+    <footer class="border-top footer text-bleu text-center">
+        <div class="container">
+            &copy; 2020 - Revue par les pairs - <a class="text-gris" href="https://www.cegep-ste-foy.qc.ca/accueil/" target="_blank">Cégep de Sainte-Foy</a> | <a class="text-gris" href="https://cegep-ste-foy.omnivox.ca/" target="_blank">Omnivox - Cégep de Sainte-Foy</a> | <a class="text-gris" href="https://codepost.io/" target="_blank">Codepost</a>
+
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+</body>
+</html>

@@ -1,0 +1,14 @@
+﻿
+@{
+    if (User.Identity.IsAuthenticated)
+    {
+        if (Startup.estProfesseur)
+        {
+            Layout = "_LayoutTeacher";
+        }
+        else
+        {
+            Layout = "_LayoutStudent";
+        }
+    }
+}

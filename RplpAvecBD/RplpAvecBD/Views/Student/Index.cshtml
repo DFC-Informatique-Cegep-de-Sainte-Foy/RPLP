@@ -1,0 +1,56 @@
+﻿@model RplpAvecBD.Model.Unclaim
+
+@{
+    ViewData["Title"] = "Étudiant";
+}
+
+<div class="text-left">
+    <br />
+    <h2>Unclaim</h2>
+    <br />
+    <div>
+
+        @using (Html.BeginForm())
+         {
+            <table>
+                <thead>
+                    <tr>
+                        <th>
+                            <h6 style="width:220px;">Professeur :</h6>
+                        </th>
+                        <th style="width:10px;"></th>
+                        <th>
+                            <h6 style="width:220px;">Code étudiant :</h6>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            @*<select class="form-control" asp-items="@(new SelectList(ViewBag.listeProfesseurs,"id", "nom"))"></select>*@
+                            @Html.DropDownListFor(m => m.idProfesseur, new SelectList(@ViewBag.listeProfesseurs, "id", "nom"), "-- Selectionner un professeur --", new { @class = "form-control" })
+                        </td>
+                        <td style="width:10px;"></td>
+                        <td>
+                            @Html.TextBoxFor(m => m.codeEtudiant, new { placeholder = "000000", @class = "form-control" })
+                        </td>
+                        <td style="width:10px;"></td>
+                        <td>
+                            <input type="submit" class="btn btn-success" value="unclaim" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>@Html.ValidationMessageFor(m => m.idProfesseur, "", new { @class = "text-danger" })</td>
+                        <td></td>
+                        <td>@Html.ValidationMessageFor(m => m.codeEtudiant, "", new { @class = "text-danger" })</td>
+                    </tr>
+                </tbody>
+            </table>
+         }
+    </div>
+    <hr />
+    <div>
+        <img src="~/img/unclaim.gif" />
+    </div>
+</div>
+
