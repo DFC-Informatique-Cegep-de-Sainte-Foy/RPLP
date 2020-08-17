@@ -87,5 +87,6 @@ a.text-gris:hover, a.text-dark:focus {
 .navbar-icons {
     margin-left: 10px;
     margin-right: 10px;
+    margin-top: 5px;
     vertical-align: sub;
 }
