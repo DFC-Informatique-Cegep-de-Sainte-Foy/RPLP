@@ -134,6 +134,11 @@ namespace RplpAvecBD.Controllers
             return View();
         }
 
+        //[Authorize("estProfesseur")]
+        public IActionResult ResultatAjoutTravail()
+        {
+            return View();
+        }
 
         public void mettreAJourParametres(string p_nom, string p_courriel, string p_apiKey)
         {
