@@ -135,6 +135,36 @@ namespace RplpAvecBD.Controllers
         }
 
         //[Authorize("estProfesseur")]
+        [HttpPost]
+        public IActionResult AjouterTravail(Microsoft.AspNetCore.Http.IFormFile file)
+        {
+            // obtenir le nom du fichier
+            string fileName = System.IO.Path.GetFileName(file.FileName);
+
+            // si le fichier existe deja, on efface celui qui etait present 
+            if (System.IO.File.Exists(fileName))
+            {
+                System.IO.File.Delete(fileName);
+            }
+
+            // Creation du nouveau fichier local et copie le contenu du fichier dedans
+            using (FileStream localFile = System.IO.File.OpenWrite(fileName))
+            using (Stream uploadedFile = file.OpenReadStream())
+            {
+                uploadedFile.CopyTo(localFile);
+            }
+            //confirmation de succes
+            ViewBag.Message = "Téléchargement effectué avec succès";
+
+
+            //decompresser le fichier recu (fichier source, destination)
+            Decompresser(fileName, ".\\Fichiers");
+
+            return View();
+        }
+
+
+        //[Authorize("estProfesseur")]
         public IActionResult ResultatAjoutTravail()
         {
             return View();
