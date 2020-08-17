@@ -123,7 +123,7 @@ namespace RplpAvecBD.Controllers
 
 
         //[Authorize("estProfesseur")]
-        public IActionResult AideAjouterCours()
+        public IActionResult AideSelectionnerCours()
         {
             return View();
         }
