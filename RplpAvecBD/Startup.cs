@@ -22,7 +22,7 @@ namespace RplpAvecBD
 {
     public class Startup
     {
-        public static bool estProfesseur = false;
+        public static bool estProfesseur = true;
 
         public Startup(IConfiguration configuration)
         {
