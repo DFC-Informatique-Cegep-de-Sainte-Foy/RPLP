@@ -91,276 +91,6 @@ namespace RplpAvecBD.Controllers
                 //AjouterEtudiantsDansCours(idCours, students,client);
             }
             return View();
-
-            //using (HttpClient c = new HttpClient())
-            //{
-            //*******************************Code pour publier le travail************************* 
-            //le parametre dans ASSIGNMENET
-            // pour published: isReleased boolean
-            // If True, finalized submissions will be viewable by students = published
-
-            // pour visible: isVisible boolean
-            //If True, visible pour les etudiants
-
-            //c.BaseAddress = new Uri("https://api.codepost.io");
-            //c.DefaultRequestHeaders.Add("authorization", "Token e395e7df7d367ea5cc70cc802dd0f351fdafb695");
-
-            //var values = new Dictionary<string, string>
-            //{
-            //   { "isReleased", "true"},
-            //    {"isVisible", "true"},
-            //    { "liveFeedbackMode", "true" }, // Si true, les étudiants pourront voir leurs soumissions et leurs commentaires avant que la soumission ne soit finalisée ou publiée.
-            //    { "hideGrades", "true"}, // Si true, les correcteurs d'une soumission seront cachés aux étudiants.
-            //    { "anonymousGrading", "true" }, //Si True, le mode de notation anonyme sera activé pour cette affectation. La valeur par défaut est False, sauf course.anonymousGradingDefault == True.
-            //    { "hideGradersFromStudents", "true" }, // Si true, les correcteurs d'une soumission seront cachés aux étudiants.
-            //    { "commentFeedback", "true" } // Si la valeur est True, les commentaires seront activés pour cette travail.
-            //};
-            //var assignmentPublier = new FormUrlEncodedContent(values);
-
-            //var task = c.PatchAsync("https://api.codepost.io/assignments/5041/", assignmentPublier);
-            //task.Wait();
-
-            //var result = task.Result;
-            //var resultUpdateAssignmenet = result.Content.ReadAsStringAsync().Result;
-            //ViewData["courses"] = resultUpdateAssignmenet;
-
-            //**************************Code pour transformer le fichier dans string**************************
-            //string path = @"C:\Cegep Ste Foy\Session V\Projet Synthese\Revue\Revue - Iteration 1\PartieProf\TP_imag\1992473@csfoy.ca\DiagrammeJeu.pdf";
-            ////StreamReader contenu = new StreamReader(path, Encoding.UTF8);
-            ////string textDeFichier = "";
-            ////while (!contenu.EndOfStream)
-            ////{
-            ////    textDeFichier += contenu.ReadToEnd();
-            ////}
-            ////contenu.Close();
-            //string _b64 = "data:application/binary;base64," + Convert.ToBase64String(System.IO.File.ReadAllBytes(path)); //pdf ou autre fichiers
-
-
-
-            //**********************convertire image dans text v2**********************************
-            //string ConvertImage(Bitmap sBit)
-            //{
-            //    MemoryStream imageStream = new MemoryStream();
-            //    //sBit.Save(imageStream, ImageFormat.Jpeg);
-            //    sBit.Save(imageStream, System.Drawing.Imaging.ImageFormat.Jpeg);
-            //    return Convert.ToBase64String(imageStream.ToArray());
-            //}
-
-            //string path = @"C:\Cegep Ste Foy\Session V\Projet Synthese\imag.jpg";
-
-            //Bitmap sBit = new Bitmap(path);
-
-            //string imageString = ConvertImage(sBit);
-
-            //// StreamWriter sw = new StreamWriter(@"C:\waleedelkot.text", false);
-            //StreamWriter sw = new StreamWriter(@"C:\Cegep Ste Foy\Session V\Projet Synthese\Rplp\zip.doc", false);
-            //sw.Write(imageString);
-            //sw.Close();
-            //return Content($"Sucser");
-
-            //**********************************convertire image en string v3 ******************************
-            //void ProcessRequest(HttpContext context)
-            //{
-            //    context.Response.ContentType = "image/png";
-
-            //    var text = context.Request.Params["text"];
-            //    if (text == null) text = string.Empty;
-            //    var image = CreateBitmapImage(text);
-
-            //    image.Save(context.Response.OutputStream, ImageFormat.Png);
-            //}
-
-            //*******v4***/
-            //string path = @"C:\Cegep Ste Foy\Session V\Projet Synthese\Revue\Revue - Iteration 1\PartieProf\TP_imag\1992473@csfoy.ca\revision.mdj";
-            //string _b64 = "data:application/binary;base64," + Convert.ToBase64String(System.IO.File.ReadAllBytes(path)); //pdf ou autre fichiers
-
-
-
-            //************************requetes POST pour Upload le nouveaux fichier dans CodePost************************
-
-            //c.BaseAddress = new Uri("https://api.codepost.io");
-            //c.DefaultRequestHeaders.Add("authorization", "Token e395e7df7d367ea5cc70cc802dd0f351fdafb695");
-            ////string path = @"C:\Cegep Ste Foy\Session V\Projet Synthese\Revue\Revue - Iteration 1\PartieProf\Travail_Demo_10\1992343@csfoy.ca\MoteurDeJeu.pdf";
-            ////StreamReader contenu = new StreamReader(path, Encoding.UTF8);
-            ////string textDeFichier = "";
-            ////while (!contenu.EndOfStream)
-            ////{
-            ////    textDeFichier += contenu.ReadToEnd();
-            ////}
-            ////contenu.Close();
-
-            //Models.File fileUpload = new Models.File("StarUml", "revision.mdj", ".mdj", _b64, 232332);
-            //var json = JsonConvert.SerializeObject(fileUpload);
-            //var content = new StringContent(json, Encoding.UTF8, "application/json");
-            //content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
-            //var task = c.PostAsync(" https://api.codepost.io/files/", content);
-            //task.Wait();
-
-            //var result = task.Result;
-            ////var resultUploadFichier = result.Content.ReadAsStringAsync().Result;
-            ////ViewData["courses"] = resultUploadFichier;
-
-
-            //*******************VERSION FINAL POUR UPLOAD IMAGE
-
-            //string path = @"C:\Cegep Ste Foy\Session V\Projet Synthese\Revue\Revue - Iteration 1\PartieProf\TP_imag\1992473@csfoy.ca\revision.mdj";
-            //string _b64 = "data:application/binary;base64," + Convert.ToBase64String(System.IO.File.ReadAllBytes(path)); //pdf ou autre fichiers
-
-            //c.BaseAddress = new Uri("https://api.codepost.io");
-            //c.DefaultRequestHeaders.Add("authorization", "Token e395e7df7d367ea5cc70cc802dd0f351fdafb695");
-
-            //Models.File fileUpload = new Models.File("StarUml", "revision.mdj", ".mdj", _b64, 232332);
-            //var json = JsonConvert.SerializeObject(fileUpload);
-            //var content = new StringContent(json, Encoding.UTF8, "application/json");
-            //content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
-            //var task = c.PostAsync(" https://api.codepost.io/files/", content);
-            //task.Wait();
-
-            //var result = task.Result;
-
-            //************Experementation avec upload la lste de fichiers - ne marche pas
-
-            //c.BaseAddress = new Uri("https://api.codepost.io");
-            //c.DefaultRequestHeaders.Add("authorization", "Token e395e7df7d367ea5cc70cc802dd0f351fdafb695");
-            //string path = @"C:\Cegep Ste Foy\Session V\Projet Synthese\Revue\Revue - Iteration 1\PartieProf\TP_imag\1992473@csfoy.ca\JPG_flower.jpg";
-            //string _b64 = "data:application/binary;base64," + Convert.ToBase64String(System.IO.File.ReadAllBytes(path)); //pdf ou autre fichiers
-            //Models.File file1 = new Models.File("List", "JPG_flower.jpg", ".jpg", _b64, 232332);
-
-            //path = @"C:\Cegep Ste Foy\Session V\Projet Synthese\Revue\Revue - Iteration 1\PartieProf\TP_imag\1992473@csfoy.ca\JPG_mignion.jpg";
-            //_b64 = "data:application/binary;base64," + Convert.ToBase64String(System.IO.File.ReadAllBytes(path)); //pdf ou autre fichiers
-            //Models.File file2 = new Models.File("List", "JPG_mignion.jpg", ".jpg", _b64, 232332);
-
-
-            //var filesUpload = new Dictionary<string, object>
-            //{
-            //      { "files", new ArrayList(){ file1,file2} }
-
-            //};
-            //var json = JsonConvert.SerializeObject(filesUpload);
-            //var content = new StringContent(json, Encoding.UTF8, "application/json");
-            //content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
-            //var task = c.PostAsync(" https://api.codepost.io/files/", content);
-            //task.Wait();
-
-            //var result = task.Result;
-            //ViewData["courses"] = result;
-
-            // ****************requetes Patch (update) pour indique qui est le grader pour submission dans travail dans CodePost ************************
-            //c.BaseAddress = new Uri("https://api.codepost.io");
-            //c.DefaultRequestHeaders.Add("authorization", "Token e395e7df7d367ea5cc70cc802dd0f351fdafb695");
-
-            //var values = new Dictionary<string, string>
-            //{
-            //    { "grader" ,null },//  { "grader" , "1992473@csfoy.ca" }
-            //    { "id", "229867"}
-
-            //};
-
-            //var submissionUpdate = new FormUrlEncodedContent(values);
-            //var task = c.PatchAsync("https://api.codepost.io/submissions/229867/", submissionUpdate);
-            //task.Wait();
-
-            //var result = task.Result;
-            //var resultUpdateSubmission = result.Content.ReadAsStringAsync().Result;
-            //ViewData["courses"] = resultUpdateSubmission;
-
-            // ****************requetes POST pour cree le Submission pour chaque etudiant dans travail dans CodePost pour Upload des fichiers************************
-            //c.BaseAddress = new Uri("https://api.codepost.io");
-            //c.DefaultRequestHeaders.Add("authorization", "Token e395e7df7d367ea5cc70cc802dd0f351fdafb695");
-            //List<string> students = new List<string>
-            //{
-            //    "1992343@csfoy.ca",
-            //    "1992473@csfoy.ca",
-            //    "1992178@csfoy.ca",
-            //    "1895949@csfoy.ca"
-            // };
-            //Submission submission = new Submission("5041", students);
-
-            //var json = JsonConvert.SerializeObject(submission);
-            //var content = new StringContent(json, Encoding.UTF8, "application/json");
-            //content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
-            //var task = c.PostAsync(" https://api.codepost.io/submissions/", content);
-            //task.Wait();
-
-            //var result = task.Result;
-            //var resultCreationSubmission = result.Content.ReadAsStringAsync().Result;
-            //ViewData["courses"] = resultCreationSubmission;
-
-
-
-            // ****************requetes POST pour cree le Submission dans travail dans CodePost pour Upload des fichiers************************
-            //c.BaseAddress = new Uri("https://api.codepost.io");
-            //c.DefaultRequestHeaders.Add("authorization", "Token e395e7df7d367ea5cc70cc802dd0f351fdafb695");
-            //var students = new List<string>
-            //{
-            //    "1992343@csfoy.ca",
-            //    "1992473@csfoy.ca",
-            //    "1992178@csfoy.ca",
-            //    "1895949@csfoy.ca"
-            // };
-            //Submission submission = new Submission("4985", students);
-
-            //var json = JsonConvert.SerializeObject(submission);
-            //var content = new StringContent(json, Encoding.UTF8, "application/json");
-            //content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
-            //var task = c.PostAsync(" https://api.codepost.io/submissions/", content);
-            //task.Wait();
-
-            //var result = task.Result;
-            //var resultCreationSubmission = result.Content.ReadAsStringAsync().Result;
-            //ViewData["courses"] = resultCreationSubmission;
-
-
-            // ************************requetes POST pour cree le nouveaux travail dans CodePost************************
-
-            //c.BaseAddress = new Uri("https://api.codepost.io");
-            //c.DefaultRequestHeaders.Add("authorization", "Token e395e7df7d367ea5cc70cc802dd0f351fdafb695");
-            //var values = new Dictionary<string, string>
-            //{
-            //      { "name", "TP3" },
-            //      { "points", "25" },
-            //      { "course", "1104" }
-            //};
-            //var travail = new FormUrlEncodedContent(values);
-            //var task = c.PostAsync(" https://api.codepost.io/assignments/", travail);
-            //task.Wait();
-
-            //var result = task.Result;
-            //var resultCreationtravail = result.Content.ReadAsStringAsync().Result;//  ReadAsStringAsync().Result;
-            //ViewData["courses"] = resultCreationtravail;
-
-            // ************************requetes GET pour obtenir tous les cours de prof de CodePost************************
-
-            //c.BaseAddress = new Uri("https://api.codepost.io");
-            //c.DefaultRequestHeaders.Add("authorization", "Token e395e7df7d367ea5cc70cc802dd0f351fdafb695");
-            //var task = c.GetAsync("https://api.codepost.io/courses/"); //tous les courses
-            //task.Wait();
-            //var result = task.Result;
-
-            //var taskReadCourses = result.Content.ReadAsStringAsync();
-            //taskReadCourses.Wait();
-            //var chaineDesCourses = taskReadCourses.Result;
-            //ViewData["courses"] = chaineDesCourses;
-
-            // ************************requetes GET pour obtenir le cours avec id de prof de CodePost************************
-
-            //c.BaseAddress = new Uri("https://api.codepost.io");
-            //c.DefaultRequestHeaders.Add("authorization", "Token e395e7df7d367ea5cc70cc802dd0f351fdafb695");
-            //var task = c.GetAsync("https://api.codepost.io/courses/1104/"); //course avec id=1104 dans CodePost
-            //task.Wait();
-            //var result = task.Result;
-
-            //var taskReadCourse = result.Content.ReadAsStringAsync();
-            //taskReadCourse.Wait();
-            //var chaineDeCourse = taskReadCourse.Result;
-            //ViewData["courses"] = chaineDeCourse;
-            //return View();
-            //}
         }
 
         /// <summary>
@@ -528,13 +258,13 @@ namespace RplpAvecBD.Controllers
 
         }
 
+
         public bool AssignmentEstDejaCreer(string p_name, int p_points, int p_idCourse, HttpClient p_client)
         {
             bool estCreer = false;
 
             return estCreer;
         }
-
 
 
         /// <summary>
@@ -594,6 +324,12 @@ namespace RplpAvecBD.Controllers
             return idSubmission;
         }
 
+
+        /// <summary>
+        /// La procedure de determination de tous les fichiers dans un repertoire donne
+        /// </summary>
+        /// <param name="p_path">le repertoire dans lequel on collecte tous les fichiers</param>
+        /// <param name="p_fichiers">liste de tous les fichiers presentes dans le repertoire donne</param>
         public void RecupererTousLesFichiers(string p_path, List<string> p_fichiers)
         {
 
@@ -609,6 +345,13 @@ namespace RplpAvecBD.Controllers
             }
         }
 
+
+        /// <summary>
+        /// Le fonction pour convertire le path complete dans le path relativ
+        /// </summary>
+        /// <param name="p_path">Le path complete</param>
+        /// <param name="p_separator">le nom de repertoire pour couper le chemin (tout apres ce repertoire est reflete)</param>
+        /// <returns>le path relative</returns>
         public string ConvertirePathEnRelative(string p_path, string p_separator)
         {
 
@@ -619,6 +362,12 @@ namespace RplpAvecBD.Controllers
             return pathRelative;
         }
 
+
+        /// <summary>
+        /// Le function pour obtenir tous les chemins vers les repertoires avec les travaux de chaque etudiante
+        /// </summary>
+        /// <param name="p_path">le path vers le repertoire des travaux de tous les etudiantes pour upload</param>
+        /// <returns>le table avec les path vers le repertoire des travaux de tous les etudiantes</returns>
         public string[] ObtenirSousRepertoiresEtudiantsAvecTraveaux(string p_path)
         {
             string[] tableRepertoires = Directory.GetDirectories(p_path);
@@ -630,11 +379,24 @@ namespace RplpAvecBD.Controllers
             return tableRepertoires;
         }
 
+
+        /// <summary>
+        /// Le function pour obtenir e-mail d'etudiante
+        /// </summary>
+        /// <param name="p_path">le path vers le repertoire de travail d'etudiante pour upload</param>
+        /// <returns>l'email d'etudiante comme chaine de caracteres</returns>
         public string ObtenirAdressEtudiant(string p_path)
         {
             return new DirectoryInfo(p_path).Name;
         }
 
+
+        /// <summary>
+        /// Le function pour obtenir le Dictionary avec key=id de submission et valeur=objet Submission
+        /// </summary>
+        /// <param name="p_assignment">id d'Assignment sur CodePost</param>
+        /// <param name="p_client">HttpClient qui etait cree pour API CodePost avec le KeyApi de client(de prof)</param>
+        /// <returns></returns>
         public Dictionary<int, Submission> ObtenirDictionarySubmissionDansTravail(int p_assignment, HttpClient p_client)
         {
 
@@ -645,8 +407,7 @@ namespace RplpAvecBD.Controllers
             string[] tableSubmissions = SeparerChaine(chainDeSubmissions);
 
             Dictionary<int, Submission> infoARetourner = new Dictionary<int, Submission>();
-            //List<Submission> listSubmissions = new List<Submission>();
-
+            
             for (int i = 0; i < tableSubmissions.Length; i++)
             {
                 if (tableSubmissions[i] != null)
@@ -664,27 +425,21 @@ namespace RplpAvecBD.Controllers
                         {
                             listEtudiants.Add((string)email);
                         }
-                        // string[] tableStudents = SeparerChaine(chaineStudents);
                         infoARetourner.Add(id, new Submission(assignment, listEtudiants));
-
-                        //for (int j = 0; j < tableStudents.Length; j++)
-                        //{
-                        //    if (tableStudents[j] != null)
-                        //    {
-                        //        tableStudents[j].Replace("{", "");
-                        //        tableStudents[j].Replace("}", "");
-                        //        listEtudiants.Add(tableStudents[j]);
-                        //    }
-                        //    infoARetourner.Add(id,new Submission(assignment, listEtudiants)); 
-                        //}
                     }
-
                 }
-
             }
             return infoARetourner;
         }
 
+
+        /// <summary>
+        /// Le procedure pour upload tous les fichiers de une seule etudient
+        /// </summary>
+        /// <param name="p_assignment">l'id d'assignment(travail) sur CodePost</param>
+        /// <param name="p_dictionary">le dictionary ou le key c'est l'id de Submission et valeur - c'est l'objet de type Submission</param>
+        /// <param name="p_path">le path vers le repertoire de travail d'une seule etudiante pour upload</param>
+        /// <param name="p_client">HttpClient qui etait cree pour API CodePost avec le KeyApi de client(de prof)</param>
         public void UploadTousLesFichiersEtudiant(int p_assignment, Dictionary<int, Submission> p_dictionary, string p_path, HttpClient p_client)
         {
             List<string> listFichiersEtudiant = new List<string>();
@@ -716,6 +471,13 @@ namespace RplpAvecBD.Controllers
             }
         }
 
+
+        /// <summary>
+        /// Le procedure pour upload tous les travaux de tous les etudiants
+        /// </summary>
+        /// <param name="p_assignment">l'id d'assignment(travail) sur CodePost</param>
+        /// <param name="p_path">le path vers le repertoire des travaux d tous les etudiantes pour upload</param>
+        /// <param name="p_client">HttpClient qui etait cree pour API CodePost avec le KeyApi de client(de prof)</param>
         public void UploadTravauxEtudiants(int p_assignment, string p_path, HttpClient p_client)
         {
 
@@ -727,11 +489,12 @@ namespace RplpAvecBD.Controllers
             }
         }
 
+
         /// <summary>
         /// Function pour convertire le chemin de fichier dans formet qui convien CodePost
         /// </summary>
         /// <param name="p_path">le chemin vers le fichier</param>
-        /// <returns></returns>
+        /// <returns>le path dans le format qui convien CodePost</returns>
         public string ConvertirePathPourCodePost(string p_path)
         {
             string newPath = p_path.Replace(@"\", @"/");
@@ -783,8 +546,6 @@ namespace RplpAvecBD.Controllers
         /// <param name="p_client">HttpClient qui etait cree pour API CodePost avec le KeyApi de client(de prof)</param>
         public void CreerFichier(string p_name, string p_code, string p_extansion, int p_submission, string p_path, HttpClient p_client)
         {
-
-
 
             Model.File file = new Model.File(p_name, p_extansion, p_code, p_submission, p_path);
 
@@ -876,30 +637,6 @@ namespace RplpAvecBD.Controllers
                 else stringARetourner = ConvertireFichierTextDansString(p_path);
             }
             return stringARetourner;
-        }
-
-
-        /// <summary>
-        /// fonction pour decompresser fichier zip recoit en parametre le nom du fichier et le path de destination
-        /// </summary>
-        /// <param name="fileName"></param>
-        /// <param name="destinationFolder"></param>
-
-
-        //private void Decompresser(string fileName, string destinationFolder)
-        //{
-        //    if (fileName != null)
-        //    {
-        //        //".\\Fichiers"
-        //        ZipFile.ExtractToDirectory(fileName, destinationFolder);
-        //    }
-        //}
-
-        //private string ObtenirPathDestinationFichier()
-        //{
-        //    string nomRepertoire = User.Identity.Name;
-        //    string pathDestination = ".\\Fichiers\\" + nomRepertoire;
-        //    return pathDestination;
-        //}
+        }  
     }
 }
