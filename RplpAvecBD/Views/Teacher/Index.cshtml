@@ -23,6 +23,7 @@
                         <th>
                             <a class="text-gris" asp-controller="Teacher" asp-action="AideSelectionnerCours"> Besoin d'aide ?</a>
                         </th>
+                        <th style="width:30px;"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -42,7 +43,7 @@
                         </td>
                         <td>&nbsp</td>
                         <td>
-                            <input type="submit" class="btn btn-success" id="btnAjouterTravail" value="Ajouter un travail" />
+                            <input type="submit" class="btn btn-success" id="btnAjouterTravail" value="Ajouter un travail" asp-controller="Teacher" asp-action="AjouterTravail" />
                         </td>
                         @*else { ... }
                         <td>
@@ -59,7 +60,6 @@
             </table>
             <hr />
         }
-
         <br />
         <br />
         <h6>Travaux existentes dans le cours <strong>nom du cours</strong></h6>
