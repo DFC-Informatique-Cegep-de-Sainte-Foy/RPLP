@@ -20,11 +20,14 @@ namespace RplpAvecBD.Controllers
     {
         private readonly RplpContext _rplpContext;
 
+        //variable pour le repertoire temp de travail ou on nettoye et efface les fichiers indesirables
+        DirectoryInfo destination;
+
+
         public TeacherController(RplpContext p_context)
         {
             _rplpContext = p_context;
         }
-
         public bool estProfesseurExistant(string p_courriel)
         {
             // Vérifier si ce professeur existe déjà dans la base de données
@@ -201,89 +204,132 @@ namespace RplpAvecBD.Controllers
             return pathDestination;
         }
 
-        public void Decompresser_CodePost()
+        public void Decompresser_faireMenage_CodePost(String nomDuTravail)
         {
-            //TEMPORAIRE
-            string nomDuTravail = "patate";
-            if (Directory.Exists("C:\\Users\\the_e\\AppData\\Local\\Temp\\1992178@csfoy.ca"))
+            //TEMPORAIRE 
+            // pour pas avoir a effacer a chaque fois durant les tests
+            if (Directory.Exists(@"C:\Users\the_e\AppData\Local\Temp\1992178@csfoy.ca"))
             {
-                Directory.Delete("C:\\Users\\the_e\\AppData\\Local\\Temp\\1992178@csfoy.ca", true);
+                Directory.Delete(@"C:\Users\the_e\AppData\Local\Temp\1992178@csfoy.ca", true);
             }
-
-
-            string path = Directory.GetCurrentDirectory() + "\\";
-
+            //obtenir repertoire courrant
+            string path = Directory.GetCurrentDirectory();
+            Console.WriteLine("current directory : " + path);
             //obtenir repertoire temporaire de lutilisateur
-            Console.WriteLine("current path" + path);
             string pathUser = Path.GetTempPath();
-            string pathDestination = pathUser + User.Identity.Name;
-            //creer un repertoire avec le matricule de l'utilisateur dans le repertoire temporaire
-            Directory.CreateDirectory(pathUser + User.Identity.Name);
-            Console.WriteLine("user temp path" + pathUser);
-            Decompresser(path + "Travail_Demo_1_420429SF_467_OK.zip", pathDestination);
-            DirectoryInfo destination = new DirectoryInfo(pathDestination);
+            Console.WriteLine("temp path : " + pathUser);
 
-            //parcourir les repertoires
+            string pathDestination = Path.Combine(pathUser + User.Identity.Name);
+            Console.WriteLine("path destination ..pathuser / matricule : " + pathDestination);
+
+            //creer un repertoire avec le matricule de l'utilisateur dans le repertoire temporaire
+            Directory.CreateDirectory(Path.Combine(pathUser, User.Identity.Name));
+
+            //decompresser
+            Decompresser(Path.Combine(path, nomDuTravail), pathDestination);
+            //conversion de type string -> DirectoryInfo 
+            destination = new DirectoryInfo(pathDestination);
+
+            //parcourir les repertoires qui correspondent au regex
             Regex regexValidationFolder = new Regex("[A-Za-z]*_(?<numeroMatricule>(\\d{7,}))_[A-Za-z]*");
             foreach (DirectoryInfo dir in destination.GetDirectories())
             {
-                //if (dir.Name == "obj" || dir.Name == "bin" || dir.Name == "vs")
-                //{
-                //    Console.WriteLine("deleted");
-                //    dir.Delete(true);
-                //}
                 Match resultat = regexValidationFolder.Match(dir.Name);
                 if (resultat.Success)
                 {
-                    //nettoyer (effacer tout les) "*.suo", "*.user", "*.userosscache", "*.sln.docstates", ".vs", "bin", "obj", "build", "*.class", ".settings", ".classpath", ".project", "*.mdj", "*.svg"
-                    foreach (FileInfo file in dir.GetFiles())
+                    //effacer les fichiers indésirables
+                    string[] TypeDeFichierAEffacer = new string[] { "*.suo", "*.user", "*.userosscache", "*.sln.docstates", "*.project", "*.mdj", "*.svg" };
+                    foreach (string type in TypeDeFichierAEffacer)
                     {
-
-                        string extension = file.Extension.ToLower();
-                        if (
-                            extension.Equals(".suo") ||
-                            extension.Equals(".user") ||
-                            extension.Equals(".userosscache") ||
-                            extension.Equals(".sln.docstates") ||
-                            extension.Equals(".project") ||
-                            extension.Equals(".mdj") ||
-                            extension.Equals(".svg") ||
-
-                            // a verifier avec thiago si repertoires ou extensions de fichiers ?????
-                            extension.Equals(".vs") ||
-                            extension.Equals("bin") ||
-                            extension.Equals("obj") ||
-                            extension.Equals("build")
-                            )
                         {
-                            file.Delete();
+                            FileInfo[] fichier = destination.GetFiles(type, SearchOption.AllDirectories);
+                            foreach (FileInfo fi in fichier)
+                            {
+                                try
+                                {
+                                    if (fi.Extension == type) ;
+                                    fi.Delete();
+                                }
+                                catch (IOException)
+                                {
+                                    fi.Delete();
+                                }
+                                catch (UnauthorizedAccessException)
+                                {
+                                    fi.Delete();
+                                }
+                            }
                         }
                     }
                     //renommer le repertoire en utilisant la commande move. 
                     string matricule = resultat.Groups["numeroMatricule"].Value;
                     try
                     {
-                        Directory.Move(destination + "//" + dir.Name, destination + "//" + matricule + "@csfoy.ca");
-
+                        Directory.Move(Path.Combine(destination.ToString(), dir.Name), Path.Combine(destination.ToString(), matricule + "@csfoy.ca"));
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine("exception! path : " + path + "    destination : " + destination);
                         Console.WriteLine(e.Message);
                     }
-
-
                 }
 
+                //effacer les repertoires indésirables
+                string[] RepetoireAEffacer = new string[] { ".vs", "bin", "obj", "build" };
+                foreach (string NomDirectoryAEffacer in RepetoireAEffacer)
+                {
+                    DirectoryInfo[] repertoire = destination.GetDirectories(NomDirectoryAEffacer, SearchOption.AllDirectories); ;
 
+                    foreach (DirectoryInfo di in repertoire)
+                    {
+                        try
+                        {
+                            di.Delete(true);
+                        }
+                        catch (IOException)
+                        {
+                            di.Delete(true);
+                        }
+                        catch (UnauthorizedAccessException)
+                        {
+                            di.Delete(true);
+                        }
+                    }
+                }
             }
+            ///temporairement retire pour faciliter les tests.
+            //EffacerFichierRecu(path, nomDuTravail);
+        }
 
+        /// <summary>
+        /// fonction qui efface le fichier recu en parametre 
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="nomDuTravail"></param>
+        public void EffacerFichierRecu(string path, string nomDuTravail)
+        {
+            string pathEtNomFichierAEffacer = Path.Combine(path, nomDuTravail).ToString();
+            FileInfo fichierAEffacer = new FileInfo(pathEtNomFichierAEffacer);
+            try
+            {
+                if (fichierAEffacer.Exists)
+                {
+                    fichierAEffacer.Delete();
+                }
+            }
+            catch (IOException)
+            {
+                fichierAEffacer.Delete();
+            }
+            catch (UnauthorizedAccessException)
+            {
+                fichierAEffacer.Delete();
+            }
         }
 
         //temporaire
         public IActionResult Script()
         {
-            Decompresser_CodePost();
+            Decompresser_faireMenage_CodePost("Travail_Demo_1_420429SF_467_OK.zip");
             return View();
         }
     }
