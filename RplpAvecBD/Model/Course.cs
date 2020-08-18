@@ -40,7 +40,7 @@ namespace RplpAvecBD.Model
 
         public override string ToString()
         {
-            return "id:" + this.id + " name:" + this.name + " period:" + this.period;
+            return this.id + "name: "+this.name;
         }
     }
 }

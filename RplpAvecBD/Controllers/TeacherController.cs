@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -13,6 +14,7 @@ using Microsoft.VisualBasic;
 using Newtonsoft.Json;
 using RplpAvecBD.Data;
 using RplpAvecBD.Model;
+using RplpAvecBD.Controllers;
 
 namespace RplpAvecBD.Controllers
 {
@@ -69,8 +71,17 @@ namespace RplpAvecBD.Controllers
                 // Rediriger vers la page de paramètres pour qu'il puisse ajouter son API Key
                 return RedirectToAction("Parametres", "Teacher");
             }
-
+            using (HttpClient client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("https://api.codepost.io");
+                client.DefaultRequestHeaders.Add("authorization", "Token " + professeurExistente.apiKey);
+                
+                //recuperer  les Cours dans la CodePost
+                List<Course> listeCours = CodePostController.ObtenirListeDesCourses(client);
+                ViewBag.listeCours = listeCours;
+            }
             return View();
+
         }
 
         //[Authorize("estProfesseur")]

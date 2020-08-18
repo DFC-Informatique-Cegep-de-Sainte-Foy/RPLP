@@ -34,7 +34,7 @@ namespace RplpAvecBD.Controllers
         /// </summary>
         /// <param name="p_client">HttpClient qui a été créé avec l'APIKey du client (le prof)</param>
         /// <returns></returns>
-        public List<Course> ObtenirListeDesCourses(HttpClient p_client)
+        public static List<Course> ObtenirListeDesCourses(HttpClient p_client)
         {
             var task = p_client.GetAsync("https://api.codepost.io/courses/");
             task.Wait();
@@ -62,7 +62,7 @@ namespace RplpAvecBD.Controllers
         /// </summary>
         /// <param name="p_chaineDesCourses">La chaine des tous les cours, qui a été retourné de CodePost</param>
         /// <returns></returns>
-        public string[] SeparerChaine(string p_chaine)
+        public static string[] SeparerChaine(string p_chaine)
         {
             if (p_chaine != "")
             {
@@ -96,7 +96,7 @@ namespace RplpAvecBD.Controllers
         /// <param name="p_id">Id de Cours dans CodePost</param>
         /// <param name="p_client">HttpClient qui a été créé avec l'APIKey du client (le prof)</param>
         /// <returns></returns>
-        public Course RecupererInfoDeCours(int p_id, HttpClient p_client)
+        public static Course RecupererInfoDeCours(int p_id, HttpClient p_client)
         {
             var task = p_client.GetAsync("https://api.codepost.io/courses/" + p_id + "/");
             task.Wait();
@@ -122,7 +122,7 @@ namespace RplpAvecBD.Controllers
         /// </summary>
         /// <param name="p_id">Id du Cours dans CodePost</param>
         /// <param name="p_client">HttpClient qui a été créé avec l'APIKey du client (le prof)</param>
-        public void ActiverLesParametresDeCours(int p_id, HttpClient p_client)
+        public static void ActiverLesParametresDeCours(int p_id, HttpClient p_client)
         {
             Course cours = RecupererInfoDeCours(p_id, p_client);
             cours.sendReleasedSubmissionsToBack = true;
@@ -135,7 +135,7 @@ namespace RplpAvecBD.Controllers
             var task = p_client.PatchAsync("https://api.codepost.io/courses/" + p_id + "/", content);
             task.Wait();
             var result = task.Result;
-            ViewData["result"] = result;
+            //ViewData["result"] = result;
         }
 
         /// <summary>
@@ -144,7 +144,7 @@ namespace RplpAvecBD.Controllers
         /// <param name="p_idCours">Id de Cours dans CodePost</param>
         /// <param name="p_listeEtudiants">Liste de tous les étudiants qui suivent le Cours</param>
         /// <param name="p_client">HttpClient qui a été créé avec l'APIKey du client (le prof)</param>
-        public void AjouterEtudiantsDansCours(int p_idCours, List<string> p_listeEtudiants, HttpClient p_client)
+        public static void AjouterEtudiantsDansCours(int p_idCours, List<string> p_listeEtudiants, HttpClient p_client)
         {
             CourseRoster courseRoster = new CourseRoster(p_idCours, p_listeEtudiants);
 
@@ -154,7 +154,7 @@ namespace RplpAvecBD.Controllers
             var task = p_client.PatchAsync("https://api.codepost.io/courses/" + p_idCours + "/roster/", content);
             task.Wait();
             var result = task.Result;
-            ViewData["result"] = result;
+            //ViewData["result"] = result;
         }
 
         /// <summary>
@@ -164,7 +164,7 @@ namespace RplpAvecBD.Controllers
         /// <param name="p_points">Le points pour le travail</param>
         /// <param name="p_idCourse">L'id du cours auquel appartient le travail</param>
         /// <param name="p_client">HttpClient qui a été créé avec l'APIKey du client (le prof)</param>
-        public void CreerAssignment(string p_name, int p_points, int p_idCourse, HttpClient p_client)
+        public static void CreerAssignment(string p_name, int p_points, int p_idCourse, HttpClient p_client)
         {
             bool estCree = AssignmentEstDejaCreer(p_name, p_idCourse, p_client);
 
@@ -177,7 +177,7 @@ namespace RplpAvecBD.Controllers
                 var task = p_client.PostAsync("https://api.codepost.io/assignments/", content);
                 task.Wait();
                 var result = task.Result;
-                ViewData["result"] = result;
+                //ViewData["result"] = result;
             }
             else
             {
@@ -192,7 +192,7 @@ namespace RplpAvecBD.Controllers
         /// <param name="p_name">le nom de travail pour cree</param>
         /// <param name="p_client">HttpClient qui etait cree pour API CodePost avec le KeyApi de client(de prof)</param>
         /// <returns>true si le travail est cree ou false si non</returns>
-        public bool AssignmentEstDejaCreer(string p_name, int p_idCours, HttpClient p_client)
+        public static bool AssignmentEstDejaCreer(string p_name, int p_idCours, HttpClient p_client)
         {
             bool estCreer = false;
             int i = 0;
@@ -219,7 +219,7 @@ namespace RplpAvecBD.Controllers
         /// <param name="p_idCours">l'id de Cours</param>
         /// <param name="p_client">HttpClient qui etait cree pour API CodePost avec le KeyApi de client(de prof)</param>
         /// <returns>la liste d'objet de type Assignments</returns>
-        public List<Assignment> ObtenirListeAssignmentsDansUnCours(int p_idCours, HttpClient p_client)
+        public static List<Assignment> ObtenirListeAssignmentsDansUnCours(int p_idCours, HttpClient p_client)
         {
             List<Assignment> listAssignment = new List<Assignment>();
 
@@ -244,7 +244,7 @@ namespace RplpAvecBD.Controllers
         /// <param name="p_id">L'id de l'assignment</param>
         /// <param name="p_client">HttpClient qui a été créé avec l'APIKey du client (le prof)</param>
         /// <returns>Objet du type Assignment</returns>
-        public Assignment RecupererInfoSurAssignment(int p_id, HttpClient p_client)
+        public static Assignment RecupererInfoSurAssignment(int p_id, HttpClient p_client)
         {
             var task = p_client.GetAsync("https://api.codepost.io/assignments/" + p_id + "/");
             task.Wait();
@@ -271,7 +271,7 @@ namespace RplpAvecBD.Controllers
         /// <param name="p_emailEtudiant">Email de l'étudiant</param>
         /// <param name="p_client">HttpClient qui a été créé avec l'APIKey du client (le prof)</param>
         /// <returns>Id de Submission</returns>
-        public int CreerSubmission(int p_assignment, string p_emailEtudiant, HttpClient p_client)
+        public static int CreerSubmission(int p_assignment, string p_emailEtudiant, HttpClient p_client)
         {
             int idSubmission = 0;
 
@@ -285,7 +285,7 @@ namespace RplpAvecBD.Controllers
             var task = p_client.PostAsync("https://api.codepost.io/submissions/", content);
             task.Wait();
             var result = task.Result;
-            ViewData["result"] = result;
+            //ViewData["result"] = result;
 
             string resultCreationSubmission = result.Content.ReadAsStringAsync().Result;
             JObject objet = JObject.Parse(resultCreationSubmission);
@@ -300,7 +300,7 @@ namespace RplpAvecBD.Controllers
         /// <param name="p_assignment">l'id de l'assignment sur CodePost</param>
         /// <param name="p_client">HttpClient qui a été créé avec l'APIKey du client (le prof)</param>
         /// <returns></returns>
-        public Dictionary<int, Submission> ObtenirDictionarySubmissionDansTravail(int p_assignment, HttpClient p_client)
+        public static Dictionary<int, Submission> ObtenirDictionarySubmissionDansTravail(int p_assignment, HttpClient p_client)
         {
 
             var task = p_client.GetAsync("https://api.codepost.io/assignments/" + p_assignment + "/submissions/");
@@ -340,7 +340,7 @@ namespace RplpAvecBD.Controllers
         /// </summary>
         /// <param name="p_path">le repertoire dans lequel on collecte tous les fichiers</param>
         /// <param name="p_fichiers">liste de tous les fichiers presentes dans le repertoire donne</param>
-        public void RecupererTousLesFichiers(string p_path, List<string> p_fichiers)  // @Olena, aucun return ?
+        public static void RecupererTousLesFichiers(string p_path, List<string> p_fichiers)  // @Olena, aucun return ?
         {
 
             p_fichiers.AddRange(Directory.GetFiles(p_path));
@@ -360,7 +360,7 @@ namespace RplpAvecBD.Controllers
         /// </summary>
         /// <param name="p_path">Le path vers le répertoire des travaux de tous les étudiants pour uploader</param>
         /// <returns>La table avec les path vers le répertoire des travaux de tous les étudiants</returns>
-        public string[] ObtenirSousRepertoiresEtudiantsAvecTravaux(string p_path)
+        public static string[] ObtenirSousRepertoiresEtudiantsAvecTravaux(string p_path)
         {
             string[] tableRepertoires = Directory.GetDirectories(p_path);
 
@@ -377,7 +377,7 @@ namespace RplpAvecBD.Controllers
         /// <param name="p_path">Le path complet</param>
         /// <param name="p_separator">Le nom de répertoire pour couper le chemin (tout ce qu'il y a après ce repertoire est reflété)</param>
         /// <returns>le path relative</returns>
-        public string ConvertirePathEnRelative(string p_path, string p_separator)
+        public static string ConvertirePathEnRelative(string p_path, string p_separator)
         {
             string[] table = new string[2];
             table = p_path.Split(p_separator, StringSplitOptions.None);
@@ -391,7 +391,7 @@ namespace RplpAvecBD.Controllers
         /// </summary>
         /// <param name="p_path">Le path vers le répertoire du travail de l'étudiant pour uploader</param>
         /// <returns>Le courriel de l'étudiant comme chaine de caractères</returns>
-        public string ObtenirCourrielEtudiant(string p_path)
+        public static string ObtenirCourrielEtudiant(string p_path)
         {
             return new DirectoryInfo(p_path).Name;
         }
@@ -403,7 +403,7 @@ namespace RplpAvecBD.Controllers
         /// <param name="p_dictionary">Le dictionary où la key est l'id de la submission et la valeur est l'objet du type submission</param>
         /// <param name="p_path">Le path vers le répertoire du travail d'un seul étudiant pour uploader</param>
         /// <param name="p_client">HttpClient qui a été créé avec l'APIKey du client(le prof)</param>
-        public void UploadTousLesFichiersEtudiant(int p_assignment, Dictionary<int, Submission> p_dictionary, string p_path, HttpClient p_client)
+        public static void UploadTousLesFichiersEtudiant(int p_assignment, Dictionary<int, Submission> p_dictionary, string p_path, HttpClient p_client)
         {
             List<string> listFichiersEtudiant = new List<string>();
             RecupererTousLesFichiers(p_path, listFichiersEtudiant);
@@ -441,7 +441,7 @@ namespace RplpAvecBD.Controllers
         /// <param name="p_assignment">L'id de l'assignment (travail) sur CodePost</param>
         /// <param name="p_path">Le path vers le répertoire des travaux de tous les étudiants pour uploader</param>
         /// <param name="p_client">HttpClient qui a été créé avec l'APIKey du client(le prof)</param>
-        public void UploadTravauxTousEtudiants(int p_assignment, string p_path, HttpClient p_client)
+        public static void UploadTravauxTousEtudiants(int p_assignment, string p_path, HttpClient p_client)
         {
             Dictionary<int, Submission> dictionarySubmission = ObtenirDictionarySubmissionDansTravail(p_assignment, p_client);
             string[] tableRepertoiresEtudiants = ObtenirSousRepertoiresEtudiantsAvecTravaux(p_path);
@@ -456,7 +456,7 @@ namespace RplpAvecBD.Controllers
         /// </summary>
         /// <param name="p_path">Le chemin vers le fichier</param>
         /// <returns>Le path dans le format qui convient à CodePost</returns>
-        public string ConvertirePathPourCodePost(string p_path)  //@Olena, il n'y a pas peut-être une sintaxe pour faire ça automatiquement? 
+        public static string ConvertirePathPourCodePost(string p_path)  //@Olena, il n'y a pas peut-être une sintaxe pour faire ça automatiquement? 
         {                                                        // comment en powershell - Join-Path ?
             string newPath = p_path.Replace(@"\", @"/");
             return newPath;
@@ -468,7 +468,7 @@ namespace RplpAvecBD.Controllers
         /// <param name="p_nameAvecPath">Le nom du fichier avec le chemin </param>
         /// <param name="p_submission">L'id de la submission (=le numéro d'etudiant) sur CodePost pour uploader le fichier</param>
         /// <param name="p_client">HttpClient qui a été créé avec l'APIKey du client(le prof)</param>
-        public void CreerFichier(string p_nameAvecPath, string p_emailEtudiant, int p_submission, HttpClient p_client)
+        public static void CreerFichier(string p_nameAvecPath, string p_emailEtudiant, int p_submission, HttpClient p_client)
         {
             string nameFichier = Path.GetFileName(p_nameAvecPath);
             string extantionFichier = Path.GetExtension(p_nameAvecPath);
@@ -502,7 +502,7 @@ namespace RplpAvecBD.Controllers
         /// <param name="p_submission">L'id de la submission (le numéro de l'étudiant)</param>
         /// <param name="p_path">Le chemin vers le fichier pour créer l'arboresence</param>
         /// <param name="p_client">HttpClient qui a été créé avec l'APIKey du client(le prof)</param>
-        public void CreerFichier(string p_name, string p_code, string p_extansion, int p_submission, string p_path, HttpClient p_client)
+        public static void CreerFichier(string p_name, string p_code, string p_extansion, int p_submission, string p_path, HttpClient p_client)
         {
             Model.File file = new Model.File(p_name, p_extansion, p_code, p_submission, p_path);
 
@@ -514,7 +514,7 @@ namespace RplpAvecBD.Controllers
             task.Wait();
 
             var result = task.Result;
-            ViewData["result"] = result;
+            //ViewData["result"] = result;
         }
 
         /// <summary>
@@ -522,7 +522,7 @@ namespace RplpAvecBD.Controllers
         /// </summary>
         /// <param name="p_path">Le chemin vers le fichier avec son nom</param>
         /// <returns>Le contenu du fichier comme une chaine de caractères</returns>
-        public string ConvertirFichierTextDansString(string p_path)
+        public static string ConvertirFichierTextDansString(string p_path)
         {
             string textDeFichier = "";
 
@@ -549,7 +549,7 @@ namespace RplpAvecBD.Controllers
         /// </summary>
         /// <param name="p_path">Le chemin vers le fichier avec son nom</param>
         /// <returns>Le contenu du fichier comme une chaine de caractères</returns>
-        public string ConvertirFichierImageDansString(string p_path)
+        public static string ConvertirFichierImageDansString(string p_path)
         {
             string fichier_B64 = "";
 
@@ -570,7 +570,7 @@ namespace RplpAvecBD.Controllers
         /// </summary>
         /// <param name="p_path"></param>
         /// <returns></returns>
-        public string ConvertireFichierDansString(string p_path)
+        public static string ConvertireFichierDansString(string p_path)
         {
             string stringARetourner = "";
 
