@@ -1,3 +1,5 @@
 .vs/
 RplpAvecBD/bin/
 RplpAvecBD/obj/
+*.csproj
+*.csproj.user
