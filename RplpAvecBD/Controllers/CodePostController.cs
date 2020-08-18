@@ -157,13 +157,6 @@ namespace RplpAvecBD.Controllers
             ViewData["result"] = result;
         }
 
-        public bool AssignmentEstDejaCreer(string p_name, int p_points, int p_idCourse, HttpClient p_client) //@Olena, reste à terminer cette fonction?
-        {
-            bool estCreer = false;
-
-            return estCreer;
-        }
-
         /// <summary>
         /// Procédure pour créér un assignment (travail) sur CodePost 
         /// </summary>
@@ -173,7 +166,7 @@ namespace RplpAvecBD.Controllers
         /// <param name="p_client">HttpClient qui a été créé avec l'APIKey du client (le prof)</param>
         public void CreerAssignment(string p_name, int p_points, int p_idCourse, HttpClient p_client)
         {
-            bool estCree = AssignmentEstDejaCreer(p_name, p_points, p_idCourse, p_client);
+            bool estCree = AssignmentEstDejaCreer(p_name, p_idCourse, p_client);
 
             if (!estCree)
             {
@@ -191,6 +184,58 @@ namespace RplpAvecBD.Controllers
                 throw new ArgumentException("Le travail existe déjà sur Codepost", p_name);
             }
 
+        }
+
+        /// <summary>
+        /// Le fonction pour verifier si travail avec nom donné est cree
+        /// </summary>
+        /// <param name="p_name">le nom de travail pour cree</param>
+        /// <param name="p_client">HttpClient qui etait cree pour API CodePost avec le KeyApi de client(de prof)</param>
+        /// <returns>true si le travail est cree ou false si non</returns>
+        public bool AssignmentEstDejaCreer(string p_name, int p_idCours, HttpClient p_client)
+        {
+            bool estCreer = false;
+            int i = 0;
+            List<Assignment> listAssignments = ObtenirListeAssignmentsDansUnCours(p_idCours, p_client);
+
+            while (i < listAssignments.Count && !estCreer)
+            {
+                if (listAssignments[i].name == p_name)
+                {
+                    estCreer = true;
+                    break;
+                }
+                else
+                {
+                    i++;
+                }
+            }
+            return estCreer;
+        }
+
+        /// <summary>
+        /// Le fonction pour obtenir la liste de tous les assignments dans cours donnee
+        /// </summary>
+        /// <param name="p_idCours">l'id de Cours</param>
+        /// <param name="p_client">HttpClient qui etait cree pour API CodePost avec le KeyApi de client(de prof)</param>
+        /// <returns>la liste d'objet de type Assignments</returns>
+        public List<Assignment> ObtenirListeAssignmentsDansUnCours(int p_idCours, HttpClient p_client)
+        {
+            List<Assignment> listAssignment = new List<Assignment>();
+
+            var task = p_client.GetAsync("https://api.codepost.io/courses/" + p_idCours + "/");
+            task.Wait();
+            var result = task.Result;
+
+            string shaineInfoSurCours = result.Content.ReadAsStringAsync().Result;
+            JObject objet = JObject.Parse(shaineInfoSurCours);
+            IEnumerable<JToken> assignments = objet.SelectToken("assignments");
+
+            foreach (JToken travail in assignments)
+            {
+                listAssignment.Add(RecupererInfoSurAssignment((int)travail, p_client));
+            }
+            return listAssignment;
         }
 
         /// <summary>
