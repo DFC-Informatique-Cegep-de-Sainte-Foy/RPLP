@@ -14,8 +14,8 @@ namespace RplpAvecBD.Model
         [Display(Name = "Code étudiant :")]
         public string codeEtudiant { get; set; }
 
-        [Required(ErrorMessage = "Il faut sélectionner un professeur !")]
-        public int idProfesseur { get; set; }
+        
+        public int? idProfesseur { get; set; }
 
     }
 }

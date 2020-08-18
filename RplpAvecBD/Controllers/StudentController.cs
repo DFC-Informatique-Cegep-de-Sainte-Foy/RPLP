@@ -40,6 +40,11 @@ namespace RplpAvecBD.Controllers
         [HttpPost]
         public IActionResult Index(Unclaim p_unclaim)
         {
+            if (p_unclaim.idProfesseur == 0 || string.IsNullOrEmpty(p_unclaim.idProfesseur.ToString()))
+            {
+                ModelState.AddModelError("idProfesseur", "Vous devez sélectionner un professeur !");
+            }
+
             if (ModelState.IsValid)
             {
                 return RedirectToAction("ResultatUnclaim", new { idProfesseur = p_unclaim.idProfesseur, codeEtudiant = p_unclaim.codeEtudiant });

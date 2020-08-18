@@ -5,27 +5,29 @@
 
     <div class="text-left">
         <br />
-        <br />
-
-        @using (Html.BeginForm())
+        <h2>Assignments<strong style="font-size:20px;"> (Travaux)</strong></h2>
+        <hr />
+        @using (Html.BeginForm(FormMethod.Get))
         {
             <table>
                 <thead>
                     <tr>
                         <th>
-                            <h2 style="width:380px;">Selectionner un cours :</h2>
+                            <h6 style="width:270px;">Sélectionner un cours</h6>
                         </th>
                         <th style="width:10px;"></th>
                         <th>
-                            <a href="#"><img src="~/img/icon_refresh_19x19.png" title="Refresh" alt="Refresh" /></a>
+                            <a href="#"><img src="~/img/icon_refresh_19x19_v2.png" title="Refresh" alt="Refresh" /></a>
                         </th>
                         <th style="width:50px;"></th>
                         <th>
-                            <a href="#" class="text-gris">Besoin d'aide ?</a>
+                            <a class="text-gris" asp-controller="Teacher" asp-action="AideSelectionnerCours"> Besoin d'aide ?</a>
                         </th>
+                        <th style="width:30px;"></th>
                     </tr>
                 </thead>
                 <tbody>
+                    <tr style="height: 15px;"></tr>
                     <tr>
                         <td>
                             DropDownList
@@ -34,9 +36,21 @@
                         <td></td>
                         <td></td>
                         <td></td>
+
+                        @*if (listeEtudiantPresent) { ... }*@
                         <td>
-                            <input type="submit" class="btn btn-success" id="btnAjouterTravail" value="Ajouter un travail" />
+                            <input type="submit" class="btn btn-info" id="btnModifierListeEtudiants" value="Modifier la liste des étudiants" />
                         </td>
+                        <td>&nbsp</td>
+                        <td>
+                            <input type="submit" class="btn btn-success" id="btnAjouterTravail" value="Ajouter un travail" asp-controller="Teacher" asp-action="AjouterTravail" />
+                        </td>
+                        @*else { ... }
+                        <td>
+                            <input type="submit" class="btn btn-info" id="btnAjouterListeEtudiants" value="Ajouter la liste des étudiants" />
+                        </td>*@
+
+                    </tr>
                     <tr>
                         <td>
                             @*<td>@Html.ValidationMessageFor(m => m.idProfesseur, "", new { @class = "text-danger" })</td>*@
@@ -44,20 +58,12 @@
                     </tr>
                 </tbody>
             </table>
-
-            <br />
-            <br />
-            <br />
-            <p>Vérifier si les 3 options sont actives. Les actives au besoin</p>
-            <p>Vérifier s'il y a d'étudiants inscrits dans ce cours - Ajouter (étudiants/graders)</p>
-
+            <hr />
         }
-
-
         <br />
         <br />
-        <h2>Assignments<strong style="font-size:20px;"> (Travaux)</strong></h2>
-
+        <h6>Travaux existentes dans le cours <strong>nom du cours</strong></h6>
+        <br />
         <table class="table">
             <thead>
                 <tr>

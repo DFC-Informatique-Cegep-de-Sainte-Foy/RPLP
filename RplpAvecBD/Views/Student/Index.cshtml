@@ -27,8 +27,7 @@
                 <tbody>
                     <tr>
                         <td>
-                            @*<select class="form-control" asp-items="@(new SelectList(ViewBag.listeProfesseurs,"id", "nom"))"></select>*@
-                            @Html.DropDownListFor(m => m.idProfesseur, new SelectList(@ViewBag.listeProfesseurs, "id", "nom"), "-- Selectionner un professeur --", new { @class = "form-control" })
+                            @Html.DropDownListFor(m => m.idProfesseur, new SelectList(@ViewBag.listeProfesseurs, "id", "nom", 0), "-- Sélectionner un professeur --", new { @class = "form-control" })
                         </td>
                         <td style="width:10px;"></td>
                         <td>
@@ -49,7 +48,8 @@
          }
     </div>
     <hr />
-    <div>
+    <br />
+    <div >
         <img src="~/img/unclaim.gif" />
     </div>
 </div>
