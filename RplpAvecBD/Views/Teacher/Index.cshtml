@@ -1,94 +1,97 @@
-﻿
+﻿@model RplpAvecBD.Model.Course;
 @{
     ViewData["Title"] = "Professeur";
+    @using RplpAvecBD.Model;
+
+
 }
 
-    <div class="text-left">
-        <br />
-        <h2>Assignments<strong style="font-size:20px;"> (Travaux)</strong></h2>
-        <hr />
-        @using (Html.BeginForm(FormMethod.Get))
-        {
-            <table>
-                <thead>
-                    <tr>
-                        <th>
-                            <h6 style="width:270px;">Sélectionner un cours</h6>
-                        </th>
-                        <th style="width:10px;"></th>
-                        <th>
-                            <a href="#"><img src="~/img/icon_refresh_19x19_v2.png" title="Refresh" alt="Refresh" /></a>
-                        </th>
-                        <th style="width:50px;"></th>
-                        <th>
-                            <a class="text-gris" asp-controller="Teacher" asp-action="AideSelectionnerCours"> Besoin d'aide ?</a>
-                        </th>
-                        <th style="width:30px;"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr style="height: 15px;"></tr>
-                    <tr>
-                        <td>
-                            DropDownList
-                            @*@Html.DropDownListFor(m => m.idProfesseur, new SelectList(@ViewBag.listeProfesseurs, "id", "nom"), "-- Selectionner un professeur --", new { @class = "form-control" })*@
-                        </td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+<div class="text-left">
+    <br />
+    <h2>Assignments<strong style="font-size:20px;"> (Travaux)</strong></h2>
+    <hr />
+    @using (Html.BeginForm(FormMethod.Get))
+    {
+        <table>
+            <thead>
+                <tr>
+                    <th>
+                        <h6 style="width:270px;">Sélectionner un cours</h6>
+                    </th>
+                    <th style="width:10px;"></th>
+                    <th>
+                        <a href="#"><img src="~/img/icon_refresh_19x19_v2.png" title="Refresh" alt="Refresh" /></a>
+                    </th>
+                    <th style="width:50px;"></th>
+                    <th>
+                        <a class="text-gris" asp-controller="Teacher" asp-action="AideSelectionnerCours"> Besoin d'aide ?</a>
+                    </th>
+                    <th style="width:30px;"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="height: 15px;"></tr>
+                <tr>
+                    <td>
+                        @*DropDownList*@
+                        @Html.DropDownListFor(m => m.name, new SelectList(@ViewBag.listeCours, "id", "name"), "-- Selectionner un cours --", new {@class = "form-control" })
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
 
-                        @*if (listeEtudiantPresent) { ... }*@
-                        <td>
-                            <input type="submit" class="btn btn-info" id="btnModifierListeEtudiants" value="Modifier la liste des étudiants" />
-                        </td>
-                        <td>&nbsp</td>
-                        <td>
-                            <input type="submit" class="btn btn-success" id="btnAjouterTravail" value="Ajouter un travail" asp-controller="Teacher" asp-action="AjouterTravail" />
-                        </td>
-                        @*else { ... }
+                    @*if (listeEtudiantPresent) { ... }*@
+                    <td>
+                        <input type="submit" class="btn btn-info" id="btnModifierListeEtudiants" value="Modifier la liste des étudiants" />
+                    </td>
+                    <td>&nbsp</td>
+                    <td>
+                        <input type="submit" class="btn btn-success" id="btnAjouterTravail" value="Ajouter un travail" asp-controller="Teacher" asp-action="AjouterTravail" />
+                    </td>
+                    @*else { ... }
                         <td>
                             <input type="submit" class="btn btn-info" id="btnAjouterListeEtudiants" value="Ajouter la liste des étudiants" />
                         </td>*@
 
-                    </tr>
-                    <tr>
-                        <td>
-                            @*<td>@Html.ValidationMessageFor(m => m.idProfesseur, "", new { @class = "text-danger" })</td>*@
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <hr />
-        }
-        <br />
-        <br />
-        <h6>Travaux existentes dans le cours <strong>nom du cours</strong></h6>
-        <br />
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>
-                        <h6>Nom</h6>
-                    </th>
-                    <th>
-                        <h6>No. travaux remis</h6>
-                    </th>
-                    <th>
-                        <h6>No. travaux manquants</h6>
-                    </th>
-                    <th>
-                        <h6>Date</h6>
-                    </th>
-                    <th>
-                        <h6>Créé sur CodePost</h6>
-                    </th>
-                    <th>
-                        <h6>Action</h6>
-                    </th>
-                    <th></th>
                 </tr>
-            </thead>
-            @*<tbody>
+                <tr>
+                    <td>
+                        @*<td>@Html.ValidationMessageFor(m => m.idProfesseur, "", new { @class = "text-danger" })</td>*@
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <hr />
+    }
+    <br />
+    <br />
+    <h6>Travaux existentes dans le cours <strong>nom du cours</strong></h6>
+    <br />
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    <h6>Nom</h6>
+                </th>
+                <th>
+                    <h6>No. travaux remis</h6>
+                </th>
+                <th>
+                    <h6>No. travaux manquants</h6>
+                </th>
+                <th>
+                    <h6>Date</h6>
+                </th>
+                <th>
+                    <h6>Créé sur CodePost</h6>
+                </th>
+                <th>
+                    <h6>Action</h6>
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        @*<tbody>
                 @foreach (var item in Model.Utilizateur)
                 {
                     <tr>
@@ -106,6 +109,6 @@
                     </tr>
                 }
             </tbody>*@
-        </table>
+    </table>
 
-    </div>
+</div>
