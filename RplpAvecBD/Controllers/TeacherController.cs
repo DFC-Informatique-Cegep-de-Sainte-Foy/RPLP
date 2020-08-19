@@ -256,13 +256,6 @@ namespace RplpAvecBD.Controllers
             }
         }
 
-        private string ObtenirPathDestinationFichier()
-        {
-            string nomRepertoire = User.Identity.Name;
-            string pathDestination = Path.GetTempPath() + nomRepertoire;
-            return pathDestination;
-        }
-
         public void Decompresser_faireMenage_CodePost(String nomDuTravail)
         {
             //TEMPORAIRE 
