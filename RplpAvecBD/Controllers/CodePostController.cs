@@ -122,17 +122,25 @@ namespace RplpAvecBD.Controllers
         /// </summary>
         /// <param name="p_id">Id du Cours dans CodePost</param>
         /// <param name="p_client">HttpClient qui a été créé avec l'APIKey du client (le prof)</param>
-        public static void ActiverLesParametresDeCours(int p_id, HttpClient p_client)
+        public static void ActiverLesParametresDeCours(Course p_cours, HttpClient p_client)
         {
-            Course cours = RecupererInfoDeCours(p_id, p_client);
-            cours.sendReleasedSubmissionsToBack = true;
-            cours.emailNewUsers = true;
-            cours.anonymousGradingDefault = true;
+            if (p_cours.anonymousGradingDefault == false)
+            {
+                p_cours.anonymousGradingDefault = true;
+            }
+            if (p_cours.emailNewUsers == false)
+            {
+                p_cours.emailNewUsers = true;
+            }
+            if (p_cours.sendReleasedSubmissionsToBack == false)
+            {
+                p_cours.sendReleasedSubmissionsToBack = true;
+            }
 
-            var json = JsonConvert.SerializeObject(cours);
+            var json = JsonConvert.SerializeObject(p_cours);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var task = p_client.PatchAsync("https://api.codepost.io/courses/" + p_id + "/", content);
+            var task = p_client.PatchAsync("https://api.codepost.io/courses/" + p_cours.id + "/", content);
             task.Wait();
             var result = task.Result;
             //ViewData["result"] = result;

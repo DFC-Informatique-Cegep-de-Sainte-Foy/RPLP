@@ -116,6 +116,10 @@ namespace RplpAvecBD.Controllers
                 List<Course> listeCours = CodePostController.ObtenirListeDesCourses(client);
                 ViewBag.listeCours = listeCours;
 
+                // Activer les 3 bouton dans les paramètres du cours au besoin
+                Course coursChoisi = CodePostController.RecupererInfoDeCours((int)p_cours.idCoursChoisi, client);
+                CodePostController.ActiverLesParametresDeCours(coursChoisi, client);
+
                 if (p_cours.idCoursChoisi != null)
                 {
                     //recuperer la liste des etudiants dans la Cours choisir
