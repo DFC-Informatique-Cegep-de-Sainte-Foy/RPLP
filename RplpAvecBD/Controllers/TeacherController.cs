@@ -23,11 +23,8 @@ namespace RplpAvecBD.Controllers
     {
         private readonly RplpContext _rplpContext;
 
-        private Professeur _professeurSession;
-
         //variable pour le repertoire temp de travail ou on nettoye et efface les fichiers indesirables
         DirectoryInfo destination;
-
 
         public TeacherController(RplpContext p_context)
         {
@@ -62,14 +59,20 @@ namespace RplpAvecBD.Controllers
                 // Ajouter le professeur dans la base de données
                 Professeur NouveauProfesseur = ajouterProfesseur(User.Identity.Name);
 
+                // Ajouter le professeur dans la session
+                HttpContext.Session.SetString("ProfesseurSession", JsonConvert.SerializeObject(NouveauProfesseur));
+
                 // Rediriger vers la page de paramètres pour qu'il puisse ajouter son API Key
                 return RedirectToAction("Parametres", "Teacher");
             }
 
             // Récuperér le professeur dans la BD
-            this._professeurSession = _rplpContext.Professeurs.SingleOrDefault(p => p.courriel == User.Identity.Name);
+            Professeur professeurExistent = _rplpContext.Professeurs.SingleOrDefault(p => p.courriel == User.Identity.Name);
 
-            if (this._professeurSession.apiKey == null || this._professeurSession.apiKey == "")
+            // Ajouter le professeur dans la session
+            HttpContext.Session.SetString("ProfesseurSession", JsonConvert.SerializeObject(professeurExistent));
+
+            if (professeurExistent.apiKey == null || professeurExistent.apiKey == "")
             {
                 // Rediriger vers la page de paramètres pour qu'il puisse ajouter son API Key
                 return RedirectToAction("Parametres", "Teacher");
@@ -78,12 +81,18 @@ namespace RplpAvecBD.Controllers
             using (HttpClient client = new HttpClient())
             {
                 client.BaseAddress = new Uri("https://api.codepost.io");
-                client.DefaultRequestHeaders.Add("authorization", "Token " + this._professeurSession.apiKey);
+                client.DefaultRequestHeaders.Add("authorization", "Token " + professeurExistent.apiKey);
                 
-                //recuperer  les Cours dans la CodePost
+                // Récupérer  les cours de CodePost
                 List<Course> listeCours = CodePostController.ObtenirListeDesCourses(client);
+
+                // Ajouter la liste de cours dans la session
+                HttpContext.Session.SetString("ListeCoursSession", JsonConvert.SerializeObject(listeCours));
+
+                // Ajouter la liste cours dans la ViewBag
                 ViewBag.listeCours = listeCours;
 
+                // Affecter la valeur 0 à l'id du cours choisi au départ
                 ViewBag.@idCoursChoisi = 0;
             }
 
@@ -94,6 +103,12 @@ namespace RplpAvecBD.Controllers
         [HttpPost]
         public IActionResult Index(Course p_cours)
         {
+            // Ajouter le cours choisi dans la session
+            HttpContext.Session.SetString("IdCoursChoisiSession", JsonConvert.SerializeObject(p_cours.idCoursChoisi));
+            
+            // Ajouter le cours choisi dans la ViewBag
+            ViewBag.idCoursChoisi = p_cours.idCoursChoisi;
+
             if (p_cours.idCoursChoisi == 0 || string.IsNullOrEmpty(p_cours.idCoursChoisi.ToString()))
             {
                 ModelState.AddModelError("idCoursChoisi", "Vous devez sélectionner un Cours !");
@@ -106,30 +121,39 @@ namespace RplpAvecBD.Controllers
 
             using (HttpClient client = new HttpClient())
             {
-                // Récuperér le professeur dans la BD
-                this._professeurSession = _rplpContext.Professeurs.SingleOrDefault(p => p.courriel == User.Identity.Name);
+                // Récuperér le professeur dans la session
+                Professeur professeurSession = JsonConvert.DeserializeObject<Professeur>(HttpContext.Session.GetString("ProfesseurSession"));
 
                 client.BaseAddress = new Uri("https://api.codepost.io");
-                client.DefaultRequestHeaders.Add("authorization", "Token " + this._professeurSession.apiKey);
+                client.DefaultRequestHeaders.Add("authorization", "Token " + professeurSession.apiKey);
 
-                //recuperer  les Cours dans la CodePost
-                List<Course> listeCours = CodePostController.ObtenirListeDesCourses(client);
+                // Récuperér la liste de cours dans la session
+                List<Course> listeCours = JsonConvert.DeserializeObject<List<Course>>(HttpContext.Session.GetString("ListeCoursSession"));
+                
+                // Ajouter le cours choisi dans la ViewBag
                 ViewBag.listeCours = listeCours;
 
-                
                 if (p_cours.idCoursChoisi != null)
                 {
-                    //recuperer la liste des etudiants dans la Cours choisir
+                    // Récupérer la liste des étudiants du cours choisi
                     List<string> listeEtudiant = CodePostController.ObtenirListeEtudiant((int)p_cours.idCoursChoisi, client);
+
+                    // Ajouter la liste des étudiants dans la session
+                    HttpContext.Session.SetString("ListeEtudiantsSession", JsonConvert.SerializeObject(listeEtudiant));
+
+                    // Ajouter la liste des étudiants dans la ViewBag
                     ViewBag.listeEtudiant = listeEtudiant;
 
-                    ViewBag.idCoursChoisi = p_cours.idCoursChoisi;
-
-                    //recupere Cours choisir
+                    // Récupérer toutes les infos du cours choisi
                     ViewBag.coursChoisi = CodePostController.RecupererInfoDeCours((int)p_cours.idCoursChoisi, client);
 
-                    //recuperer la liste d'Assignments(travaux) dans cours choisi
+                    // Récupérer la liste d'Assignments (travaux) du cours choisi
                     List<Assignment> listeAssignment = CodePostController.ObtenirListeAssignmentsDansUnCours((int)p_cours.idCoursChoisi, client);
+
+                    // Ajouter la liste des d'Assignments dans la session
+                    HttpContext.Session.SetString("ListeAssignmentsSession", JsonConvert.SerializeObject(listeAssignment));
+
+                    // Ajouter la liste d'Assignments dans la ViewBag
                     ViewBag.listeAssignment = listeAssignment;
 
                     // Activer les 3 boutons dans les paramètres du cours au besoin
@@ -209,10 +233,37 @@ namespace RplpAvecBD.Controllers
             return View();
         }
 
+        
+
         //[Authorize("estProfesseur")]
         [HttpPost]
-        public async Task<IActionResult> AjouterTravail(List<IFormFile> fichierCSV)
+        public async Task<IActionResult> AjouterTravail(IFormFile fichierCSV)
         {
+            using (HttpClient client = new HttpClient())
+            {
+                // Récuperér le professeur dans la session
+                Professeur professeurSession = JsonConvert.DeserializeObject<Professeur>(HttpContext.Session.GetString("ProfesseurSession"));
+
+                client.BaseAddress = new Uri("https://api.codepost.io");
+                client.DefaultRequestHeaders.Add("authorization", "Token " + professeurSession.apiKey);
+
+                // Récupérer l'id du cours choisi dans la session
+                int idCoursChoisi = JsonConvert.DeserializeObject<int>(HttpContext.Session.GetString("IdCoursChoisiSession"));
+
+                // Récupérer la liste des étudiants dans la session
+                List <string> listeEtudiants = JsonConvert.DeserializeObject<List<string>>(HttpContext.Session.GetString("ListeEtudiantsSession"));
+
+
+                CodePostController.AjouterEtudiantsDansCours(idCoursChoisi, listeEtudiants, client, fichierCSV);
+
+
+            }
+
+
+
+
+
+
             //// obtenir le nom du fichier
             //string fileName = System.IO.Path.GetFileName(file.FileName);
 
@@ -388,7 +439,7 @@ namespace RplpAvecBD.Controllers
             }
         }
 
-        public List<string> CreerListeEtudiantsAPartirDuCsv(string fichierCsv)
+        public static List<string> CreerListeEtudiantsAPartirDuCsv(string fichierCsv)
         {
             List<string> listeEtudiant = new List<string> { };
             string line = null;
@@ -400,8 +451,8 @@ namespace RplpAvecBD.Controllers
             {
                 if (compteur != 0) //skip la ligne d'entete
                 {
-                    string[] splitText = line.Split('"');
-                    listeEtudiant.Add(splitText[1] + suffixe);
+                    string[] splitText = line.Split(';');
+                    listeEtudiant.Add(splitText[0] + suffixe);
                 }
                 compteur++;
             }

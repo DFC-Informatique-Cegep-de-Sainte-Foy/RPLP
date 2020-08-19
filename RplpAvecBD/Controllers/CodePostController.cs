@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -152,9 +153,24 @@ namespace RplpAvecBD.Controllers
         /// <param name="p_idCours">Id de Cours dans CodePost</param>
         /// <param name="p_listeEtudiants">Liste de tous les étudiants qui suivent le Cours</param>
         /// <param name="p_client">HttpClient qui a été créé avec l'APIKey du client (le prof)</param>
-        public static void AjouterEtudiantsDansCours(int p_idCours, List<string> p_listeEtudiants, HttpClient p_client)
+        public static async void AjouterEtudiantsDansCours(int p_idCours, List<string> p_listeEtudiants, HttpClient p_client, IFormFile p_fichierCSV)
         {
             CourseRoster courseRoster = new CourseRoster(p_idCours, p_listeEtudiants);
+
+            if (p_fichierCSV != null)
+            {
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), p_fichierCSV.FileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await p_fichierCSV.CopyToAsync(stream);
+                }
+
+                List<string> NouvelleListeEtudiants = TeacherController.CreerListeEtudiantsAPartirDuCsv(filePath);
+
+                courseRoster.students = NouvelleListeEtudiants;
+                courseRoster.graders = NouvelleListeEtudiants;
+            }
 
             var json = JsonConvert.SerializeObject(courseRoster);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -162,7 +178,6 @@ namespace RplpAvecBD.Controllers
             var task = p_client.PatchAsync("https://api.codepost.io/courses/" + p_idCours + "/roster/", content);
             task.Wait();
             var result = task.Result;
-            //ViewData["result"] = result;
         }
 
         /// <summary>
