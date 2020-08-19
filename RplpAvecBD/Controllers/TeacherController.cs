@@ -211,7 +211,7 @@ namespace RplpAvecBD.Controllers
 
         //[Authorize("estProfesseur")]
         [HttpPost]
-        public IActionResult AjouterTravail(Microsoft.AspNetCore.Http.IFormFile file)
+        public async Task<IActionResult> AjouterTravail(List<IFormFile> fichierCSV)
         {
             //// obtenir le nom du fichier
             //string fileName = System.IO.Path.GetFileName(file.FileName);

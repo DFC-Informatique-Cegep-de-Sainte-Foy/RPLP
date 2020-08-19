@@ -34,67 +34,79 @@
                 </tr>
             </tbody>
         </table>
-
         <hr />
-        @using (Html.BeginForm())
-        {
-            <table>
-                <thead>
-                    <tr>
-                        <th>
-                            <h6 style="width:270px;">Sélectionner un cours</h6>
-                        </th>
-                        <th style="width:10px;"></th>
-                        @if (@idCoursChoisi != 0 && @listeEtudiant != null && @listeEtudiant.Count > 0)
-                        {
+        <div class="row">
+            @using (Html.BeginForm())
+            {
+                <table>
+                    <thead>
+                        <tr>
                             <th>
-                                <h6>Modifier la liste des étudiants</h6>
+                                <h6 style="width:270px;">Sélectionner un cours</h6>
                             </th>
-                        }
-                        else if (@idCoursChoisi != 0 && @listeEtudiant != null && @listeEtudiant.Count == 0)
-                        {
-                            <th>
-                                <h6>Ajouter la liste des étudiants</h6>
-                            </th>
-                        }
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr style="height: 15px;"></tr>
-                    <tr>
-                        <td>
-                            @using (Html.BeginForm("Teacher", "index", FormMethod.Post))
-                            {
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="height: 15px;"></tr>
+                        <tr>
+                            <td>
                                 @Html.DropDownListFor(m => m.idCoursChoisi, new SelectList(@ViewBag.listeCours, "id", "name"), "-- Selectionner un cours --", new { @class = "form-control", onchange = "this.form.submit()" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                @Html.ValidationMessageFor(m => m.idCoursChoisi, "", new { @class = "text-danger" })
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            }
+            <div style="width:30px;"></div>
+            @using (Html.BeginForm("AjouterTravail", "Teacher", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                <table>
+                    <thead>
+                        <tr>
+                            @if (@idCoursChoisi != 0 && @listeEtudiant != null && @listeEtudiant.Count > 0)
+                            {
+                                <th>
+                                    <h6>Modifier la liste des étudiants</h6>
+                                </th>
                             }
-                        </td>
-                        <td></td>
-                        @if (@idCoursChoisi != 0 && @listeEtudiant != null && @listeEtudiant.Count > 0)
-                        {
-                            <td>
-                                <input type="file" name="fichierCSV" id="btnModifierListeEtudiants" value="Modifier la liste des étudiants" accept=".csv" class="btn btn-light" />
-                            </td>
-                            <td>&nbsp</td>
-                            <td>
-                                <input type="submit" class="btn btn-success" id="btnAjouterTravail" value="Ajouter un travail" asp-controller="Teacher" asp-action="AjouterTravail" />
-                            </td>
-                        }
-                        else if (@idCoursChoisi != 0 && @listeEtudiant != null && @listeEtudiant.Count == 0)
-                        {
-                            <td>
-                                <input type="file" name="fichierCSV" id="btnAjouterListeEtudiants" value="Ajouter la liste des étudiants" accept=".csv" class="btn btn-light" />
-                            </td>
-                        }
-                    </tr>
-                    <tr>
-                        <td>
-                            @Html.ValidationMessageFor(m => m.idCoursChoisi, "", new { @class = "text-danger" })
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <hr />
-        }
+                            else if (@idCoursChoisi != 0 && @listeEtudiant != null && @listeEtudiant.Count == 0)
+                            {
+                                <th>
+                                    <h6>Ajouter la liste des étudiants</h6>
+                                </th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="height: 12px;"></tr>
+                        <tr>
+                            @if (@idCoursChoisi != 0 && @listeEtudiant != null && @listeEtudiant.Count > 0)
+                            {
+                                <td>
+                                    <input type="file" name="fichierCSV" id="btnModifierListeEtudiants" value="Modifier la liste des étudiants" accept=".csv" class="btn btn-light" />
+                                </td>
+                                <td style="width:30px;"></td>
+                                <td>
+                                    <input type="submit" class="btn btn-success" id="btnAjouterTravail" value="Ajouter un travail" />
+                                </td>
+                            }
+                            else if (@idCoursChoisi != 0 && @listeEtudiant != null && @listeEtudiant.Count == 0)
+                            {
+                                <td>
+                                    <input type="file" name="fichierCSV" id="btnAjouterListeEtudiants" value="Ajouter la liste des étudiants" accept=".csv" class="btn btn-light" />
+                                </td>
+                            }
+                        </tr>
+                    </tbody>
+                </table>
+            }
+        </div>
+        <hr />
+
         <br />
         <br />
         @if (@coursChoisir != null)
@@ -137,13 +149,13 @@
                             </td>
 
                             @*<td>
-                               <a asp-page="./Edit" asp-route-id="@item.name">Edit</a> |
-                               <a asp-page="./Details" asp-route-id="@item.name">Details</a> |
-                               <a asp-page="./Delete" asp-route-id="@item.name">Delete</a>
-                            </td>*@
+                   <a asp-page="./Edit" asp-route-id="@item.name">Edit</a> |
+                   <a asp-page="./Details" asp-route-id="@item.name">Details</a> |
+                   <a asp-page="./Delete" asp-route-id="@item.name">Delete</a>
+                </td>*@
                         </tr>
                     }
                 </tbody>
             </table>
         }
-        </div>
+    </div>
