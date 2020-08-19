@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Professeur";
     List<string> listeEtudiant = ViewBag.listeEtudiant;
+    int @idCoursChoisi = ViewBag.@idCoursChoisi;
 }
 
 <div class="text-left">
@@ -40,13 +41,13 @@
                         <h6 style="width:270px;">Sélectionner un cours</h6>
                     </th>
                     <th style="width:10px;"></th>
-                    @if (@listeEtudiant != null && @listeEtudiant.Count > 0)
+                    @if (@idCoursChoisi != 0 && @listeEtudiant != null && @listeEtudiant.Count > 0)
                     {
                         <th>
                             <h6>Modifier la liste des étudiants</h6>
                         </th>
                     }
-                    else if (@listeEtudiant != null && @listeEtudiant.Count == 0)
+                    else if (@idCoursChoisi != 0 && @listeEtudiant != null && @listeEtudiant.Count == 0)
                     {
                         <th>
                             <h6>Ajouter la liste des étudiants</h6>
@@ -64,7 +65,7 @@
                         }
                     </td>
                     <td></td>
-                    @if (@listeEtudiant != null && @listeEtudiant.Count > 0)
+                    @if (@idCoursChoisi != 0 && @listeEtudiant != null && @listeEtudiant.Count > 0)
                     {
                 <td>
                     <input type="file" name="fichierCSV" id="btnModifierListeEtudiants" value="Modifier la liste des étudiants" accept=".csv" class="btn btn-light" />
@@ -74,7 +75,7 @@
                             <input type="submit" class="btn btn-success" id="btnAjouterTravail" value="Ajouter un travail" asp-controller="Teacher" asp-action="AjouterTravail" />
                         </td>
                     }
-                    else if (@listeEtudiant != null && @listeEtudiant.Count == 0)
+                    else if (@idCoursChoisi != 0 && @listeEtudiant != null && @listeEtudiant.Count == 0)
                     {
                         <td>
                             <input type="file" name="fichierCSV" id="btnAjouterListeEtudiants" value="Ajouter la liste des étudiants" accept=".csv" class="btn btn-light" />

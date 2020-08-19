@@ -83,6 +83,8 @@ namespace RplpAvecBD.Controllers
                 //recuperer  les Cours dans la CodePost
                 List<Course> listeCours = CodePostController.ObtenirListeDesCourses(client);
                 ViewBag.listeCours = listeCours;
+
+                ViewBag.@idCoursChoisi = 0;
             }
 
             return View();
@@ -114,8 +116,17 @@ namespace RplpAvecBD.Controllers
                 List<Course> listeCours = CodePostController.ObtenirListeDesCourses(client);
                 ViewBag.listeCours = listeCours;
 
-                List<string> listeEtudiant = CodePostController.ObtenirListeEtudiant(p_cours.idCoursChoisi, client);
-                ViewBag.listeEtudiant = listeEtudiant;
+                if (p_cours.idCoursChoisi != null)
+                {
+                    List<string> listeEtudiant = CodePostController.ObtenirListeEtudiant((int)p_cours.idCoursChoisi, client);
+                    ViewBag.listeEtudiant = listeEtudiant;
+
+                    ViewBag.@idCoursChoisi = p_cours.idCoursChoisi;
+
+                    return View();
+                }
+
+                ViewBag.@idCoursChoisi = 0;
             }
 
             return View();
