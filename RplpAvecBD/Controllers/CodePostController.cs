@@ -289,6 +289,28 @@ namespace RplpAvecBD.Controllers
         }
 
         /// <summary>
+        /// Le methode pour obtenir nomber submissions total et manquents dans Assignment(travail)  
+        /// </summary>
+        /// <param name="p_id">l'id de Assignment</param>
+        /// <param name="p_client">ttpClient qui etait cree pour API CodePost avec le KeyApi de client(de prof)</param>
+        /// <returns>Tuple les nombers submissions total et manquants</returns>
+        public static (int, int) SubmissionsTotalEtManquantsDansAssignment(int p_id, HttpClient p_client)
+        {
+            var task = p_client.GetAsync("https://api.codepost.io/assignments/" + p_id + "/");
+            task.Wait();
+            var result = task.Result;
+
+            string shaineInfoSurAssignment = result.Content.ReadAsStringAsync().Result;
+            JObject objet = JObject.Parse(shaineInfoSurAssignment);
+
+            int count = (int)objet.SelectToken("submissions_count");
+            int missing = (int)objet.SelectToken("submissions_missing_count");
+            return (count, missing);
+        }
+
+
+
+        /// <summary>
         /// Procédure pour récupérer les informations sur un Assignment
         /// </summary>
         /// <param name="p_id">L'id de l'assignment</param>
