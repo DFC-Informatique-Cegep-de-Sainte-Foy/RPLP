@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.VisualBasic;
 using Newtonsoft.Json;
 using RplpAvecBD.Data;
@@ -260,15 +261,13 @@ namespace RplpAvecBD.Controllers
             {
                 Directory.Delete(@"C:\Users\the_e\AppData\Local\Temp\1992178@csfoy.ca", true);
             }
+
+
             //obtenir repertoire courrant
             string path = Directory.GetCurrentDirectory();
-            Console.WriteLine("current directory : " + path);
             //obtenir repertoire temporaire de lutilisateur
             string pathUser = Path.GetTempPath();
-            Console.WriteLine("temp path : " + pathUser);
-
             string pathDestination = Path.Combine(pathUser + User.Identity.Name);
-            Console.WriteLine("path destination ..pathuser / matricule : " + pathDestination);
 
             //creer un repertoire avec le matricule de l'utilisateur dans le repertoire temporaire
             Directory.CreateDirectory(Path.Combine(pathUser, User.Identity.Name));
@@ -308,8 +307,7 @@ namespace RplpAvecBD.Controllers
                                 }
                             }
                         }
-                    }
-                    //renommer le repertoire en utilisant la commande move. 
+                    }                 
                     string matricule = resultat.Groups["numeroMatricule"].Value;
                     try
                     {
@@ -344,7 +342,7 @@ namespace RplpAvecBD.Controllers
                     }
                 }
             }
-            ///temporairement retire pour faciliter les tests.
+            ///temporairement retiré pour faciliter les tests.
             //EffacerFichierRecu(path, nomDuTravail);
         }
 
@@ -374,10 +372,31 @@ namespace RplpAvecBD.Controllers
             }
         }
 
+        public List<string> CreerListeEtudiantsAPartirDuCsv(string fichierCsv)
+        {
+            List<string> listeEtudiant = new List<string> { };
+            string line = null;
+            string suffixe = "@csfoy.ca";
+            int compteur = 0;
+
+            StreamReader file = new System.IO.StreamReader(fichierCsv);
+            while ((line = file.ReadLine()) != null)
+            {
+                if (compteur != 0) //skip la ligne d'entete
+                {
+                    string[] splitText = line.Split('"');
+                    listeEtudiant.Add(splitText[1] + suffixe);
+                }
+                compteur++;
+            }
+            file.Close();
+            return listeEtudiant;
+        }
+
         //temporaire
         public IActionResult Script()
         {
-            Decompresser_faireMenage_CodePost("Travail_Demo_1_420429SF_467_OK.zip");
+            List<string> res = CreerListeEtudiantsAPartirDuCsv(@"C:\Users\the_e\source\repos\rplp3\Revue_par_les_pairs\RplpAvecBD\ListeEtudiants_cours420W31SF_gr12211.csv");
             return View();
         }
     }
