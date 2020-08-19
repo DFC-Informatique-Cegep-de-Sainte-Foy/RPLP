@@ -242,18 +242,22 @@ namespace RplpAvecBD.Controllers
         {
             List<string> listeEtudiant = new List<string>();
 
-            var task = p_client.GetAsync("https://api.codepost.io/courses/" + p_idCours + "/roster/");
-            task.Wait();
-            var result = task.Result;
-
-            string chaineInfoSurCoursRoster = result.Content.ReadAsStringAsync().Result;
-            JObject objet = JObject.Parse(chaineInfoSurCoursRoster);
-            IEnumerable<JToken> students = objet.SelectToken("students");
-
-            foreach (JToken etudiant in students)
+            if (p_idCours > 0)
             {
-                listeEtudiant.Add((string)etudiant);
+                var task = p_client.GetAsync("https://api.codepost.io/courses/" + p_idCours + "/roster/");
+                task.Wait();
+                var result = task.Result;
+
+                string chaineInfoSurCoursRoster = result.Content.ReadAsStringAsync().Result;
+                JObject objet = JObject.Parse(chaineInfoSurCoursRoster);
+                IEnumerable<JToken> students = objet.SelectToken("students");
+
+                foreach (JToken etudiant in students)
+                {
+                    listeEtudiant.Add((string)etudiant);
+                }
             }
+
             return listeEtudiant;
         }
 

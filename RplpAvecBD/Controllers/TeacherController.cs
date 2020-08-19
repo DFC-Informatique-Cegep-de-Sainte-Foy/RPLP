@@ -114,7 +114,6 @@ namespace RplpAvecBD.Controllers
                 List<Course> listeCours = CodePostController.ObtenirListeDesCourses(client);
                 ViewBag.listeCours = listeCours;
 
-
                 List<string> listeEtudiant = CodePostController.ObtenirListeEtudiant(p_cours.idCoursChoisi, client);
                 ViewBag.listeEtudiant = listeEtudiant;
             }

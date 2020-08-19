@@ -7,7 +7,29 @@
 
 <div class="text-left">
     <br />
-    <h2>Assignments<strong style="font-size:20px;"> (Travaux)</strong></h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width:340px;"></th>
+                <th style="width:80px;"></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <h2>Assignments<strong style="font-size:20px;"> (Travaux)</strong></h2>
+                </td>
+                <td>
+                    <a asp-controller="Teacher" asp-action="index"><img src="~/img/icon_refresh_19x19_v2.png" title="Refresh" alt="Refresh" /></a>
+                </td>
+                <td>
+                    <a class="text-gris" asp-controller="Teacher" asp-action="AideSelectionnerCours"> Besoin d'aide ?</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    
     <hr />
     @using (Html.BeginForm())
     {
@@ -18,14 +40,18 @@
                         <h6 style="width:270px;">Sélectionner un cours</h6>
                     </th>
                     <th style="width:10px;"></th>
-                    <th>
-                        <a href="#"><img src="~/img/icon_refresh_19x19_v2.png" title="Refresh" alt="Refresh" /></a>
-                    </th>
-                    <th style="width:50px;"></th>
-                    <th>
-                        <a class="text-gris" asp-controller="Teacher" asp-action="AideSelectionnerCours"> Besoin d'aide ?</a>
-                    </th>
-                    <th style="width:30px;"></th>
+                    @if (@listeEtudiant != null && @listeEtudiant.Count > 0)
+                    {
+                        <th>
+                            <h6>Modifier la liste des étudiants</h6>
+                        </th>
+                    }
+                    else if (@listeEtudiant != null && @listeEtudiant.Count == 0)
+                    {
+                        <th>
+                            <h6>Ajouter la liste des étudiants</h6>
+                        </th>
+                    }
                 </tr>
             </thead>
             <tbody>
@@ -38,14 +64,11 @@
                         }
                     </td>
                     <td></td>
-                    <td></td>
-                    <td></td>
-
                     @if (@listeEtudiant != null && @listeEtudiant.Count > 0)
                     {
-                        <td>
-                            <input type="submit" class="btn btn-info" id="btnModifierListeEtudiants" value="Modifier la liste des étudiants" />
-                        </td>
+                <td>
+                    <input type="file" name="fichierCSV" id="btnModifierListeEtudiants" value="Modifier la liste des étudiants" accept=".csv" class="btn btn-light" />
+                </td>
                         <td>&nbsp</td>
                         <td>
                             <input type="submit" class="btn btn-success" id="btnAjouterTravail" value="Ajouter un travail" asp-controller="Teacher" asp-action="AjouterTravail" />
@@ -54,7 +77,7 @@
                     else if (@listeEtudiant != null && @listeEtudiant.Count == 0)
                     {
                         <td>
-                            <input type="submit" class="btn btn-info" id="btnAjouterListeEtudiants" value="Ajouter la liste des étudiants" />
+                            <input type="file" name="fichierCSV" id="btnAjouterListeEtudiants" value="Ajouter la liste des étudiants" accept=".csv" class="btn btn-light" />
                         </td>
                     }
                 </tr>
