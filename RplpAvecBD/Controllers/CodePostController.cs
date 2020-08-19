@@ -21,13 +21,13 @@ namespace RplpAvecBD.Controllers
         private Professeur _professeur; 
         HttpClient _client { get; set; }
 
-        public CodePostController(string p_courriel)
-        {
-            this._professeur = _rplpContext.Professeurs.SingleOrDefault(p => p.courriel == p_courriel);
-            this._client = new HttpClient();
+        //public CodePostController(string p_courriel)
+        //{
+        //    this._professeur = _rplpContext.Professeurs.SingleOrDefault(p => p.courriel == p_courriel);
+        //    this._client = new HttpClient();
 
-            _client.DefaultRequestHeaders.Add("authorization", "Token " + _professeur.apiKey);
-        }
+        //    _client.DefaultRequestHeaders.Add("authorization", "Token " + _professeur.apiKey);
+        //}
 
         /// <summary>
         /// Procédure pour obtenir la liste de tous les Cours
@@ -236,6 +236,25 @@ namespace RplpAvecBD.Controllers
                 listAssignment.Add(RecupererInfoSurAssignment((int)travail, p_client));
             }
             return listAssignment;
+        }
+
+        public static List<string> ObtenirListeEtudiant(int p_idCours, HttpClient p_client)
+        {
+            List<string> listeEtudiant = new List<string>();
+
+            var task = p_client.GetAsync("https://api.codepost.io/courses/" + p_idCours + "/roster/");
+            task.Wait();
+            var result = task.Result;
+
+            string chaineInfoSurCoursRoster = result.Content.ReadAsStringAsync().Result;
+            JObject objet = JObject.Parse(chaineInfoSurCoursRoster);
+            IEnumerable<JToken> students = objet.SelectToken("students");
+
+            foreach (JToken etudiant in students)
+            {
+                listeEtudiant.Add((string)etudiant);
+            }
+            return listeEtudiant;
         }
 
         /// <summary>

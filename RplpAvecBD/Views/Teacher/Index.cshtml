@@ -1,16 +1,15 @@
 ﻿@model RplpAvecBD.Model.Course;
+
 @{
     ViewData["Title"] = "Professeur";
-    @using RplpAvecBD.Model;
-
-
+    List<string> listeEtudiant = ViewBag.listeEtudiant;
 }
 
 <div class="text-left">
     <br />
     <h2>Assignments<strong style="font-size:20px;"> (Travaux)</strong></h2>
     <hr />
-    @using (Html.BeginForm(FormMethod.Get))
+    @using (Html.BeginForm())
     {
         <table>
             <thead>
@@ -33,30 +32,35 @@
                 <tr style="height: 15px;"></tr>
                 <tr>
                     <td>
-                        @*DropDownList*@
-                        @Html.DropDownListFor(m => m.name, new SelectList(@ViewBag.listeCours, "id", "name"), "-- Selectionner un cours --", new {@class = "form-control" })
+                        @using (Html.BeginForm("Teacher", "index", FormMethod.Post))
+                        {
+                            @Html.DropDownListFor(m => m.idCoursChoisi, new SelectList(@ViewBag.listeCours, "id", "name"), "-- Selectionner un cours --", new { @class = "form-control", onchange = "this.form.submit()" })
+                        }
                     </td>
                     <td></td>
                     <td></td>
                     <td></td>
 
-                    @*if (listeEtudiantPresent) { ... }*@
-                    <td>
-                        <input type="submit" class="btn btn-info" id="btnModifierListeEtudiants" value="Modifier la liste des étudiants" />
-                    </td>
-                    <td>&nbsp</td>
-                    <td>
-                        <input type="submit" class="btn btn-success" id="btnAjouterTravail" value="Ajouter un travail" asp-controller="Teacher" asp-action="AjouterTravail" />
-                    </td>
-                    @*else { ... }
+                    @if (@listeEtudiant != null && @listeEtudiant.Count > 0)
+                    {
+                        <td>
+                            <input type="submit" class="btn btn-info" id="btnModifierListeEtudiants" value="Modifier la liste des étudiants" />
+                        </td>
+                        <td>&nbsp</td>
+                        <td>
+                            <input type="submit" class="btn btn-success" id="btnAjouterTravail" value="Ajouter un travail" asp-controller="Teacher" asp-action="AjouterTravail" />
+                        </td>
+                    }
+                    else if (@listeEtudiant != null && @listeEtudiant.Count == 0)
+                    {
                         <td>
                             <input type="submit" class="btn btn-info" id="btnAjouterListeEtudiants" value="Ajouter la liste des étudiants" />
-                        </td>*@
-
+                        </td>
+                    }
                 </tr>
                 <tr>
                     <td>
-                        @*<td>@Html.ValidationMessageFor(m => m.idProfesseur, "", new { @class = "text-danger" })</td>*@
+                        @Html.ValidationMessageFor(m => m.idCoursChoisi, "", new { @class = "text-danger" })
                     </td>
                 </tr>
             </tbody>

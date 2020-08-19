@@ -22,6 +22,8 @@ namespace RplpAvecBD.Controllers
     {
         private readonly RplpContext _rplpContext;
 
+        private Professeur _professeurSession;
+
         //variable pour le repertoire temp de travail ou on nettoye et efface les fichiers indesirables
         DirectoryInfo destination;
 
@@ -64,24 +66,59 @@ namespace RplpAvecBD.Controllers
             }
 
             // Récuperér le professeur dans la BD
-            Professeur professeurExistente = _rplpContext.Professeurs.SingleOrDefault(p => p.courriel == User.Identity.Name);
+            this._professeurSession = _rplpContext.Professeurs.SingleOrDefault(p => p.courriel == User.Identity.Name);
 
-            if (professeurExistente.apiKey == null || professeurExistente.apiKey == "")
+            if (this._professeurSession.apiKey == null || this._professeurSession.apiKey == "")
             {
                 // Rediriger vers la page de paramètres pour qu'il puisse ajouter son API Key
                 return RedirectToAction("Parametres", "Teacher");
             }
+
             using (HttpClient client = new HttpClient())
             {
                 client.BaseAddress = new Uri("https://api.codepost.io");
-                client.DefaultRequestHeaders.Add("authorization", "Token " + professeurExistente.apiKey);
+                client.DefaultRequestHeaders.Add("authorization", "Token " + this._professeurSession.apiKey);
                 
                 //recuperer  les Cours dans la CodePost
                 List<Course> listeCours = CodePostController.ObtenirListeDesCourses(client);
                 ViewBag.listeCours = listeCours;
             }
-            return View();
 
+            return View();
+        }
+
+        //[Authorize("estProfesseur")]
+        [HttpPost]
+        public IActionResult Index(Course p_cours)
+        {
+            if (p_cours.idCoursChoisi == 0 || string.IsNullOrEmpty(p_cours.idCoursChoisi.ToString()))
+            {
+                ModelState.AddModelError("idCoursChoisi", "Vous devez sélectionner un Cours !");
+            }
+
+            //if (ModelState.IsValid)
+            //{
+            //    return RedirectToAction("ResultatUnclaim", new { idProfesseur = p_unclaim.idProfesseur, codeEtudiant = p_unclaim.codeEtudiant });
+            //}
+
+            using (HttpClient client = new HttpClient())
+            {
+                // Récuperér le professeur dans la BD
+                this._professeurSession = _rplpContext.Professeurs.SingleOrDefault(p => p.courriel == User.Identity.Name);
+
+                client.BaseAddress = new Uri("https://api.codepost.io");
+                client.DefaultRequestHeaders.Add("authorization", "Token " + this._professeurSession.apiKey);
+
+                //recuperer  les Cours dans la CodePost
+                List<Course> listeCours = CodePostController.ObtenirListeDesCourses(client);
+                ViewBag.listeCours = listeCours;
+
+
+                List<string> listeEtudiant = CodePostController.ObtenirListeEtudiant(p_cours.idCoursChoisi, client);
+                ViewBag.listeEtudiant = listeEtudiant;
+            }
+
+            return View();
         }
 
         //[Authorize("estProfesseur")]
@@ -152,27 +189,27 @@ namespace RplpAvecBD.Controllers
         [HttpPost]
         public IActionResult AjouterTravail(Microsoft.AspNetCore.Http.IFormFile file)
         {
-            // obtenir le nom du fichier
-            string fileName = System.IO.Path.GetFileName(file.FileName);
+            //// obtenir le nom du fichier
+            //string fileName = System.IO.Path.GetFileName(file.FileName);
 
-            // si le fichier existe deja, on efface celui qui etait present 
-            if (System.IO.File.Exists(fileName))
-            {
-                System.IO.File.Delete(fileName);
-            }
+            //// si le fichier existe deja, on efface celui qui etait present 
+            //if (System.IO.File.Exists(fileName))
+            //{
+            //    System.IO.File.Delete(fileName);
+            //}
 
-            // Creation du nouveau fichier local et copie le contenu du fichier dedans
-            using (FileStream localFile = System.IO.File.OpenWrite(fileName))
-            using (Stream uploadedFile = file.OpenReadStream())
-            {
-                uploadedFile.CopyTo(localFile);
-            }
-            //confirmation de succes
-            ViewBag.Message = "Téléchargement effectué avec succès";
+            //// Creation du nouveau fichier local et copie le contenu du fichier dedans
+            //using (FileStream localFile = System.IO.File.OpenWrite(fileName))
+            //using (Stream uploadedFile = file.OpenReadStream())
+            //{
+            //    uploadedFile.CopyTo(localFile);
+            //}
+            ////confirmation de succes
+            //ViewBag.Message = "Téléchargement effectué avec succès";
 
 
-            //decompresser le fichier recu (fichier source, destination)
-            Decompresser(fileName, ".\\Fichiers");
+            ////decompresser le fichier recu (fichier source, destination)
+            //Decompresser(fileName, ".\\Fichiers");
 
             return View();
         }
