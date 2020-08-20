@@ -1,4 +1,5 @@
-﻿
+﻿@model RplpAvecBD.Model.Assignment
+
 @{
     ViewData["Title"] = "Ajouter un travail";
     RplpAvecBD.Model.Course coursChoisi = ViewBag.coursChoisi;
@@ -14,13 +15,13 @@
                 <thead>
                     <tr>
                         <th>
-                            <h6 style="width:270px;">Nom du cours</h6>
+                            <h6 style="width:220px;">Nom du cours</h6>
                         </th>
                         <th>
-                            <h6 style="width:200px;">Nom du travail</h6>
+                            <h6 style="width:220px;">Nom du travail</h6>
                         </th>
                         <th style="width:30px;"></th>
-                        <th style="width:60px;">
+                        <th style="width:100px;">
                             <h6>Points</h6>
                         </th>
                         <th style="width:30px;"></th>
@@ -35,27 +36,28 @@
                             @coursChoisi.name
                         </td>
                         <td>
-                            @Html.TextBox("Nom du travail", null, new { @class = "form-control" })
+                            @Html.TextBoxFor(model => model.name, new { @class = "form-control" })
                         </td>
                         <td></td>
                         <td>
-                            @Html.TextBox("Points", null, new { @class = "form-control" })
+                            @Html.TextBoxFor(model => model.points, new { @class = "form-control" })
                         </td>
                         <td></td>
                         <td>
                             <input type="file" name="fichier" value="Upload fichier ZIP" accept=".zip" class="btn btn-light" />
                         </td>
                         <td>
-                            <input type="submit" class="btn btn-success" id="btnEnregistrerTravail" value="Enregistrer" asp-controller="Teacher" asp-action="ResultatAjoutTravail" />
+                            <input type="submit" class="btn btn-success" id="btnEnregistrerTravail" value="Enregistrer" asp-controller="Teacher" asp-action="AjouterTravail" />
                         </td>
                     </tr>
                     <tr>
                         <td></td>
                         <td>
-                            @*<td>@Html.ValidationMessageFor(m => m.idProfesseur, "", new { @class = "text-danger" })</td>*@
+                            @Html.ValidationMessageFor(m => m.name, "", new { @class = "text-danger" })
                         </td>
+                        <td></td>
                         <td>
-                            @*<td>@Html.ValidationMessageFor(m => m.idProfesseur, "", new { @class = "text-danger" })</td>*@
+                            @Html.ValidationMessageFor(m => m.points, "", new { @class = "text-danger" })
                         </td>
                     </tr>
                 </tbody>

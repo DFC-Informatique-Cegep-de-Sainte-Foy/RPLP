@@ -198,7 +198,6 @@ namespace RplpAvecBD.Controllers
                 ModelState.AddModelError("apiKey", "Le champs API Key ne doit pas être vide !");
             }
 
-
             if (string.IsNullOrEmpty(p_professeurModel.nom))
             {
                 ModelState.AddModelError("nom", "Le champs Nom ne doit pas être vide !");
@@ -232,12 +231,7 @@ namespace RplpAvecBD.Controllers
             return View();
         }
 
-        //[Authorize("estProfesseur")]
-        public IActionResult AjouterTravail()
-        {
-            return View();
-        }
-
+       
         //[Authorize("estProfesseur")]
         public IActionResult ErreurListeEtudiantVide()
         {
@@ -246,7 +240,7 @@ namespace RplpAvecBD.Controllers
 
         //[Authorize("estProfesseur")]
         [HttpPost]
-        public async Task<IActionResult> AjouterTravail(IFormFile fichierCSV)
+        public async Task<IActionResult> VerifierListeEtudiant(IFormFile fichierCSV)
         {
             using (HttpClient client = new HttpClient())
             {
@@ -267,21 +261,27 @@ namespace RplpAvecBD.Controllers
 
                 if (listeEtudiants.Count == 0 && fichierCSV == null)
                 {
-                    ModelState.AddModelError("fichierCSV", "Vous devez télécharger la liste d'étudiant inscrits dans le cours !");
-                    
+                    //ModelState.AddModelError("fichierCSV", "Vous devez télécharger la liste d'étudiant inscrits dans le cours !");
+
                     // Ajouter l'objet du cours choisi dans la ViewBag
                     ViewBag.coursChoisi = coursChoisi;
 
                     return View("ErreurListeEtudiantVide", "Teacher");
                 }
 
+                if (listeEtudiants.Count > 0 && fichierCSV == null)
+                {
+                    return View("AjouterTravail", new Assignment());
+                }
+
                 if (fichierCSV != null)
                 {
                     CodePostController.AjouterEtudiantsDansCours(coursChoisi.id, listeEtudiants, client, fichierCSV, professeurSession);
-                }
 
-                
+                    return View("AjouterTravail", new Assignment());
+                }
             }
+
 
             //// obtenir le nom du fichier
             //string fileName = System.IO.Path.GetFileName(file.FileName);
@@ -305,13 +305,54 @@ namespace RplpAvecBD.Controllers
             ////decompresser le fichier recu (fichier source, destination)
             //Decompresser(fileName, ".\\Fichiers");
 
+
             return View();
         }
 
 
         //[Authorize("estProfesseur")]
-        public IActionResult ResultatAjoutTravail()
+        public IActionResult AjouterTravail()
         {
+            using (HttpClient client = new HttpClient())
+            {
+                // Récuperér l'objet du cours choisi dans la session
+                Course coursChoisi = JsonConvert.DeserializeObject<Course>(HttpContext.Session.GetString("coursChoisi"));
+
+                // Ajouter l'objet du cours choisi dans la ViewBag
+                ViewBag.coursChoisi = coursChoisi;
+            }
+
+            return View();
+        }
+
+
+        //[Authorize("estProfesseur")]
+        [HttpPost]
+        public IActionResult AjouterTravail(Assignment p_assignment)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                // Récuperér l'objet du cours choisi dans la session
+                Course coursChoisi = JsonConvert.DeserializeObject<Course>(HttpContext.Session.GetString("coursChoisi"));
+
+                // Ajouter l'objet du cours choisi dans la ViewBag
+                ViewBag.coursChoisi = coursChoisi;
+            }
+
+            if (ModelState.IsValid)
+            {
+                // Ajouter l'objet du cours choisi dans la ViewBag
+                ViewBag.nomTravail = p_assignment.name;
+
+                return View("ResultatAjoutTravail", "Teacher");
+            }
+
+            return View();
+        }
+
+        //[Authorize("estProfesseur")]
+        public IActionResult ResultatAjoutTravail()
+        {   
             return View();
         }
 
