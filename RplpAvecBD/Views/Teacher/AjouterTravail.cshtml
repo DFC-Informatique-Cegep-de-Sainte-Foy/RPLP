@@ -1,68 +1,72 @@
 ﻿
 @{
     ViewData["Title"] = "Ajouter un travail";
+    RplpAvecBD.Model.Course coursChoisi = ViewBag.coursChoisi;
 }
 
-<div class="text-left">
-    <br />
-    <h2>Ajouter un travail</h2>
-    <hr />
-    @using (Html.BeginForm())
-    {
-        <table>
-            <thead>
-                <tr>
-                    <th>
-                        <h6 style="width:270px;">Nom du cours</h6>
-                    </th>
-                    <th>
-                        <h6 style="width:200px;">Nom du travail</h6>
-                    </th>
-                    <th style="width:30px;"></th>
-                    <th style="width:60px;">
-                        <h6>Points</h6>
-                    </th>
-                    <th style="width:30px;"></th>
-                    <th></th>
-                    <th style="width:30px;"></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr style="height: 15px;"></tr>
-                <tr>
-                    <td>
-                        @Html.Label("Nom du cours")
-                    </td>
-                    <td>
-                        @Html.TextBox("Nom du travail", null, new { @class = "form-control" })
-                    </td>
-                    <td></td>
-                    <td>
-                        @Html.TextBox("Points", null, new { @class = "form-control" })
-                    </td>
-                    <td></td>
-                    <td>
-                        <input type="file" name="fichier" value="Upload fichier ZIP" accept=".zip" class="btn btn-light"/>
-                    </td>
-                    <td>
-                        <input type="submit" class="btn btn-success" id="btnEnregistrerTravail" value="Enregistrer" asp-controller="Teacher" asp-action="ResultatAjoutTravail" />
-                    </td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>
-                        @*<td>@Html.ValidationMessageFor(m => m.idProfesseur, "", new { @class = "text-danger" })</td>*@
-                    </td>
-                    <td>
-                        @*<td>@Html.ValidationMessageFor(m => m.idProfesseur, "", new { @class = "text-danger" })</td>*@
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+    <div class="text-left">
+        <br />
+        <h2>Ajouter un travail</h2>
         <hr />
-    }
+        @using (Html.BeginForm())
+        {
+            <table>
+                <thead>
+                    <tr>
+                        <th>
+                            <h6 style="width:270px;">Nom du cours</h6>
+                        </th>
+                        <th>
+                            <h6 style="width:200px;">Nom du travail</h6>
+                        </th>
+                        <th style="width:30px;"></th>
+                        <th style="width:60px;">
+                            <h6>Points</h6>
+                        </th>
+                        <th style="width:30px;"></th>
+                        <th></th>
+                        <th style="width:30px;"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="height: 15px;"></tr>
+                    <tr>
+                        <td>
+                            @coursChoisi.name
+                        </td>
+                        <td>
+                            @Html.TextBox("Nom du travail", null, new { @class = "form-control" })
+                        </td>
+                        <td></td>
+                        <td>
+                            @Html.TextBox("Points", null, new { @class = "form-control" })
+                        </td>
+                        <td></td>
+                        <td>
+                            <input type="file" name="fichier" value="Upload fichier ZIP" accept=".zip" class="btn btn-light" />
+                        </td>
+                        <td>
+                            <input type="submit" class="btn btn-success" id="btnEnregistrerTravail" value="Enregistrer" asp-controller="Teacher" asp-action="ResultatAjoutTravail" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            @*<td>@Html.ValidationMessageFor(m => m.idProfesseur, "", new { @class = "text-danger" })</td>*@
+                        </td>
+                        <td>
+                            @*<td>@Html.ValidationMessageFor(m => m.idProfesseur, "", new { @class = "text-danger" })</td>*@
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        }
 
-</div>
+        <hr />
+        <div>
+            <input type="button" class="btn btn-primary" id="btnReturn" value="Retourner" onclick="location.href='@Url.Action("Index", "Teacher")'" />
+        </div>
+    </div>
 
 @if (ViewBag.Message != null)
 {

@@ -145,7 +145,16 @@ namespace RplpAvecBD.Controllers
                     ViewBag.listeEtudiant = listeEtudiant;
 
                     // Récupérer toutes les infos du cours choisi
-                    ViewBag.coursChoisi = CodePostController.RecupererInfoDeCours((int)p_cours.idCoursChoisi, client);
+                    Course coursChoisi = CodePostController.RecupererInfoDeCours((int)p_cours.idCoursChoisi, client);
+
+                    // Activer les 3 boutons dans les paramètres du cours au besoin
+                    CodePostController.ActiverLesParametresDeCours(coursChoisi, client);
+
+                    // Ajouter l'objet du cours choisi dans la session
+                    HttpContext.Session.SetString("coursChoisi", JsonConvert.SerializeObject(coursChoisi));
+
+                    // Ajouter l'objet du cours choisi dans la ViewBag
+                    ViewBag.coursChoisi = coursChoisi;
 
                     // Récupérer la liste d'Assignments (travaux) du cours choisi
                     List<Assignment> listeAssignment = CodePostController.ObtenirListeAssignmentsDansUnCours((int)p_cours.idCoursChoisi, client);
@@ -155,10 +164,6 @@ namespace RplpAvecBD.Controllers
 
                     // Ajouter la liste d'Assignments dans la ViewBag
                     ViewBag.listeAssignment = listeAssignment;
-
-                    // Activer les 3 boutons dans les paramètres du cours au besoin
-                    Course coursChoisi = CodePostController.RecupererInfoDeCours((int)p_cours.idCoursChoisi, client);
-                    CodePostController.ActiverLesParametresDeCours(coursChoisi, client);
 
                     return View();
                 }
@@ -251,21 +256,28 @@ namespace RplpAvecBD.Controllers
                 client.BaseAddress = new Uri("https://api.codepost.io");
                 client.DefaultRequestHeaders.Add("authorization", "Token " + professeurSession.apiKey);
 
-                // Récupérer l'id du cours choisi dans la session
-                int idCoursChoisi = JsonConvert.DeserializeObject<int>(HttpContext.Session.GetString("IdCoursChoisiSession"));
+                // Récuperér l'objet du cours choisi dans la session
+                Course coursChoisi = JsonConvert.DeserializeObject<Course>(HttpContext.Session.GetString("coursChoisi"));
+
+                // Ajouter l'objet du cours choisi dans la ViewBag
+                ViewBag.coursChoisi = coursChoisi;
 
                 // Récupérer la liste des étudiants dans la session
-                List <string> listeEtudiants = JsonConvert.DeserializeObject<List<string>>(HttpContext.Session.GetString("ListeEtudiantsSession"));
+                List<string> listeEtudiants = JsonConvert.DeserializeObject<List<string>>(HttpContext.Session.GetString("ListeEtudiantsSession"));
 
                 if (listeEtudiants.Count == 0 && fichierCSV == null)
                 {
                     ModelState.AddModelError("fichierCSV", "Vous devez télécharger la liste d'étudiant inscrits dans le cours !");
-                    return RedirectToAction("ErreurListeEtudiantVide", "Teacher");
+                    
+                    // Ajouter l'objet du cours choisi dans la ViewBag
+                    ViewBag.coursChoisi = coursChoisi;
+
+                    return View("ErreurListeEtudiantVide", "Teacher");
                 }
 
                 if (fichierCSV != null)
                 {
-                    CodePostController.AjouterEtudiantsDansCours(idCoursChoisi, listeEtudiants, client, fichierCSV, professeurSession);
+                    CodePostController.AjouterEtudiantsDansCours(coursChoisi.id, listeEtudiants, client, fichierCSV, professeurSession);
                 }
 
                 

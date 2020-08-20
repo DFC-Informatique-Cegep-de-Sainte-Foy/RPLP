@@ -1,17 +1,18 @@
 ﻿
 @{
     ViewData["Title"] = "Erreur - Liste de étudiants vide";
+    RplpAvecBD.Model.Course coursChoisi = ViewBag.coursChoisi;
 }
 
 <div class="text-left">
     <br />
     <h2 style="color:red">Échec !</h2>
     <br />
-    <h6>Vous devez télécharger la liste d'étudiant inscrits dans le cours !</h6>
+    <h6>Vous devez télécharger la liste d'étudiant inscrits dans le cours <strong>@coursChoisi.name</strong> !</h6>
     <br />
 </div>
 
 <hr />
 <div>
-    <input type="button" class="btn btn-primary" id="btnReturn" value="Retour" onclick="location.href='@Url.Action("Index", "Home")'" />
+    <input type="button" class="btn btn-primary" id="btnReturn" value="Retourner" onclick="location.href='@Url.Action("Index", "Teacher")'" />
 </div>

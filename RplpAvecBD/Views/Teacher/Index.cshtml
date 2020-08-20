@@ -6,7 +6,7 @@
     List<string> listeEtudiant = ViewBag.listeEtudiant;
     List<RplpAvecBD.Model.Assignment> listeAssignment = ViewBag.listeAssignment;
     int idCoursChoisi = ViewBag.idCoursChoisi;
-    RplpAvecBD.Model.Course coursChoisir = ViewBag.CoursChoisi;
+    RplpAvecBD.Model.Course coursChoisi = ViewBag.coursChoisi;
 
 }
 
@@ -113,9 +113,9 @@
 
         <br />
         <br />
-        @if (@coursChoisir != null)
+        @if (coursChoisi != null)
         {
-            <h6>Travaux existentes dans le cours <strong>@coursChoisir.name</strong></h6>
+            <h6>Travaux existentes dans le cours <strong>@coursChoisi.name</strong></h6>
             <br />
             <table class="table">
                 <thead>
