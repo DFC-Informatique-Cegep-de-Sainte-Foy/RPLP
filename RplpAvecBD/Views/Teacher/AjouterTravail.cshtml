@@ -24,7 +24,7 @@
                         <th style="width:200px;">
                             <h6>Nom du cours</h6>
                         </th>
-                        <th style="width:220px;">
+                        <th style="width:360px;">
                             <h6>Nom du travail</h6>
                         </th>
                         <th style="width:30px;"></th>
@@ -46,7 +46,7 @@
                         </td>
                         <td></td>
                         <td>
-                            @Html.TextBoxFor(model => model.points, new { @class = "form-control", style = "width:80px;" })
+                            @Html.TextBoxFor(model => model.points, new { @class = "form-control", style = "width:100px;" })
                         </td>
                         <td></td>
                         <td>
@@ -57,6 +57,7 @@
                         <td></td>
                         <td>
                             @Html.ValidationMessageFor(m => m.name, "", new { @class = "text-danger" })
+                            @Html.ValidationMessage("AssignmentDejaCree", "", new { @class = "text-danger" })
                         </td>
                         <td></td>
                         <td>

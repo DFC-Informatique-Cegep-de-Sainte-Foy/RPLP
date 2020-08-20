@@ -6,7 +6,7 @@ namespace RplpAvecBD.Model
     {
         //les proprietes
         //public int id { get; set; } //id d'assignment
-        [Required(ErrorMessage = "Obligatoire !")]
+        [Required(ErrorMessage = "Le nom ne doit pas être vide !")]
         [Display(Name = "Nom du travail")]
         public string name { get; set; } // le nom d'assignment (travail)
 

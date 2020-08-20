@@ -190,7 +190,7 @@ namespace RplpAvecBD.Controllers
         /// <param name="p_client">HttpClient qui a été créé avec l'APIKey du client (le prof)</param>
         public static void CreerAssignment(string p_name, int p_points, int p_idCourse, HttpClient p_client)
         {
-            bool estCree = AssignmentEstDejaCreer(p_name, p_idCourse, p_client);
+            bool estCree = AssignmentEstDejaCree(p_name, p_idCourse, p_client);
 
             if (!estCree)
             {
@@ -216,17 +216,17 @@ namespace RplpAvecBD.Controllers
         /// <param name="p_name">le nom de travail pour cree</param>
         /// <param name="p_client">HttpClient qui etait cree pour API CodePost avec le KeyApi de client(de prof)</param>
         /// <returns>true si le travail est cree ou false si non</returns>
-        public static bool AssignmentEstDejaCreer(string p_name, int p_idCours, HttpClient p_client)
+        public static bool AssignmentEstDejaCree(string p_name, int p_idCours, HttpClient p_client)
         {
-            bool estCreer = false;
+            bool estCree = false;
             int i = 0;
             List<Assignment> listAssignments = ObtenirListeAssignmentsDansUnCours(p_idCours, p_client);
 
-            while (i < listAssignments.Count && !estCreer)
+            while (i < listAssignments.Count && !estCree)
             {
                 if (listAssignments[i].name == p_name)
                 {
-                    estCreer = true;
+                    estCree = true;
                     break;
                 }
                 else
@@ -234,7 +234,7 @@ namespace RplpAvecBD.Controllers
                     i++;
                 }
             }
-            return estCreer;
+            return estCree;
         }
 
         /// <summary>
@@ -251,8 +251,8 @@ namespace RplpAvecBD.Controllers
             task.Wait();
             var result = task.Result;
 
-            string shaineInfoSurCours = result.Content.ReadAsStringAsync().Result;
-            JObject objet = JObject.Parse(shaineInfoSurCours);
+            string chaineInfoSurCours = result.Content.ReadAsStringAsync().Result;
+            JObject objet = JObject.Parse(chaineInfoSurCours);
             IEnumerable<JToken> assignments = objet.SelectToken("assignments");
 
             foreach (JToken travail in assignments)

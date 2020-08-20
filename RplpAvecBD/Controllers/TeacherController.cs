@@ -391,31 +391,48 @@ namespace RplpAvecBD.Controllers
         {
             using (HttpClient client = new HttpClient())
             {
+                // Récuperér le professeur dans la session
+                Professeur professeurSession = JsonConvert.DeserializeObject<Professeur>(HttpContext.Session.GetString("ProfesseurSession"));
+
+                client.BaseAddress = new Uri("https://api.codepost.io");
+                client.DefaultRequestHeaders.Add("authorization", "Token " + professeurSession.apiKey);
+
                 // Récuperér l'objet du cours choisi dans la session
                 Course coursChoisi = JsonConvert.DeserializeObject<Course>(HttpContext.Session.GetString("coursChoisi"));
 
                 // Ajouter l'objet du cours choisi dans la ViewBag
                 ViewBag.coursChoisi = coursChoisi;
-            }
 
-            if (ModelState.IsValid)
-            {
-                // Ajouter l'objet du cours choisi dans la ViewBag
-                ViewBag.nomTravail = p_assignment.name;
+                if (ModelState.IsValid)
+                {
+                    
+                    if (CodePostController.AssignmentEstDejaCree(p_assignment.name, coursChoisi.id, client))
+                    {
+                        ModelState.AddModelError("AssignmentDejaCree", "Le travail '" + p_assignment.name + "' existe déjà sur Codepost !");
 
-                ViewBag.afficherUpLoadFichierZip = true;
+                        ViewBag.afficherUpLoadFichierZip = false;
+
+                        ViewBag.erreurFichierZIPIntrouvable = false;
+
+                        return View();
+                    }
+                    
+                    //// Ajouter l'objet du cours choisi dans la ViewBag
+                    //ViewBag.nomTravail = p_assignment.name;
+
+                    ViewBag.afficherUpLoadFichierZip = true;
+
+                    ViewBag.erreurFichierZIPIntrouvable = false;
+
+                    return View();
+
+                    //return View("ResultatAjoutTravail", "Teacher");
+                }
+
+                ViewBag.afficherUpLoadFichierZip = false;
 
                 ViewBag.erreurFichierZIPIntrouvable = false;
-
-                return View();
-
-                //return View("ResultatAjoutTravail", "Teacher");
             }
-
-            ViewBag.afficherUpLoadFichierZip = false;
-
-            ViewBag.erreurFichierZIPIntrouvable = false;
-
             return View();
         }
 
