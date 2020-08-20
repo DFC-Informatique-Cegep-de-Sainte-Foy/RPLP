@@ -194,7 +194,7 @@ namespace RplpAvecBD.Controllers
 
             if (!estCree)
             {
-                Assignment assignment = new Assignment(p_name, p_points, p_idCourse, true, true);
+                Assignment assignment = new Assignment(p_name, p_points, p_idCourse, true, true, true, true);
                 var json = JsonConvert.SerializeObject(assignment);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
@@ -362,8 +362,10 @@ namespace RplpAvecBD.Controllers
             int course = (int)objet.SelectToken("course");
             bool isReleased = (bool)objet.SelectToken("isReleased");
             bool isVisible = (bool)objet.SelectToken("isVisible");
+            bool liveFeedbackMode = (bool)objet.SelectToken("liveFeedbackMode");
+            bool hideGrades = (bool)objet.SelectToken("hideGrades");
 
-            Assignment assignment = new Assignment(name, points, course, isReleased, isVisible);
+            Assignment assignment = new Assignment(name, points, course, isReleased, isVisible, liveFeedbackMode, hideGrades);
             return assignment;
         }
 
