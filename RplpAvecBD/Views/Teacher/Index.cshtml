@@ -121,9 +121,9 @@
         <br />
         @if (coursChoisi != null)
         {
-            <h6 style="text-align:center;color:darkslategray">Travaux existants dans le cours <strong>@coursChoisi.name</strong></h6>
+            <h6 style="color:darkslategray">Travaux existants dans le cours <strong>@coursChoisi.name</strong></h6>
             <br />
-            <table class="table">
+            <table class="table text-center">
                 <thead class="thead-light">
                     <tr>
                         <th>
@@ -155,7 +155,7 @@
                                 @Html.DisplayFor(modelItem => kvp.Value.Item3)
                             </td>
                             <td>
-                                <a href='@("https://codepost.io/admin/"+coursChoisi.name+"/"+coursChoisi.period+"/assignments/overview")'><img src="~/img/icon_rederection.png" title="Lien vers CodePost" alt="Lien vers CodePost"/></a>
+                                <a href='@("https://codepost.io/admin/"+coursChoisi.name+"/"+coursChoisi.period+"/assignments/overview")' target="_blank"><img src="~/img/icon_rederection.png" title="Lien vers CodePost" alt="Lien vers CodePost"/></a>
                             </td>
                         </tr>
                     }
