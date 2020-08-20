@@ -309,6 +309,40 @@ namespace RplpAvecBD.Controllers
         }
 
 
+        /// <summary>
+        /// Le methode pour obtenir les nombers travaux total et manquants dans tous les assignments dans cours donnee 
+        /// </summary>
+        /// <param name="p_cours">l'id de cours donnee</param>
+        /// <param name="p_client">HttpClient qui etait cree pour API CodePost avec le KeyApi de client(de prof)</param>
+        /// <returns>Dictionary id Assignment et les nombers des submissions</returns>
+        public Dictionary<int, (string, int, int)> ObtenirDictionaryTravauxTotalEtManquantsDansCours(int p_cours, HttpClient p_client)
+        {
+            Dictionary<int, (string, int, int)> infoAReturner = new Dictionary<int, (string, int, int)>();
+            List<int> listIdAssignments = new List<int>();
+
+            var task = p_client.GetAsync("https://api.codepost.io/courses/" + p_cours + "/");
+            task.Wait();
+            var result = task.Result;
+
+            string shaineInfoSurCours = result.Content.ReadAsStringAsync().Result;
+            JObject objet = JObject.Parse(shaineInfoSurCours);
+            IEnumerable<JToken> assignments = objet.SelectToken("assignments");
+
+            foreach (JToken travail in assignments)
+            {
+                listIdAssignments.Add((int)travail);
+            }
+
+            foreach (int id in listIdAssignments)
+            {
+                (int subTotal, int subManquantes) = SubmissionsTotalEtManquantsDansAssignment(id, p_client);
+                string name = RecupererInfoSurAssignment(id, p_client).name;
+                infoAReturner.Add(id, (name, subTotal, subManquantes));
+            }
+            return infoAReturner;
+        }
+
+
 
         /// <summary>
         /// Procédure pour récupérer les informations sur un Assignment
