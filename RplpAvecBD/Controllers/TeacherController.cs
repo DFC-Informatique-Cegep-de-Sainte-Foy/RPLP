@@ -263,9 +263,9 @@ namespace RplpAvecBD.Controllers
                     return RedirectToAction("ErreurListeEtudiantVide", "Teacher");
                 }
 
-                if (listeEtudiants.Count > 0 && fichierCSV != null)
+                if (fichierCSV != null)
                 {
-                    CodePostController.AjouterEtudiantsDansCours(idCoursChoisi, listeEtudiants, client, fichierCSV);
+                    CodePostController.AjouterEtudiantsDansCours(idCoursChoisi, listeEtudiants, client, fichierCSV, professeurSession);
                 }
 
                 

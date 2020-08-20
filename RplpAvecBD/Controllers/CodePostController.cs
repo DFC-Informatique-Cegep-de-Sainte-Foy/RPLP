@@ -7,6 +7,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -153,7 +154,7 @@ namespace RplpAvecBD.Controllers
         /// <param name="p_idCours">Id de Cours dans CodePost</param>
         /// <param name="p_listeEtudiants">Liste de tous les étudiants qui suivent le Cours</param>
         /// <param name="p_client">HttpClient qui a été créé avec l'APIKey du client (le prof)</param>
-        public static void AjouterEtudiantsDansCours(int p_idCours, List<string> p_listeEtudiants, HttpClient p_client, IFormFile p_fichierCSV)
+        public static void AjouterEtudiantsDansCours(int p_idCours, List<string> p_listeEtudiants, HttpClient p_client, IFormFile p_fichierCSV, Professeur p_professeur)
         {
             CourseRoster courseRoster = new CourseRoster(p_idCours, p_listeEtudiants);
 
@@ -172,6 +173,7 @@ namespace RplpAvecBD.Controllers
 
                 courseRoster.students = NouvelleListeEtudiants;
                 courseRoster.graders = NouvelleListeEtudiants;
+                courseRoster.graders.Add(p_professeur.courriel);
             }
 
             var json = JsonConvert.SerializeObject(courseRoster);
