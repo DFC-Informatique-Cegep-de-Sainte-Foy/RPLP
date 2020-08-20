@@ -233,7 +233,11 @@ namespace RplpAvecBD.Controllers
             return View();
         }
 
-        
+        //[Authorize("estProfesseur")]
+        public IActionResult ErreurListeEtudiantVide()
+        {
+            return View();
+        }
 
         //[Authorize("estProfesseur")]
         [HttpPost]
@@ -253,16 +257,19 @@ namespace RplpAvecBD.Controllers
                 // Récupérer la liste des étudiants dans la session
                 List <string> listeEtudiants = JsonConvert.DeserializeObject<List<string>>(HttpContext.Session.GetString("ListeEtudiantsSession"));
 
+                if (listeEtudiants.Count == 0 && fichierCSV == null)
+                {
+                    ModelState.AddModelError("fichierCSV", "Vous devez télécharger la liste d'étudiant inscrits dans le cours !");
+                    return RedirectToAction("ErreurListeEtudiantVide", "Teacher");
+                }
 
-                CodePostController.AjouterEtudiantsDansCours(idCoursChoisi, listeEtudiants, client, fichierCSV);
+                if (listeEtudiants.Count > 0 && fichierCSV != null)
+                {
+                    CodePostController.AjouterEtudiantsDansCours(idCoursChoisi, listeEtudiants, client, fichierCSV);
+                }
 
-
+                
             }
-
-
-
-
-
 
             //// obtenir le nom du fichier
             //string fileName = System.IO.Path.GetFileName(file.FileName);

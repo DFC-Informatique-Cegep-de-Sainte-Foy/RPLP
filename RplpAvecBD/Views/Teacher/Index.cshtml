@@ -38,7 +38,7 @@
         <div class="row">
             @using (Html.BeginForm())
             {
-                <table>
+                <table style="margin-left:15px;">
                     <thead>
                         <tr>
                             <th>
@@ -97,11 +97,11 @@
                             else if (@idCoursChoisi != 0 && @listeEtudiant != null && @listeEtudiant.Count == 0)
                             {
                                 <td>
-                                    <input type="file" name="fichierCSV" id="btnAjouterListeEtudiants" value="Ajouter la liste des étudiants" accept=".csv" class="btn btn-light" asp-controller="CodePost" asp-action=""/>
+                                    <input type="file" name="fichierCSV" id="btnAjouterListeEtudiants" value="Ajouter la liste des étudiants" accept=".csv" class="btn btn-warning" asp-controller="CodePost" asp-action=""/>
                                 </td>
                                 <td style="width:30px;"></td>
                                 <td>
-                                    <input type="submit" class="btn btn-secondary" id="btnAjouterListeEtudiant" value="Ajouter la liste d'étudiant" />
+                                    <input type="submit" class="btn btn-success" id="btnAjouterTravail" value="Ajouter un travail" />
                                 </td>
                             }
                         </tr>
