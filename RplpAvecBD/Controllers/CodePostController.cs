@@ -312,7 +312,7 @@ namespace RplpAvecBD.Controllers
         /// <param name="p_cours">l'id de cours donnee</param>
         /// <param name="p_client">HttpClient qui etait cree pour API CodePost avec le KeyApi de client(de prof)</param>
         /// <returns>Dictionary id Assignment et les nombers des submissions</returns>
-        public Dictionary<int, (string, int, int)> ObtenirDictionaryTravauxTotalEtManquantsDansCours(int p_cours, HttpClient p_client)
+        public static Dictionary<int, (string, int, int)> ObtenirDictionaryTravauxTotalEtManquantsDansCours(int p_cours, HttpClient p_client)
         {
             Dictionary<int, (string, int, int)> infoAReturner = new Dictionary<int, (string, int, int)>();
             List<int> listIdAssignments = new List<int>();

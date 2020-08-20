@@ -160,6 +160,15 @@ namespace RplpAvecBD.Controllers
                     // Ajouter la liste d'Assignments dans la ViewBag
                     ViewBag.listeAssignment = listeAssignment;
 
+                    //obtenir info necessaire sur Assignment de cours shoisi pour aficher dans View
+                    Dictionary<int, (string, int, int)> infoSurLesAssignments = CodePostController.ObtenirDictionaryTravauxTotalEtManquantsDansCours((int)p_cours.idCoursChoisi, client);
+
+                    // Ajouter info necessaire sur Assignment de cours shoisi dans la session
+                    HttpContext.Session.SetString("infoSurLesAssignmentsSession", JsonConvert.SerializeObject(infoSurLesAssignments));
+
+                    // Ajouter info necessaire sur Assignment de cours shoisi  dans la ViewBag
+                    ViewBag.infoSurLesAssignments = infoSurLesAssignments;
+
                     return View();
                 }
 
