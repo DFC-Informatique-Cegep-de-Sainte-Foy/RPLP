@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -9,13 +8,9 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query.Internal;
-using Microsoft.VisualBasic;
 using Newtonsoft.Json;
 using RplpAvecBD.Data;
 using RplpAvecBD.Model;
-using RplpAvecBD.Controllers;
 
 namespace RplpAvecBD.Controllers
 {
