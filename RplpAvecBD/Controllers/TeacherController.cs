@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -9,13 +8,9 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query.Internal;
-using Microsoft.VisualBasic;
 using Newtonsoft.Json;
 using RplpAvecBD.Data;
 using RplpAvecBD.Model;
-using RplpAvecBD.Controllers;
 
 namespace RplpAvecBD.Controllers
 {
@@ -653,6 +648,95 @@ namespace RplpAvecBD.Controllers
             }
         }
 
+        [HttpPost]
+        [RequestSizeLimit(2_000_000)]  //ajuste la taille limite du fichier 2mb 
+        public IActionResult UploadCsv(Microsoft.AspNetCore.Http.IFormFile file)
+        {
+            // obtenir le nom du fichier
+            string fileName = Path.GetFileName(file.FileName);
+
+            string path = Directory.GetCurrentDirectory();
+            //obtenir repertoire temporaire de lutilisateur
+            string pathUser = Path.GetTempPath();
+
+            // si le fichier existe deja, on efface celui qui etait present 
+            if (System.IO.File.Exists(fileName))
+            {
+                System.IO.File.Delete(fileName);
+            }
+
+            // Creation du nouveau fichier local et copie le contenu du fichier dedans
+            using (FileStream localFile = System.IO.File.OpenWrite(fileName))
+            using (Stream uploadedFile = file.OpenReadStream())
+            {
+                //recevoir le fichier
+                uploadedFile.CopyTo(localFile);
+                string extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+                FileInfo fichierRecu = new FileInfo(file.FileName);
+                localFile.Close();
+                uploadedFile.Close();
+
+                //verifie si l'extension est vide ou si n'est pas un .zip)
+                if (string.IsNullOrEmpty(extension) ||
+                    (extension != ".csv") ||
+                    (fichierRecu.FullName.Contains(".jsp")) ||
+                    (fichierRecu.FullName.Contains(".exe")) ||
+                    (fichierRecu.FullName.Contains(".msi")) ||
+                    (fichierRecu.FullName.Contains(".bat")) ||
+                    (fichierRecu.FullName.Contains(".php")) ||
+                    (fichierRecu.FullName.Contains(".pht")) ||
+                    (fichierRecu.FullName.Contains(".phtml")) ||
+                    (fichierRecu.FullName.Contains(".asa")) ||
+                    (fichierRecu.FullName.Contains(".cer")) ||
+                    (fichierRecu.FullName.Contains(".asax")) ||
+                    (fichierRecu.FullName.Contains(".swf")) ||
+                    (fichierRecu.FullName.Contains(".com")) ||
+                    (fichierRecu.FullName.Contains(".xap")))
+                {
+                    try
+                    {
+                        fichierRecu.Delete();
+                    }
+                    catch (IOException)
+                    {
+                        fichierRecu.Delete();
+                    }
+                    catch (UnauthorizedAccessException)
+                    {
+                        fichierRecu.Delete();
+                    }
+                }
+                if (fichierRecu.Exists)
+                {
+                    FileInfo fichierDansUpload = new FileInfo(Path.Combine(path, "Upload", fichierRecu.Name));
+                    if (fichierDansUpload.Exists)
+                    {
+                        try
+                        {
+                            fichierDansUpload.Delete();
+                        }
+                        catch (IOException)
+                        {
+                            fichierDansUpload.Delete();
+                        }
+                        catch (UnauthorizedAccessException)
+                        {
+                            fichierDansUpload.Delete();
+                        }
+                    }
+                    //deplacer le fichier dans le repetoire upload
+                    fichierRecu.MoveTo(Path.Combine(path, "Upload", fichierRecu.Name));
+                    ViewBag.Message = "Téléchargement effectué avec succès";
+                }
+                else
+                {
+                    ViewBag.Message = "fichier refusé";
+                }
+            }
+            return View();
+        }
+
+
         public static List<string> CreerListeEtudiantsAPartirDuCsv(string fichierCsv)
         {
             List<string> listeEtudiant = new List<string> { };
@@ -669,23 +753,9 @@ namespace RplpAvecBD.Controllers
                     listeEtudiant.Add(splitText[1] + suffixe);
                 }
                 compteur++;
-            }
-            //file.Dispose();
+            }            
             file.Close();
-
             return listeEtudiant;
-        }
-
-        //temporaire
-        public IActionResult Script()
-        {
-            List<string> res = CreerListeEtudiantsAPartirDuCsv(@"C:\Users\the_e\source\repos\rplp3\Revue_par_les_pairs\RplpAvecBD\ListeEtudiants_cours420W31SF_gr12211.csv");
-            return View();
-        }
-
-        public IActionResult upload()
-        {
-            return View();
         }
     }
 }
