@@ -82,7 +82,7 @@ namespace RplpAvecBD.Controllers
             {
                 client.BaseAddress = new Uri("https://api.codepost.io");
                 client.DefaultRequestHeaders.Add("authorization", "Token " + professeurExistent.apiKey);
-                
+
                 // Récupérer  les cours de CodePost
                 List<Course> listeCours = CodePostController.ObtenirListeDesCourses(client);
 
@@ -105,7 +105,7 @@ namespace RplpAvecBD.Controllers
         {
             // Ajouter le cours choisi dans la session
             HttpContext.Session.SetString("IdCoursChoisiSession", JsonConvert.SerializeObject(p_cours.idCoursChoisi));
-            
+
             // Ajouter le cours choisi dans la ViewBag
             ViewBag.idCoursChoisi = p_cours.idCoursChoisi;
 
@@ -129,7 +129,7 @@ namespace RplpAvecBD.Controllers
 
                 // Récuperér la liste de cours dans la session
                 List<Course> listeCours = JsonConvert.DeserializeObject<List<Course>>(HttpContext.Session.GetString("ListeCoursSession"));
-                
+
                 // Ajouter le cours choisi dans la ViewBag
                 ViewBag.listeCours = listeCours;
 
@@ -231,7 +231,7 @@ namespace RplpAvecBD.Controllers
             return View();
         }
 
-       
+
         //[Authorize("estProfesseur")]
         public IActionResult ErreurListeEtudiantVide()
         {
@@ -267,7 +267,7 @@ namespace RplpAvecBD.Controllers
                     ViewBag.coursChoisi = coursChoisi;
 
                     ModelState.AddModelError("estFichierCSVPresent", "Vous devez sélectionner un fichier CSV !");
-                    
+
                     // Ajouter l'objet du cours choisi dans la ViewBag
                     //ViewBag.coursChoisi = coursChoisi;
 
@@ -340,7 +340,7 @@ namespace RplpAvecBD.Controllers
 
                 if (fichierZIP == null)
                 {
-    
+
                     ModelState.AddModelError("estFichierZIPPresent", "Vous devez sélectionner un fichier ZIP !");
 
                     ViewBag.afficherUpLoadFichierZip = true;
@@ -417,7 +417,7 @@ namespace RplpAvecBD.Controllers
 
         //[Authorize("estProfesseur")]
         public IActionResult ResultatAjoutTravail()
-        {   
+        {
             return View();
         }
 
@@ -499,7 +499,7 @@ namespace RplpAvecBD.Controllers
                                 }
                             }
                         }
-                    }                 
+                    }
                     string matricule = resultat.Groups["numeroMatricule"].Value;
                     try
                     {
@@ -537,6 +537,95 @@ namespace RplpAvecBD.Controllers
             ///temporairement retiré pour faciliter les tests.
             //EffacerFichierRecu(path, nomDuTravail);
         }
+
+        [HttpPost]
+        [RequestSizeLimit(105_000_000)]  //ajuste la taille limite du fichier a 100 Mb (requete du client)
+        public IActionResult Upload(Microsoft.AspNetCore.Http.IFormFile file)
+        {
+            // obtenir le nom du fichier
+            string fileName = Path.GetFileName(file.FileName);
+
+            string path = Directory.GetCurrentDirectory();
+            //obtenir repertoire temporaire de lutilisateur
+            string pathUser = Path.GetTempPath();
+
+            // si le fichier existe deja, on efface celui qui etait present 
+            if (System.IO.File.Exists(fileName))
+            {
+                System.IO.File.Delete(fileName);
+            }
+
+            // Creation du nouveau fichier local et copie le contenu du fichier dedans
+            using (FileStream localFile = System.IO.File.OpenWrite(fileName))
+            using (Stream uploadedFile = file.OpenReadStream())
+            {
+                //recevoir le fichier
+                uploadedFile.CopyTo(localFile);
+                string extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+                FileInfo fichierRecu = new FileInfo(file.FileName);
+                localFile.Close();
+                uploadedFile.Close();
+
+                //verifie si l'extension est vide ou si n'est pas un .zip)
+                if (string.IsNullOrEmpty(extension) ||
+                    (extension != ".zip") ||
+                    (fichierRecu.FullName.Contains(".jsp")) ||
+                    (fichierRecu.FullName.Contains(".exe")) ||
+                    (fichierRecu.FullName.Contains(".msi")) ||
+                    (fichierRecu.FullName.Contains(".bat")) ||
+                    (fichierRecu.FullName.Contains(".php")) ||
+                    (fichierRecu.FullName.Contains(".pht")) ||
+                    (fichierRecu.FullName.Contains(".phtml")) ||
+                    (fichierRecu.FullName.Contains(".asa")) ||
+                    (fichierRecu.FullName.Contains(".cer")) ||
+                    (fichierRecu.FullName.Contains(".asax")) ||
+                    (fichierRecu.FullName.Contains(".swf")) ||
+                    (fichierRecu.FullName.Contains(".com")) ||
+                    (fichierRecu.FullName.Contains(".xap")))
+                {
+                    try
+                    {
+                        fichierRecu.Delete();
+                    }
+                    catch (IOException)
+                    {
+                        fichierRecu.Delete();
+                    }
+                    catch (UnauthorizedAccessException)
+                    {
+                        fichierRecu.Delete();
+                    }
+                }
+                if (fichierRecu.Exists)
+                {
+                    FileInfo fichierDansUpload = new FileInfo(Path.Combine(path, "Upload", fichierRecu.Name));
+                    if (fichierDansUpload.Exists)
+                    {
+                        try
+                        {
+                            fichierDansUpload.Delete();
+                        }
+                        catch (IOException)
+                        {
+                            fichierDansUpload.Delete();
+                        }
+                        catch (UnauthorizedAccessException)
+                        {
+                            fichierDansUpload.Delete();
+                        }
+                    }
+                    //deplacer le fichier dans le repetoire upload
+                    fichierRecu.MoveTo(Path.Combine(path, "Upload", fichierRecu.Name));
+                    ViewBag.Message = "Téléchargement effectué avec succès";
+                }
+                else
+                {
+                    ViewBag.Message = "fichier refusé";
+                }
+            }
+            return View();
+        }
+
 
         /// <summary>
         /// fonction qui efface le fichier recu en parametre 
@@ -583,7 +672,7 @@ namespace RplpAvecBD.Controllers
             }
             //file.Dispose();
             file.Close();
-            
+
             return listeEtudiant;
         }
 
@@ -591,6 +680,11 @@ namespace RplpAvecBD.Controllers
         public IActionResult Script()
         {
             List<string> res = CreerListeEtudiantsAPartirDuCsv(@"C:\Users\the_e\source\repos\rplp3\Revue_par_les_pairs\RplpAvecBD\ListeEtudiants_cours420W31SF_gr12211.csv");
+            return View();
+        }
+
+        public IActionResult upload()
+        {
             return View();
         }
     }
