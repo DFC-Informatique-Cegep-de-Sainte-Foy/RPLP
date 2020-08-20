@@ -153,7 +153,7 @@ namespace RplpAvecBD.Controllers
         /// <param name="p_idCours">Id de Cours dans CodePost</param>
         /// <param name="p_listeEtudiants">Liste de tous les étudiants qui suivent le Cours</param>
         /// <param name="p_client">HttpClient qui a été créé avec l'APIKey du client (le prof)</param>
-        public static async void AjouterEtudiantsDansCours(int p_idCours, List<string> p_listeEtudiants, HttpClient p_client, IFormFile p_fichierCSV)
+        public static void AjouterEtudiantsDansCours(int p_idCours, List<string> p_listeEtudiants, HttpClient p_client, IFormFile p_fichierCSV)
         {
             CourseRoster courseRoster = new CourseRoster(p_idCours, p_listeEtudiants);
 
@@ -163,7 +163,9 @@ namespace RplpAvecBD.Controllers
 
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
-                    await p_fichierCSV.CopyToAsync(stream);
+                    p_fichierCSV.CopyToAsync(stream);
+                    stream.Close();
+                    stream.Dispose();
                 }
 
                 List<string> NouvelleListeEtudiants = TeacherController.CreerListeEtudiantsAPartirDuCsv(filePath);

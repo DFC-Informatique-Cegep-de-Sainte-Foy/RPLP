@@ -451,12 +451,14 @@ namespace RplpAvecBD.Controllers
             {
                 if (compteur != 0) //skip la ligne d'entete
                 {
-                    string[] splitText = line.Split(';');
-                    listeEtudiant.Add(splitText[0] + suffixe);
+                    string[] splitText = line.Split('"');
+                    listeEtudiant.Add(splitText[1] + suffixe);
                 }
                 compteur++;
             }
+            //file.Dispose();
             file.Close();
+            
             return listeEtudiant;
         }
 
