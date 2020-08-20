@@ -1,0 +1,39 @@
+﻿
+@{
+    ViewData["Title"] = "Ajouter fichier ZIP";
+  
+}
+<hr />
+@using (Html.BeginForm("VerifierFichierZIP", "Teacher", FormMethod.Post, new { enctype = "multipart/form-data", Model }))
+{
+    <table style="margin-top:28px;">
+        <thead>
+            <tr>
+                <th>
+                    <h6>Sélectionnner le fichier avec le travail de tous les étudiants</h6>
+                </th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr style="height: 12px;"></tr>
+            <tr>
+                <td>
+                    <input type="file" name="fichierZIP" value="Upload fichier ZIP" accept=".zip" class="btn btn-light" />
+                </td>
+                <td style="width:30px;"></td>
+                <td>
+                    <input type="submit" class="btn btn-success" id="btnEnregistrerTravail" value="Envoyer à Codepost" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.ValidationMessage("estFichierZIPPresent", "", new { @class = "text-danger" })
+                </td>
+            </tr>
+        </tbody>
+    </table>
+}
+
+

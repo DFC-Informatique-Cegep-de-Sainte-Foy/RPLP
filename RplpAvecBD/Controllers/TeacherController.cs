@@ -266,17 +266,32 @@ namespace RplpAvecBD.Controllers
                     // Ajouter l'objet du cours choisi dans la ViewBag
                     ViewBag.coursChoisi = coursChoisi;
 
+                    ModelState.AddModelError("estFichierCSVPresent", "Vous devez sélectionner un fichier CSV !");
+                    
+                    // Ajouter l'objet du cours choisi dans la ViewBag
+                    //ViewBag.coursChoisi = coursChoisi;
+
+                    //return View("Index", new Course());
+
                     return View("ErreurListeEtudiantVide", "Teacher");
                 }
 
                 if (listeEtudiants.Count > 0 && fichierCSV == null)
                 {
+                    ViewBag.afficherUpLoadFichierZip = false;
+
+                    ViewBag.erreurFichierZIPIntrouvable = false;
+
                     return View("AjouterTravail", new Assignment());
                 }
 
                 if (fichierCSV != null)
                 {
                     CodePostController.AjouterEtudiantsDansCours(coursChoisi.id, listeEtudiants, client, fichierCSV, professeurSession);
+
+                    ViewBag.afficherUpLoadFichierZip = false;
+
+                    ViewBag.erreurFichierZIPIntrouvable = false;
 
                     return View("AjouterTravail", new Assignment());
                 }
@@ -311,6 +326,41 @@ namespace RplpAvecBD.Controllers
 
 
         //[Authorize("estProfesseur")]
+        [HttpPost]
+        public async Task<IActionResult> VerifierFichierZIP(IFormFile fichierZIP)
+        {
+
+            using (HttpClient client = new HttpClient())
+            {
+                // Récuperér l'objet du cours choisi dans la session
+                Course coursChoisi = JsonConvert.DeserializeObject<Course>(HttpContext.Session.GetString("coursChoisi"));
+
+                // Ajouter l'objet du cours choisi dans la ViewBag
+                ViewBag.coursChoisi = coursChoisi;
+
+                if (fichierZIP == null)
+                {
+    
+                    ModelState.AddModelError("estFichierZIPPresent", "Vous devez sélectionner un fichier ZIP !");
+
+                    ViewBag.afficherUpLoadFichierZip = true;
+
+                    ViewBag.erreurFichierZIPIntrouvable = true;
+
+                    return View("AjouterTravail", new Assignment());
+                }
+
+            }
+
+            ViewBag.afficherUpLoadFichierZip = true;
+
+            ViewBag.erreurFichierZIPIntrouvable = false;
+
+            return View("ResultatAjoutTravail");
+        }
+
+
+        //[Authorize("estProfesseur")]
         public IActionResult AjouterTravail()
         {
             using (HttpClient client = new HttpClient())
@@ -320,6 +370,11 @@ namespace RplpAvecBD.Controllers
 
                 // Ajouter l'objet du cours choisi dans la ViewBag
                 ViewBag.coursChoisi = coursChoisi;
+
+                ViewBag.afficherUpLoadFichierZip = true;
+
+                ViewBag.erreurFichierZIPIntrouvable = false;
+
             }
 
             return View();
@@ -344,8 +399,18 @@ namespace RplpAvecBD.Controllers
                 // Ajouter l'objet du cours choisi dans la ViewBag
                 ViewBag.nomTravail = p_assignment.name;
 
-                return View("ResultatAjoutTravail", "Teacher");
+                ViewBag.afficherUpLoadFichierZip = true;
+
+                ViewBag.erreurFichierZIPIntrouvable = false;
+
+                return View();
+
+                //return View("ResultatAjoutTravail", "Teacher");
             }
+
+            ViewBag.afficherUpLoadFichierZip = false;
+
+            ViewBag.erreurFichierZIPIntrouvable = false;
 
             return View();
         }

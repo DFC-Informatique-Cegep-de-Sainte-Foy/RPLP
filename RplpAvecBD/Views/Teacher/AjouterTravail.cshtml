@@ -5,28 +5,34 @@
     RplpAvecBD.Model.Course coursChoisi = ViewBag.coursChoisi;
 }
 
+@*<p>Model name = @Model.name</p>
+<p>Model points = @Model.points</p>
+<p>Model course = @Model.course</p>
+<p>Model isRelease = @Model.isReleased<p>
+<p>Model isVisible = @Model.isVisible</p>*@
+
     <div class="text-left">
         <br />
         <h2>Ajouter un travail</h2>
         <hr />
-        @using (Html.BeginForm())
+
+        @using (Html.BeginForm(Model))
         {
             <table>
                 <thead>
                     <tr>
-                        <th>
-                            <h6 style="width:220px;">Nom du cours</h6>
+                        <th style="width:200px;">
+                            <h6>Nom du cours</h6>
                         </th>
-                        <th>
-                            <h6 style="width:220px;">Nom du travail</h6>
+                        <th style="width:220px;">
+                            <h6>Nom du travail</h6>
                         </th>
                         <th style="width:30px;"></th>
-                        <th style="width:100px;">
+                        <th>
                             <h6>Points</h6>
                         </th>
                         <th style="width:30px;"></th>
                         <th></th>
-                        <th style="width:30px;"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -40,14 +46,11 @@
                         </td>
                         <td></td>
                         <td>
-                            @Html.TextBoxFor(model => model.points, new { @class = "form-control" })
+                            @Html.TextBoxFor(model => model.points, new { @class = "form-control", style = "width:80px;" })
                         </td>
                         <td></td>
                         <td>
-                            <input type="file" name="fichier" value="Upload fichier ZIP" accept=".zip" class="btn btn-light" />
-                        </td>
-                        <td>
-                            <input type="submit" class="btn btn-success" id="btnEnregistrerTravail" value="Enregistrer" asp-controller="Teacher" asp-action="AjouterTravail" />
+                            <input type="submit" class="btn btn-warning" id="btnAjouterFichierZIP" value="Ajouter fichier ZIP" asp-action="AjouterTravail" asp-controller="Teacher" />
                         </td>
                     </tr>
                     <tr>
@@ -64,15 +67,16 @@
             </table>
         }
 
-        <hr />
-        <div>
-            <input type="button" class="btn btn-primary" id="btnReturn" value="Retourner" onclick="location.href='@Url.Action("Index", "Teacher")'" />
-        </div>
-    </div>
 
-@if (ViewBag.Message != null)
-{
-    <div class="alert alert-success" style="margin-top:20px">
-        @ViewBag.Message
+        @if (ViewBag.afficherUpLoadFichierZip && ViewBag.erreurFichierZIPIntrouvable == false)
+        {
+            @Html.Partial("_AjouterFichierZIP")
+        }
+        else if (ViewBag.afficherUpLoadFichierZip && ViewBag.erreurFichierZIPIntrouvable == true)
+        {
+            @Html.Partial("_ErreurFichierZIPVide")
+        }
+
+        @Html.Partial("_Retourner")
+
     </div>
-}
