@@ -24,7 +24,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Upload\" />
     <Folder Include="wwwroot\img\" />
   </ItemGroup>
+
+  <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 
 </Project>

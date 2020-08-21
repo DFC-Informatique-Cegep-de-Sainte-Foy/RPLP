@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
+﻿
 namespace RplpAvecBD.Model
 {
     public class Course
@@ -14,6 +10,8 @@ namespace RplpAvecBD.Model
         public bool sendReleasedSubmissionsToBack { get; set; } //Si true, les travaux évalués par graders seront envoyés à la fin de la file d'attente d'évaluation.
         public bool emailNewUsers { get; set; } //Si True, les utilisateurs recevront des e-mails les informant qu'ils ont été ajoutés à la liste de ce cours. Les nouveaux utilisateurs de codePost seront invités à créer un compte.
         public bool anonymousGradingDefault { get; set; } //S'il est défini sur True, les travaux nouvellement créées seront automatiquement mises en mode de notation anonyme.
+
+        public int? idCoursChoisi { get; set; }
 
         //constructer par defaults
         public Course()

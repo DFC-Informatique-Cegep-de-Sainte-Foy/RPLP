@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace RplpAvecBD.Model
 {
@@ -18,6 +15,10 @@ namespace RplpAvecBD.Model
             this.id = p_id;
             this.students = p_listStudents;
             this.graders = p_listStudents;
+        }
+        public CourseRoster(int p_id)
+        {
+            this.id = p_id;
         }
     }
 }

@@ -1,13 +1,9 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.AzureAD.UI;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
@@ -15,8 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using RplpAvecBD.Data;
-using Microsoft.EntityFrameworkCore.SqlServer;
-
+using Microsoft.AspNetCore.Http;
 
 namespace RplpAvecBD
 {
@@ -41,6 +36,10 @@ namespace RplpAvecBD
             //{
             //    option.AddPolicy("estProfesseur", p =>
             //    {
+            //        // c0d32534-918b-44bd-a2c9-b21e292e6cf7 - InformatiqueDFC
+            //        // c0d32534-918b-44bd-a2c9-b21e292e6cf7 - o365 - staff
+            //        // a95951b6-21c0-49ad-8b5d-2bc3d8d61a1d - prof-inf-dfc
+            //        // 20d9f47c-74dc-4bd1-a214-3a80f2a66bd1 - Prof informatique  
             //        p.RequireClaim("groups", "955bcf43-9a4b-40de-9ddd-72aba52d3669");
             //        estProfesseur = true;
             //    });
@@ -52,8 +51,28 @@ namespace RplpAvecBD
             //    });
             //});
 
+
+            // Ajouter RplpContext
             services.AddDbContext<RplpContext>
             (o => o.UseSqlServer(Configuration.GetConnectionString("RplpDb")));
+
+
+            // Ajouter session
+            services.AddSession(options =>
+            {
+                options.Cookie.IsEssential = true; // make the session cookie Essential
+            });
+
+            services.AddDistributedMemoryCache();
+
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+                options.CheckConsentNeeded = context => false;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
+
+
 
             services.AddControllersWithViews(options =>
             {
@@ -62,6 +81,7 @@ namespace RplpAvecBD
                     .Build();
                 options.Filters.Add(new AuthorizeFilter(policy));
             });
+
             services.AddRazorPages();
         }
 
@@ -78,6 +98,10 @@ namespace RplpAvecBD
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            // Utiliser session
+            app.UseSession();
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
