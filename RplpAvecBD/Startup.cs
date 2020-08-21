@@ -36,6 +36,10 @@ namespace RplpAvecBD
             //{
             //    option.AddPolicy("estProfesseur", p =>
             //    {
+            //        // c0d32534-918b-44bd-a2c9-b21e292e6cf7 - InformatiqueDFC
+            //        // c0d32534-918b-44bd-a2c9-b21e292e6cf7 - o365 - staff
+            //        // a95951b6-21c0-49ad-8b5d-2bc3d8d61a1d - prof-inf-dfc
+            //        // 20d9f47c-74dc-4bd1-a214-3a80f2a66bd1 - Prof informatique  
             //        p.RequireClaim("groups", "955bcf43-9a4b-40de-9ddd-72aba52d3669");
             //        estProfesseur = true;
             //    });

@@ -6,81 +6,81 @@
     TempData["nomTravail"] = ViewBag.nomTravail;
 }
 
-<div class="text-left">
-    <br />
-    <h2>Ajouter un travail</h2>
-    <hr />
+    <div class="text-left">
+        <br />
+        <h2>Ajouter un travail</h2>
+        <hr />
 
-    @using (Html.BeginForm(Model))
-    {
-        <table>
-            <thead>
-                <tr>
-                    <th style="width:200px;">
-                        <h6>Nom du cours</h6>
-                    </th>
-                    <th style="width:360px;">
-                        <h6>Nom du travail</h6>
-                    </th>
-                    <th style="width:30px;"></th>
-                    <th>
-                        <h6>Points</h6>
-                    </th>
-                    <th style="width:30px;"></th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr style="height: 15px;"></tr>
-                <tr>
-                    <td>
-                        @coursChoisi.name
-                    </td>
-                    <td>
-                        @Html.TextBoxFor(model => model.name, new { @class = "form-control" })
-                    </td>
-                    <td></td>
-                    <td>
-                        @Html.TextBoxFor(model => model.points, new { @class = "form-control", style = "width:100px;" })
-                    </td>
-                    <td></td>
-                    <td>
-                        <input type="submit" class="btn btn-warning" id="btnAjouterFichierZIP" value="Ajouter fichier ZIP" asp-action="AjouterTravail" asp-controller="Teacher" />
-                    </td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>
-                        @Html.ValidationMessageFor(m => m.name, "", new { @class = "text-danger" })
-                        @Html.ValidationMessage("AssignmentDejaCree", "", new { @class = "text-danger" })
-                    </td>
-                    <td></td>
-                    <td>
-                        @Html.ValidationMessageFor(m => m.points, "", new { @class = "text-danger" })
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    }
-
-
-    @if (ViewBag.afficherUpLoadFichierZip && ViewBag.erreurFichierZIP == "")
-    {
-        @Html.Partial("_AjouterFichierZIP")
-    }
-    else if (ViewBag.afficherUpLoadFichierZip && ViewBag.erreurFichierZIP != "")
-    {
-        @if (ViewBag.erreurFichierZIP == "Fichier introuvable")
+        @using (Html.BeginForm(Model))
         {
-            @Html.Partial("_ErreurFichierZIPIntrouvable")
-        }
-        else if (ViewBag.erreurFichierZIP == "Fichier réfusé")
-        {
-            @Html.Partial("_ErreurFichierZIPRefuse")
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:200px;">
+                            <h6>Nom du cours</h6>
+                        </th>
+                        <th style="width:360px;">
+                            <h6>Nom du travail</h6>
+                        </th>
+                        <th style="width:30px;"></th>
+                        <th>
+                            <h6>Points</h6>
+                        </th>
+                        <th style="width:30px;"></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="height: 15px;"></tr>
+                    <tr>
+                        <td>
+                            @coursChoisi.name
+                        </td>
+                        <td>
+                            @Html.TextBoxFor(model => model.name, new { @class = "form-control" })
+                        </td>
+                        <td></td>
+                        <td>
+                            @Html.TextBoxFor(model => model.points, new { @class = "form-control", style = "width:100px;" })
+                        </td>
+                        <td></td>
+                        <td>
+                            <input type="submit" class="btn btn-warning" id="btnAjouterFichierZIP" value="Ajouter fichier ZIP" asp-action="AjouterTravail" asp-controller="Teacher" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            @Html.ValidationMessageFor(m => m.name, "", new { @class = "text-danger" })
+                            @Html.ValidationMessage("AssignmentDejaCree", "", new { @class = "text-danger" })
+                        </td>
+                        <td></td>
+                        <td>
+                            @Html.ValidationMessageFor(m => m.points, "", new { @class = "text-danger" })
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         }
 
-    }
 
-    @Html.Partial("_Retourner")
+        @if (ViewBag.afficherUpLoadFichierZip && ViewBag.erreurFichierZIP == "")
+        {
+            @Html.Partial("_AjouterFichierZIP")
 
-</div>
+            @Html.Partial("_Retourner")
+        }
+        else if (ViewBag.afficherUpLoadFichierZip && ViewBag.erreurFichierZIP != "")
+        {
+            @if (ViewBag.erreurFichierZIP == "Fichier introuvable")
+            {
+                @Html.Partial("_ErreurFichierZIPIntrouvable")
+            }
+            else if (ViewBag.erreurFichierZIP == "Fichier réfusé")
+            {
+                @Html.Partial("_ErreurFichierZIPRefuse")
+            }
+
+        }
+
+    </div>
