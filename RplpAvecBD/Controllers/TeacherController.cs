@@ -25,34 +25,21 @@ namespace RplpAvecBD.Controllers
         {
             _rplpContext = p_context;
         }
-        public bool estProfesseurExistant(string p_courriel)
-        {
-            // Vérifier si ce professeur existe déjà dans la base de données
-            Professeur professeur = _rplpContext.Professeurs.SingleOrDefault(p => p.courriel == p_courriel);
 
-            return (professeur != null);
-        }
-
-        public Professeur ajouterProfesseur(string p_courriel)
-        {
-            Professeur nouveauProfesseur = new Professeur();
-            nouveauProfesseur.courriel = p_courriel;
-
-            // Ajouter le professeur dans la base de données
-            _rplpContext.Professeurs.Add(nouveauProfesseur);
-            _rplpContext.SaveChanges();
-
-            return nouveauProfesseur;
-        }
-
+        // -------------------------------------------------------- 
+        //
+        // Méthodes HTTP Get / HTTP Post
+        // 
+        // -------------------------------------------------------- 
+        
         //[Authorize("estProfesseur")]
         public IActionResult Index()
         {
             // Si ce professeur n'existe pas dans la base de données
-            if (!estProfesseurExistant(User.Identity.Name))
+            if (!estProfesseurExistantBD(User.Identity.Name))
             {
                 // Ajouter le professeur dans la base de données
-                Professeur NouveauProfesseur = ajouterProfesseur(User.Identity.Name);
+                Professeur NouveauProfesseur = ajouterProfesseurBD(User.Identity.Name);
 
                 // Ajouter le professeur dans la session
                 HttpContext.Session.SetString("ProfesseurSession", JsonConvert.SerializeObject(NouveauProfesseur));
@@ -223,15 +210,8 @@ namespace RplpAvecBD.Controllers
         //[Authorize("estProfesseur")]
         public IActionResult ResultatMiseAJourParametres(string p_nom, string p_courriel, string p_apiKey)
         {
-            mettreAJourParametres(p_nom, p_courriel, p_apiKey);
+            mettreAJourParametresBD(p_nom, p_courriel, p_apiKey);
 
-            return View();
-        }
-
-
-        //[Authorize("estProfesseur")]
-        public IActionResult AideSelectionnerCours()
-        {
             return View();
         }
 
@@ -305,6 +285,58 @@ namespace RplpAvecBD.Controllers
             return View();
         }
 
+        //[Authorize("estProfesseur")]
+        [HttpPost]
+        public IActionResult AjouterTravail(Assignment p_assignment)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                // Récuperér le professeur dans la session
+                Professeur professeurSession = JsonConvert.DeserializeObject<Professeur>(HttpContext.Session.GetString("ProfesseurSession"));
+
+                client.BaseAddress = new Uri("https://api.codepost.io");
+                client.DefaultRequestHeaders.Add("authorization", "Token " + professeurSession.apiKey);
+
+                // Récuperér l'objet du cours choisi dans la session
+                Course coursChoisi = JsonConvert.DeserializeObject<Course>(HttpContext.Session.GetString("coursChoisi"));
+
+                // Ajouter l'objet du cours choisi dans la ViewBag
+                ViewBag.coursChoisi = coursChoisi;
+
+                if (ModelState.IsValid)
+                {
+
+                    if (CodePostController.AssignmentEstDejaCree(p_assignment.name, coursChoisi.id, client))
+                    {
+                        ModelState.AddModelError("AssignmentDejaCree", "Le travail '" + p_assignment.name + "' existe déjà sur Codepost !");
+
+                        ViewBag.afficherUpLoadFichierZip = false;
+
+                        ViewBag.erreurFichierZIP = "";
+
+                        return View();
+                    }
+
+                    ViewBag.afficherUpLoadFichierZip = true;
+
+                    ViewBag.erreurFichierZIP = "";
+
+                    // Ajouter le professeur dans la session
+                    HttpContext.Session.SetString("nomTravailSession", JsonConvert.SerializeObject(p_assignment.name));
+
+                    return View();
+                }
+
+                ViewBag.afficherUpLoadFichierZip = false;
+
+                ViewBag.erreurFichierZIP = "";
+
+                // Ajouter le professeur dans la session
+                HttpContext.Session.SetString("nomTravailSession", JsonConvert.SerializeObject(p_assignment.name));
+            }
+
+            return View();
+        }
 
         //[Authorize("estProfesseur")]
         [HttpPost]
@@ -413,14 +445,22 @@ namespace RplpAvecBD.Controllers
                             // Déplacer le fichier dans le répetoire Upload
                             fichierRecu.MoveTo(Path.Combine(path, "Upload", fichierRecu.Name));
 
-                            if (fichierDansUpload.Exists)
-                            {
-                                // Décompresser ...
+                            string pathFichierZip = Path.Combine(path, "Upload", fichierRecu.Name);
+                            
+                            // Récuperér l'objet du cours choisi dans la session
+                            string nomTravail = JsonConvert.DeserializeObject<string>(HttpContext.Session.GetString("nomTravailSession"));
 
+                            // Décompresser et faire le menage
+                            DecompresserFaireMenageCodePost(nomTravail, pathFichierZip);
 
+                            // Envoyer à Codepost
 
-                                //fichierDansUpload.Delete();
-                            }
+                            // Effacer fichier Zip dans le répertoire Upload
+                            fichierDansUpload.Delete();
+
+                            // Effacer le répertoire temporaire dans le OS du client 
+                            
+
                         }
                         else
                         {
@@ -441,51 +481,7 @@ namespace RplpAvecBD.Controllers
             return View("ResultatAjoutTravail");
         }
 
-        //[Authorize("estProfesseur")]
-        [HttpPost]
-        public IActionResult AjouterTravail(Assignment p_assignment)
-        {
-            using (HttpClient client = new HttpClient())
-            {
-                // Récuperér le professeur dans la session
-                Professeur professeurSession = JsonConvert.DeserializeObject<Professeur>(HttpContext.Session.GetString("ProfesseurSession"));
-
-                client.BaseAddress = new Uri("https://api.codepost.io");
-                client.DefaultRequestHeaders.Add("authorization", "Token " + professeurSession.apiKey);
-
-                // Récuperér l'objet du cours choisi dans la session
-                Course coursChoisi = JsonConvert.DeserializeObject<Course>(HttpContext.Session.GetString("coursChoisi"));
-
-                // Ajouter l'objet du cours choisi dans la ViewBag
-                ViewBag.coursChoisi = coursChoisi;
-
-                if (ModelState.IsValid)
-                {
-                    
-                    if (CodePostController.AssignmentEstDejaCree(p_assignment.name, coursChoisi.id, client))
-                    {
-                        ModelState.AddModelError("AssignmentDejaCree", "Le travail '" + p_assignment.name + "' existe déjà sur Codepost !");
-
-                        ViewBag.afficherUpLoadFichierZip = false;
-
-                        ViewBag.erreurFichierZIP = "";
-
-                        return View();
-                    }
-  
-                    ViewBag.afficherUpLoadFichierZip = true;
-
-                    ViewBag.erreurFichierZIP = "";
-
-                    return View();
-                }
-
-                ViewBag.afficherUpLoadFichierZip = false;
-
-                ViewBag.erreurFichierZIP = "";
-            }
-            return View();
-        }
+        
 
         //[Authorize("estProfesseur")]
         public IActionResult ResultatAjoutTravail()
@@ -493,7 +489,41 @@ namespace RplpAvecBD.Controllers
             return View();
         }
 
-        public void mettreAJourParametres(string p_nom, string p_courriel, string p_apiKey)
+
+        //[Authorize("estProfesseur")]
+        public IActionResult AideSelectionnerCours()
+        {
+            return View();
+        }
+
+
+        // -------------------------------------------------------- 
+        //
+        // Méthodes locales
+        // 
+        // -------------------------------------------------------- 
+
+        public bool estProfesseurExistantBD(string p_courriel)
+        {
+            // Vérifier si ce professeur existe déjà dans la base de données
+            Professeur professeur = _rplpContext.Professeurs.SingleOrDefault(p => p.courriel == p_courriel);
+
+            return (professeur != null);
+        }
+
+        public Professeur ajouterProfesseurBD(string p_courriel)
+        {
+            Professeur nouveauProfesseur = new Professeur();
+            nouveauProfesseur.courriel = p_courriel;
+
+            // Ajouter le professeur dans la base de données
+            _rplpContext.Professeurs.Add(nouveauProfesseur);
+            _rplpContext.SaveChanges();
+
+            return nouveauProfesseur;
+        }
+
+        public void mettreAJourParametresBD(string p_nom, string p_courriel, string p_apiKey)
         {
             Professeur professeur = _rplpContext.Professeurs.SingleOrDefault(p => p.courriel == p_courriel);
             professeur.nom = p_nom;
@@ -502,6 +532,27 @@ namespace RplpAvecBD.Controllers
             // Mettre à jour les informations du professeur dans la base de données
             _rplpContext.Professeurs.Update(professeur);
             _rplpContext.SaveChanges();
+        }
+
+        public static List<string> CreerListeEtudiantsAPartirDuCSV(string fichierCsv)
+        {
+            List<string> listeEtudiant = new List<string> { };
+            string line = null;
+            string suffixe = "@csfoy.ca";
+            int compteur = 0;
+
+            StreamReader file = new System.IO.StreamReader(fichierCsv);
+            while ((line = file.ReadLine()) != null)
+            {
+                if (compteur != 0) //skip la ligne d'entete
+                {
+                    string[] splitText = line.Split('"');
+                    listeEtudiant.Add(splitText[1] + suffixe);
+                }
+                compteur++;
+            }
+            file.Close();
+            return listeEtudiant;
         }
 
         /// <summary>
@@ -517,39 +568,37 @@ namespace RplpAvecBD.Controllers
             }
         }
 
-        public void Decompresser_faireMenage_CodePost(String nomDuTravail)
+        public void DecompresserFaireMenageCodePost(string p_nomDuTravail, string p_pathFichierZip)
         {
-            //TEMPORAIRE 
-            // pour pas avoir a effacer a chaque fois durant les tests
-            if (Directory.Exists(@"C:\Users\the_e\AppData\Local\Temp\1992178@csfoy.ca"))
+            // Obtenir répertoire temporaire de l'utilisateur
+            string pathTempUser = Path.GetTempPath();
+            string pathTempDestination = Path.Combine(pathTempUser + User.Identity.Name);
+
+            if (System.IO.Directory.Exists(pathTempDestination))
             {
-                Directory.Delete(@"C:\Users\the_e\AppData\Local\Temp\1992178@csfoy.ca", true);
+                System.IO.Directory.Delete(pathTempDestination, true);
             }
 
+            // Créer un répertoire avec le matricule de l'utilisateur dans le répertoire temporaire
+            Directory.CreateDirectory(Path.Combine(pathTempUser, User.Identity.Name));
 
-            //obtenir repertoire courrant
-            string path = Directory.GetCurrentDirectory();
-            //obtenir repertoire temporaire de lutilisateur
-            string pathUser = Path.GetTempPath();
-            string pathDestination = Path.Combine(pathUser + User.Identity.Name);
+            // Décompresser le fichier Zip
+            Decompresser(p_pathFichierZip, pathTempDestination);
+            
+            // Conversion de type string -> DirectoryInfo 
+            destination = new DirectoryInfo(pathTempDestination);
 
-            //creer un repertoire avec le matricule de l'utilisateur dans le repertoire temporaire
-            Directory.CreateDirectory(Path.Combine(pathUser, User.Identity.Name));
-
-            //decompresser
-            Decompresser(Path.Combine(path, nomDuTravail), pathDestination);
-            //conversion de type string -> DirectoryInfo 
-            destination = new DirectoryInfo(pathDestination);
-
-            //parcourir les repertoires qui correspondent au regex
+            // Parcourir les répertoires qui correspondent au regex
             Regex regexValidationFolder = new Regex("[A-Za-z]*_(?<numeroMatricule>(\\d{7,}))_[A-Za-z]*");
+            
             foreach (DirectoryInfo dir in destination.GetDirectories())
             {
                 Match resultat = regexValidationFolder.Match(dir.Name);
                 if (resultat.Success)
                 {
-                    //effacer les fichiers indésirables
+                    // Effacer les fichiers indésirables
                     string[] TypeDeFichierAEffacer = new string[] { "*.suo", "*.user", "*.userosscache", "*.sln.docstates", "*.project", "*.mdj", "*.svg" };
+                    
                     foreach (string type in TypeDeFichierAEffacer)
                     {
                         {
@@ -572,6 +621,7 @@ namespace RplpAvecBD.Controllers
                             }
                         }
                     }
+                    
                     string matricule = resultat.Groups["numeroMatricule"].Value;
                     try
                     {
@@ -583,8 +633,9 @@ namespace RplpAvecBD.Controllers
                     }
                 }
 
-                //effacer les repertoires indésirables
+                // Effacer les répertoires indésirables
                 string[] RepetoireAEffacer = new string[] { ".vs", "bin", "obj", "build" };
+                
                 foreach (string NomDirectoryAEffacer in RepetoireAEffacer)
                 {
                     DirectoryInfo[] repertoire = destination.GetDirectories(NomDirectoryAEffacer, SearchOption.AllDirectories); ;
@@ -606,233 +657,32 @@ namespace RplpAvecBD.Controllers
                     }
                 }
             }
-            ///temporairement retiré pour faciliter les tests.
-            //EffacerFichierRecu(path, nomDuTravail);
         }
 
-        //[HttpPost]
-        //[RequestSizeLimit(105_000_000)]  //ajuste la taille limite du fichier a 100 Mb (requete du client)
-        //public bool UploadZIP(Microsoft.AspNetCore.Http.IFormFile file)
-        //{
-        //    // obtenir le nom du fichier
-        //    string fileName = Path.GetFileName(file.FileName);
-
-        //    string path = Directory.GetCurrentDirectory();
-        //    //obtenir repertoire temporaire de lutilisateur
-        //    string pathUser = Path.GetTempPath();
-
-        //    // si le fichier existe deja, on efface celui qui etait present 
-        //    if (System.IO.File.Exists(fileName))
-        //    {
-        //        System.IO.File.Delete(fileName);
-        //    }
-
-        //    // Creation du nouveau fichier local et copie le contenu du fichier dedans
-        //    using (FileStream localFile = System.IO.File.OpenWrite(fileName))
-        //    using (Stream uploadedFile = file.OpenReadStream())
-        //    {
-        //        //recevoir le fichier
-        //        uploadedFile.CopyTo(localFile);
-        //        string extension = Path.GetExtension(file.FileName).ToLowerInvariant();
-        //        FileInfo fichierRecu = new FileInfo(file.FileName);
-        //        localFile.Close();
-        //        uploadedFile.Close();
-
-        //        //verifie si l'extension est vide ou si n'est pas un .zip)
-        //        if (string.IsNullOrEmpty(extension) ||
-        //            (extension != ".zip") ||
-        //            (fichierRecu.FullName.Contains(".jsp")) ||
-        //            (fichierRecu.FullName.Contains(".exe")) ||
-        //            (fichierRecu.FullName.Contains(".msi")) ||
-        //            (fichierRecu.FullName.Contains(".bat")) ||
-        //            (fichierRecu.FullName.Contains(".php")) ||
-        //            (fichierRecu.FullName.Contains(".pht")) ||
-        //            (fichierRecu.FullName.Contains(".phtml")) ||
-        //            (fichierRecu.FullName.Contains(".asa")) ||
-        //            (fichierRecu.FullName.Contains(".cer")) ||
-        //            (fichierRecu.FullName.Contains(".asax")) ||
-        //            (fichierRecu.FullName.Contains(".swf")) ||
-        //            (fichierRecu.FullName.Contains(".com")) ||
-        //            (fichierRecu.FullName.Contains(".xap")))
-        //        {
-        //            try
-        //            {
-        //                fichierRecu.Delete();
-        //            }
-        //            catch (IOException)
-        //            {
-        //                fichierRecu.Delete();
-        //            }
-        //            catch (UnauthorizedAccessException)
-        //            {
-        //                fichierRecu.Delete();
-        //            }
-        //        }
-        //        if (fichierRecu.Exists)
-        //        {
-        //            FileInfo fichierDansUpload = new FileInfo(Path.Combine(path, "Upload", fichierRecu.Name));
-        //            if (fichierDansUpload.Exists)
-        //            {
-        //                try
-        //                {
-        //                    fichierDansUpload.Delete();
-        //                }
-        //                catch (IOException)
-        //                {
-        //                    fichierDansUpload.Delete();
-        //                }
-        //                catch (UnauthorizedAccessException)
-        //                {
-        //                    fichierDansUpload.Delete();
-        //                }
-        //            }
-        //            //deplacer le fichier dans le repetoire upload
-        //            fichierRecu.MoveTo(Path.Combine(path, "Upload", fichierRecu.Name));
-        //            ViewBag.Message = "Téléchargement effectué avec succès";
-        //        }
-        //        else
-        //        {
-        //            return false;
-        //        }
-        //    }
-        //    return true;
-        //}
-
-
-        ///// <summary>
-        ///// fonction qui efface le fichier recu en parametre 
-        ///// </summary>
-        ///// <param name="path"></param>
-        ///// <param name="nomDuTravail"></param>
-        //public void EffacerFichierRecu(string path, string nomDuTravail)
-        //{
-        //    string pathEtNomFichierAEffacer = Path.Combine(path, nomDuTravail).ToString();
-        //    FileInfo fichierAEffacer = new FileInfo(pathEtNomFichierAEffacer);
-        //    try
-        //    {
-        //        if (fichierAEffacer.Exists)
-        //        {
-        //            fichierAEffacer.Delete();
-        //        }
-        //    }
-        //    catch (IOException)
-        //    {
-        //        fichierAEffacer.Delete();
-        //    }
-        //    catch (UnauthorizedAccessException)
-        //    {
-        //        fichierAEffacer.Delete();
-        //    }
-        //}
-
-        //[HttpPost]
-        //[RequestSizeLimit(2_000_000)]  //ajuste la taille limite du fichier 2mb 
-        //public IActionResult UploadCSV(Microsoft.AspNetCore.Http.IFormFile file)
-        //{
-        //    // obtenir le nom du fichier
-        //    string fileName = Path.GetFileName(file.FileName);
-
-        //    string path = Directory.GetCurrentDirectory();
-
-        //    //obtenir repertoire temporaire de lutilisateur
-        //    string pathUser = Path.GetTempPath();
-
-        //    // si le fichier existe deja, on efface celui qui etait present 
-        //    if (System.IO.File.Exists(fileName))
-        //    {
-        //        System.IO.File.Delete(fileName);
-        //    }
-
-        //    // Creation du nouveau fichier local et copie le contenu du fichier dedans
-        //    using (FileStream localFile = System.IO.File.OpenWrite(fileName))
-        //    using (Stream uploadedFile = file.OpenReadStream())
-        //    {
-        //        //recevoir le fichier
-        //        uploadedFile.CopyTo(localFile);
-        //        string extension = Path.GetExtension(file.FileName).ToLowerInvariant();
-        //        FileInfo fichierRecu = new FileInfo(file.FileName);
-        //        localFile.Close();
-        //        uploadedFile.Close();
-
-        //        //verifie si l'extension est vide ou si n'est pas un .zip)
-        //        if (string.IsNullOrEmpty(extension) ||
-        //            (extension != ".csv") ||
-        //            (fichierRecu.FullName.Contains(".jsp")) ||
-        //            (fichierRecu.FullName.Contains(".exe")) ||
-        //            (fichierRecu.FullName.Contains(".msi")) ||
-        //            (fichierRecu.FullName.Contains(".bat")) ||
-        //            (fichierRecu.FullName.Contains(".php")) ||
-        //            (fichierRecu.FullName.Contains(".pht")) ||
-        //            (fichierRecu.FullName.Contains(".phtml")) ||
-        //            (fichierRecu.FullName.Contains(".asa")) ||
-        //            (fichierRecu.FullName.Contains(".cer")) ||
-        //            (fichierRecu.FullName.Contains(".asax")) ||
-        //            (fichierRecu.FullName.Contains(".swf")) ||
-        //            (fichierRecu.FullName.Contains(".com")) ||
-        //            (fichierRecu.FullName.Contains(".xap")))
-        //        {
-        //            try
-        //            {
-        //                fichierRecu.Delete();
-        //            }
-        //            catch (IOException)
-        //            {
-        //                fichierRecu.Delete();
-        //            }
-        //            catch (UnauthorizedAccessException)
-        //            {
-        //                fichierRecu.Delete();
-        //            }
-        //        }
-        //        if (fichierRecu.Exists)
-        //        {
-        //            FileInfo fichierDansUpload = new FileInfo(Path.Combine(path, "Upload", fichierRecu.Name));
-        //            if (fichierDansUpload.Exists)
-        //            {
-        //                try
-        //                {
-        //                    fichierDansUpload.Delete();
-        //                }
-        //                catch (IOException)
-        //                {
-        //                    fichierDansUpload.Delete();
-        //                }
-        //                catch (UnauthorizedAccessException)
-        //                {
-        //                    fichierDansUpload.Delete();
-        //                }
-        //            }
-        //            //deplacer le fichier dans le repetoire upload
-        //            fichierRecu.MoveTo(Path.Combine(path, "Upload", fichierRecu.Name));
-        //            ViewBag.Message = "Téléchargement effectué avec succès";
-        //        }
-        //        else
-        //        {
-        //            ViewBag.Message = "fichier refusé";
-        //        }
-        //    }
-        //    return View();
-        //}
-
-        public static List<string> CreerListeEtudiantsAPartirDuCSV(string fichierCsv)
+        /// <summary>
+        /// fonction qui efface le fichier recu en parametre 
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="nomDuTravail"></param>
+        public void EffacerFichierRecu(string path, string nomDuTravail)
         {
-            List<string> listeEtudiant = new List<string> { };
-            string line = null;
-            string suffixe = "@csfoy.ca";
-            int compteur = 0;
-
-            StreamReader file = new System.IO.StreamReader(fichierCsv);
-            while ((line = file.ReadLine()) != null)
+            string pathEtNomFichierAEffacer = Path.Combine(path, nomDuTravail).ToString();
+            FileInfo fichierAEffacer = new FileInfo(pathEtNomFichierAEffacer);
+            try
             {
-                if (compteur != 0) //skip la ligne d'entete
+                if (fichierAEffacer.Exists)
                 {
-                    string[] splitText = line.Split('"');
-                    listeEtudiant.Add(splitText[1] + suffixe);
+                    fichierAEffacer.Delete();
                 }
-                compteur++;
-            }            
-            file.Close();
-            return listeEtudiant;
+            }
+            catch (IOException)
+            {
+                fichierAEffacer.Delete();
+            }
+            catch (UnauthorizedAccessException)
+            {
+                fichierAEffacer.Delete();
+            }
         }
     }
 }
