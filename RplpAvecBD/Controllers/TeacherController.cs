@@ -160,13 +160,13 @@ namespace RplpAvecBD.Controllers
                     // Ajouter la liste d'Assignments dans la ViewBag
                     ViewBag.listeAssignment = listeAssignment;
 
-                    //obtenir info necessaire sur Assignment de cours shoisi pour aficher dans View
+                    //obtenir info necessaire sur Assignment de cours choisi pour aficher dans View
                     Dictionary<int, (string, int, int)> infoSurLesAssignments = CodePostController.ObtenirDictionaryTravauxTotalEtManquantsDansCours((int)p_cours.idCoursChoisi, client);
 
-                    // Ajouter info necessaire sur Assignment de cours shoisi dans la session
+                    // Ajouter info necessaire sur Assignment de cours choisi dans la session
                     HttpContext.Session.SetString("infoSurLesAssignmentsSession", JsonConvert.SerializeObject(infoSurLesAssignments));
 
-                    // Ajouter info necessaire sur Assignment de cours shoisi  dans la ViewBag
+                    // Ajouter info necessaire sur Assignment de cours choisi  dans la ViewBag
                     ViewBag.infoSurLesAssignments = infoSurLesAssignments;
 
                     return View();
@@ -244,6 +244,7 @@ namespace RplpAvecBD.Controllers
 
         //[Authorize("estProfesseur")]
         [HttpPost]
+        [RequestSizeLimit(2_000_000)]  //ajuste la taille limite du fichier 2mb
         public async Task<IActionResult> VerifierListeEtudiant(IFormFile fichierCSV)
         {
             using (HttpClient client = new HttpClient())
@@ -260,70 +261,53 @@ namespace RplpAvecBD.Controllers
                 // Ajouter l'objet du cours choisi dans la ViewBag
                 ViewBag.coursChoisi = coursChoisi;
 
-                // Récupérer la liste des étudiants dans la session
-                List<string> listeEtudiants = JsonConvert.DeserializeObject<List<string>>(HttpContext.Session.GetString("ListeEtudiantsSession"));
-
-                if (listeEtudiants.Count == 0 && fichierCSV == null)
+                if (fichierCSV == null)
                 {
-                    //ModelState.AddModelError("fichierCSV", "Vous devez télécharger la liste d'étudiant inscrits dans le cours !");
+                    // Récupérer la liste des étudiants dans la session
+                    List<string> listeEtudiants = JsonConvert.DeserializeObject<List<string>>(HttpContext.Session.GetString("ListeEtudiantsSession"));
 
-                    // Ajouter l'objet du cours choisi dans la ViewBag
-                    ViewBag.coursChoisi = coursChoisi;
+                    if (listeEtudiants.Count == 0)
+                    {
+                        ViewBag.message = "Vous devez sélectionner un fichier CSV !";
 
-                    ModelState.AddModelError("estFichierCSVPresent", "Vous devez sélectionner un fichier CSV !");
+                        return View("ErreurFichierCSV", "Teacher");
+                    }
 
-                    // Ajouter l'objet du cours choisi dans la ViewBag
-                    //ViewBag.coursChoisi = coursChoisi;
+                    if (listeEtudiants.Count > 0)
+                    {
+                        ViewBag.afficherUpLoadFichierZip = false;
 
-                    //return View("Index", new Course());
+                        ViewBag.erreurFichierZIPIntrouvable = false;
 
-                    return View("ErreurListeEtudiantVide", "Teacher");
+                        return View("AjouterTravail", new Assignment());
+                    }
+
                 }
-
-                if (listeEtudiants.Count > 0 && fichierCSV == null)
+                else
                 {
-                    ViewBag.afficherUpLoadFichierZip = false;
+                    List<string> nouvelleListeEtudiant = CodePostController.AjouterEtudiantsDansCours(coursChoisi.id, client, fichierCSV, professeurSession);
 
-                    ViewBag.erreurFichierZIPIntrouvable = false;
+                    if (nouvelleListeEtudiant.Count <= 0)
+                    {
+                        // Ajouter l'objet du cours choisi dans la ViewBag
+                        ViewBag.coursChoisi = coursChoisi;
+                        ViewBag.message = "Le fichier '" + fichierCSV.FileName + "' a été refusé pour des questions de sécurité !";
 
-                    return View("AjouterTravail", new Assignment());
-                }
+                        return View("ErreurFichierCSV", "Teacher");
+                    }
+                    else
+                    {
+                        // Ajouter l'objet du cours choisi dans la ViewBag
+                        ViewBag.coursChoisi = coursChoisi;
 
-                if (fichierCSV != null)
-                {
-                    CodePostController.AjouterEtudiantsDansCours(coursChoisi.id, listeEtudiants, client, fichierCSV, professeurSession);
+                        ViewBag.afficherUpLoadFichierZip = false;
 
-                    ViewBag.afficherUpLoadFichierZip = false;
-
-                    ViewBag.erreurFichierZIPIntrouvable = false;
-
+                        ViewBag.erreurFichierZIPIntrouvable = false;
+                    }
+                    
                     return View("AjouterTravail", new Assignment());
                 }
             }
-
-
-            //// obtenir le nom du fichier
-            //string fileName = System.IO.Path.GetFileName(file.FileName);
-
-            //// si le fichier existe deja, on efface celui qui etait present 
-            //if (System.IO.File.Exists(fileName))
-            //{
-            //    System.IO.File.Delete(fileName);
-            //}
-
-            //// Creation du nouveau fichier local et copie le contenu du fichier dedans
-            //using (FileStream localFile = System.IO.File.OpenWrite(fileName))
-            //using (Stream uploadedFile = file.OpenReadStream())
-            //{
-            //    uploadedFile.CopyTo(localFile);
-            //}
-            ////confirmation de succes
-            //ViewBag.Message = "Téléchargement effectué avec succès";
-
-
-            ////decompresser le fichier recu (fichier source, destination)
-            //Decompresser(fileName, ".\\Fichiers");
-
 
             return View();
         }
@@ -682,6 +666,7 @@ namespace RplpAvecBD.Controllers
             string fileName = Path.GetFileName(file.FileName);
 
             string path = Directory.GetCurrentDirectory();
+
             //obtenir repertoire temporaire de lutilisateur
             string pathUser = Path.GetTempPath();
 

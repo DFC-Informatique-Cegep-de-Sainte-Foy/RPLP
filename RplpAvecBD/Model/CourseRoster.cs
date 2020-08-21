@@ -16,5 +16,9 @@ namespace RplpAvecBD.Model
             this.students = p_listStudents;
             this.graders = p_listStudents;
         }
+        public CourseRoster(int p_id)
+        {
+            this.id = p_id;
+        }
     }
 }

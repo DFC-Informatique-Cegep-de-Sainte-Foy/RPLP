@@ -50,7 +50,7 @@
                     <tbody>
                         <tr style="height: 15px;"></tr>
                         <tr>
-                            <td>
+                            <td>                           
                                 @Html.DropDownListFor(m => m.idCoursChoisi, new SelectList(@ViewBag.listeCours, "id", "name"), "-- Selectionner un cours --", new { @class = "form-control", onchange = "this.form.submit()" })
                             </td>
                         </tr>
@@ -105,11 +105,6 @@
                                     <input type="submit" class="btn btn-success" id="btnAjouterTravail" value="Ajouter un travail" />
                                 </td>
                             }
-                        </tr>
-                        <tr>
-                            <td>
-                                @Html.ValidationMessage("estFichierCSVPresent", "", new { @class = "text-danger" })
-                            </td>
                         </tr>
                     </tbody>
                 </table>

@@ -15,9 +15,9 @@ namespace RplpAvecBD.Controllers
 {
     public class CodePostController : Controller
     {
-        
+
         private readonly RplpContext _rplpContext;
-        private Professeur _professeur; 
+        private Professeur _professeur;
         HttpClient _client { get; set; }
 
         //public CodePostController(string p_courriel)
@@ -151,26 +151,105 @@ namespace RplpAvecBD.Controllers
         /// <param name="p_idCours">Id de Cours dans CodePost</param>
         /// <param name="p_listeEtudiants">Liste de tous les étudiants qui suivent le Cours</param>
         /// <param name="p_client">HttpClient qui a été créé avec l'APIKey du client (le prof)</param>
-        public static void AjouterEtudiantsDansCours(int p_idCours, List<string> p_listeEtudiants, HttpClient p_client, IFormFile p_fichierCSV, Professeur p_professeur)
+        public static List<string> AjouterEtudiantsDansCours(int p_idCours, HttpClient p_client, IFormFile p_fichierCSV, Professeur p_professeur)
         {
-            CourseRoster courseRoster = new CourseRoster(p_idCours, p_listeEtudiants);
+            CourseRoster courseRoster = new CourseRoster(p_idCours);
+
+            List<string> nouvelleListeEtudiants = new List<string>();
 
             if (p_fichierCSV != null)
             {
-                var filePath = Path.Combine(Directory.GetCurrentDirectory(), p_fichierCSV.FileName);
+                // Obtenir le nom du fichier
+                string fileName = p_fichierCSV.FileName;
 
-                using (var stream = new FileStream(filePath, FileMode.Create))
+                string path = Directory.GetCurrentDirectory();
+
+                // Obtenir le répertoire temporaire de l'utilisateur
+                string pathUser = Path.GetTempPath();
+
+                // Si le fichier existe déjà, on efface celui qui était présent 
+                if (System.IO.File.Exists(fileName))
                 {
-                    p_fichierCSV.CopyToAsync(stream);
-                    stream.Close();
-                    stream.Dispose();
+                    System.IO.File.Delete(fileName);
                 }
 
-                List<string> NouvelleListeEtudiants = TeacherController.CreerListeEtudiantsAPartirDuCsv(filePath);
+                // Création du nouveau fichier local et copie le contenu du fichier dedans
+                using (FileStream localFile = System.IO.File.OpenWrite(fileName))
 
-                courseRoster.students = NouvelleListeEtudiants;
-                courseRoster.graders = NouvelleListeEtudiants;
-                courseRoster.graders.Add(p_professeur.courriel);
+                using (Stream uploadedFile = p_fichierCSV.OpenReadStream())
+                {
+                    // Recevoir le fichier
+                    uploadedFile.CopyTo(localFile);
+                    string extension = Path.GetExtension(p_fichierCSV.FileName).ToLowerInvariant();
+                    FileInfo fichierRecu = new FileInfo(p_fichierCSV.FileName);
+                    localFile.Close();
+                    uploadedFile.Close();
+
+                    // Vérifier si l'extension est vide ou si n'est pas un .csv)
+                    if (string.IsNullOrEmpty(extension) ||
+                        (extension != ".csv") ||
+                        (fichierRecu.FullName.Contains(".jsp")) ||
+                        (fichierRecu.FullName.Contains(".exe")) ||
+                        (fichierRecu.FullName.Contains(".msi")) ||
+                        (fichierRecu.FullName.Contains(".bat")) ||
+                        (fichierRecu.FullName.Contains(".php")) ||
+                        (fichierRecu.FullName.Contains(".pht")) ||
+                        (fichierRecu.FullName.Contains(".phtml")) ||
+                        (fichierRecu.FullName.Contains(".asa")) ||
+                        (fichierRecu.FullName.Contains(".cer")) ||
+                        (fichierRecu.FullName.Contains(".asax")) ||
+                        (fichierRecu.FullName.Contains(".swf")) ||
+                        (fichierRecu.FullName.Contains(".com")) ||
+                        (fichierRecu.FullName.Contains(".xap")))
+                    {
+                        try
+                        {
+                            fichierRecu.Delete();
+                        }
+                        catch (IOException)
+                        {
+                            fichierRecu.Delete();
+                        }
+                        catch (UnauthorizedAccessException)
+                        {
+                            fichierRecu.Delete();
+                        }
+                    }
+                    if (fichierRecu.Exists)
+                    {
+                        FileInfo fichierDansUpload = new FileInfo(Path.Combine(path, "Upload", fichierRecu.Name));
+
+                        if (fichierDansUpload.Exists)
+                        {
+                            try
+                            {
+                                fichierDansUpload.Delete();
+                            }
+                            catch (IOException)
+                            {
+                                fichierDansUpload.Delete();
+                            }
+                            catch (UnauthorizedAccessException)
+                            {
+                                fichierDansUpload.Delete();
+                            }
+                        }
+
+                        // déplacer le fichier dans le répetoire Upload
+                        fichierRecu.MoveTo(Path.Combine(path, "Upload", fichierRecu.Name));
+                        
+                        if (fichierDansUpload.Exists)
+                        {
+                            nouvelleListeEtudiants = TeacherController.CreerListeEtudiantsAPartirDuCsv(fichierRecu.ToString());
+
+                            courseRoster.students = nouvelleListeEtudiants;
+                            courseRoster.graders = nouvelleListeEtudiants;
+                            courseRoster.graders.Add(p_professeur.courriel);
+
+                            fichierDansUpload.Delete();
+                        }
+                    }
+                }
             }
 
             var json = JsonConvert.SerializeObject(courseRoster);
@@ -179,6 +258,8 @@ namespace RplpAvecBD.Controllers
             var task = p_client.PatchAsync("https://api.codepost.io/courses/" + p_idCours + "/roster/", content);
             task.Wait();
             var result = task.Result;
+
+            return nouvelleListeEtudiants;
         }
 
         /// <summary>
