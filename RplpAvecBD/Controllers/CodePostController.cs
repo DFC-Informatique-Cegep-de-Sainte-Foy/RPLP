@@ -215,6 +215,7 @@ namespace RplpAvecBD.Controllers
                             fichierRecu.Delete();
                         }
                     }
+
                     if (fichierRecu.Exists)
                     {
                         FileInfo fichierDansUpload = new FileInfo(Path.Combine(path, "Upload", fichierRecu.Name));
@@ -240,7 +241,7 @@ namespace RplpAvecBD.Controllers
                         
                         if (fichierDansUpload.Exists)
                         {
-                            nouvelleListeEtudiants = TeacherController.CreerListeEtudiantsAPartirDuCsv(fichierRecu.ToString());
+                            nouvelleListeEtudiants = TeacherController.CreerListeEtudiantsAPartirDuCSV(fichierRecu.ToString());
 
                             courseRoster.students = nouvelleListeEtudiants;
                             courseRoster.graders = nouvelleListeEtudiants;

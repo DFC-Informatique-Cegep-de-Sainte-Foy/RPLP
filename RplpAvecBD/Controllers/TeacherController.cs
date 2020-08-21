@@ -235,13 +235,6 @@ namespace RplpAvecBD.Controllers
             return View();
         }
 
-
-        //[Authorize("estProfesseur")]
-        public IActionResult ErreurListeEtudiantVide()
-        {
-            return View();
-        }
-
         //[Authorize("estProfesseur")]
         [HttpPost]
         [RequestSizeLimit(2_000_000)]  //ajuste la taille limite du fichier 2mb
@@ -291,7 +284,7 @@ namespace RplpAvecBD.Controllers
                     {
                         // Ajouter l'objet du cours choisi dans la ViewBag
                         ViewBag.coursChoisi = coursChoisi;
-                        ViewBag.message = "Le fichier '" + fichierCSV.FileName + "' a été refusé pour des questions de sécurité !";
+                        ViewBag.message = "Le fichier '" + fichierCSV.FileName + "' a été refusé pour des raisons de sécurité !";
 
                         return View("ErreurFichierCSV", "Teacher");
                     }
@@ -315,11 +308,17 @@ namespace RplpAvecBD.Controllers
 
         //[Authorize("estProfesseur")]
         [HttpPost]
+        [RequestSizeLimit(105_000_000)]  //ajuste la taille limite du fichier a 100 Mb (requete du client)
         public async Task<IActionResult> VerifierFichierZIP(IFormFile fichierZIP)
         {
-
             using (HttpClient client = new HttpClient())
             {
+                // Récuperér le professeur dans la session
+                Professeur professeurSession = JsonConvert.DeserializeObject<Professeur>(HttpContext.Session.GetString("ProfesseurSession"));
+
+                client.BaseAddress = new Uri("https://api.codepost.io");
+                client.DefaultRequestHeaders.Add("authorization", "Token " + professeurSession.apiKey);
+
                 // Récuperér l'objet du cours choisi dans la session
                 Course coursChoisi = JsonConvert.DeserializeObject<Course>(HttpContext.Session.GetString("coursChoisi"));
 
@@ -328,46 +327,119 @@ namespace RplpAvecBD.Controllers
 
                 if (fichierZIP == null)
                 {
-
-                    ModelState.AddModelError("estFichierZIPPresent", "Vous devez sélectionner un fichier ZIP !");
-
                     ViewBag.afficherUpLoadFichierZip = true;
 
-                    ViewBag.erreurFichierZIPIntrouvable = true;
+                    ViewBag.erreurFichierZIP = "Fichier introuvable";
 
                     return View("AjouterTravail", new Assignment());
                 }
+                else
+                {
+                    // Obtenir le nom du fichier
+                    string fileName = Path.GetFileName(fichierZIP.FileName);
 
+                    string path = Directory.GetCurrentDirectory();
+                    // Obtenir répertoire temporaire de l'utilisateur
+                    string pathUser = Path.GetTempPath();
+
+                    // Si le fichier existe déjà, on efface celui qui était présent
+                    if (System.IO.File.Exists(fileName))
+                    {
+                        System.IO.File.Delete(fileName);
+                    }
+                    
+                    // Création du nouveau fichier local et copie le contenu du fichier dedans
+                    using (FileStream localFile = System.IO.File.OpenWrite(fileName))
+                    using (Stream uploadedFile = fichierZIP.OpenReadStream())
+                    {
+                        // Recevoir le fichier
+                        uploadedFile.CopyTo(localFile);
+                        string extension = Path.GetExtension(fichierZIP.FileName).ToLowerInvariant();
+                        FileInfo fichierRecu = new FileInfo(fichierZIP.FileName);
+                        localFile.Close();
+                        uploadedFile.Close();
+
+                        // Vérifie si l'extension est vide ou si n'est pas un .zip)
+                        if (string.IsNullOrEmpty(extension) ||
+                            (extension != ".zip") ||
+                            (fichierRecu.FullName.Contains(".jsp")) ||
+                            (fichierRecu.FullName.Contains(".exe")) ||
+                            (fichierRecu.FullName.Contains(".msi")) ||
+                            (fichierRecu.FullName.Contains(".bat")) ||
+                            (fichierRecu.FullName.Contains(".php")) ||
+                            (fichierRecu.FullName.Contains(".pht")) ||
+                            (fichierRecu.FullName.Contains(".phtml")) ||
+                            (fichierRecu.FullName.Contains(".asa")) ||
+                            (fichierRecu.FullName.Contains(".cer")) ||
+                            (fichierRecu.FullName.Contains(".asax")) ||
+                            (fichierRecu.FullName.Contains(".swf")) ||
+                            (fichierRecu.FullName.Contains(".com")) ||
+                            (fichierRecu.FullName.Contains(".xap")))
+                        {
+                            try
+                            {
+                                fichierRecu.Delete();
+                            }
+                            catch (IOException)
+                            {
+                                fichierRecu.Delete();
+                            }
+                            catch (UnauthorizedAccessException)
+                            {
+                                fichierRecu.Delete();
+                            }
+                        }
+
+                        if (fichierRecu.Exists)
+                        {
+                            FileInfo fichierDansUpload = new FileInfo(Path.Combine(path, "Upload", fichierRecu.Name));
+
+                            if (fichierDansUpload.Exists)
+                            {
+                                try
+                                {
+                                    fichierDansUpload.Delete();
+                                }
+                                catch (IOException)
+                                {
+                                    fichierDansUpload.Delete();
+                                }
+                                catch (UnauthorizedAccessException)
+                                {
+                                    fichierDansUpload.Delete();
+                                }
+                            }
+
+                            // Déplacer le fichier dans le répetoire Upload
+                            fichierRecu.MoveTo(Path.Combine(path, "Upload", fichierRecu.Name));
+
+                            if (fichierDansUpload.Exists)
+                            {
+                                // Décompresser ...
+
+
+
+                                //fichierDansUpload.Delete();
+                            }
+                        }
+                        else
+                        {
+                            ViewBag.afficherUpLoadFichierZip = true;
+
+                            ViewBag.erreurFichierZIP = "Fichier réfusé";
+
+                            return View("AjouterTravail", new Assignment());
+                        }
+                    }
+                }
             }
 
             ViewBag.afficherUpLoadFichierZip = true;
 
-            ViewBag.erreurFichierZIPIntrouvable = false;
+            ViewBag.erreurFichierZIP = "";
 
             return View("ResultatAjoutTravail");
         }
-
-
-        //[Authorize("estProfesseur")]
-        public IActionResult AjouterTravail()
-        {
-            using (HttpClient client = new HttpClient())
-            {
-                // Récuperér l'objet du cours choisi dans la session
-                Course coursChoisi = JsonConvert.DeserializeObject<Course>(HttpContext.Session.GetString("coursChoisi"));
-
-                // Ajouter l'objet du cours choisi dans la ViewBag
-                ViewBag.coursChoisi = coursChoisi;
-
-                ViewBag.afficherUpLoadFichierZip = true;
-
-                ViewBag.erreurFichierZIPIntrouvable = false;
-
-            }
-
-            return View();
-        }
-
 
         //[Authorize("estProfesseur")]
         [HttpPost]
@@ -396,26 +468,21 @@ namespace RplpAvecBD.Controllers
 
                         ViewBag.afficherUpLoadFichierZip = false;
 
-                        ViewBag.erreurFichierZIPIntrouvable = false;
+                        ViewBag.erreurFichierZIP = "";
 
                         return View();
                     }
-                    
-                    //// Ajouter l'objet du cours choisi dans la ViewBag
-                    //ViewBag.nomTravail = p_assignment.name;
-
+  
                     ViewBag.afficherUpLoadFichierZip = true;
 
-                    ViewBag.erreurFichierZIPIntrouvable = false;
+                    ViewBag.erreurFichierZIP = "";
 
                     return View();
-
-                    //return View("ResultatAjoutTravail", "Teacher");
                 }
 
                 ViewBag.afficherUpLoadFichierZip = false;
 
-                ViewBag.erreurFichierZIPIntrouvable = false;
+                ViewBag.erreurFichierZIP = "";
             }
             return View();
         }
@@ -543,212 +610,211 @@ namespace RplpAvecBD.Controllers
             //EffacerFichierRecu(path, nomDuTravail);
         }
 
-        [HttpPost]
-        [RequestSizeLimit(105_000_000)]  //ajuste la taille limite du fichier a 100 Mb (requete du client)
-        public IActionResult Upload(Microsoft.AspNetCore.Http.IFormFile file)
-        {
-            // obtenir le nom du fichier
-            string fileName = Path.GetFileName(file.FileName);
+        //[HttpPost]
+        //[RequestSizeLimit(105_000_000)]  //ajuste la taille limite du fichier a 100 Mb (requete du client)
+        //public bool UploadZIP(Microsoft.AspNetCore.Http.IFormFile file)
+        //{
+        //    // obtenir le nom du fichier
+        //    string fileName = Path.GetFileName(file.FileName);
 
-            string path = Directory.GetCurrentDirectory();
-            //obtenir repertoire temporaire de lutilisateur
-            string pathUser = Path.GetTempPath();
+        //    string path = Directory.GetCurrentDirectory();
+        //    //obtenir repertoire temporaire de lutilisateur
+        //    string pathUser = Path.GetTempPath();
 
-            // si le fichier existe deja, on efface celui qui etait present 
-            if (System.IO.File.Exists(fileName))
-            {
-                System.IO.File.Delete(fileName);
-            }
+        //    // si le fichier existe deja, on efface celui qui etait present 
+        //    if (System.IO.File.Exists(fileName))
+        //    {
+        //        System.IO.File.Delete(fileName);
+        //    }
 
-            // Creation du nouveau fichier local et copie le contenu du fichier dedans
-            using (FileStream localFile = System.IO.File.OpenWrite(fileName))
-            using (Stream uploadedFile = file.OpenReadStream())
-            {
-                //recevoir le fichier
-                uploadedFile.CopyTo(localFile);
-                string extension = Path.GetExtension(file.FileName).ToLowerInvariant();
-                FileInfo fichierRecu = new FileInfo(file.FileName);
-                localFile.Close();
-                uploadedFile.Close();
+        //    // Creation du nouveau fichier local et copie le contenu du fichier dedans
+        //    using (FileStream localFile = System.IO.File.OpenWrite(fileName))
+        //    using (Stream uploadedFile = file.OpenReadStream())
+        //    {
+        //        //recevoir le fichier
+        //        uploadedFile.CopyTo(localFile);
+        //        string extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+        //        FileInfo fichierRecu = new FileInfo(file.FileName);
+        //        localFile.Close();
+        //        uploadedFile.Close();
 
-                //verifie si l'extension est vide ou si n'est pas un .zip)
-                if (string.IsNullOrEmpty(extension) ||
-                    (extension != ".zip") ||
-                    (fichierRecu.FullName.Contains(".jsp")) ||
-                    (fichierRecu.FullName.Contains(".exe")) ||
-                    (fichierRecu.FullName.Contains(".msi")) ||
-                    (fichierRecu.FullName.Contains(".bat")) ||
-                    (fichierRecu.FullName.Contains(".php")) ||
-                    (fichierRecu.FullName.Contains(".pht")) ||
-                    (fichierRecu.FullName.Contains(".phtml")) ||
-                    (fichierRecu.FullName.Contains(".asa")) ||
-                    (fichierRecu.FullName.Contains(".cer")) ||
-                    (fichierRecu.FullName.Contains(".asax")) ||
-                    (fichierRecu.FullName.Contains(".swf")) ||
-                    (fichierRecu.FullName.Contains(".com")) ||
-                    (fichierRecu.FullName.Contains(".xap")))
-                {
-                    try
-                    {
-                        fichierRecu.Delete();
-                    }
-                    catch (IOException)
-                    {
-                        fichierRecu.Delete();
-                    }
-                    catch (UnauthorizedAccessException)
-                    {
-                        fichierRecu.Delete();
-                    }
-                }
-                if (fichierRecu.Exists)
-                {
-                    FileInfo fichierDansUpload = new FileInfo(Path.Combine(path, "Upload", fichierRecu.Name));
-                    if (fichierDansUpload.Exists)
-                    {
-                        try
-                        {
-                            fichierDansUpload.Delete();
-                        }
-                        catch (IOException)
-                        {
-                            fichierDansUpload.Delete();
-                        }
-                        catch (UnauthorizedAccessException)
-                        {
-                            fichierDansUpload.Delete();
-                        }
-                    }
-                    //deplacer le fichier dans le repetoire upload
-                    fichierRecu.MoveTo(Path.Combine(path, "Upload", fichierRecu.Name));
-                    ViewBag.Message = "Téléchargement effectué avec succès";
-                }
-                else
-                {
-                    ViewBag.Message = "fichier refusé";
-                }
-            }
-            return View();
-        }
-
-
-        /// <summary>
-        /// fonction qui efface le fichier recu en parametre 
-        /// </summary>
-        /// <param name="path"></param>
-        /// <param name="nomDuTravail"></param>
-        public void EffacerFichierRecu(string path, string nomDuTravail)
-        {
-            string pathEtNomFichierAEffacer = Path.Combine(path, nomDuTravail).ToString();
-            FileInfo fichierAEffacer = new FileInfo(pathEtNomFichierAEffacer);
-            try
-            {
-                if (fichierAEffacer.Exists)
-                {
-                    fichierAEffacer.Delete();
-                }
-            }
-            catch (IOException)
-            {
-                fichierAEffacer.Delete();
-            }
-            catch (UnauthorizedAccessException)
-            {
-                fichierAEffacer.Delete();
-            }
-        }
-
-        [HttpPost]
-        [RequestSizeLimit(2_000_000)]  //ajuste la taille limite du fichier 2mb 
-        public IActionResult UploadCsv(Microsoft.AspNetCore.Http.IFormFile file)
-        {
-            // obtenir le nom du fichier
-            string fileName = Path.GetFileName(file.FileName);
-
-            string path = Directory.GetCurrentDirectory();
-
-            //obtenir repertoire temporaire de lutilisateur
-            string pathUser = Path.GetTempPath();
-
-            // si le fichier existe deja, on efface celui qui etait present 
-            if (System.IO.File.Exists(fileName))
-            {
-                System.IO.File.Delete(fileName);
-            }
-
-            // Creation du nouveau fichier local et copie le contenu du fichier dedans
-            using (FileStream localFile = System.IO.File.OpenWrite(fileName))
-            using (Stream uploadedFile = file.OpenReadStream())
-            {
-                //recevoir le fichier
-                uploadedFile.CopyTo(localFile);
-                string extension = Path.GetExtension(file.FileName).ToLowerInvariant();
-                FileInfo fichierRecu = new FileInfo(file.FileName);
-                localFile.Close();
-                uploadedFile.Close();
-
-                //verifie si l'extension est vide ou si n'est pas un .zip)
-                if (string.IsNullOrEmpty(extension) ||
-                    (extension != ".csv") ||
-                    (fichierRecu.FullName.Contains(".jsp")) ||
-                    (fichierRecu.FullName.Contains(".exe")) ||
-                    (fichierRecu.FullName.Contains(".msi")) ||
-                    (fichierRecu.FullName.Contains(".bat")) ||
-                    (fichierRecu.FullName.Contains(".php")) ||
-                    (fichierRecu.FullName.Contains(".pht")) ||
-                    (fichierRecu.FullName.Contains(".phtml")) ||
-                    (fichierRecu.FullName.Contains(".asa")) ||
-                    (fichierRecu.FullName.Contains(".cer")) ||
-                    (fichierRecu.FullName.Contains(".asax")) ||
-                    (fichierRecu.FullName.Contains(".swf")) ||
-                    (fichierRecu.FullName.Contains(".com")) ||
-                    (fichierRecu.FullName.Contains(".xap")))
-                {
-                    try
-                    {
-                        fichierRecu.Delete();
-                    }
-                    catch (IOException)
-                    {
-                        fichierRecu.Delete();
-                    }
-                    catch (UnauthorizedAccessException)
-                    {
-                        fichierRecu.Delete();
-                    }
-                }
-                if (fichierRecu.Exists)
-                {
-                    FileInfo fichierDansUpload = new FileInfo(Path.Combine(path, "Upload", fichierRecu.Name));
-                    if (fichierDansUpload.Exists)
-                    {
-                        try
-                        {
-                            fichierDansUpload.Delete();
-                        }
-                        catch (IOException)
-                        {
-                            fichierDansUpload.Delete();
-                        }
-                        catch (UnauthorizedAccessException)
-                        {
-                            fichierDansUpload.Delete();
-                        }
-                    }
-                    //deplacer le fichier dans le repetoire upload
-                    fichierRecu.MoveTo(Path.Combine(path, "Upload", fichierRecu.Name));
-                    ViewBag.Message = "Téléchargement effectué avec succès";
-                }
-                else
-                {
-                    ViewBag.Message = "fichier refusé";
-                }
-            }
-            return View();
-        }
+        //        //verifie si l'extension est vide ou si n'est pas un .zip)
+        //        if (string.IsNullOrEmpty(extension) ||
+        //            (extension != ".zip") ||
+        //            (fichierRecu.FullName.Contains(".jsp")) ||
+        //            (fichierRecu.FullName.Contains(".exe")) ||
+        //            (fichierRecu.FullName.Contains(".msi")) ||
+        //            (fichierRecu.FullName.Contains(".bat")) ||
+        //            (fichierRecu.FullName.Contains(".php")) ||
+        //            (fichierRecu.FullName.Contains(".pht")) ||
+        //            (fichierRecu.FullName.Contains(".phtml")) ||
+        //            (fichierRecu.FullName.Contains(".asa")) ||
+        //            (fichierRecu.FullName.Contains(".cer")) ||
+        //            (fichierRecu.FullName.Contains(".asax")) ||
+        //            (fichierRecu.FullName.Contains(".swf")) ||
+        //            (fichierRecu.FullName.Contains(".com")) ||
+        //            (fichierRecu.FullName.Contains(".xap")))
+        //        {
+        //            try
+        //            {
+        //                fichierRecu.Delete();
+        //            }
+        //            catch (IOException)
+        //            {
+        //                fichierRecu.Delete();
+        //            }
+        //            catch (UnauthorizedAccessException)
+        //            {
+        //                fichierRecu.Delete();
+        //            }
+        //        }
+        //        if (fichierRecu.Exists)
+        //        {
+        //            FileInfo fichierDansUpload = new FileInfo(Path.Combine(path, "Upload", fichierRecu.Name));
+        //            if (fichierDansUpload.Exists)
+        //            {
+        //                try
+        //                {
+        //                    fichierDansUpload.Delete();
+        //                }
+        //                catch (IOException)
+        //                {
+        //                    fichierDansUpload.Delete();
+        //                }
+        //                catch (UnauthorizedAccessException)
+        //                {
+        //                    fichierDansUpload.Delete();
+        //                }
+        //            }
+        //            //deplacer le fichier dans le repetoire upload
+        //            fichierRecu.MoveTo(Path.Combine(path, "Upload", fichierRecu.Name));
+        //            ViewBag.Message = "Téléchargement effectué avec succès";
+        //        }
+        //        else
+        //        {
+        //            return false;
+        //        }
+        //    }
+        //    return true;
+        //}
 
 
-        public static List<string> CreerListeEtudiantsAPartirDuCsv(string fichierCsv)
+        ///// <summary>
+        ///// fonction qui efface le fichier recu en parametre 
+        ///// </summary>
+        ///// <param name="path"></param>
+        ///// <param name="nomDuTravail"></param>
+        //public void EffacerFichierRecu(string path, string nomDuTravail)
+        //{
+        //    string pathEtNomFichierAEffacer = Path.Combine(path, nomDuTravail).ToString();
+        //    FileInfo fichierAEffacer = new FileInfo(pathEtNomFichierAEffacer);
+        //    try
+        //    {
+        //        if (fichierAEffacer.Exists)
+        //        {
+        //            fichierAEffacer.Delete();
+        //        }
+        //    }
+        //    catch (IOException)
+        //    {
+        //        fichierAEffacer.Delete();
+        //    }
+        //    catch (UnauthorizedAccessException)
+        //    {
+        //        fichierAEffacer.Delete();
+        //    }
+        //}
+
+        //[HttpPost]
+        //[RequestSizeLimit(2_000_000)]  //ajuste la taille limite du fichier 2mb 
+        //public IActionResult UploadCSV(Microsoft.AspNetCore.Http.IFormFile file)
+        //{
+        //    // obtenir le nom du fichier
+        //    string fileName = Path.GetFileName(file.FileName);
+
+        //    string path = Directory.GetCurrentDirectory();
+
+        //    //obtenir repertoire temporaire de lutilisateur
+        //    string pathUser = Path.GetTempPath();
+
+        //    // si le fichier existe deja, on efface celui qui etait present 
+        //    if (System.IO.File.Exists(fileName))
+        //    {
+        //        System.IO.File.Delete(fileName);
+        //    }
+
+        //    // Creation du nouveau fichier local et copie le contenu du fichier dedans
+        //    using (FileStream localFile = System.IO.File.OpenWrite(fileName))
+        //    using (Stream uploadedFile = file.OpenReadStream())
+        //    {
+        //        //recevoir le fichier
+        //        uploadedFile.CopyTo(localFile);
+        //        string extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+        //        FileInfo fichierRecu = new FileInfo(file.FileName);
+        //        localFile.Close();
+        //        uploadedFile.Close();
+
+        //        //verifie si l'extension est vide ou si n'est pas un .zip)
+        //        if (string.IsNullOrEmpty(extension) ||
+        //            (extension != ".csv") ||
+        //            (fichierRecu.FullName.Contains(".jsp")) ||
+        //            (fichierRecu.FullName.Contains(".exe")) ||
+        //            (fichierRecu.FullName.Contains(".msi")) ||
+        //            (fichierRecu.FullName.Contains(".bat")) ||
+        //            (fichierRecu.FullName.Contains(".php")) ||
+        //            (fichierRecu.FullName.Contains(".pht")) ||
+        //            (fichierRecu.FullName.Contains(".phtml")) ||
+        //            (fichierRecu.FullName.Contains(".asa")) ||
+        //            (fichierRecu.FullName.Contains(".cer")) ||
+        //            (fichierRecu.FullName.Contains(".asax")) ||
+        //            (fichierRecu.FullName.Contains(".swf")) ||
+        //            (fichierRecu.FullName.Contains(".com")) ||
+        //            (fichierRecu.FullName.Contains(".xap")))
+        //        {
+        //            try
+        //            {
+        //                fichierRecu.Delete();
+        //            }
+        //            catch (IOException)
+        //            {
+        //                fichierRecu.Delete();
+        //            }
+        //            catch (UnauthorizedAccessException)
+        //            {
+        //                fichierRecu.Delete();
+        //            }
+        //        }
+        //        if (fichierRecu.Exists)
+        //        {
+        //            FileInfo fichierDansUpload = new FileInfo(Path.Combine(path, "Upload", fichierRecu.Name));
+        //            if (fichierDansUpload.Exists)
+        //            {
+        //                try
+        //                {
+        //                    fichierDansUpload.Delete();
+        //                }
+        //                catch (IOException)
+        //                {
+        //                    fichierDansUpload.Delete();
+        //                }
+        //                catch (UnauthorizedAccessException)
+        //                {
+        //                    fichierDansUpload.Delete();
+        //                }
+        //            }
+        //            //deplacer le fichier dans le repetoire upload
+        //            fichierRecu.MoveTo(Path.Combine(path, "Upload", fichierRecu.Name));
+        //            ViewBag.Message = "Téléchargement effectué avec succès";
+        //        }
+        //        else
+        //        {
+        //            ViewBag.Message = "fichier refusé";
+        //        }
+        //    }
+        //    return View();
+        //}
+
+        public static List<string> CreerListeEtudiantsAPartirDuCSV(string fichierCsv)
         {
             List<string> listeEtudiant = new List<string> { };
             string line = null;

@@ -5,12 +5,6 @@
     RplpAvecBD.Model.Course coursChoisi = ViewBag.coursChoisi;
 }
 
-@*<p>Model name = @Model.name</p>
-<p>Model points = @Model.points</p>
-<p>Model course = @Model.course</p>
-<p>Model isRelease = @Model.isReleased<p>
-<p>Model isVisible = @Model.isVisible</p>*@
-
     <div class="text-left">
         <br />
         <h2>Ajouter un travail</h2>
@@ -69,13 +63,21 @@
         }
 
 
-        @if (ViewBag.afficherUpLoadFichierZip && ViewBag.erreurFichierZIPIntrouvable == false)
+        @if (ViewBag.afficherUpLoadFichierZip && ViewBag.erreurFichierZIP == "")
         {
             @Html.Partial("_AjouterFichierZIP")
         }
-        else if (ViewBag.afficherUpLoadFichierZip && ViewBag.erreurFichierZIPIntrouvable == true)
+        else if (ViewBag.afficherUpLoadFichierZip && ViewBag.erreurFichierZIP != "")
         {
-            @Html.Partial("_ErreurFichierZIP")
+            @if (ViewBag.erreurFichierZIP == "Fichier introuvable")
+            {
+                @Html.Partial("_ErreurFichierZIPIntrouvable")
+            }
+            else if (ViewBag.erreurFichierZIP == "Fichier réfusé")
+            {
+                @Html.Partial("_ErreurFichierZIPRefuse")
+            }
+
         }
 
         @Html.Partial("_Retourner")
