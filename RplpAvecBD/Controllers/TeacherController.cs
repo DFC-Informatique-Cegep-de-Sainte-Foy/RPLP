@@ -268,7 +268,7 @@ namespace RplpAvecBD.Controllers
 
                     if (listeEtudiants.Count == 0)
                     {
-                        ViewBag.message = "Vous devez sélectionner un fichier CSV !";
+                        ViewBag.message = "Vous devez sélectionner un fichier CSV avec la liste de tous les étudiants inscrits dans le cours !";
 
                         return View("ErreurFichierCSV", "Teacher");
                     }
