@@ -5,7 +5,8 @@ namespace RplpAvecBD.Model
     public class Assignment
     {
         //les proprietes
-        //public int id { get; set; } //id d'assignment
+        public int id { get; set; } //id d'assignment
+
         [Required(ErrorMessage = "Le nom ne doit pas être vide !")]
         [Display(Name = "Nom du travail")]
         public string name { get; set; } // le nom d'assignment (travail)
@@ -23,7 +24,6 @@ namespace RplpAvecBD.Model
         //constructer par initialisation
         public Assignment(string p_name, int p_points, int p_course, bool p_isReleased, bool p_isVisible, bool p_liveFeedbackMode, bool p_hideGrades)
         {
-            //this.id = p_id;
             this.name = p_name;
             this.points = p_points;
             this.course = p_course;

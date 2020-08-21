@@ -16,9 +16,9 @@ namespace RplpAvecBD.Controllers
     public class CodePostController : Controller
     {
 
-        private readonly RplpContext _rplpContext;
-        private Professeur _professeur;
-        HttpClient _client { get; set; }
+        //private readonly RplpContext _rplpContext;
+        //private Professeur _professeur;
+        //HttpClient _client { get; set; }
 
         //public CodePostController(string p_courriel)
         //{
@@ -283,7 +283,6 @@ namespace RplpAvecBD.Controllers
                 var task = p_client.PostAsync("https://api.codepost.io/assignments/", content);
                 task.Wait();
                 var result = task.Result;
-                //ViewData["result"] = result;
             }
             else
             {
@@ -319,6 +318,81 @@ namespace RplpAvecBD.Controllers
             return estCree;
         }
 
+
+
+
+
+
+        /// <summary>
+        /// Procédure pour la création d'une Submission afin d'y envoyer par la suite le travail de l'étudiant
+        /// </summary>
+        /// <param name="p_idAssignment">L'id de l'assignment (travail)</param>
+        /// <param name="p_emailEtudiant">Email de l'étudiant</param>
+        /// <param name="p_client">HttpClient qui a été créé avec l'APIKey du client (le prof)</param>
+        /// <returns>Id de Submission</returns>
+        public static void CreerSubmission(int p_idAssignment, string p_emailEtudiant, HttpClient p_client)
+        {
+            // int idSubmission = 0;
+
+            List<string> listEtudiants = new List<string>(); //dans requet HTTP il faut envoyer la list d'etudiants
+            listEtudiants.Add(p_emailEtudiant);
+
+            Submission submission = new Submission(p_idAssignment.ToString(), listEtudiants);
+            var json = JsonConvert.SerializeObject(submission);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var task = p_client.PostAsync("https://api.codepost.io/submissions/", content);
+            task.Wait();
+            var result = task.Result;
+            //ViewData["result"] = result;
+
+            string resultCreationSubmission = result.Content.ReadAsStringAsync().Result;
+            JObject objet = JObject.Parse(resultCreationSubmission);
+            // idSubmission = (int)objet.SelectToken("id");
+
+            // return idSubmission;
+        }
+
+        /// <summary>
+        /// Le fonction pour obtenir la liste de tous les assignments dans cours donnee
+        /// </summary>
+        /// <param name="p_idCours">l'id de Cours</param>
+        /// <param name="p_client">HttpClient qui etait cree pour API CodePost avec le KeyApi de client(de prof)</param>
+        /// <returns>la liste d'objet de type Assignments</returns>
+        public static int ObtenirIdAssignment(int p_idCours, string p_nomAssignment, HttpClient p_client)
+        {
+            int idAssignment = 0;
+
+            List<int> listeIdAssignments = new List<int>();
+
+            var task = p_client.GetAsync("https://api.codepost.io/courses/" + p_idCours + "/");
+            task.Wait();
+            var result = task.Result;
+
+            string chaineInfoSurCours = result.Content.ReadAsStringAsync().Result;
+            JObject objet = JObject.Parse(chaineInfoSurCours);
+            IEnumerable<JToken> assignments = objet.SelectToken("assignments");
+
+            foreach (JToken travail in assignments)
+            {
+                listeIdAssignments.Add((int)travail);
+            }
+
+            Assignment assignment = new Assignment();
+
+            foreach (int id in listeIdAssignments)
+            {
+                assignment = RecupererInfoSurAssignment(id, p_client);
+
+                if (assignment.name == p_nomAssignment)
+                {
+                    idAssignment = id;
+                }
+            }
+
+            return idAssignment;
+        }
+
         /// <summary>
         /// Le fonction pour obtenir la liste de tous les assignments dans cours donnee
         /// </summary>
@@ -344,6 +418,7 @@ namespace RplpAvecBD.Controllers
             return listAssignment;
         }
 
+        
         public static List<string> ObtenirListeEtudiant(int p_idCours, HttpClient p_client)
         {
             List<string> listeEtudiant = new List<string>();
@@ -387,7 +462,6 @@ namespace RplpAvecBD.Controllers
             return (count, missing);
         }
 
-
         /// <summary>
         /// Le methode pour obtenir les nombers travaux total et manquants dans tous les assignments dans cours donnee 
         /// </summary>
@@ -421,8 +495,6 @@ namespace RplpAvecBD.Controllers
             return infoAReturner;
         }
 
-
-
         /// <summary>
         /// Procédure pour récupérer les informations sur un Assignment
         /// </summary>
@@ -438,7 +510,7 @@ namespace RplpAvecBD.Controllers
             string shaineInfoSurAssignment = result.Content.ReadAsStringAsync().Result;
             JObject objet = JObject.Parse(shaineInfoSurAssignment);
 
-            //int id = (int)objet.SelectToken("id");
+            int id = (int)objet.SelectToken("id");
             string name = (string)objet.SelectToken("name");
             int points = (int)objet.SelectToken("points");
             int course = (int)objet.SelectToken("course");
@@ -449,36 +521,6 @@ namespace RplpAvecBD.Controllers
 
             Assignment assignment = new Assignment(name, points, course, isReleased, isVisible, liveFeedbackMode, hideGrades);
             return assignment;
-        }
-
-        /// <summary>
-        /// Procédure pour la création d'une Submission afin d'y envoyer par la suite le travail de l'étudiant
-        /// </summary>
-        /// <param name="p_assignment">L'id de l'assignment (travail)</param>
-        /// <param name="p_emailEtudiant">Email de l'étudiant</param>
-        /// <param name="p_client">HttpClient qui a été créé avec l'APIKey du client (le prof)</param>
-        /// <returns>Id de Submission</returns>
-        public static int CreerSubmission(int p_assignment, string p_emailEtudiant, HttpClient p_client)
-        {
-            int idSubmission = 0;
-
-            List<string> listEtudiants = new List<string>(); //dans requet HTTP il faut envoyer la list d'etudiants
-            listEtudiants.Add(p_emailEtudiant);
-
-            Submission submission = new Submission(p_assignment.ToString(), listEtudiants);
-            var json = JsonConvert.SerializeObject(submission);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-            var task = p_client.PostAsync("https://api.codepost.io/submissions/", content);
-            task.Wait();
-            var result = task.Result;
-            //ViewData["result"] = result;
-
-            string resultCreationSubmission = result.Content.ReadAsStringAsync().Result;
-            JObject objet = JObject.Parse(resultCreationSubmission);
-            idSubmission = (int)objet.SelectToken("id");
-
-            return idSubmission;
         }
 
         /// <summary>
@@ -613,7 +655,7 @@ namespace RplpAvecBD.Controllers
 
             if (!estCreeSubmission)
             {
-                idSubmission = CreerSubmission(p_assignment, emailEtudiant, p_client);
+                //idSubmission = CreerSubmission(p_assignment, emailEtudiant, p_client);
             }
 
             foreach (string fichier in listFichiersEtudiant)

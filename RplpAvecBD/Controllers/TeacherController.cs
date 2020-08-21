@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -321,8 +322,11 @@ namespace RplpAvecBD.Controllers
 
                     ViewBag.erreurFichierZIP = "";
 
-                    // Ajouter le professeur dans la session
+                    // Ajouter le nom du travail dans la session
                     HttpContext.Session.SetString("nomTravailSession", JsonConvert.SerializeObject(p_assignment.name));
+
+                    // Ajouter les points du travail dans la session
+                    HttpContext.Session.SetString("pointsTravailSession", JsonConvert.SerializeObject(p_assignment.points));
 
                     return View();
                 }
@@ -333,6 +337,9 @@ namespace RplpAvecBD.Controllers
 
                 // Ajouter le professeur dans la session
                 HttpContext.Session.SetString("nomTravailSession", JsonConvert.SerializeObject(p_assignment.name));
+
+                // Ajouter les points du travail dans la session
+                HttpContext.Session.SetString("pointsTravailSession", JsonConvert.SerializeObject(p_assignment.points));
             }
 
             return View();
@@ -447,13 +454,25 @@ namespace RplpAvecBD.Controllers
 
                             string pathFichierZip = Path.Combine(path, "Upload", fichierRecu.Name);
                             
-                            // Récuperér l'objet du cours choisi dans la session
+                            // Récuperér le nom du travail dans la session
                             string nomTravail = JsonConvert.DeserializeObject<string>(HttpContext.Session.GetString("nomTravailSession"));
 
+                            // Récuperér les points du travail dans la session
+                            int pointsTravail = JsonConvert.DeserializeObject<int>(HttpContext.Session.GetString("pointsTravailSession"));
+
                             // Décompresser et faire le menage
-                            DecompresserFaireMenageCodePost(nomTravail, pathFichierZip);
+                            DirectoryInfo pathTempDestionation = DecompresserFaireMenageCodePost(nomTravail, pathFichierZip);
 
                             // Envoyer à Codepost
+                            CodePostController.CreerAssignment(nomTravail, pointsTravail, coursChoisi.id, client);
+
+                            int idAssignment = CodePostController.ObtenirIdAssignment(coursChoisi.id, nomTravail, client);
+
+                            foreach (DirectoryInfo dir in pathTempDestionation.GetDirectories())
+                            {
+                                string courrielEtudiant = dir.Name;
+                                CodePostController.CreerSubmission(idAssignment, courrielEtudiant, client);
+                            }
 
                             // Effacer fichier Zip dans le répertoire Upload
                             fichierDansUpload.Delete();
@@ -568,7 +587,7 @@ namespace RplpAvecBD.Controllers
             }
         }
 
-        public void DecompresserFaireMenageCodePost(string p_nomDuTravail, string p_pathFichierZip)
+        public DirectoryInfo DecompresserFaireMenageCodePost(string p_nomDuTravail, string p_pathFichierZip)
         {
             // Obtenir répertoire temporaire de l'utilisateur
             string pathTempUser = Path.GetTempPath();
@@ -586,7 +605,7 @@ namespace RplpAvecBD.Controllers
             Decompresser(p_pathFichierZip, pathTempDestination);
             
             // Conversion de type string -> DirectoryInfo 
-            destination = new DirectoryInfo(pathTempDestination);
+            DirectoryInfo destination = new DirectoryInfo(pathTempDestination);
 
             // Parcourir les répertoires qui correspondent au regex
             Regex regexValidationFolder = new Regex("[A-Za-z]*_(?<numeroMatricule>(\\d{7,}))_[A-Za-z]*");
@@ -657,6 +676,8 @@ namespace RplpAvecBD.Controllers
                     }
                 }
             }
+
+            return destination;
         }
 
         /// <summary>
