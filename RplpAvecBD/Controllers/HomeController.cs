@@ -22,7 +22,7 @@ namespace RplpAvecBD.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                if (Startup.estProfesseur)
+                if (Startup.estProfesseurConnecte)
                 {
                     return RedirectToAction("Index", "Teacher");
                 }
