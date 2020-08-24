@@ -1,0 +1,118 @@
+﻿
+@{
+    ViewData["Title"] = "Aide - Ajouter un cours";
+
+    <style>
+        .collapsible {
+            background-color: #ebeef1;
+            color: black;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 15px;
+            margin-bottom: 15px;
+        }
+
+            .active, .collapsible:hover {
+                background-color: #685e77;
+                color: white;
+            }
+
+        .content {
+            padding: 0 18px;
+            display: none;
+            overflow: hidden;
+        }
+    </style>
+}
+
+@section scripts {
+
+    <script>
+        var coll = document.getElementsByClassName("collapsible");
+        var i;
+
+        for (i = 0; i < coll.length; i++) {
+            coll[i].addEventListener("click", function () {
+                this.classList.toggle("active");
+                var content = this.nextElementSibling;
+                if (content.style.display === "block") {
+                    content.style.display = "none";
+                } else {
+                    content.style.display = "block";
+                }
+            });
+        }
+    </script>
+}
+
+
+
+<br />
+<h2>Guide Codepost > <strong class="text-gris">Professeur</strong></h2>
+<br />
+
+<button type="button" class="collapsible"><h6># Créer un compte sur le site Web Codepost</h6></button>
+<div class="content">
+    <hr />
+    <p>01. Connectez-vous au site Web de <a href="https://codepost.io/" target="_blank">Codepost</a> et cliquez sur le bouton <strong>"Sign in"</strong></p>
+    <hr />
+    <img src="~/img/GuideCodepostProfesseur/CreerCompte/01 - sign in.jpg" />
+    <hr />
+    <p>02. Cliquer sur le bouton <strong>"Create Course"</strong></p>
+    <hr />
+    <img src="~/img/GuideCodepostProfesseur/CreerCompte/02 - sign in.jpg" />
+    <hr />
+    <p>03. Entrer votre courriel du Cégep et l'autres informations comme il est montré dans l'image ci-dessous</p>
+    <hr />
+    <img src="~/img/GuideCodepostProfesseur/CreerCompte/03 - sign in.jpg" />
+    <hr />
+    <p>04. Cliquer sur le bouton <strong>"Use this email address"</strong></p>
+    <hr />
+    <img src="~/img/GuideCodepostProfesseur/CreerCompte/04 - sign in.jpg" />
+    <hr />
+    <p>05. Vérifier votre courriel.</p>
+    <p style="margin-left:26px;"><strong>REM: Vérifier dans la boite de courriels indésirables</strong></p>
+    <hr />
+    <img src="~/img/GuideCodepostProfesseur/CreerCompte/05 - sign in.jpg" />
+    <hr />
+    <p>06. Dans votre courriel, cliquer sur le bouton <strong>"Validate Email"</strong></p>
+    <hr />
+    <img src="~/img/GuideCodepostProfesseur/CreerCompte/06 - sign in.jpg" />
+    <hr />
+    <p>07. Créer votre mot-de-passe et cliquer sur le bouton <strong>"Submit"</strong></p>
+    <hr />
+    <img src="~/img/GuideCodepostProfesseur/CreerCompte/07 - sign in.jpg" />
+    <hr />
+    <p>08. Cliquer sur le bouton <strong>"Logging in"</strong></p>
+    <hr />
+    <img src="~/img/GuideCodepostProfesseur/CreerCompte/08 - sign in.jpg" />
+    <hr />
+    <p>09. Entrer vos informations de connexion et cliquer sur le bouton <strong>"Continue"</strong></p>
+    <hr />
+    <img src="~/img/GuideCodepostProfesseur/CreerCompte/09 - sign in.jpg" />
+    <hr />
+    <p>10. <strong>Félicitations !</strong> Vous avez bien créé votre compte de Professeur sur le site web Codepost !</p>
+    <hr />
+    <img src="~/img/GuideCodepostProfesseur/CreerCompte/10 - sign in.jpg" />
+    
+</div>
+
+<button type="button" class="collapsible"><h6># Créer un cours</h6></button>
+<div class="content">
+    <hr />
+    <p>01. Cliquer sur le bouton <strong>"Create a course"</strong></p>
+    <hr />
+    <img src="~/img/GuideCodepostProfesseur/CreerCours/01 - Creer cours.jpg" />
+</div>
+
+
+<hr />
+<div>
+    <input type="button" class="btn btn-primary" id="btnReturn" value="Retourner" onclick="location.href='@Url.Action("Index", "Teacher")'" />
+</div>
+<br />
+<br />

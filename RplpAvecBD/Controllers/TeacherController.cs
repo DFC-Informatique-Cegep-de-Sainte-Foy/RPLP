@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -29,8 +30,8 @@ namespace RplpAvecBD.Controllers
         // Méthodes HTTP Get / HTTP Post
         // 
         // -------------------------------------------------------- 
-        
-        //[Authorize("estProfesseur")]
+
+        [Authorize("estProfesseur")]
         public IActionResult Index(int p_idCoursChoisi)
         {
             // Si ce professeur n'existe pas dans la base de données
@@ -81,7 +82,7 @@ namespace RplpAvecBD.Controllers
             return View();
         }
 
-        //[Authorize("estProfesseur")]
+        [Authorize("estProfesseur")]
         [HttpPost]
         public IActionResult Index(Course p_cours)
         {
@@ -164,7 +165,7 @@ namespace RplpAvecBD.Controllers
             return View();
         }
 
-        //[Authorize("estProfesseur")]
+        [Authorize("estProfesseur")]
         public IActionResult Parametres()
         {
             // Récuperér le professeur dans la BD
@@ -176,7 +177,7 @@ namespace RplpAvecBD.Controllers
             return View();
         }
 
-        //[Authorize("estProfesseur")]
+        [Authorize("estProfesseur")]
         [HttpPost]
         public IActionResult Parametres(Professeur p_professeurModel)
         {
@@ -206,7 +207,7 @@ namespace RplpAvecBD.Controllers
             return View();
         }
 
-        //[Authorize("estProfesseur")]
+        [Authorize("estProfesseur")]
         public IActionResult ResultatMiseAJourParametres(string p_nom, string p_courriel, string p_apiKey)
         {
             mettreAJourParametresBD(p_nom, p_courriel, p_apiKey);
@@ -214,7 +215,7 @@ namespace RplpAvecBD.Controllers
             return View();
         }
 
-        //[Authorize("estProfesseur")]
+        [Authorize("estProfesseur")]
         [HttpPost]
         [RequestSizeLimit(2_000_000)]  //ajuste la taille limite du fichier 2mb
         public async Task<IActionResult> VerifierListeEtudiant(IFormFile fichierCSV)
@@ -281,7 +282,7 @@ namespace RplpAvecBD.Controllers
             return View();
         }
 
-        //[Authorize("estProfesseur")]
+        [Authorize("estProfesseur")]
         [HttpPost]
         public IActionResult AjouterTravail(Assignment p_assignment)
         {
@@ -340,7 +341,7 @@ namespace RplpAvecBD.Controllers
             return View();
         }
 
-        //[Authorize("estProfesseur")]
+        [Authorize("estProfesseur")]
         [HttpPost]
         [RequestSizeLimit(105_000_000)]  //ajuste la taille limite du fichier a 100 Mb (requete du client)
         public async Task<IActionResult> VerifierFichierZIP(IFormFile fichierZIP)
@@ -525,27 +526,11 @@ namespace RplpAvecBD.Controllers
             return View("ResultatAjoutTravail");
         }
 
-        
-
-        //[Authorize("estProfesseur")]
-        public IActionResult ResultatAjoutTravail()
-        {
-            return View();
-        }
-
-
-        //[Authorize("estProfesseur")]
-        public IActionResult AideSelectionnerCours()
-        {
-            return View();
-        }
-
-
-        //[Authorize("estProfesseur")]
+        [Authorize("estProfesseur")]
         public void SuppressionAssignment(string id)
         {
             // Remarque : id = nomTravail
-            
+
             using (HttpClient client = new HttpClient())
             {
                 // Récuperér le professeur dans la session
@@ -587,6 +572,25 @@ namespace RplpAvecBD.Controllers
             ViewBag.infoSurLesAssignments = infoSurLesAssignments;
 
         }
+
+        [Authorize("estProfesseur")]
+        public IActionResult ResultatAjoutTravail()
+        {
+            return View();
+        }
+
+        [Authorize("estProfesseur")]
+        public IActionResult AideSelectionnerCours()
+        {
+            return View();
+        }
+
+        [Authorize("estProfesseur")]
+        public IActionResult GuideCodePostProfesseur()
+        {
+            return View();
+        }
+        
 
         // -------------------------------------------------------- 
         //

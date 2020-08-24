@@ -150,9 +150,7 @@ ViewData["Title"] = "Professeur";
                             <a href='@("https://codepost.io/admin/"+coursChoisi.name+"/"+coursChoisi.period+"/assignments/overview")' target="_blank"><img src="~/img/icon_link_19x19.png" title="Lien vers CodePost" alt="Lien vers CodePost" /></a>
                         </td>
                         <td>
-                            @*<a style="margin-left:10px;" asp-action="SuppressionAssignment" asp-controller="Teacher"><img src="~/img/icon_delete_18x18.png" title="Lien vers CodePost" alt="Lien vers CodePost" /></a>*@
-
-                            <a class="btn btn-danger delete text-white" style="margin-left:10px;" id="supprimer"
+                                <a class="btn btn-danger delete text-white" style="margin-left:10px;" id="supprimer"
                                 data-id="@kvp.Value.Item1"
                                 data-controller="Teacher"
                                 data-action="SuppressionAssignment"
