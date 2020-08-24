@@ -32,24 +32,24 @@ namespace RplpAvecBD
             services.AddAuthentication(AzureADDefaults.AuthenticationScheme)
                 .AddAzureAD(options => Configuration.Bind("AzureAd", options));
 
-            //services.AddAuthorization(option =>
-            //{
-            //    option.AddPolicy("estProfesseur", p =>
-            //    {
-            //        // c0d32534-918b-44bd-a2c9-b21e292e6cf7 - InformatiqueDFC
-            //        // c0d32534-918b-44bd-a2c9-b21e292e6cf7 - o365 - staff
-            //        // a95951b6-21c0-49ad-8b5d-2bc3d8d61a1d - prof-inf-dfc
-            //        // 20d9f47c-74dc-4bd1-a214-3a80f2a66bd1 - Prof informatique  
-            //        p.RequireClaim("groups", "955bcf43-9a4b-40de-9ddd-72aba52d3669");
-            //        estProfesseur = true;
-            //    });
+            services.AddAuthorization(option =>
+            {
+                option.AddPolicy("estProfesseur", p =>
+                {
+                    // c0d32534-918b-44bd-a2c9-b21e292e6cf7 - InformatiqueDFC
+                    // 955bcf43-9a4b-40de-9ddd-72aba52d3669 - o365 - staff
+                    // a95951b6-21c0-49ad-8b5d-2bc3d8d61a1d - prof-inf-dfc
+                    // 20d9f47c-74dc-4bd1-a214-3a80f2a66bd1 - Prof informatique  
+                    p.RequireClaim("groups", "955bcf43-9a4b-40de-9ddd-72aba52d3669");
+                    estProfesseur = true;
+                });
 
-            //    option.AddPolicy("estEtudiant", p =>
-            //    {
-            //        p.RequireClaim("groups", "76d2a1f1-fa8a-4a15-8ada-2724d74ad571");
-            //        estProfesseur = false;
-            //    });
-            //});
+                option.AddPolicy("estEtudiant", p =>
+                {
+                    p.RequireClaim("groups", "76d2a1f1-fa8a-4a15-8ada-2724d74ad571");
+                    estProfesseur = false;
+                });
+            });
 
 
             // Ajouter RplpContext

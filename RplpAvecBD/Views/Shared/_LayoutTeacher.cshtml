@@ -6,6 +6,7 @@
     <title>@ViewData["Title"] - RplpAvecBD</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="icon" type="image/png" href="~/img/logo-favicon.png">
 </head>
 <body>
     <header>
@@ -22,6 +23,9 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Teacher" asp-action="index"><img src="~/img/icon_assignment_24x24.png" />Assignments</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="~/files/Guide-CodePost-Professeur.pdf" target="_blank" > <img src="~/img/icon_guide_24x24.png" /> Guide Codepost</a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -35,13 +39,14 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2020 - Revue par les pairs - <a class="text-gris" href="https://www.cegep-ste-foy.qc.ca/accueil/" target="_blank">Cégep de Sainte-Foy</a> | <a class="text-gris" href="https://cegep-ste-foy.omnivox.ca/" target="_blank">Omnivox - Cégep de Sainte-Foy</a> | <a class="text-gris" href="https://codepost.io/" target="_blank">Codepost</a>
+            <img src="~/img/logo-program4business.png" /> &copy; 2020 - Revue par les pairs - <a class="text-gris" href="https://www.cegep-ste-foy.qc.ca/accueil/" target="_blank">Cégep de Sainte-Foy</a> | <a class="text-gris" href="https://cegep-ste-foy.omnivox.ca/" target="_blank">Omnivox - Cégep de Sainte-Foy</a> | <a class="text-gris" href="https://codepost.io/" target="_blank">Codepost</a>
 
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/delete.js" asp-append-version="true"></script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>

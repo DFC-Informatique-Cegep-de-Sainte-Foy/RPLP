@@ -4,7 +4,7 @@
     @if (User.Identity.IsAuthenticated)
     {
         <li class="nav-item">
-            <span class="navbar-text icons">Bonjour @User.Identity.Name !</span>
+            <span class="navbar-text icons" style="margin-right:5px;">Bonjour @User.Identity.Name !</span>
         </li>
 
         @if (Startup.estProfesseur)

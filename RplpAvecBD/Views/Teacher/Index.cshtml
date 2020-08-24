@@ -1,160 +1,167 @@
 ﻿@model RplpAvecBD.Model.Course;
 
-
 @{
-    ViewData["Title"] = "Professeur";
+ViewData["Title"] = "Professeur";
     List<string> listeEtudiant = ViewBag.listeEtudiant;
     List<RplpAvecBD.Model.Assignment> listeAssignment = ViewBag.listeAssignment;
-    Dictionary<int,(string,int,int)> infoSurLesAssignments = ViewBag.infoSurLesAssignments;
+    Dictionary<int, (string, int, int)> infoSurLesAssignments = ViewBag.infoSurLesAssignments;
     int idCoursChoisi = ViewBag.idCoursChoisi;
     RplpAvecBD.Model.Course coursChoisi = ViewBag.coursChoisi;
-
 }
 
-    <div class="text-left">
+<div class="text-left">
+    <br />
+    <table>
+        <thead>
+            <tr>
+                <th style="width:340px;"></th>
+                <th style="width:80px;"></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <h2>Assignments<strong style="font-size:20px;"> (Travaux)</strong></h2>
+                </td>
+                <td>
+                    <a asp-controller="Teacher" asp-action="index"><img src="~/img/icon_refresh_19x19_v2.png" title="Refresh" alt="Refresh" /></a>
+                </td>
+                <td>
+                    <a class="text-gris" asp-controller="Teacher" asp-action="AideSelectionnerCours"> Besoin d'aide ?</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <hr />
+    <div class="row">
+        @using (Html.BeginForm("Index", "Teacher", FormMethod.Post, new { id = "DropDownList" }))
+        {
+            <table style="margin-left:15px;">
+                <thead>
+                    <tr>
+                        <th>
+                            <h6 style="width:270px;">Sélectionner un cours</h6>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="height: 15px;"></tr>
+                    <tr>
+                        <td>
+                            @Html.DropDownListFor(m => m.idCoursChoisi, new SelectList(@ViewBag.listeCours, "id", "name", idCoursChoisi), "-- Selectionner un cours --", new { @class = "form-control", onchange = "this.form.submit()" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            @Html.ValidationMessageFor(m => m.idCoursChoisi, "", new { @class = "text-danger" })
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        }
+        <div style="width:30px;"></div>
+        @using (Html.BeginForm("VerifierListeEtudiant", "Teacher", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <table>
+                <thead>
+                    <tr>
+                        @if (@idCoursChoisi != 0 && @listeEtudiant != null && @listeEtudiant.Count > 0)
+                        {
+                            <th>
+                                <h6>Modifier la liste des étudiants (Fichier CSV)</h6>
+                            </th>
+                        }
+                        else if (@idCoursChoisi != 0 && @listeEtudiant != null && @listeEtudiant.Count == 0)
+                        {
+                            <th>
+                                <h6>Ajouter la liste des étudiants (Fichier CSV)</h6>
+                            </th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="height: 12px;"></tr>
+                    <tr>
+                        @if (@idCoursChoisi != 0 && @listeEtudiant != null && @listeEtudiant.Count > 0)
+                        {
+                            <td>
+                                <input type="file" name="fichierCSV" id="btnModifierListeEtudiants" value="Modifier la liste des étudiants" accept=".csv" class="btn btn-light" />
+                            </td>
+                            <td style="width:30px;"></td>
+                            <td>
+                                <input type="submit" class="btn btn-success" id="btnAjouterTravail" value="Ajouter un travail" />
+                            </td>
+                        }
+                        else if (@idCoursChoisi != 0 && @listeEtudiant != null && @listeEtudiant.Count == 0)
+                        {
+                            <td>
+                                <input type="file" name="fichierCSV" id="btnAjouterListeEtudiants" value="Ajouter la liste des étudiants" accept=".csv" class="btn btn-warning" asp-controller="CodePost" asp-action="" />
+                            </td>
+                            <td style="width:30px;"></td>
+                            <td>
+                                <input type="submit" class="btn btn-success" id="btnAjouterTravail" value="Ajouter un travail" />
+                            </td>
+                        }
+                    </tr>
+                </tbody>
+            </table>
+        }
+    </div>
+    <hr />
+
+    <br />
+    <br />
+
+    @if (coursChoisi != null)
+    {
+        <h6 style="color:darkslategray">Travaux existants dans le cours <strong>@coursChoisi.name</strong></h6>
         <br />
-        <table>
-            <thead>
+        <table class="table text-center">
+            <thead class="thead-light">
                 <tr>
-                    <th style="width:340px;"></th>
-                    <th style="width:80px;"></th>
+                    <th>
+                        <h6>Nom</h6>
+                    </th>
+                    <th>
+                        <h6>No. travaux remis</h6>
+                    </th>
+                    <th>
+                        <h6>No. travaux manquants</h6>
+                    </th>
+                    <th></th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>
-                        <h2>Assignments<strong style="font-size:20px;"> (Travaux)</strong></h2>
-                    </td>
-                    <td>
-                        <a asp-controller="Teacher" asp-action="index"><img src="~/img/icon_refresh_19x19_v2.png" title="Refresh" alt="Refresh" /></a>
-                    </td>
-                    <td>
-                        <a class="text-gris" asp-controller="Teacher" asp-action="AideSelectionnerCours"> Besoin d'aide ?</a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <hr />
-        <div class="row">
-            @using (Html.BeginForm())
-            {
-                <table style="margin-left:15px;">
-                    <thead>
-                        <tr>
-                            <th>
-                                <h6 style="width:270px;">Sélectionner un cours</h6>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr style="height: 15px;"></tr>
-                        <tr>
-                            <td>                           
-                                @Html.DropDownListFor(m => m.idCoursChoisi, new SelectList(@ViewBag.listeCours, "id", "name"), "-- Selectionner un cours --", new { @class = "form-control", onchange = "this.form.submit()" })
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                @Html.ValidationMessageFor(m => m.idCoursChoisi, "", new { @class = "text-danger" })
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            }
-            <div style="width:30px;"></div>
-            @using (Html.BeginForm("VerifierListeEtudiant", "Teacher", FormMethod.Post, new { enctype = "multipart/form-data" }))
-            {
-                <table>
-                    <thead>
-                        <tr>
-                            @if (@idCoursChoisi != 0 && @listeEtudiant != null && @listeEtudiant.Count > 0)
-                            {
-                                <th>
-                                    <h6>Modifier la liste des étudiants (Fichier CSV)</h6>
-                                </th>
-                            }
-                            else if (@idCoursChoisi != 0 && @listeEtudiant != null && @listeEtudiant.Count == 0)
-                            {
-                                <th>
-                                    <h6>Ajouter la liste des étudiants (Fichier CSV)</h6>
-                                </th>
-                            }
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr style="height: 12px;"></tr>
-                        <tr>
-                            @if (@idCoursChoisi != 0 && @listeEtudiant != null && @listeEtudiant.Count > 0)
-                            {
-                                <td>
-                                    <input type="file" name="fichierCSV" id="btnModifierListeEtudiants" value="Modifier la liste des étudiants" accept=".csv" class="btn btn-light" />
-                                </td>
-                                <td style="width:30px;"></td>
-                                <td>
-                                    <input type="submit" class="btn btn-success" id="btnAjouterTravail" value="Ajouter un travail" />
-                                </td>
-                            }
-                            else if (@idCoursChoisi != 0 && @listeEtudiant != null && @listeEtudiant.Count == 0)
-                            {
-                                <td>
-                                    <input type="file" name="fichierCSV" id="btnAjouterListeEtudiants" value="Ajouter la liste des étudiants" accept=".csv" class="btn btn-warning" asp-controller="CodePost" asp-action="" />
-                                </td>
-                                <td style="width:30px;"></td>
-                                <td>
-                                    <input type="submit" class="btn btn-success" id="btnAjouterTravail" value="Ajouter un travail" />
-                                </td>
-                            }
-                        </tr>
-                    </tbody>
-                </table>
-            }
-        </div>
-        <hr />
-
-        <br />
-        <br />
-        @if (coursChoisi != null)
-        {
-            <h6 style="color:darkslategray">Travaux existants dans le cours <strong>@coursChoisi.name</strong></h6>
-            <br />
-            <table class="table text-center">
-                <thead class="thead-light">
+                @foreach (KeyValuePair<int, (string, int, int)> kvp in infoSurLesAssignments)
+                {
                     <tr>
-                        <th>
-                            <h6>Nom</h6>
-                        </th>
-                        <th>
-                            <h6>No. travaux remis</h6>
-                        </th>
-                        <th>
-                            <h6>No. travaux manquants</h6>
-                        </th>
-                        <th>
-                            <h6>Action</h6>
-                        </th>
-                        <th></th>
+                        <td>
+                            @Html.DisplayFor(modelItem => kvp.Value.Item1)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => kvp.Value.Item2)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => kvp.Value.Item3)
+                        </td>
+                        <td >
+                            <a href='@("https://codepost.io/admin/"+coursChoisi.name+"/"+coursChoisi.period+"/assignments/overview")' target="_blank"><img src="~/img/icon_link_19x19.png" title="Lien vers CodePost" alt="Lien vers CodePost" /></a>
+                        </td>
+                        <td>
+                                <a class="btn btn-danger delete text-white" style="margin-left:10px;" id="supprimer"
+                                data-id="@kvp.Value.Item1"
+                                data-controller="Teacher"
+                                data-action="SuppressionAssignment"
+                                data-body-message="Êtes-vous sûr de vouloir supprimer le travail ?">
+                                <img src="~/img/icon_delete_18x22.png" title="Supprimer travail" />
+                                Supprimer
+                            </a>
+                        </td>
                     </tr>
-                </thead>
-                <tbody>
-                    @foreach (KeyValuePair<int, (string, int, int)> kvp in infoSurLesAssignments)
-                    {
-                        <tr>
-                            <td>
-                                @Html.DisplayFor(modelItem => kvp.Value.Item1)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => kvp.Value.Item2)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => kvp.Value.Item3)
-                            </td>
-                            <td>
-                                <a href='@("https://codepost.io/admin/"+coursChoisi.name+"/"+coursChoisi.period+"/assignments/overview")' target="_blank"><img src="~/img/icon_rederection.png" title="Lien vers CodePost" alt="Lien vers CodePost"/></a>
-                            </td>
-                        </tr>
-                    }
-                 </tbody>
+                }
+            </tbody>
         </table>
     }
 </div>

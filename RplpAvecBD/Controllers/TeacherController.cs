@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -19,9 +20,6 @@ namespace RplpAvecBD.Controllers
     {
         private readonly RplpContext _rplpContext;
 
-        //variable pour le repertoire temp de travail ou on nettoye et efface les fichiers indesirables
-        DirectoryInfo destination;
-
         public TeacherController(RplpContext p_context)
         {
             _rplpContext = p_context;
@@ -32,9 +30,9 @@ namespace RplpAvecBD.Controllers
         // Méthodes HTTP Get / HTTP Post
         // 
         // -------------------------------------------------------- 
-        
-        //[Authorize("estProfesseur")]
-        public IActionResult Index()
+
+        [Authorize("estProfesseur")]
+        public IActionResult Index(int p_idCoursChoisi)
         {
             // Si ce professeur n'existe pas dans la base de données
             if (!estProfesseurExistantBD(User.Identity.Name))
@@ -76,13 +74,15 @@ namespace RplpAvecBD.Controllers
                 ViewBag.listeCours = listeCours;
 
                 // Affecter la valeur 0 à l'id du cours choisi au départ
-                ViewBag.@idCoursChoisi = 0;
+                ViewBag.@idCoursChoisi = p_idCoursChoisi;
+
+                ViewBag.suppressionAssignment = false;
             }
 
             return View();
         }
 
-        //[Authorize("estProfesseur")]
+        [Authorize("estProfesseur")]
         [HttpPost]
         public IActionResult Index(Course p_cours)
         {
@@ -96,11 +96,6 @@ namespace RplpAvecBD.Controllers
             {
                 ModelState.AddModelError("idCoursChoisi", "Vous devez sélectionner un Cours !");
             }
-
-            //if (ModelState.IsValid)
-            //{
-            //    return RedirectToAction("ResultatUnclaim", new { idProfesseur = p_unclaim.idProfesseur, codeEtudiant = p_unclaim.codeEtudiant });
-            //}
 
             using (HttpClient client = new HttpClient())
             {
@@ -157,16 +152,20 @@ namespace RplpAvecBD.Controllers
                     // Ajouter info necessaire sur Assignment de cours choisi  dans la ViewBag
                     ViewBag.infoSurLesAssignments = infoSurLesAssignments;
 
+                    ViewBag.suppressionAssignment = false;
+
                     return View();
                 }
 
                 ViewBag.@idCoursChoisi = 0;
+
+                ViewBag.suppressionAssignment = false;
             }
 
             return View();
         }
 
-        //[Authorize("estProfesseur")]
+        [Authorize("estProfesseur")]
         public IActionResult Parametres()
         {
             // Récuperér le professeur dans la BD
@@ -178,7 +177,7 @@ namespace RplpAvecBD.Controllers
             return View();
         }
 
-        //[Authorize("estProfesseur")]
+        [Authorize("estProfesseur")]
         [HttpPost]
         public IActionResult Parametres(Professeur p_professeurModel)
         {
@@ -208,7 +207,7 @@ namespace RplpAvecBD.Controllers
             return View();
         }
 
-        //[Authorize("estProfesseur")]
+        [Authorize("estProfesseur")]
         public IActionResult ResultatMiseAJourParametres(string p_nom, string p_courriel, string p_apiKey)
         {
             mettreAJourParametresBD(p_nom, p_courriel, p_apiKey);
@@ -216,7 +215,7 @@ namespace RplpAvecBD.Controllers
             return View();
         }
 
-        //[Authorize("estProfesseur")]
+        [Authorize("estProfesseur")]
         [HttpPost]
         [RequestSizeLimit(2_000_000)]  //ajuste la taille limite du fichier 2mb
         public async Task<IActionResult> VerifierListeEtudiant(IFormFile fichierCSV)
@@ -255,13 +254,12 @@ namespace RplpAvecBD.Controllers
 
                         return View("AjouterTravail", new Assignment());
                     }
-
                 }
                 else
                 {
                     List<string> nouvelleListeEtudiant = CodePostController.AjouterEtudiantsDansCours(coursChoisi.id, client, fichierCSV, professeurSession);
 
-                    if (nouvelleListeEtudiant.Count <= 0)
+                    if (nouvelleListeEtudiant == null)
                     {
                         // Ajouter l'objet du cours choisi dans la ViewBag
                         ViewBag.coursChoisi = coursChoisi;
@@ -269,15 +267,13 @@ namespace RplpAvecBD.Controllers
 
                         return View("ErreurFichierCSV", "Teacher");
                     }
-                    else
-                    {
-                        // Ajouter l'objet du cours choisi dans la ViewBag
-                        ViewBag.coursChoisi = coursChoisi;
 
-                        ViewBag.afficherUpLoadFichierZip = false;
+                    // Ajouter l'objet du cours choisi dans la ViewBag
+                    ViewBag.coursChoisi = coursChoisi;
 
-                        ViewBag.erreurFichierZIPIntrouvable = false;
-                    }
+                    ViewBag.afficherUpLoadFichierZip = false;
+
+                    ViewBag.erreurFichierZIPIntrouvable = false;
                     
                     return View("AjouterTravail", new Assignment());
                 }
@@ -286,7 +282,7 @@ namespace RplpAvecBD.Controllers
             return View();
         }
 
-        //[Authorize("estProfesseur")]
+        [Authorize("estProfesseur")]
         [HttpPost]
         public IActionResult AjouterTravail(Assignment p_assignment)
         {
@@ -345,7 +341,7 @@ namespace RplpAvecBD.Controllers
             return View();
         }
 
-        //[Authorize("estProfesseur")]
+        [Authorize("estProfesseur")]
         [HttpPost]
         [RequestSizeLimit(105_000_000)]  //ajuste la taille limite du fichier a 100 Mb (requete du client)
         public async Task<IActionResult> VerifierFichierZIP(IFormFile fichierZIP)
@@ -377,7 +373,9 @@ namespace RplpAvecBD.Controllers
                     // Obtenir le nom du fichier
                     string fileName = Path.GetFileName(fichierZIP.FileName);
 
+                    // Obtenir répertoire temporaire courant
                     string path = Directory.GetCurrentDirectory();
+
                     // Obtenir répertoire temporaire de l'utilisateur
                     string pathUser = Path.GetTempPath();
 
@@ -449,6 +447,11 @@ namespace RplpAvecBD.Controllers
                                 }
                             }
 
+                            if (!Directory.Exists(Path.Combine(path, "Upload")))
+                            {
+                                Directory.CreateDirectory(Path.Combine(path, "Upload"));
+                            }
+
                             // Déplacer le fichier dans le répetoire Upload
                             fichierRecu.MoveTo(Path.Combine(path, "Upload", fichierRecu.Name));
 
@@ -461,25 +464,48 @@ namespace RplpAvecBD.Controllers
                             int pointsTravail = JsonConvert.DeserializeObject<int>(HttpContext.Session.GetString("pointsTravailSession"));
 
                             // Décompresser et faire le menage
-                            DirectoryInfo pathTempDestionation = DecompresserFaireMenageCodePost(nomTravail, pathFichierZip);
+                            DirectoryInfo pathTempDestination = DecompresserFaireMenageCodePost(nomTravail, pathFichierZip);
 
+                            // -------------------------
                             // Envoyer à Codepost
+                            // -------------------------
+
                             CodePostController.CreerAssignment(nomTravail, pointsTravail, coursChoisi.id, client);
 
                             int idAssignment = CodePostController.ObtenirIdAssignment(coursChoisi.id, nomTravail, client);
 
-                            foreach (DirectoryInfo dir in pathTempDestionation.GetDirectories())
+                            foreach (DirectoryInfo dir in pathTempDestination.GetDirectories())
                             {
                                 string courrielEtudiant = dir.Name;
                                 CodePostController.CreerSubmission(idAssignment, courrielEtudiant, client);
+                            }
+
+                            CodePostController.UploadTravauxTousEtudiants(idAssignment, pathTempDestination.ToString(), client);
+
+                            (int, int) nbSoumissionsCrees = CodePostController.SubmissionsTotalEtManquantsDansAssignment(idAssignment, client);
+
+                            if (nbSoumissionsCrees.Item1 == 0)
+                            {
+                                // Effacer fichier Zip dans le répertoire Upload
+                                fichierDansUpload.Delete();
+
+                                // Effacer le répertoire temporaire dans le OS du client 
+                                System.IO.Directory.Delete(pathTempDestination.ToString(), true);
+
+                                CodePostController.SupprimerAssignment(idAssignment, client);
+
+                                ViewBag.afficherUpLoadFichierZip = true;
+
+                                ViewBag.erreurFichierZIP = "Problème fichier ZIP";
+
+                                return View("AjouterTravail", new Assignment());
                             }
 
                             // Effacer fichier Zip dans le répertoire Upload
                             fichierDansUpload.Delete();
 
                             // Effacer le répertoire temporaire dans le OS du client 
-                            
-
+                            System.IO.Directory.Delete(pathTempDestination.ToString(), true);
                         }
                         else
                         {
@@ -500,21 +526,71 @@ namespace RplpAvecBD.Controllers
             return View("ResultatAjoutTravail");
         }
 
-        
+        [Authorize("estProfesseur")]
+        public void SuppressionAssignment(string id)
+        {
+            // Remarque : id = nomTravail
 
-        //[Authorize("estProfesseur")]
+            using (HttpClient client = new HttpClient())
+            {
+                // Récuperér le professeur dans la session
+                Professeur professeurSession = JsonConvert.DeserializeObject<Professeur>(HttpContext.Session.GetString("ProfesseurSession"));
+
+                client.BaseAddress = new Uri("https://api.codepost.io");
+                client.DefaultRequestHeaders.Add("authorization", "Token " + professeurSession.apiKey);
+
+                // Récuperér l'objet du cours choisi dans la session
+                Course coursChoisi = JsonConvert.DeserializeObject<Course>(HttpContext.Session.GetString("coursChoisi"));
+
+                // Ajouter l'objet du cours choisi dans la ViewBag
+                ViewBag.coursChoisi = coursChoisi;
+
+                // Ajouter l'iddu cours choisi dans la ViewBag
+                ViewBag.idCoursChoisi = coursChoisi.id;
+
+                int idAssignment = CodePostController.ObtenirIdAssignment(coursChoisi.id, id, client);
+
+                CodePostController.SupprimerAssignment(idAssignment, client);
+            }
+
+            // Récuperér la liste des étudiants dans la session
+            List<string> listeEtudiant = JsonConvert.DeserializeObject<List<string>>(HttpContext.Session.GetString("ListeEtudiantsSession"));
+
+            // Ajouter la liste des étudiants dans la ViewBag
+            ViewBag.listeEtudiant = listeEtudiant;
+
+            /// Récuperér la liste d'assignments dans la session
+            List<Assignment> listeAssignment = JsonConvert.DeserializeObject<List<Assignment>>(HttpContext.Session.GetString("ListeAssignmentsSession"));
+
+            // Ajouter la liste d'Assignments dans la ViewBag
+            ViewBag.listeAssignment = listeAssignment;
+
+            // Récuperér les infos necessaires sur Assignment du cours choisi dans la session
+            Dictionary<int, (string, int, int)> infoSurLesAssignments = JsonConvert.DeserializeObject<Dictionary<int, (string, int, int)>>(HttpContext.Session.GetString("infoSurLesAssignmentsSession"));
+
+            // Ajouter info necessaire sur Assignment de cours choisi  dans la ViewBag
+            ViewBag.infoSurLesAssignments = infoSurLesAssignments;
+
+        }
+
+        [Authorize("estProfesseur")]
         public IActionResult ResultatAjoutTravail()
         {
             return View();
         }
 
-
-        //[Authorize("estProfesseur")]
+        [Authorize("estProfesseur")]
         public IActionResult AideSelectionnerCours()
         {
             return View();
         }
 
+        [Authorize("estProfesseur")]
+        public IActionResult GuideCodePostProfesseur()
+        {
+            return View();
+        }
+        
 
         // -------------------------------------------------------- 
         //
@@ -616,7 +692,7 @@ namespace RplpAvecBD.Controllers
                 if (resultat.Success)
                 {
                     // Effacer les fichiers indésirables
-                    string[] TypeDeFichierAEffacer = new string[] { "*.suo", "*.user", "*.userosscache", "*.sln.docstates", "*.project", "*.mdj", "*.svg" };
+                    string[] TypeDeFichierAEffacer = new string[] { "*.suo", "*.user", "*.userosscache", "*.sln.docstates", ".vs", "bin", "obj", "build", "*.class", ".settings", ".classpath", ".project", "*.mdj", "*.svg"};
                     
                     foreach (string type in TypeDeFichierAEffacer)
                     {
@@ -653,7 +729,7 @@ namespace RplpAvecBD.Controllers
                 }
 
                 // Effacer les répertoires indésirables
-                string[] RepetoireAEffacer = new string[] { ".vs", "bin", "obj", "build" };
+                string[] RepetoireAEffacer = new string[] { ".vs", "bin", "obj", "build", ".settings" };
                 
                 foreach (string NomDirectoryAEffacer in RepetoireAEffacer)
                 {

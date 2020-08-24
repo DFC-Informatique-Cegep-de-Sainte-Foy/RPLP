@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using RplpAvecBD.Data;
@@ -20,7 +21,7 @@ namespace RplpAvecBD.Controllers
             _rplpContext = rplpContext;
         }
 
-        //[Authorize("estEtudiant")]
+        [Authorize("estEtudiant")]
         public IActionResult Index()
         {
             List<Professeur> professeurs = new List<Professeur>();
@@ -32,7 +33,7 @@ namespace RplpAvecBD.Controllers
             return View();
         }
 
-        //[Authorize("estEtudiant")]
+        [Authorize("estEtudiant")]
         [HttpPost]
         public IActionResult Index(Unclaim p_unclaim)
         {
@@ -55,7 +56,7 @@ namespace RplpAvecBD.Controllers
             return View();
         }
 
-        //[Authorize("estEtudiant")]
+        [Authorize("estEtudiant")]
         [HttpGet]
         public IActionResult ResultatUnclaim(int idProfesseur, string codeEtudiant)
         {
