@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -11,26 +12,38 @@ namespace RplpAvecBD.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-       
-        public HomeController(ILogger<HomeController> logger)
+        public static bool estProfesseurConnecte = false;
+
+        private IAuthorizationService _authorization;
+
+        public HomeController(ILogger<HomeController> logger, IAuthorizationService authorizationService)
         {
             _logger = logger;
+            _authorization = authorizationService;
         }
 
         [AllowAnonymous]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             if (User.Identity.IsAuthenticated)
             {
-                if (Startup.estProfesseurConnecte)
+                var allowedProfesseur = await _authorization.AuthorizeAsync(User, "estProfesseur");
+
+                var allowedEtudiant = await _authorization.AuthorizeAsync(User, "estEtudiant");
+
+                if (allowedProfesseur.Succeeded)
                 {
+                    estProfesseurConnecte = true;
                     return RedirectToAction("Index", "Teacher");
                 }
-                return RedirectToAction("Index", "Student");
+                else if (allowedEtudiant.Succeeded)
+                {
+                    estProfesseurConnecte = false;
+                    return RedirectToAction("Index", "Student");
+                }
             }
 
             return View();
-          
         }
 
         [AllowAnonymous]

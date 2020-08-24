@@ -18,6 +18,7 @@ namespace RplpAvecBD.Controllers
 {
     public class TeacherController : Controller
     {
+       
         private readonly RplpContext _rplpContext;
 
         public TeacherController(RplpContext p_context)
@@ -34,6 +35,7 @@ namespace RplpAvecBD.Controllers
         [Authorize("estProfesseur")]
         public IActionResult Index(int p_idCoursChoisi)
         {
+
             // Si ce professeur n'existe pas dans la base de données
             if (!estProfesseurExistantBD(User.Identity.Name))
             {
