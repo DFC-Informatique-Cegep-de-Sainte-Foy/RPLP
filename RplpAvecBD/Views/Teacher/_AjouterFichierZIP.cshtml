@@ -1,10 +1,10 @@
 ﻿
 @{
     ViewData["Title"] = "Ajouter fichier ZIP";
-  
 }
+
 <hr />
-@using (Html.BeginForm("VerifierFichierZIP", "Teacher", FormMethod.Post, new { enctype = "multipart/form-data", Model }))
+@using (Html.BeginForm("VerifierFichierZIP", "Teacher", FormMethod.Post, new { enctype = "multipart/form-data", Model , id="formZIP"}))
 {
     <table style="margin-top:28px;">
         <thead>
@@ -22,9 +22,8 @@
                 <td>
                     <input type="file" name="fichierZIP" value="Upload fichier ZIP" accept=".zip" class="btn btn-light" />
                 </td>
-                <td style="width:30px;"></td>
                 <td>
-                    <input type="submit" class="btn btn-success" id="btnEnregistrerTravail" value="Envoyer à Codepost" />
+                    <button type="button" onclick='this.form.submit();' id="btnEnvoyerACodepost" class="btn btn-success">Envoyer à Codepost</button>
                 </td>
             </tr>
             <tr>

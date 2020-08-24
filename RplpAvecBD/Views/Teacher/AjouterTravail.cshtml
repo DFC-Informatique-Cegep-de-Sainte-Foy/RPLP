@@ -16,7 +16,7 @@
             <table>
                 <thead>
                     <tr>
-                        <th style="width:200px;">
+                        <th style="width:280px;">
                             <h6>Nom du cours</h6>
                         </th>
                         <th style="width:360px;">
@@ -79,6 +79,10 @@
             else if (ViewBag.erreurFichierZIP == "Fichier réfusé")
             {
                 @Html.Partial("_ErreurFichierZIPRefuse")
+            }
+            else if (ViewBag.erreurFichierZIP == "Problème fichier ZIP")
+            {
+                @Html.Partial("_ErreurFichierZIP")
             }
 
         }
