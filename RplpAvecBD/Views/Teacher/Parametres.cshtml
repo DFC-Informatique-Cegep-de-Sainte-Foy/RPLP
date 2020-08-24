@@ -9,7 +9,24 @@
 
     <div class="text-left">
         <br />
-        <h2>Paramètres</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:225px;"></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <h2>Paramètres</h2>
+                    </td>
+                    <td>
+                        <a class="text-gris" asp-controller="Teacher" asp-action="GuideCodePostProfesseur">Cliquez ici si vous n'avez pas encore de compte sur le site Web CodePost !</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
         <hr />
         @using (Html.BeginForm())
         {
@@ -109,7 +126,7 @@
         <hr />
         <br />
         <div>
-            <img src="~/img/api-key-v2.gif" />
+            <img src="~/img/api-key-v3.gif" />
         </div>
 
     </div>
