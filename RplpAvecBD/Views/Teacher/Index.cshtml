@@ -153,7 +153,7 @@ ViewData["Title"] = "Professeur";
                             @*<a style="margin-left:10px;" asp-action="SuppressionAssignment" asp-controller="Teacher"><img src="~/img/icon_delete_18x18.png" title="Lien vers CodePost" alt="Lien vers CodePost" /></a>*@
 
                             <a class="btn btn-danger delete text-white" style="margin-left:10px;" id="supprimer"
-                                data-id="@kvp.Value.Item1, @coursChoisi.id"
+                                data-id="@kvp.Value.Item1"
                                 data-controller="Teacher"
                                 data-action="SuppressionAssignment"
                                 data-body-message="Êtes-vous sûr de vouloir supprimer le travail ?">

@@ -544,10 +544,8 @@ namespace RplpAvecBD.Controllers
         //[Authorize("estProfesseur")]
         public void SuppressionAssignment(string id)
         {
-            string[] infos = id.Split(",");
-            string nomTravail = infos[0];
-            string idCours = infos[1];
-
+            // Remarque : id = nomTravail
+            
             using (HttpClient client = new HttpClient())
             {
                 // Récuperér le professeur dans la session
@@ -565,7 +563,7 @@ namespace RplpAvecBD.Controllers
                 // Ajouter l'iddu cours choisi dans la ViewBag
                 ViewBag.idCoursChoisi = coursChoisi.id;
 
-                int idAssignment = CodePostController.ObtenirIdAssignment(coursChoisi.id, nomTravail, client);
+                int idAssignment = CodePostController.ObtenirIdAssignment(coursChoisi.id, id, client);
 
                 CodePostController.SupprimerAssignment(idAssignment, client);
             }
