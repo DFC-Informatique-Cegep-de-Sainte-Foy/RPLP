@@ -372,7 +372,9 @@ namespace RplpAvecBD.Controllers
                     // Obtenir le nom du fichier
                     string fileName = Path.GetFileName(fichierZIP.FileName);
 
+                    // Obtenir répertoire temporaire courant
                     string path = Directory.GetCurrentDirectory();
+
                     // Obtenir répertoire temporaire de l'utilisateur
                     string pathUser = Path.GetTempPath();
 
@@ -442,6 +444,11 @@ namespace RplpAvecBD.Controllers
                                 {
                                     fichierDansUpload.Delete();
                                 }
+                            }
+
+                            if (!Directory.Exists(Path.Combine(path, "Upload")))
+                            {
+                                Directory.CreateDirectory(Path.Combine(path, "Upload"));
                             }
 
                             // Déplacer le fichier dans le répetoire Upload
@@ -683,7 +690,7 @@ namespace RplpAvecBD.Controllers
                 if (resultat.Success)
                 {
                     // Effacer les fichiers indésirables
-                    string[] TypeDeFichierAEffacer = new string[] { "*.suo", "*.user", "*.userosscache", "*.sln.docstates", ".vs", "bin", "obj", "build", "*.class", ".settings", ".classpath", ".project", "*.mdj", "*.svg" };
+                    string[] TypeDeFichierAEffacer = new string[] { "*.suo", "*.user", "*.userosscache", "*.sln.docstates", ".vs", "bin", "obj", "build", "*.class", ".settings", ".classpath", ".project", "*.mdj", "*.svg"};
                     
                     foreach (string type in TypeDeFichierAEffacer)
                     {
@@ -720,7 +727,7 @@ namespace RplpAvecBD.Controllers
                 }
 
                 // Effacer les répertoires indésirables
-                string[] RepetoireAEffacer = new string[] { ".vs", "bin", "obj", "build" };
+                string[] RepetoireAEffacer = new string[] { ".vs", "bin", "obj", "build", ".settings" };
                 
                 foreach (string NomDirectoryAEffacer in RepetoireAEffacer)
                 {
