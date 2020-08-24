@@ -2,7 +2,7 @@
 @{
     if (User.Identity.IsAuthenticated)
     {
-        if (Startup.estProfesseurConnecte)
+        if (RplpAvecBD.Controllers.HomeController.estProfesseurConnecte)
         {
             Layout = "_LayoutTeacher";
         }

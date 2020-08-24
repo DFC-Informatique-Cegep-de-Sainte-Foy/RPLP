@@ -7,7 +7,7 @@
             <span class="navbar-text icons" style="margin-right:5px;">Bonjour @User.Identity.Name !</span>
         </li>
 
-        @if (Startup.estProfesseurConnecte)
+        @if (RplpAvecBD.Controllers.HomeController.estProfesseurConnecte)
         {
             <li class="nav-item">
                 <a class="navbar-icons" asp-controller="Teacher" asp-action="Parametres"><img src="~/img/icon_settings_19x19.png" alt="Paramètres" title="Paramètres" /></a>

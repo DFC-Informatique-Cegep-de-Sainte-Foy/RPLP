@@ -17,8 +17,6 @@ namespace RplpAvecBD
 {
     public class Startup
     {
-        public static bool estProfesseurConnecte = false;
-
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -41,13 +39,11 @@ namespace RplpAvecBD
                     // a95951b6-21c0-49ad-8b5d-2bc3d8d61a1d - prof-inf-dfc
                     // 20d9f47c-74dc-4bd1-a214-3a80f2a66bd1 - Prof informatique
                     p.RequireClaim("groups", "d799decc-9064-425a-8db9-c68931b5a469");
-                    estProfesseurConnecte = true;
                 });
 
                 option.AddPolicy("estEtudiant", p =>
                 {
                     p.RequireClaim("groups", "76d2a1f1-fa8a-4a15-8ada-2724d74ad571");
-                    estProfesseurConnecte = true;
                 });
             });
 
