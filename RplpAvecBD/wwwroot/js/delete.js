@@ -21,7 +21,7 @@
             </div>
             </div>`);
 
-    //Delete Action
+    // Afficher le popup pour confirmer la suppression de l'assignment
     $(".delete").on('click', (e) => {
         e.preventDefault();
 
@@ -38,7 +38,9 @@
         
     });
 
-    ////Delete Action
+    // Appeller la méthode SuppressionAssignment qui se trouve dans le controleur Teacher (passé en paramètre dans le bouton)
+    // Cacher le popup
+    // Appeller la page index du controlleur Teacher en POST avec le bon cours sélectionné dans la DropDownList
     $("#confirm-delete").on('click', () => {
         $.get(url)
             .always(() => {
@@ -48,11 +50,13 @@
             });
     });
 
+    // Changer le nom du bouton Supprimer dans le popup
     $("#confirm-delete").click(function () {
         var texto = $(this).text();
         $(this).text(texto == "Attendez..." ? "Attendez..." : "Attendez...");
     });
 
+    // Changer le nom du bouton Envoyer à Codepost dans la page AjouterTravail
     $("#btnEnvoyerACodepost").click(function () {
         var texto = $(this).text();
         $(this).text(texto == "Attendez..." ? "Attendez..." : "Attendez...");
