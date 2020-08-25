@@ -3,8 +3,9 @@
     ViewData["Title"] = "Ajouter fichier ZIP";
 }
 
+<br />
 <hr />
-@using (Html.BeginForm("VerifierFichierZIP", "Teacher", FormMethod.Post, new { enctype = "multipart/form-data", Model , id="formZIP"}))
+@using (Html.BeginForm("VerifierFichierZIP", "Teacher", FormMethod.Post, new { enctype = "multipart/form-data", Model, id = "formZIP" }))
 {
     <table style="margin-top:28px;">
         <thead>
@@ -34,5 +35,7 @@
         </tbody>
     </table>
 }
+<br />
+
 
 
