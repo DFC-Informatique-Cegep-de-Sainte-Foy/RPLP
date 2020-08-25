@@ -21,7 +21,7 @@ namespace RplpAvecBD.Controllers
             _rplpContext = rplpContext;
         }
 
-        //[Authorize("estEtudiant")]
+        [Authorize("estEtudiant")]
         public IActionResult Index()
         {
             List<Professeur> professeurs = new List<Professeur>();
