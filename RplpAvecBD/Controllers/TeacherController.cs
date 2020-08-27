@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net.Http;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -35,7 +33,6 @@ namespace RplpAvecBD.Controllers
         [Authorize("estProfesseur")]
         public IActionResult Index(int p_idCoursChoisi)
         {
-
             // Si ce professeur n'existe pas dans la base de données
             if (!estProfesseurExistantBD(User.Identity.Name))
             {
@@ -88,6 +85,12 @@ namespace RplpAvecBD.Controllers
         [HttpPost]
         public IActionResult Index(Course p_cours)
         {
+            // Vérifier si la session a été expiré
+            if (HttpContext.Session.GetString("ProfesseurSession") == null)
+            {
+                return RedirectToAction("ErreurSession", "Teacher");
+            }
+            
             // Ajouter le cours choisi dans la session
             HttpContext.Session.SetString("IdCoursChoisiSession", JsonConvert.SerializeObject(p_cours.idCoursChoisi));
 
@@ -106,7 +109,7 @@ namespace RplpAvecBD.Controllers
 
                 client.BaseAddress = new Uri("https://api.codepost.io");
                 client.DefaultRequestHeaders.Add("authorization", "Token " + professeurSession.apiKey);
-
+                              
                 // Récuperér la liste de cours dans la session
                 List<Course> listeCours = JsonConvert.DeserializeObject<List<Course>>(HttpContext.Session.GetString("ListeCoursSession"));
 
@@ -170,6 +173,12 @@ namespace RplpAvecBD.Controllers
         [Authorize("estProfesseur")]
         public IActionResult Parametres()
         {
+            // Vérifier si la session a été expiré
+            if (HttpContext.Session.GetString("ProfesseurSession") == null)
+            {
+                return RedirectToAction("ErreurSession", "Teacher");
+            }
+
             // Récuperér le professeur dans la BD
             Professeur professeurExistente = _rplpContext.Professeurs.SingleOrDefault(p => p.courriel == User.Identity.Name);
 
@@ -183,6 +192,12 @@ namespace RplpAvecBD.Controllers
         [HttpPost]
         public IActionResult Parametres(Professeur p_professeurModel)
         {
+            // Vérifier si la session a été expiré
+            if (HttpContext.Session.GetString("ProfesseurSession") == null)
+            {
+                return RedirectToAction("ErreurSession", "Teacher");
+            }
+
             // Récuperér le professeur dans la BD
             Professeur professeurExistente = _rplpContext.Professeurs.SingleOrDefault(p => p.courriel == User.Identity.Name);
 
@@ -212,6 +227,12 @@ namespace RplpAvecBD.Controllers
         [Authorize("estProfesseur")]
         public IActionResult ResultatMiseAJourParametres(string p_nom, string p_courriel, string p_apiKey)
         {
+            // Vérifier si la session a été expiré
+            if (HttpContext.Session.GetString("ProfesseurSession") == null)
+            {
+                return RedirectToAction("ErreurSession", "Teacher");
+            }
+
             mettreAJourParametresBD(p_nom, p_courriel, p_apiKey);
 
             return View();
@@ -220,8 +241,14 @@ namespace RplpAvecBD.Controllers
         [Authorize("estProfesseur")]
         [HttpPost]
         [RequestSizeLimit(2_000_000)]  //ajuste la taille limite du fichier 2mb
-        public async Task<IActionResult> VerifierListeEtudiant(IFormFile fichierCSV)
+        public IActionResult VerifierListeEtudiant(IFormFile fichierCSV)
         {
+            // Vérifier si la session a été expiré
+            if (HttpContext.Session.GetString("ProfesseurSession") == null)
+            {
+                return RedirectToAction("ErreurSession", "Teacher");
+            }
+
             using (HttpClient client = new HttpClient())
             {
                 // Récuperér le professeur dans la session
@@ -288,6 +315,12 @@ namespace RplpAvecBD.Controllers
         [HttpPost]
         public IActionResult AjouterTravail(Assignment p_assignment)
         {
+            // Vérifier si la session a été expiré
+            if (HttpContext.Session.GetString("ProfesseurSession") == null)
+            {
+                return RedirectToAction("ErreurSession", "Teacher");
+            }
+
             using (HttpClient client = new HttpClient())
             {
                 // Récuperér le professeur dans la session
@@ -346,8 +379,14 @@ namespace RplpAvecBD.Controllers
         [Authorize("estProfesseur")]
         [HttpPost]
         [RequestSizeLimit(105_000_000)]  //ajuste la taille limite du fichier a 100 Mb (requete du client)
-        public async Task<IActionResult> VerifierFichierZIP(IFormFile fichierZIP)
+        public IActionResult VerifierFichierZIP(IFormFile fichierZIP)
         {
+            // Vérifier si la session a été expiré
+            if (HttpContext.Session.GetString("ProfesseurSession") == null)
+            {
+                return RedirectToAction("ErreurSession", "Teacher");
+            }
+
             using (HttpClient client = new HttpClient())
             {
                 // Récuperér le professeur dans la session
@@ -529,70 +568,47 @@ namespace RplpAvecBD.Controllers
         }
 
         [Authorize("estProfesseur")]
-        public void SuppressionAssignment(string id)
-        {
-            // Remarque : id = nomTravail
-
-            using (HttpClient client = new HttpClient())
-            {
-                // Récuperér le professeur dans la session
-                Professeur professeurSession = JsonConvert.DeserializeObject<Professeur>(HttpContext.Session.GetString("ProfesseurSession"));
-
-                client.BaseAddress = new Uri("https://api.codepost.io");
-                client.DefaultRequestHeaders.Add("authorization", "Token " + professeurSession.apiKey);
-
-                // Récuperér l'objet du cours choisi dans la session
-                Course coursChoisi = JsonConvert.DeserializeObject<Course>(HttpContext.Session.GetString("coursChoisi"));
-
-                // Ajouter l'objet du cours choisi dans la ViewBag
-                ViewBag.coursChoisi = coursChoisi;
-
-                // Ajouter l'iddu cours choisi dans la ViewBag
-                ViewBag.idCoursChoisi = coursChoisi.id;
-
-                int idAssignment = CodePostController.ObtenirIdAssignment(coursChoisi.id, id, client);
-
-                CodePostController.SupprimerAssignment(idAssignment, client);
-            }
-
-            // Récuperér la liste des étudiants dans la session
-            List<string> listeEtudiant = JsonConvert.DeserializeObject<List<string>>(HttpContext.Session.GetString("ListeEtudiantsSession"));
-
-            // Ajouter la liste des étudiants dans la ViewBag
-            ViewBag.listeEtudiant = listeEtudiant;
-
-            /// Récuperér la liste d'assignments dans la session
-            List<Assignment> listeAssignment = JsonConvert.DeserializeObject<List<Assignment>>(HttpContext.Session.GetString("ListeAssignmentsSession"));
-
-            // Ajouter la liste d'Assignments dans la ViewBag
-            ViewBag.listeAssignment = listeAssignment;
-
-            // Récuperér les infos necessaires sur Assignment du cours choisi dans la session
-            Dictionary<int, (string, int, int)> infoSurLesAssignments = JsonConvert.DeserializeObject<Dictionary<int, (string, int, int)>>(HttpContext.Session.GetString("infoSurLesAssignmentsSession"));
-
-            // Ajouter info necessaire sur Assignment de cours choisi  dans la ViewBag
-            ViewBag.infoSurLesAssignments = infoSurLesAssignments;
-
-        }
-
-        [Authorize("estProfesseur")]
         public IActionResult ResultatAjoutTravail()
         {
+            // Vérifier si la session a été expiré
+            if (HttpContext.Session.GetString("ProfesseurSession") == null)
+            {
+                return RedirectToAction("ErreurSession", "Teacher");
+            }
+
             return View();
         }
 
         [Authorize("estProfesseur")]
         public IActionResult AideSelectionnerCours()
         {
+            // Vérifier si la session a été expiré
+            if (HttpContext.Session.GetString("ProfesseurSession") == null)
+            {
+                return RedirectToAction("ErreurSession", "Teacher");
+            }
+
             return View();
         }
 
         [Authorize("estProfesseur")]
         public IActionResult GuideCodePostProfesseur()
         {
+            // Vérifier si la session a été expiré
+            if (HttpContext.Session.GetString("ProfesseurSession") == null)
+            {
+                return RedirectToAction("ErreurSession", "Teacher");
+            }
+
             return View();
         }
-        
+
+        [Authorize("estProfesseur")]
+        public IActionResult ErreurSession()
+        {
+            return View();
+        }
+
 
         // -------------------------------------------------------- 
         //
@@ -781,6 +797,55 @@ namespace RplpAvecBD.Controllers
             catch (UnauthorizedAccessException)
             {
                 fichierAEffacer.Delete();
+            }
+        }
+
+        public void SuppressionAssignment(string id)
+        {
+            // Remarque : id = nomTravail
+
+            // Si la session n'a pas été expiré
+            if (HttpContext.Session.GetString("ProfesseurSession") != null)
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    // Récuperér le professeur dans la session
+                    Professeur professeurSession = JsonConvert.DeserializeObject<Professeur>(HttpContext.Session.GetString("ProfesseurSession"));
+
+                    client.BaseAddress = new Uri("https://api.codepost.io");
+                    client.DefaultRequestHeaders.Add("authorization", "Token " + professeurSession.apiKey);
+
+                    // Récuperér l'objet du cours choisi dans la session
+                    Course coursChoisi = JsonConvert.DeserializeObject<Course>(HttpContext.Session.GetString("coursChoisi"));
+
+                    // Ajouter l'objet du cours choisi dans la ViewBag
+                    ViewBag.coursChoisi = coursChoisi;
+
+                    // Ajouter l'iddu cours choisi dans la ViewBag
+                    ViewBag.idCoursChoisi = coursChoisi.id;
+
+                    int idAssignment = CodePostController.ObtenirIdAssignment(coursChoisi.id, id, client);
+
+                    CodePostController.SupprimerAssignment(idAssignment, client);
+                }
+
+                // Récuperér la liste des étudiants dans la session
+                List<string> listeEtudiant = JsonConvert.DeserializeObject<List<string>>(HttpContext.Session.GetString("ListeEtudiantsSession"));
+
+                // Ajouter la liste des étudiants dans la ViewBag
+                ViewBag.listeEtudiant = listeEtudiant;
+
+                /// Récuperér la liste d'assignments dans la session
+                List<Assignment> listeAssignment = JsonConvert.DeserializeObject<List<Assignment>>(HttpContext.Session.GetString("ListeAssignmentsSession"));
+
+                // Ajouter la liste d'Assignments dans la ViewBag
+                ViewBag.listeAssignment = listeAssignment;
+
+                // Récuperér les infos necessaires sur Assignment du cours choisi dans la session
+                Dictionary<int, (string, int, int)> infoSurLesAssignments = JsonConvert.DeserializeObject<Dictionary<int, (string, int, int)>>(HttpContext.Session.GetString("infoSurLesAssignmentsSession"));
+
+                // Ajouter info necessaire sur Assignment de cours choisi  dans la ViewBag
+                ViewBag.infoSurLesAssignments = infoSurLesAssignments;
             }
         }
     }

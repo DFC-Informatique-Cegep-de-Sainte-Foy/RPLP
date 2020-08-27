@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -9,7 +8,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using RplpAvecBD.Data;
 using RplpAvecBD.Model;
 
 namespace RplpAvecBD.Controllers
@@ -437,8 +435,6 @@ namespace RplpAvecBD.Controllers
             var result = task.Result;
         }
 
-
-
         /// <summary>
         /// Procédure pour la création d'une Submission afin d'y envoyer par la suite le travail de l'étudiant
         /// </summary>
@@ -562,18 +558,6 @@ namespace RplpAvecBD.Controllers
             return infoARetourner;
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
         /// <summary>
         /// Procédure pour uploader tous les fichiers d'un seul étudiant
         /// </summary>
@@ -635,11 +619,6 @@ namespace RplpAvecBD.Controllers
                 }
             }
         }
-
-
-
-
-
 
         /// <summary>
         /// Procédure pour uploader les travaux de tous les étudiants
