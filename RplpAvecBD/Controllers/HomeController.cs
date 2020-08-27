@@ -24,12 +24,16 @@ namespace RplpAvecBD.Controllers
         //[AllowAnonymous]
         //public IActionResult Index()  // Utiliser cette méthode pour tester localement, sans autorisations !
         //{
-        //    if (estProfesseurConnecte)
+        //    if (User.Identity.IsAuthenticated)
         //    {
-        //        return RedirectToAction("Index", "Teacher");
+        //        if (estProfesseurConnecte)
+        //        {
+        //            return RedirectToAction("Index", "Teacher");
+        //        }
+        //        return RedirectToAction("Index", "Student");
         //    }
 
-        //    return RedirectToAction("Index", "Student");
+        //    return View();
         //}
 
         public HomeController(ILogger<HomeController> logger, IAuthorizationService authorizationService)
@@ -54,7 +58,7 @@ namespace RplpAvecBD.Controllers
                 }
                 else if (allowedEtudiant.Succeeded)
                 {
-                    estProfesseurConnecte = false;
+                    estProfesseurConnecte = false; ;
                     return RedirectToAction("Index", "Student");
                 }
             }

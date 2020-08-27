@@ -27,7 +27,7 @@ namespace RplpAvecBD.Controllers
             List<Professeur> professeurs = new List<Professeur>();
 
             professeurs = _rplpContext.Professeurs.ToList();
-            
+
             ViewBag.listeProfesseurs = professeurs;
 
             return View();

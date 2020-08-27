@@ -1,4 +1,3 @@
-using System;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.AzureAD.UI;
 using Microsoft.AspNetCore.Authorization;
@@ -12,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using RplpAvecBD.Data;
 using Microsoft.AspNetCore.Http;
+using System;
 
 namespace RplpAvecBD
 {
@@ -52,7 +52,8 @@ namespace RplpAvecBD
             // Ajouter session
             services.AddSession(options =>
             {
-                options.Cookie.IsEssential = true; // make the session cookie Essential
+                options.Cookie.IsEssential = true; 
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
             });
 
             services.AddDistributedMemoryCache();
