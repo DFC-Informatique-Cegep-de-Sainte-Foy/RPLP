@@ -709,8 +709,33 @@ namespace RplpAvecBD.Controllers
                 Match resultat = regexValidationFolder.Match(dir.Name);
                 if (resultat.Success)
                 {
-                    // Effacer les fichiers indésirables
-                    string[] TypeDeFichierAEffacer = new string[] { "*.suo", "*.user", "*.userosscache", "*.sln.docstates", ".vs", "bin", "obj", "build", "*.class", ".settings", ".classpath", ".project", "*.mdj", "*.svg"};
+                    // Effacer les répertoires indésirables
+                    string[] RepetoireAEffacer = new string[] { ".vs", "bin", "obj", "build", ".settings", ".vscode" };
+
+                    foreach (string NomDirectoryAEffacer in RepetoireAEffacer)
+                    {
+                        DirectoryInfo[] repertoire = destination.GetDirectories(NomDirectoryAEffacer, SearchOption.AllDirectories); ;
+
+                        foreach (DirectoryInfo di in repertoire)
+                        {
+                            try
+                            {
+                                di.Delete(true);
+                            }
+                            catch (IOException)
+                            {
+                                di.Delete(true);
+                            }
+                            catch (UnauthorizedAccessException)
+                            {
+                                di.Delete(true);
+                            }
+                        }
+                    }
+                }
+
+                // Effacer les fichiers indésirables
+                string[] TypeDeFichierAEffacer = new string[] { "*.suo", "*.user", "*.userosscache", "*.sln.docstates", ".vs", "bin", "obj", "build", "*.class", ".settings", ".classpath", ".project", "*.mdj", "*.svg"};
                     
                     foreach (string type in TypeDeFichierAEffacer)
                     {
@@ -745,31 +770,6 @@ namespace RplpAvecBD.Controllers
                         Console.WriteLine(e.Message);
                     }
                 }
-
-                // Effacer les répertoires indésirables
-                string[] RepetoireAEffacer = new string[] { ".vs", "bin", "obj", "build", ".settings" };
-                
-                foreach (string NomDirectoryAEffacer in RepetoireAEffacer)
-                {
-                    DirectoryInfo[] repertoire = destination.GetDirectories(NomDirectoryAEffacer, SearchOption.AllDirectories); ;
-
-                    foreach (DirectoryInfo di in repertoire)
-                    {
-                        try
-                        {
-                            di.Delete(true);
-                        }
-                        catch (IOException)
-                        {
-                            di.Delete(true);
-                        }
-                        catch (UnauthorizedAccessException)
-                        {
-                            di.Delete(true);
-                        }
-                    }
-                }
-            }
 
             return destination;
         }
