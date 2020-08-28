@@ -249,6 +249,11 @@ namespace RplpAvecBD.Controllers
                             }
                         }
 
+                        if (!Directory.Exists(Path.Combine(path, "Upload")))
+                        {
+                            Directory.CreateDirectory(Path.Combine(path, "Upload"));
+                        }
+
                         // déplacer le fichier dans le répetoire Upload
                         fichierRecu.MoveTo(Path.Combine(path, "Upload", fichierRecu.Name));
                         
