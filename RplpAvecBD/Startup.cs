@@ -34,8 +34,10 @@ namespace RplpAvecBD
             {
                 option.AddPolicy("estProfesseur", p =>
                 {
-                    p.RequireClaim("groups", "d799decc-9064-425a-8db9-c68931b5a469"); // Program4business
+                    p.RequireClaim("groups", "c0d32534-918b-44bd-a2c9-b21e292e6cf7"); // informatiqueDFC
                     //p.RequireClaim("groups", "cfe10d5a-476c-431e-9515-268ac5f7c6b5"); // temp test teacher
+                    //p.RequireClaim("groups", "d799decc-9064-425a-8db9-c68931b5a469"); // Program4business
+                    // informatiqueDFC c0d32534-918b-44bd-a2c9-b21e292e6cf7
                 });
 
                 option.AddPolicy("estEtudiant", p =>
