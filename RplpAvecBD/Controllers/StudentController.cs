@@ -11,6 +11,7 @@ using RplpAvecBD.Model;
 
 namespace RplpAvecBD.Controllers
 {
+    [Authorize(Roles = "student")]
     public class StudentController : Controller
     {
 
@@ -21,7 +22,6 @@ namespace RplpAvecBD.Controllers
             _rplpContext = rplpContext;
         }
 
-        [Authorize("estEtudiant")]
         public IActionResult Index()
         {
             List<Professeur> professeurs = new List<Professeur>();
@@ -33,7 +33,7 @@ namespace RplpAvecBD.Controllers
             return View();
         }
 
-        [Authorize("estEtudiant")]
+     
         [HttpPost]
         public IActionResult Index(Unclaim p_unclaim)
         {
@@ -55,8 +55,7 @@ namespace RplpAvecBD.Controllers
 
             return View();
         }
-
-        [Authorize("estEtudiant")]
+    
         [HttpGet]
         public IActionResult ResultatUnclaim(int idProfesseur, string codeEtudiant)
         {
@@ -65,8 +64,6 @@ namespace RplpAvecBD.Controllers
             using (HttpClient c = new HttpClient())
             {
                 c.BaseAddress = new Uri("https://api.codepost.io");
-                // olena e395e7df7d367ea5cc70cc802dd0f351fdafb695
-                // pf    7d9acea046111298c0971cb6b437ef74e6b89625
                 c.DefaultRequestHeaders.Add("authorization", "Token " + professeurSelectionne.apiKey);
 
                 var values = new Dictionary<string, string>
@@ -103,7 +100,7 @@ namespace RplpAvecBD.Controllers
             }
         }
 
-        [Authorize("estEtudiant")]
+    
         public IActionResult GuideCodePostEtudiant()
         {
             return View();

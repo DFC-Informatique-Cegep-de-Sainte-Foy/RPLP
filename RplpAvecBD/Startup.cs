@@ -30,22 +30,30 @@ namespace RplpAvecBD
             services.AddAuthentication(AzureADDefaults.AuthenticationScheme)
                 .AddAzureAD(options => Configuration.Bind("AzureAd", options));
 
-            services.AddAuthorization(option =>
+            services.AddAuthorization(options =>
             {
-                option.AddPolicy("estProfesseur", p =>
-                {
-                    p.RequireClaim("groups", "c0d32534-918b-44bd-a2c9-b21e292e6cf7"); // informatiqueDFC
-                    //p.RequireClaim("groups", "cfe10d5a-476c-431e-9515-268ac5f7c6b5"); // temp test teacher
-                    //p.RequireClaim("groups", "d799decc-9064-425a-8db9-c68931b5a469"); // Program4business
-                    // informatiqueDFC c0d32534-918b-44bd-a2c9-b21e292e6cf7
-                });
-
-                option.AddPolicy("estEtudiant", p =>
-                {
-                    p.RequireClaim("groups", "76d2a1f1-fa8a-4a15-8ada-2724d74ad571"); // o365 - étudiant
-                    //p.RequireClaim("groups", "6bca3e76-f76b-4b7b-885c-014234144bfa"); // temp test etudiant
-                });
+                options.AddPolicy("estProfesseur", policy => policy.RequireRole("teacher"));
+                options.AddPolicy("estEtudiant", policy => policy.RequireRole("student"));
             });
+
+            //services.AddAuthorization(option =>
+            //{
+            //    option.AddPolicy("estProfesseur", p =>
+            //    {
+            //        options.AddPolicy("AdminAccess", policy => policy.RequireRole("teacher"));
+            //        //p.RequireClaim("groups", "c0d32534-918b-44bd-a2c9-b21e292e6cf7"); // informatiqueDFC
+            //        //p.RequireClaim("groups", "cfe10d5a-476c-431e-9515-268ac5f7c6b5"); // temp test teacher
+            //        //p.RequireClaim("groups", "d799decc-9064-425a-8db9-c68931b5a469"); // Program4business
+            //        // informatiqueDFC c0d32534-918b-44bd-a2c9-b21e292e6cf7
+            //    });
+
+            //    option.AddPolicy("estEtudiant", p =>
+            //    {
+            //        options.AddPolicy("AdminAccess", policy => policy.RequireRole("student"));
+            //        //p.RequireClaim("groups", "76d2a1f1-fa8a-4a15-8ada-2724d74ad571"); // o365 - étudiant
+            //        //p.RequireClaim("groups", "6bca3e76-f76b-4b7b-885c-014234144bfa"); // temp test etudiant
+            //    });
+            //});
 
             // Ajouter RplpContext
             services.AddDbContext<RplpContext>

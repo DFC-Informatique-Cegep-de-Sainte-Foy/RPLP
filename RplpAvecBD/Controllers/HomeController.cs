@@ -16,13 +16,13 @@ namespace RplpAvecBD.Controllers
 
         private IAuthorizationService _authorization;
 
-        //public HomeController(ILogger<HomeController> logger)  // Utiliser ce constructeur pour tester localement, sans autorisations !
+        //public HomeController(ILogger<HomeController> logger)  // *******Utiliser ce constructeur pour tester localement, sans autorisations !********
         //{
         //    _logger = logger;
         //}
 
         //[AllowAnonymous]
-        //public IActionResult Index()  // Utiliser cette méthode pour tester localement, sans autorisations !
+        //public IActionResult Index()  // **********Utiliser cette méthode pour tester localement, sans autorisations !**********
         //{
         //    if (User.Identity.IsAuthenticated)
         //    {
