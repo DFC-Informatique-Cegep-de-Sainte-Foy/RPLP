@@ -14,6 +14,7 @@ using RplpAvecBD.Model;
 
 namespace RplpAvecBD.Controllers
 {
+    [Authorize(Roles = "teacher")]
     public class TeacherController : Controller
     {
        
@@ -30,7 +31,7 @@ namespace RplpAvecBD.Controllers
         // 
         // -------------------------------------------------------- 
 
-        [Authorize("estProfesseur")]
+
         public IActionResult Index(int p_idCoursChoisi)
         {
             // Si ce professeur n'existe pas dans la base de données
@@ -81,7 +82,7 @@ namespace RplpAvecBD.Controllers
             return View();
         }
 
-        [Authorize("estProfesseur")]
+
         [HttpPost]
         public IActionResult Index(Course p_cours)
         {
@@ -170,7 +171,7 @@ namespace RplpAvecBD.Controllers
             return View();
         }
 
-        [Authorize("estProfesseur")]
+
         public IActionResult Parametres()
         {
             // Vérifier si la session a été expiré
@@ -188,7 +189,7 @@ namespace RplpAvecBD.Controllers
             return View();
         }
 
-        [Authorize("estProfesseur")]
+ 
         [HttpPost]
         public IActionResult Parametres(Professeur p_professeurModel)
         {
@@ -224,7 +225,7 @@ namespace RplpAvecBD.Controllers
             return View();
         }
 
-        [Authorize("estProfesseur")]
+    
         public IActionResult ResultatMiseAJourParametres(string p_nom, string p_courriel, string p_apiKey)
         {
             // Vérifier si la session a été expiré
@@ -238,7 +239,7 @@ namespace RplpAvecBD.Controllers
             return View();
         }
 
-        [Authorize("estProfesseur")]
+   
         [HttpPost]
         [RequestSizeLimit(2_000_000)]  //ajuste la taille limite du fichier 2mb
         public IActionResult VerifierListeEtudiant(IFormFile fichierCSV)
@@ -311,7 +312,7 @@ namespace RplpAvecBD.Controllers
             return View();
         }
 
-        [Authorize("estProfesseur")]
+       
         [HttpPost]
         public IActionResult AjouterTravail(Assignment p_assignment)
         {
@@ -376,7 +377,7 @@ namespace RplpAvecBD.Controllers
             return View();
         }
 
-        [Authorize("estProfesseur")]
+  
         [HttpPost]
         [RequestSizeLimit(105_000_000)]  //ajuste la taille limite du fichier a 100 Mb (requete du client)
         public IActionResult VerifierFichierZIP(IFormFile fichierZIP)
@@ -567,7 +568,7 @@ namespace RplpAvecBD.Controllers
             return View("ResultatAjoutTravail");
         }
 
-        [Authorize("estProfesseur")]
+
         public IActionResult ResultatAjoutTravail()
         {
             // Vérifier si la session a été expiré
@@ -579,7 +580,7 @@ namespace RplpAvecBD.Controllers
             return View();
         }
 
-        [Authorize("estProfesseur")]
+  
         public IActionResult AideSelectionnerCours()
         {
             // Vérifier si la session a été expiré
@@ -591,7 +592,7 @@ namespace RplpAvecBD.Controllers
             return View();
         }
 
-        [Authorize("estProfesseur")]
+   
         public IActionResult GuideCodePostProfesseur()
         {
             // Vérifier si la session a été expiré
@@ -603,12 +604,10 @@ namespace RplpAvecBD.Controllers
             return View();
         }
 
-        [Authorize("estProfesseur")]
         public IActionResult ErreurSession()
         {
             return View();
         }
-
 
         // -------------------------------------------------------- 
         //
