@@ -186,95 +186,95 @@ namespace RplpAvecBD.Controllers
                 }
 
                 // Création du nouveau fichier local et copie le contenu du fichier dedans
-                using (FileStream localFile = System.IO.File.OpenWrite(fileName))
+                using FileStream localFile = System.IO.File.OpenWrite(fileName);
+                using Stream uploadedFile = p_fichierCSV.OpenReadStream();
 
-                using (Stream uploadedFile = p_fichierCSV.OpenReadStream())
+                // Recevoir le fichier
+                uploadedFile.CopyTo(localFile);
+                string extension = Path.GetExtension(p_fichierCSV.FileName).ToLowerInvariant();
+                FileInfo fichierRecu = new FileInfo(p_fichierCSV.FileName);
+                localFile.Close();
+                uploadedFile.Close();
+
+                // Vérifier si l'extension est vide ou si n'est pas un .csv)
+                if (string.IsNullOrEmpty(extension) ||
+                    (extension != ".csv") ||
+                    (fichierRecu.FullName.Contains(".jsp")) ||
+                    (fichierRecu.FullName.Contains(".exe")) ||
+                    (fichierRecu.FullName.Contains(".msi")) ||
+                    (fichierRecu.FullName.Contains(".bat")) ||
+                    (fichierRecu.FullName.Contains(".php")) ||
+                    (fichierRecu.FullName.Contains(".pht")) ||
+                    (fichierRecu.FullName.Contains(".phtml")) ||
+                    (fichierRecu.FullName.Contains(".asa")) ||
+                    (fichierRecu.FullName.Contains(".cer")) ||
+                    (fichierRecu.FullName.Contains(".asax")) ||
+                    (fichierRecu.FullName.Contains(".swf")) ||
+                    (fichierRecu.FullName.Contains(".com")) ||
+                    (fichierRecu.FullName.Contains(".xap")))
                 {
-                    // Recevoir le fichier
-                    uploadedFile.CopyTo(localFile);
-                    string extension = Path.GetExtension(p_fichierCSV.FileName).ToLowerInvariant();
-                    FileInfo fichierRecu = new FileInfo(p_fichierCSV.FileName);
-                    localFile.Close();
-                    uploadedFile.Close();
+                    try
+                    {
+                        fichierRecu.Delete();
+                        return null;
+                    }
+                    catch (IOException)
+                    {
+                        fichierRecu.Delete();
+                    }
+                    catch (UnauthorizedAccessException)
+                    {
+                        fichierRecu.Delete();
+                    }
+                }
 
-                    // Vérifier si l'extension est vide ou si n'est pas un .csv)
-                    if (string.IsNullOrEmpty(extension) ||
-                        (extension != ".csv") ||
-                        (fichierRecu.FullName.Contains(".jsp")) ||
-                        (fichierRecu.FullName.Contains(".exe")) ||
-                        (fichierRecu.FullName.Contains(".msi")) ||
-                        (fichierRecu.FullName.Contains(".bat")) ||
-                        (fichierRecu.FullName.Contains(".php")) ||
-                        (fichierRecu.FullName.Contains(".pht")) ||
-                        (fichierRecu.FullName.Contains(".phtml")) ||
-                        (fichierRecu.FullName.Contains(".asa")) ||
-                        (fichierRecu.FullName.Contains(".cer")) ||
-                        (fichierRecu.FullName.Contains(".asax")) ||
-                        (fichierRecu.FullName.Contains(".swf")) ||
-                        (fichierRecu.FullName.Contains(".com")) ||
-                        (fichierRecu.FullName.Contains(".xap")))
+                if (fichierRecu.Exists)
+                {
+                    FileInfo fichierDansUpload = new FileInfo(Path.Combine(path, "Upload", fichierRecu.Name));
+
+                    if (fichierDansUpload.Exists)
                     {
                         try
                         {
-                            fichierRecu.Delete();
-                            return null;
+                            fichierDansUpload.Delete();
                         }
                         catch (IOException)
                         {
-                            fichierRecu.Delete();
+                            fichierDansUpload.Delete();
                         }
                         catch (UnauthorizedAccessException)
                         {
-                            fichierRecu.Delete();
+                            fichierDansUpload.Delete();
                         }
                     }
 
-                    if (fichierRecu.Exists)
+                    if (!Directory.Exists(Path.Combine(path, "Upload")))
                     {
-                        FileInfo fichierDansUpload = new FileInfo(Path.Combine(path, "Upload", fichierRecu.Name));
+                        Directory.CreateDirectory(Path.Combine(path, "Upload"));
+                    }
 
-                        if (fichierDansUpload.Exists)
-                        {
-                            try
-                            {
-                                fichierDansUpload.Delete();
-                            }
-                            catch (IOException)
-                            {
-                                fichierDansUpload.Delete();
-                            }
-                            catch (UnauthorizedAccessException)
-                            {
-                                fichierDansUpload.Delete();
-                            }
-                        }
+                    // déplacer le fichier dans le répetoire Upload
+                    fichierRecu.MoveTo(Path.Combine(path, "Upload", fichierRecu.Name));
 
-                        if (!Directory.Exists(Path.Combine(path, "Upload")))
-                        {
-                            Directory.CreateDirectory(Path.Combine(path, "Upload"));
-                        }
+                    nouvelleListeEtudiants = TeacherController.CreerListeEtudiantsAPartirDuCSV(fichierRecu.ToString());
 
-                        // déplacer le fichier dans le répetoire Upload
-                        fichierRecu.MoveTo(Path.Combine(path, "Upload", fichierRecu.Name));
-                        
-                        nouvelleListeEtudiants = TeacherController.CreerListeEtudiantsAPartirDuCSV(fichierRecu.ToString());
+                    if (nouvelleListeEtudiants.Count > 0) {
 
                         courseRoster.students = nouvelleListeEtudiants;
                         courseRoster.graders = nouvelleListeEtudiants;
                         courseRoster.graders.Add(p_professeur.courriel);
 
-                        fichierDansUpload.Delete();
-                        
+                        var json = JsonConvert.SerializeObject(courseRoster);
+                        var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                        var task = p_client.PatchAsync("https://api.codepost.io/courses/" + p_idCours + "/roster/", content);
+                        task.Wait();
+                        var result = task.Result;
                     }
+
+                    fichierDansUpload.Delete();
                 }
             }
-
-            var json = JsonConvert.SerializeObject(courseRoster);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-            var task = p_client.PatchAsync("https://api.codepost.io/courses/" + p_idCours + "/roster/", content);
-            task.Wait();
-            var result = task.Result;
 
             return nouvelleListeEtudiants;
         }

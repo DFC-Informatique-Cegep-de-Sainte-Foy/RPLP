@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualBasic.CompilerServices;
 using Newtonsoft.Json;
 using RplpAvecBD.Data;
 using RplpAvecBD.Model;
@@ -294,6 +295,15 @@ namespace RplpAvecBD.Controllers
                         // Ajouter l'objet du cours choisi dans la ViewBag
                         ViewBag.coursChoisi = coursChoisi;
                         ViewBag.message = "Le fichier '" + fichierCSV.FileName + "' a été refusé pour des raisons de sécurité !";
+
+                        return View("ErreurFichierCSV", "Teacher");
+                    }
+
+                    if (nouvelleListeEtudiant.Count <= 0)
+                    {
+                        // Ajouter l'objet du cours choisi dans la ViewBag
+                        ViewBag.coursChoisi = coursChoisi;
+                        ViewBag.message = "La structure du fichier '" + fichierCSV.FileName + "' ne respect pas le bon format !";
 
                         return View("ErreurFichierCSV", "Teacher");
                     }
@@ -658,8 +668,42 @@ namespace RplpAvecBD.Controllers
             {
                 if (compteur != 0) //skip la ligne d'entete
                 {
-                    string[] splitText = line.Split('"');
-                    listeEtudiant.Add(splitText[1] + suffixe);
+                    if (line.StartsWith("="))
+                    {
+                        try
+                        {
+                            string[] splitText = line.Split('"');
+                            listeEtudiant.Add(splitText[1] + suffixe);
+                        }
+                        catch
+                        {
+                            file.Close();
+                            return new List<string>();
+                        }
+                    }
+                    else 
+                    {
+                        string caractere = line.ElementAt(0).ToString();
+
+                        if (int.TryParse(caractere, out int resultat))
+                        {
+                            try
+                            {
+                                string[] splitText = line.Split(';');
+                                listeEtudiant.Add(splitText[0] + suffixe);
+                            }
+                            catch
+                            {
+                                file.Close();
+                                return new List<string>();
+                            }
+                        }
+                        else
+                        {
+                            file.Close();
+                            return new List<string>();
+                        }
+                    }
                 }
                 compteur++;
             }
