@@ -788,7 +788,7 @@ namespace RplpAvecBD.Controllers
                             {
                                 try
                                 {
-                                    if (fi.Extension == type) ;
+                                    if (fi.Extension == type)
                                     fi.Delete();
                                 }
                                 catch (IOException)
