@@ -11,7 +11,7 @@ using RplpAvecBD.Model;
 
 namespace RplpAvecBD.Controllers
 {
-    [Authorize(Roles = "student")]
+    [Authorize(Roles = "student,teacher")]
     public class StudentController : Controller
     {
 
