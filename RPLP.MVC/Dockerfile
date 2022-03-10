@@ -6,8 +6,8 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["RPLP.MVC/RPLP.MVC.csproj", "RPLP.MVC/"]
-RUN dotnet restore "RPLP.MVC/RPLP.MVC.csproj"
+COPY ["RPLP.MVC.csproj", "."]
+RUN dotnet restore "RPLP.MVC.csproj"
 COPY . .
 WORKDIR "/src/RPLP.MVC"
 RUN dotnet build "RPLP.MVC.csproj" -c Release -o /app/build
