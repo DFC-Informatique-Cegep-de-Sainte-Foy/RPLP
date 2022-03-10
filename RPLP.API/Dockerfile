@@ -6,8 +6,8 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["RPLP.API/RPLP.API.csproj", "RPLP.API/"]
-RUN dotnet restore "RPLP.API/RPLP.API.csproj"
+COPY ["RPLP.API.csproj", "RPLP.API/"]
+RUN dotnet restore "RPLP.API.csproj"
 COPY . .
 WORKDIR "/src/RPLP.API"
 RUN dotnet build "RPLP.API.csproj" -c Release -o /app/build
