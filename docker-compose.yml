@@ -6,13 +6,17 @@ services:
     build:
       context: .
       dockerfile: RPLP.API/Dockerfile
+    ports: 
+      - "47001:80"
 
   rplp.mvc:
     image: ${DOCKER_REGISTRY-}rplpmvc
     build:
       context: .
       dockerfile: RPLP.MVC/Dockerfile
-   
+    ports: 
+      - "47002:80"
+
   rplp.db:
     container_name: rplp.db
     image: mcr.microsoft.com/mssql/server:2019-latest
