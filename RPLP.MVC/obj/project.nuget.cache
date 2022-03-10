@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "BunZD7hOtq0OoN8d7XDm6GlbMBJyL9gqkYTi5msqlLloCYXSZHPfyZWGoTdFUrsjVpdEgt3U4tAzctqPMRekZA==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Bloui\\OneDrive\\Desktop\\C# Projects\\RPLP\\RPLP.MVC\\RPLP.MVC.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Bloui\\.nuget\\packages\\microsoft.visualstudio.azure.containers.tools.targets\\1.14.0\\microsoft.visualstudio.azure.containers.tools.targets.1.14.0.nupkg.sha512"
+  ],
+  "logs": []
+}
