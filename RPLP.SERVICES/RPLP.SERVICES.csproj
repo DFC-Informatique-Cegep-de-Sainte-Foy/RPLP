@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\RPLP.ENTITES\RPLP.ENTITES.csproj" />
+  </ItemGroup>
+
 </Project>
