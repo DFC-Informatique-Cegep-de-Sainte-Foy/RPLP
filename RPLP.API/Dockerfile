@@ -6,7 +6,7 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-RUN tree
+RUN dir
 COPY ["RPLP.API.csproj", "."]
 COPY ["RPLP.DAL.SQL/RPLP.DAL.SQL.csproj", "."]
 COPY ["RPLP.DAL.DTO/RPLP.DAL.DTO.csproj", "."]
