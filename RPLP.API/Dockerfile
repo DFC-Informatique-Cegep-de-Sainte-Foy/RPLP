@@ -9,7 +9,7 @@ WORKDIR /src
 COPY ["RPLP.API.csproj", "."]
 RUN dotnet restore "RPLP.API.csproj"
 COPY . .
-WORKDIR "/src/RPLP.API"
+WORKDIR "/src/"
 RUN dir
 RUN dotnet build "RPLP.API.csproj" -c Release -o /app/build
 
