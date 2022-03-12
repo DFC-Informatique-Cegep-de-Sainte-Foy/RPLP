@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   rplp.api:
-    image: ${DOCKER_REGISTRY-}rplpapi
+    image: revueparlespairs/rplpapi
     build:
       context: .
       dockerfile: RPLP.API/Dockerfile
@@ -10,7 +10,7 @@ services:
       - "47001:80"
 
   rplp.mvc:
-    image: ${DOCKER_REGISTRY-}rplpmvc
+    image: revueparlespairs/rplpmvc
     build:
       context: .
       dockerfile: RPLP.MVC/Dockerfile
