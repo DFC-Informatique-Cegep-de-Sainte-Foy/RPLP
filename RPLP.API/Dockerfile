@@ -10,6 +10,7 @@ COPY ["RPLP.API.csproj", "."]
 RUN dotnet restore "RPLP.API.csproj"
 COPY . .
 WORKDIR "/src/RPLP.API"
+RUN dir
 RUN dotnet build "RPLP.API.csproj" -c Release -o /app/build
 
 FROM build AS publish
