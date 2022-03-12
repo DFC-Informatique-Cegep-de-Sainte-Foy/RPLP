@@ -13,7 +13,7 @@ namespace RPLP.DAL.SQL
 
         public RPLPDbContext()
         {
-            Database.Migrate();
+            //Database.Migrate();
         }
 
         public DbSet<ClassroomDTO> Classrooms { get; set; }

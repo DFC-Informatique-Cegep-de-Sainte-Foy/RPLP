@@ -13,9 +13,9 @@ namespace RPLP.DAL.SQL.Depots
     {
         private readonly RPLPDbContext _context;
 
-        public DepotClassroom(RPLPDbContext services)
+        public DepotClassroom()
         {
-            this._context = services;
+            this._context = new RPLPDbContext();
         }
 
         public Classroom GetClassroomById(int p_id)
