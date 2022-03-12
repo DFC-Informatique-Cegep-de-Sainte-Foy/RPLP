@@ -5,11 +5,12 @@ WORKDIR /app
 EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
-COPY ["RPLP.API/RPLP.API.csproj", "."]
-COPY ["RPLP.DAL.SQL/RPLP.DAL.SQL.csproj", "."]
-COPY ["RPLP.DAL.DTO/RPLP.DAL.DTO.csproj", "."]
-COPY ["RPLP.ENTITES/RPLP.ENTITES.csproj", "."]
-COPY ["RPLP.SERVICES/RPLP.SERVICES.csproj", "."]
+WORKDIR /src
+COPY ["RPLP.API.csproj", "."]
+COPY ["RPLP.DAL.SQL.csproj", "."]
+COPY ["RPLP.DAL.DTO.csproj", "."]
+COPY ["RPLP.ENTITES.csproj", "."]
+COPY ["RPLP.SERVICES.csproj", "."]
 RUN dotnet restore "RPLP.API.csproj"
 COPY . .
 #WORKDIR "/src/RPLP.API"
