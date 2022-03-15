@@ -22,7 +22,7 @@ services:
       SA_PASSWORD: "Cad3pend86!"
       ACCEPT_EULA: "Y"
     volumes:
-        - rplpvolume:/testfolder 
+        - rplpvolume:/var/opt/mssql/data 
 
 volumes: 
     rplpvolume:
