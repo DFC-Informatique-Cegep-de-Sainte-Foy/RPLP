@@ -45,7 +45,11 @@ namespace RPLP.DAL.SQL.Depots
             }
             else
             {
-                this._context.Classrooms.Add(new ClassroomDTO(p_classroom));
+                ClassroomDTO classDTO = new ClassroomDTO();
+                classDTO.name = p_classroom.name;
+
+                this._context.Classrooms.Add(classDTO);
+                this._context.SaveChanges();
             }
         }
     }
