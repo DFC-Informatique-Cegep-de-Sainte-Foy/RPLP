@@ -2,18 +2,14 @@ version: '3.4'
 
 services:
   rplp.api:
+    container-name: rplp.api
     image: revueparlespairs/rplpapi
-    build:
-      context: .
-      dockerfile: RPLP.API/Dockerfile
     ports: 
       - "47001:80"
 
   rplp.mvc:
+    container_name: rplp.mvc
     image: revueparlespairs/rplpmvc
-    build:
-      context: .
-      dockerfile: RPLP.MVC/Dockerfile
     ports: 
       - "47002:80"
 
