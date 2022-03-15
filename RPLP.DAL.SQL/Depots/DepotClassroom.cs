@@ -20,12 +20,24 @@ namespace RPLP.DAL.SQL.Depots
 
         public Classroom GetClassroomById(int p_id)
         {
-            return this._context.Classrooms.Where(classroom => classroom.Id == p_id).Select(classroom => classroom.ToEntity()).FirstOrDefault();
+            Classroom classroom = this._context.Classrooms.Where(classroom => classroom.Id == p_id).Select(classroom => classroom.ToEntity()).FirstOrDefault();
+
+            if (classroom == null)
+            {
+                return new Classroom();
+            }
+
+            return classroom;
         }
 
         public Classroom GetClassroomByName(string p_name)
         {
-            return this._context.Classrooms.Where(classroom => classroom.Name == p_name).Select(classroom => classroom.ToEntity()).FirstOrDefault();
+            Classroom classroom = this._context.Classrooms.Where(classroom => classroom.Name == p_name).Select(classroom => classroom.ToEntity()).FirstOrDefault();
+
+            if (classroom == null)
+                return new Classroom();
+
+            return classroom;
         }
 
         public List<Classroom> GetClassrooms()
@@ -84,6 +96,7 @@ namespace RPLP.DAL.SQL.Depots
                 classDTO.Students = students;
                 classDTO.Teachers = teachers;
                 classDTO.Assignment = assignments;
+                classDTO.Active = true;
 
                 this._context.Classrooms.Add(classDTO);
                 this._context.SaveChanges();
