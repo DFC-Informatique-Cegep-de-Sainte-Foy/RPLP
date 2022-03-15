@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   rplp.api:
-    container-name: rplp.api
+    container_name: rplp.api
     image: revueparlespairs/rplpapi
     ports: 
       - "47001:80"
