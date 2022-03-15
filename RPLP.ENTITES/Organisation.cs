@@ -8,17 +8,20 @@ namespace RPLP.ENTITES
 {
     public class Organisation
     {
-        public int id { get; set; }
-        public string name { get; set; }
-        public List<Teacher> teachers { get; set; }
-        public List<Student> students { get; set; }
-        public List<Administrator> administrators { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public List<Administrator> Administrators { get; set; }
 
         public Organisation()
         {
-            this.teachers = new List<Teacher>();
-            this.students = new List<Student>();
-            this.administrators = new List<Administrator>();
+            this.Administrators = new List<Administrator>();
+        }
+
+        public Organisation(int p_id, string p_name, List<Administrator> p_administrators)
+        {
+            this.Id = p_id;
+            this.Name = p_name;
+            this.Administrators = p_administrators;
         }
     }
 }

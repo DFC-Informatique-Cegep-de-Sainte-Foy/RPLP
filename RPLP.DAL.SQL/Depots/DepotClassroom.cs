@@ -20,12 +20,12 @@ namespace RPLP.DAL.SQL.Depots
 
         public Classroom GetClassroomById(int p_id)
         {
-            return this._context.Classrooms.Where(classroom => classroom.id == p_id).Select(classroom => classroom.ToEntity()).FirstOrDefault();
+            return this._context.Classrooms.Where(classroom => classroom.Id == p_id).Select(classroom => classroom.ToEntity()).FirstOrDefault();
         }
 
         public Classroom GetClassroomByName(string p_name)
         {
-            return this._context.Classrooms.Where(classroom => classroom.name == p_name).Select(classroom => classroom.ToEntity()).FirstOrDefault();
+            return this._context.Classrooms.Where(classroom => classroom.Name == p_name).Select(classroom => classroom.ToEntity()).FirstOrDefault();
         }
 
         public List<Classroom> GetClassrooms()
@@ -35,18 +35,18 @@ namespace RPLP.DAL.SQL.Depots
 
         public void UpsertClassroom(Classroom p_classroom)
         {
-            Classroom classroomResult = this._context.Classrooms.Where(classroom => classroom.id == p_classroom.id).Select(classroom => classroom.ToEntity()).FirstOrDefault();
+            Classroom classroomResult = this._context.Classrooms.Where(classroom => classroom.Id == p_classroom.Id).Select(classroom => classroom.ToEntity()).FirstOrDefault();
 
             if (classroomResult != null)
             {
-                classroomResult.name = p_classroom.name;
+                classroomResult.Name = p_classroom.Name;
                 this._context.Update(classroomResult);
                 this._context.SaveChanges();
             }
             else
             {
-                ClassroomDTO classDTO = new ClassroomDTO();
-                classDTO.name = p_classroom.name;
+                Classroom_SQLDTO classDTO = new Classroom_SQLDTO();
+                classDTO.Name = p_classroom.Name;
 
                 this._context.Classrooms.Add(classDTO);
                 this._context.SaveChanges();

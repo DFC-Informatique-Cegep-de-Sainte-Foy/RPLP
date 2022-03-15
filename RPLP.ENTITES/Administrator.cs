@@ -8,24 +8,24 @@ namespace RPLP.ENTITES
 {
     public class Administrator
     {
-        public int id { get; set; }
-        public string username { get; set; }
-        public string firstName { get; set; }
-        public string lastName { get; set; }
-        public List<Organisation> organisations { get; set; }
+        public int Id { get; set; }
+        public string Username { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public List<Organisation> Organisations { get; set; }
 
         public Administrator()
         {
-            this.organisations = new List<Organisation>();
+            this.Organisations = new List<Organisation>();
         }
 
         public Administrator(int p_id, string p_username, string p_firstName, string p_lastName, List<Organisation> p_organisations)
         {
-            this.id = p_id;
-            this.username = p_username;
-            this.firstName = p_firstName;
-            this.lastName = p_lastName;
-            this.organisations = p_organisations;
+            this.Id = p_id;
+            this.Username = p_username;
+            this.FirstName = p_firstName;
+            this.LastName = p_lastName;
+            this.Organisations = p_organisations;
         }
     }
 }

@@ -8,12 +8,12 @@ namespace RPLP.ENTITES
 {
     public class Assignment
     {
-        public int id { get; set; }
-        public string name { get; set; }
-        public string classroomName { get; set; }
-        public string description { get; set; }
-        public DateTime? deliveryDeatline { get; set; }
-        public DateTime distributionDate { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string ClassroomName { get; set; }
+        public string Description { get; set; }
+        public DateTime? DeliveryDeadline { get; set; }
+        public DateTime DistributionDate { get; set; }
 
         public Assignment()
         {
@@ -22,21 +22,21 @@ namespace RPLP.ENTITES
 
         public Assignment(int p_id, string p_name, string p_classroomName, string p_description, DateTime p_distributionDate)
         {
-            this.id = p_id;
-            this.name = p_name;
-            this.classroomName = p_classroomName;
-            this.description = p_description;
-            this.distributionDate = p_distributionDate;
+            this.Id = p_id;
+            this.Name = p_name;
+            this.ClassroomName = p_classroomName;
+            this.Description = p_description;
+            this.DistributionDate = p_distributionDate;
         }
 
-        public Assignment(int p_id, string p_name, string p_classroomName, string p_description, DateTime p_deliveryDeadline, DateTime p_distributionDate)
+        public Assignment(int p_id, string p_name, string p_classroomName, string p_description, DateTime? p_deliveryDeadline, DateTime p_distributionDate)
         {
-            this.id = p_id;
-            this.name = p_name;
-            this.classroomName = p_classroomName;
-            this.description = p_description;
-            this.deliveryDeatline = p_deliveryDeadline;
-            this.distributionDate = p_distributionDate;
+            this.Id = p_id;
+            this.Name = p_name;
+            this.ClassroomName = p_classroomName;
+            this.Description = p_description;
+            this.DeliveryDeadline = p_deliveryDeadline;
+            this.DistributionDate = p_distributionDate;
         }
     }
 }

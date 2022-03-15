@@ -8,24 +8,24 @@ namespace RPLP.ENTITES
 {
     public class Student
     {
-        public int id { get; set; }
-        public string username { get; set; }
-        public string firstName { get; set; }
-        public string lastName { get; set; }
-        public List<Classroom> classes { get; set; }
+        public int Id { get; set; }
+        public string Username { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public List<Classroom> Classes { get; set; }
 
         public Student()
         {
-            this.classes = new List<Classroom>();
+            this.Classes = new List<Classroom>();
         }
 
         public Student(int p_id, string p_username, string p_firstName, string p_lastName, List<Classroom> p_classes)
         {
-            this.id = p_id;
-            this.username = p_username;
-            this.firstName = p_firstName;
-            this.lastName = p_lastName;
-            this.classes = p_classes;
+            this.Id = p_id;
+            this.Username = p_username;
+            this.FirstName = p_firstName;
+            this.LastName = p_lastName;
+            this.Classes = p_classes;
         }
     }
 }

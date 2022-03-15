@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RPLP.DAL.DTO.Json
 {
-    public class UserJSON
+    public class User_JSONDTO
     {
         public int id { get; set; }
         public string login { get; set; }

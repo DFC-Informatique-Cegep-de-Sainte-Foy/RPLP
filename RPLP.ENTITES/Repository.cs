@@ -8,10 +8,10 @@ namespace RPLP.ENTITES
 {
     public class Repository
     {
-        public int id { get; set; }
-        public string name { get; set; }
-        public string organisationName { get; set; }
-        public string fullName { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string OrganisationName { get; set; }
+        public string FullName { get; set; }
 
         public Repository()
         {
@@ -20,10 +20,10 @@ namespace RPLP.ENTITES
 
         public Repository(int p_id, string p_name, string p_organisationName, string p_fullName)
         {
-            this.id = p_id;
-            this.name = p_name;
-            this.organisationName = p_organisationName;
-            this.fullName = p_fullName;
+            this.Id = p_id;
+            this.Name = p_name;
+            this.OrganisationName = p_organisationName;
+            this.FullName = p_fullName;
         }
 
     }
