@@ -11,6 +11,7 @@ namespace RPLP.DAL.DTO.Sql
     {
         public int Id { get; set; }
         public string Username { get; set; }
+        public string Token { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public List<Organisation_SQLDTO> Organisations { get; set; }
@@ -27,6 +28,7 @@ namespace RPLP.DAL.DTO.Sql
 
             this.Id = p_admin.Id;
             this.Username = p_admin.Username;
+            this.Token = p_admin.Token;
             this.FirstName = p_admin.FirstName;
             this.LastName = p_admin.LastName;
 
@@ -44,7 +46,7 @@ namespace RPLP.DAL.DTO.Sql
 
         public Administrator ToEntity()
         {
-            return new Administrator(this.Id, this.Username, this.FirstName, this.LastName, this.Organisations.Select(organisation => organisation.ToEntity()).ToList());
+            return new Administrator(this.Id, this.Username,this.Token, this.FirstName, this.LastName, this.Organisations.Select(organisation => organisation.ToEntity()).ToList());
         }
     }
 }

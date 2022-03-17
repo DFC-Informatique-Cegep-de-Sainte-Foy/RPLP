@@ -9,23 +9,23 @@ namespace RPLP.API.Controllers
     [ApiController]
     public class ClassroomController : ControllerBase
     {
-        private readonly IDepotClassroom _depotClassroom;
+        private readonly IDepotClassroom _depot;
 
         public ClassroomController(IDepotClassroom p_depotClassroom)
         {
-            this._depotClassroom = p_depotClassroom;
+            this._depot = p_depotClassroom;
         }
 
         [HttpGet]
         public ActionResult<IEnumerable<Classroom>> Get()
         {
-            return Ok(this._depotClassroom.GetClassrooms());
+            return Ok(this._depot.GetClassrooms());
         }
 
         [HttpGet("{id}")]
         public ActionResult<Classroom> Get(int id)
         {
-            return Ok(this._depotClassroom.GetClassroomById(id));
+            return Ok(this._depot.GetClassroomById(id));
         }
 
         [HttpPost]
@@ -36,7 +36,7 @@ namespace RPLP.API.Controllers
                 return BadRequest();
             }
 
-            this._depotClassroom.UpsertClassroom(p_classroom);
+            this._depot.UpsertClassroom(p_classroom);
 
             return Created(nameof(this.Post), p_classroom);
         }

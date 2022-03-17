@@ -51,6 +51,7 @@ namespace RPLP.DAL.SQL.Depots
             {
                 adminResult.Id = p_administrator.Id;
                 adminResult.Username = p_administrator.Username;
+                adminResult.Token = p_administrator.Token;
                 adminResult.FirstName = p_administrator.FirstName;
                 adminResult.LastName = p_administrator.LastName;
                 adminResult.Organisations = organisations;
@@ -62,6 +63,7 @@ namespace RPLP.DAL.SQL.Depots
             {
                 Administrator_SQLDTO adminDTO = new Administrator_SQLDTO();
                 adminDTO.Username = p_administrator.Username;
+                adminDTO.Token = p_administrator.Token;
                 adminDTO.FirstName = p_administrator.FirstName;
                 adminDTO.LastName = p_administrator.LastName;
                 adminDTO.Organisations = organisations;
