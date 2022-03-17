@@ -15,7 +15,7 @@ services:
       context: .
       dockerfile: RPLP.MVC/Dockerfile
     ports: 
-      - "47002:80"
+      - "80:80"
 
   rplp.db:
     container_name: rplp.db
