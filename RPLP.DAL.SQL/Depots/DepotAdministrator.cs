@@ -74,7 +74,7 @@ namespace RPLP.DAL.SQL.Depots
                 {
                     foreach (Organisation_SQLDTO organisation in admin.Organisations)
                     {
-                        organisations.Add(organisation.ToEntity());
+                        organisations.Add(organisation.ToEntityWithoutAdministrators());
                     }
 
                     return organisations;
