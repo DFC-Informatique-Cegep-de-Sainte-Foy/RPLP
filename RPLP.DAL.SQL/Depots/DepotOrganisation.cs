@@ -18,6 +18,24 @@ namespace RPLP.DAL.SQL.Depots
             this._context = new RPLPDbContext();
         }
 
+        public void AddAdministrator(string p_adminUsername, string p_organisationName)
+        {
+            Administrator_SQLDTO adminResult = this._context.Administrators.Where(admin => admin.Username == p_adminUsername).FirstOrDefault();
+
+            if (adminResult != null)
+            {
+                Organisation_SQLDTO organisationResult = this._context.Organisations.Where(organisation => organisation.Name == p_organisationName).SingleOrDefault();
+
+                if (organisationResult != null)
+                {
+                    organisationResult.Administrators.Add(adminResult);
+
+                    this._context.Update(organisationResult);
+                    this._context.SaveChanges();
+                }
+            }
+        }
+
         public Organisation GetOrganisationById(int p_id)
         {
             Organisation organisation = this._context.Organisations.Where(organisation => organisation.Id == p_id).Select(organisation => organisation.ToEntity()).FirstOrDefault();

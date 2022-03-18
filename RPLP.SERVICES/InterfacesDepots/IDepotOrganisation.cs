@@ -12,5 +12,6 @@ namespace RPLP.SERVICES.InterfacesDepots
         public List<Organisation> GetOrganisations();
         public Organisation GetOrganisationById(int id);
         public void UpsertOrganisation(Organisation organisation);
+        public void AddAdministrator(string p_adminUsername, string p_organisationName);
     }
 }

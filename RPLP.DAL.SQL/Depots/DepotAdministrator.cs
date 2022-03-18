@@ -1,4 +1,5 @@
-﻿using RPLP.DAL.DTO.Sql;
+﻿using Microsoft.EntityFrameworkCore;
+using RPLP.DAL.DTO.Sql;
 using RPLP.ENTITES;
 using RPLP.SERVICES.InterfacesDepots;
 using System;
@@ -18,6 +19,19 @@ namespace RPLP.DAL.SQL.Depots
             this._context = new RPLPDbContext();
         }
 
+        public void DeleteAdministrator(string p_adminUsername)
+        {
+            Administrator_SQLDTO adminResult = this._context.Administrators.Where(admin => admin.Username == p_adminUsername).FirstOrDefault();
+
+            if (adminResult != null)
+            {
+                adminResult.Active = false;
+
+                this._context.Update(adminResult);
+                this._context.SaveChanges();
+            }
+        }
+
         public Administrator GetAdministratorById(int p_id)
         {
             Administrator administrator = this._context.Administrators.Where(admin => admin.Id == p_id).Select(admin => admin.ToEntity()).FirstOrDefault();
@@ -28,9 +42,76 @@ namespace RPLP.DAL.SQL.Depots
             return administrator;
         }
 
+        public Administrator GetAdministratorByName(string p_adminUsername)
+        {
+            Administrator administrator = this._context.Administrators.Where(admin => admin.Username == p_adminUsername).Select(admin => admin.ToEntity()).FirstOrDefault();
+
+            if (administrator == null)
+                return new Administrator();
+
+            return administrator;
+        }
+
         public List<Administrator> GetAdministrators()
         {
             return this._context.Administrators.Select(admin => admin.ToEntity()).ToList();
+        }
+
+        public List<Organisation> GetAdminOrganisations(string p_adminUsername)
+        {
+            List<Organisation> organisations = new List<Organisation>();
+            Administrator_SQLDTO admin = this._context.Administrators.Include(admin => admin.Organisations).FirstOrDefault(admin => admin.Username == p_adminUsername);
+
+            if (admin != null)
+            {
+                if (admin.Organisations.Count >= 1)
+                {
+                    foreach (Organisation_SQLDTO organisation in admin.Organisations)
+                    {
+                        organisations.Add(organisation.ToEntity());
+                    }
+
+                    return organisations;
+                }
+            }
+
+            return new List<Organisation>();
+        }
+
+        public void JoinOrganisation(string p_adminUsername, string p_organisationName)
+        {
+            Administrator_SQLDTO adminResult = this._context.Administrators.Where(admin => admin.Username == p_adminUsername).FirstOrDefault();
+
+            if (adminResult != null)
+            {
+                Organisation_SQLDTO organisationResult = this._context.Organisations.Where(organisation => organisation.Name == p_organisationName).SingleOrDefault();
+
+                if (organisationResult != null)
+                {
+                    adminResult.Organisations.Add(organisationResult);
+
+                    this._context.Update(adminResult);
+                    this._context.SaveChanges();
+                }
+            }
+        }
+
+        public void LeaveOrganisation(string p_adminUsername, string p_organisationName)
+        {
+            Administrator_SQLDTO adminResult = this._context.Administrators.Where(admin => admin.Username == p_adminUsername).FirstOrDefault();
+
+            if (adminResult != null)
+            {
+                Organisation_SQLDTO organisationResult = this._context.Organisations.Where(organisation => organisation.Name == p_organisationName).SingleOrDefault();
+
+                if (organisationResult != null)
+                {
+                    adminResult.Organisations.Remove(organisationResult);
+
+                    this._context.Update(adminResult);
+                    this._context.SaveChanges();
+                }
+            }
         }
 
         public void UpsertAdministrator(Administrator p_administrator)

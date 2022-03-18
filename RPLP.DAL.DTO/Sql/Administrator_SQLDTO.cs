@@ -46,7 +46,7 @@ namespace RPLP.DAL.DTO.Sql
 
         public Administrator ToEntity()
         {
-            return new Administrator(this.Id, this.Username,this.Token, this.FirstName, this.LastName, this.Organisations.Select(organisation => organisation.ToEntity()).ToList());
+            return new Administrator(this.Id, this.Username, this.Token, this.FirstName, this.LastName, this.Organisations.Select(organisation => organisation.ToEntity()).ToList());
         }
     }
 }
