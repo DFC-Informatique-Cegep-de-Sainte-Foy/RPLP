@@ -34,33 +34,56 @@ namespace RPLP.DAL.SQL.Depots
 
         public Administrator GetAdministratorById(int p_id)
         {
-            Administrator administrator = this._context.Administrators.Where(admin => admin.Id == p_id)
-                                                                      .Select(admin => admin.ToEntity())
+            Administrator_SQLDTO adminResult = this._context.Administrators.Where(admin => admin.Id == p_id)
+                                                                      .Include(admin => admin.Organisations)
                                                                       .FirstOrDefault();
-
-            if (administrator == null)
+            if (adminResult == null)
                 return new Administrator();
+
+            Administrator administrator = adminResult.ToEntityWitouthOrganisations();
+
+            if (adminResult.Organisations.Count >= 1)
+            {
+                List<Organisation> organisations = adminResult.Organisations.Select(organisation => organisation.ToEntityWithoutAdministrators()).ToList();
+                administrator.Organisations = organisations;
+            }
 
             return administrator;
         }
 
         public Administrator GetAdministratorByName(string p_adminUsername)
         {
-            Administrator administrator = this._context.Administrators.Where(admin => admin.Username == p_adminUsername)
+            Administrator_SQLDTO adminResult = this._context.Administrators.Where(admin => admin.Username == p_adminUsername)
                                                                       .Include(admin => admin.Organisations)
-                                                                      .Select(admin => admin.ToEntity())
                                                                       .FirstOrDefault();
-
-            if (administrator == null)
+            if (adminResult == null)
                 return new Administrator();
+
+            Administrator administrator = adminResult.ToEntityWitouthOrganisations();
+
+            if (adminResult.Organisations.Count >= 1)
+            {
+                List<Organisation> organisations = adminResult.Organisations.Select(organisation => organisation.ToEntityWithoutAdministrators()).ToList();
+                administrator.Organisations = organisations;
+            }
 
             return administrator;
         }
 
         public List<Administrator> GetAdministrators()
         {
-            return this._context.Administrators.Where(admin => admin.Active)
-                                               .Select(admin => admin.ToEntity()).ToList();
+            List<Administrator_SQLDTO> adminResult = this._context.Administrators.Where(admin => admin.Active)
+                                                                                 .Include(admin => admin.Organisations).ToList();
+
+            List<Administrator> administrators = adminResult.Select(admin => admin.ToEntityWitouthOrganisations()).ToList();
+
+            for (int i = 0; i < adminResult.Count; i++)
+            {
+                if (adminResult[i].Id == administrators[i].Id && adminResult[i].Organisations.Count >= 1)
+                    administrators[i].Organisations = adminResult[i].Organisations.Select(organisation => organisation.ToEntityWithoutAdministrators()).ToList();
+            }
+
+            return administrators;
         }
 
         public List<Organisation> GetAdminOrganisations(string p_adminUsername)
