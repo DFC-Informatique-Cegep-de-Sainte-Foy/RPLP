@@ -29,6 +29,16 @@ services:
     volumes:
         - rplpvolume:/var/opt/mssql/data
 
+  rplp.db.test:
+    container_name: rplp.db.test
+    user: root
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    ports:
+      - "1434:1433"
+    environment:
+      SA_PASSWORD: "Cad3pend86!"
+      ACCEPT_EULA: "Y"
+
 volumes: 
     rplpvolume:
         name: "rplpvolume"
