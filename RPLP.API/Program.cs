@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using RPLP.DAL.SQL;
 using RPLP.DAL.SQL.Depots;
 using RPLP.SERVICES.InterfacesDepots;
 
@@ -9,6 +11,10 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddDbContext<RPLPDbContext>(
+        options => options.UseSqlServer("Server=rplp.db; Database=RPLP; User Id=sa; password=Cad3pend86!")
+        .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
 
 builder.Services.AddScoped<IDepotClassroom, DepotClassroom>();
 builder.Services.AddScoped<IDepotAdminitrator, DepotAdministrator>();
