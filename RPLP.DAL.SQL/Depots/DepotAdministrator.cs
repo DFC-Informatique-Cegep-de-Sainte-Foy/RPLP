@@ -40,11 +40,11 @@ namespace RPLP.DAL.SQL.Depots
             if (adminResult == null)
                 return new Administrator();
 
-            Administrator administrator = adminResult.ToEntityWitouthOrganisations();
+            Administrator administrator = adminResult.ToEntityWithoutList();
 
             if (adminResult.Organisations.Count >= 1)
             {
-                List<Organisation> organisations = adminResult.Organisations.Select(organisation => organisation.ToEntityWithoutAdministrators()).ToList();
+                List<Organisation> organisations = adminResult.Organisations.Select(organisation => organisation.ToEntityWithoutList()).ToList();
                 administrator.Organisations = organisations;
             }
 
@@ -59,11 +59,11 @@ namespace RPLP.DAL.SQL.Depots
             if (adminResult == null)
                 return new Administrator();
 
-            Administrator administrator = adminResult.ToEntityWitouthOrganisations();
+            Administrator administrator = adminResult.ToEntityWithoutList();
 
             if (adminResult.Organisations.Count >= 1)
             {
-                List<Organisation> organisations = adminResult.Organisations.Select(organisation => organisation.ToEntityWithoutAdministrators()).ToList();
+                List<Organisation> organisations = adminResult.Organisations.Select(organisation => organisation.ToEntityWithoutList()).ToList();
                 administrator.Organisations = organisations;
             }
 
@@ -75,12 +75,12 @@ namespace RPLP.DAL.SQL.Depots
             List<Administrator_SQLDTO> adminResult = this._context.Administrators.Where(admin => admin.Active)
                                                                                  .Include(admin => admin.Organisations).ToList();
 
-            List<Administrator> administrators = adminResult.Select(admin => admin.ToEntityWitouthOrganisations()).ToList();
+            List<Administrator> administrators = adminResult.Select(admin => admin.ToEntityWithoutList()).ToList();
 
             for (int i = 0; i < adminResult.Count; i++)
             {
                 if (adminResult[i].Id == administrators[i].Id && adminResult[i].Organisations.Count >= 1)
-                    administrators[i].Organisations = adminResult[i].Organisations.Select(organisation => organisation.ToEntityWithoutAdministrators()).ToList();
+                    administrators[i].Organisations = adminResult[i].Organisations.Select(organisation => organisation.ToEntityWithoutList()).ToList();
             }
 
             return administrators;
@@ -97,7 +97,7 @@ namespace RPLP.DAL.SQL.Depots
                 {
                     foreach (Organisation_SQLDTO organisation in admin.Organisations)
                     {
-                        organisations.Add(organisation.ToEntityWithoutAdministrators());
+                        organisations.Add(organisation.ToEntityWithoutList());
                     }
 
                     return organisations;

@@ -66,5 +66,10 @@ namespace RPLP.DAL.DTO.Sql
         {
             return new Classroom(this.Id, this.Name, this.OrganisationName, this.Students.Select(student => student.ToEntity()).ToList(), this.Teachers.Select(teacher => teacher.ToEntity()).ToList(), this.Assignment.Select(assignment => assignment.ToEntity()).ToList());
         }
+
+        public Classroom ToEntityWithoutList()
+        {
+            return new Classroom(this.Id, this.Name, this.OrganisationName, new List<Student>(), new List<Teacher>(), new List<Assignment>());
+        }
     }
 }

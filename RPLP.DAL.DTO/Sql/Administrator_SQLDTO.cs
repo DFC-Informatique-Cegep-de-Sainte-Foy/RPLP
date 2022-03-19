@@ -49,7 +49,7 @@ namespace RPLP.DAL.DTO.Sql
             return new Administrator(this.Id, this.Username, this.Token, this.FirstName, this.LastName, this.Organisations.Select(organisation => organisation.ToEntity()).ToList());
         }
 
-        public Administrator ToEntityWitouthOrganisations()
+        public Administrator ToEntityWithoutList()
         {
             return new Administrator(this.Id, this.Username, this.Token, this.FirstName, this.LastName, new List<Organisation>());
         }
