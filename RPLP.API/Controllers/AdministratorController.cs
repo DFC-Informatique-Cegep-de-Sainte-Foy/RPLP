@@ -8,35 +8,35 @@ namespace RPLP.API.Controllers
     [ApiController]
     public class AdministratorController : ControllerBase
     {
-        private readonly IDepotAdminitrator _depotAdmin;
+        private readonly IDepotAdminitrator _depot;
 
         public AdministratorController(IDepotAdminitrator p_depotAdmin)
         {
-            this._depotAdmin = p_depotAdmin;
+            this._depot = p_depotAdmin;
         }
 
         [HttpGet]
         public ActionResult<IEnumerable<Administrator>> Get()
         {
-            return Ok(this._depotAdmin.GetAdministrators());
+            return Ok(this._depot.GetAdministrators());
         }
 
         [HttpGet("Id/{id}")]
         public ActionResult<Administrator> GetById(int id)
         {
-            return Ok(this._depotAdmin.GetAdministratorById(id));
+            return Ok(this._depot.GetAdministratorById(id));
         }
 
         [HttpGet("Username/{username}")]
         public ActionResult<Administrator> GetByName(string username)
         {
-            return Ok(this._depotAdmin.GetAdministratorByName(username));
+            return Ok(this._depot.GetAdministratorByName(username));
         }
 
         [HttpGet("Username/{username}/Organisations")]
         public ActionResult<List<Organisation>> GetOrganisations(string username)
         {
-            return Ok(this._depotAdmin.GetAdminOrganisations(username));
+            return Ok(this._depot.GetAdminOrganisations(username));
         }
 
 
@@ -48,7 +48,7 @@ namespace RPLP.API.Controllers
                 return BadRequest();
             }
 
-            this._depotAdmin.JoinOrganisation(adminUsername, organisationName);
+            this._depot.JoinOrganisation(adminUsername, organisationName);
 
             return Created(nameof(this.AddAdminToOrganisation), adminUsername);
         }
@@ -61,7 +61,7 @@ namespace RPLP.API.Controllers
                 return BadRequest();
             }
 
-            this._depotAdmin.LeaveOrganisation(adminUsername, organisationName);
+            this._depot.LeaveOrganisation(adminUsername, organisationName);
 
             return Created(nameof(this.RemoveAdminFromOrganisation), adminUsername);
         }
@@ -74,7 +74,7 @@ namespace RPLP.API.Controllers
                 return BadRequest();
             }
 
-            this._depotAdmin.UpsertAdministrator(p_admin);
+            this._depot.UpsertAdministrator(p_admin);
 
             return Created(nameof(this.UpsertAdmin), p_admin);
         }
@@ -82,7 +82,7 @@ namespace RPLP.API.Controllers
         [HttpDelete("Username/{username}")]
         public ActionResult DeleteAdmin(string username)
         {
-            this._depotAdmin.DeleteAdministrator(username);
+            this._depot.DeleteAdministrator(username);
             return NoContent();
         }
     }

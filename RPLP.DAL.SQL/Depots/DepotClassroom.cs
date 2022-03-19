@@ -19,7 +19,7 @@ namespace RPLP.DAL.SQL.Depots
             this._context = new RPLPDbContext();
         }
 
-        public void AddAssignmentToClassroom(string p_classroomName, Assignment p_assignment)
+        public void AddAssignmentToClassroom(string p_classroomName, string p_assignmentName)
         {
             Classroom_SQLDTO classroomResult = this._context.Classrooms.Where(classroom => classroom.Name == p_classroomName)
                                                                        .Include(classroom => classroom.Assignment)
@@ -27,7 +27,7 @@ namespace RPLP.DAL.SQL.Depots
             if (classroomResult != null)
             {
                 Assignment_SQLDTO assignmentResult = this._context.Assignments.Where(assignment => assignment.Active)
-                                                                              .SingleOrDefault(assignment => assignment.Name == p_assignment.Name);
+                                                                              .SingleOrDefault(assignment => assignment.Name == p_assignmentName;
 
                 if (assignmentResult != null && !classroomResult.Assignment.Contains(assignmentResult))
                 {
@@ -39,7 +39,7 @@ namespace RPLP.DAL.SQL.Depots
             }
         }
 
-        public void AddStudentToClassroom(string p_classroomName, Student p_student)
+        public void AddStudentToClassroom(string p_classroomName, string p_studentUsername)
         {
             Classroom_SQLDTO classroomResult = this._context.Classrooms.Where(classroom => classroom.Name == p_classroomName)
                                                            .Include(classroom => classroom.Students)
@@ -47,7 +47,7 @@ namespace RPLP.DAL.SQL.Depots
             if (classroomResult != null)
             {
                 Student_SQLDTO studentResult = this._context.Students.Where(student => student.Active)
-                                                                     .SingleOrDefault(student => student.Username == p_student.Username);
+                                                                     .SingleOrDefault(student => student.Username == p_studentUsername);
 
                 if (studentResult != null && !classroomResult.Students.Contains(studentResult))
                 {
@@ -59,7 +59,7 @@ namespace RPLP.DAL.SQL.Depots
             }
         }
 
-        public void AddTeacherToClassroom(string p_classroomName, Teacher p_teacher)
+        public void AddTeacherToClassroom(string p_classroomName, string p_teacherUsername)
         {
             Classroom_SQLDTO classroomResult = this._context.Classrooms.Where(classroom => classroom.Name == p_classroomName)
                                                             .Include(classroom => classroom.Teachers)
@@ -67,7 +67,7 @@ namespace RPLP.DAL.SQL.Depots
             if (classroomResult != null)
             {
                 Teacher_SQLDTO teacherResult = this._context.Teachers.Where(student => student.Active)
-                                                                     .SingleOrDefault(student => student.Username == p_teacher.Username);
+                                                                     .SingleOrDefault(student => student.Username == p_teacherUsername);
 
                 if (teacherResult != null && !classroomResult.Teachers.Contains(teacherResult))
                 {
