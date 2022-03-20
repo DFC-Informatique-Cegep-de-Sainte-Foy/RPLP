@@ -21,10 +21,22 @@ namespace RPLP.API.Controllers
             return Ok(this._depot.GetRepositories());
         }
 
-        [HttpGet("{id}")]
-        public ActionResult<Repository> Get(int id)
+        [HttpGet("Id/{id}")]
+        public ActionResult<Repository> GetRepositoryById(int id)
         {
             return Ok(this._depot.GetRepositoryById(id));
+        }
+
+        [HttpGet("Name/{repositoryName}")]
+        public ActionResult<Repository> GetRepositoryByName(string repositoryName)
+        {
+            return Ok(this._depot.GetRepositoryByName(repositoryName));
+        }
+
+        [HttpGet("Classroom/Name/{classroomName}")]
+        public ActionResult<IEnumerable<Repository>> GetRepositoryByClassroomName(string classroomName)
+        {
+            return Ok(this._depot.GetRepositoryByClassroomName(classroomName));
         }
 
         [HttpPost]

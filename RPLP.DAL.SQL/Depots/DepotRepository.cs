@@ -20,7 +20,7 @@ namespace RPLP.DAL.SQL.Depots
 
         public List<Repository> GetRepositories()
         {
-            return this._context.Repositories.Select(repository => repository.ToEntity()).ToList();
+            return this._context.Repositories.Where(repository => repository.Active).Select(repository => repository.ToEntity()).ToList();
         }
 
         public List<Repository> GetRepositoryByClassroomName(string p_classroomName)
@@ -56,7 +56,12 @@ namespace RPLP.DAL.SQL.Depots
 
         public Repository GetRepositoryByName(string p_repositoryName)
         {
-            throw new NotImplementedException();
+            Repository repository = this._context.Repositories.Where(repository => repository.Name == p_repositoryName).Select(repository => repository.ToEntity()).FirstOrDefault();
+
+            if (repository == null)
+                return new Repository();
+
+            return repository;
         }
 
         public void UpsertRepository(Repository p_repository)
