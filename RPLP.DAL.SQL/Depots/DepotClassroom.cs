@@ -27,7 +27,7 @@ namespace RPLP.DAL.SQL.Depots
             if (classroomResult != null)
             {
                 Assignment_SQLDTO assignmentResult = this._context.Assignments.Where(assignment => assignment.Active)
-                                                                              .SingleOrDefault(assignment => assignment.Name == p_assignmentName;
+                                                                              .SingleOrDefault(assignment => assignment.Name == p_assignmentName);
 
                 if (assignmentResult != null && !classroomResult.Assignment.Contains(assignmentResult))
                 {
@@ -235,17 +235,17 @@ namespace RPLP.DAL.SQL.Depots
             return new List<Teacher>();
         }
 
-        public void RemoveAssignmentFromClassroom(string p_classroomName, int p_id)
+        public void RemoveAssignmentFromClassroom(string p_classroomName, string p_assignment)
         {
             Classroom_SQLDTO classroomResult = this._context.Classrooms.Where(classroom => classroom.Name == p_classroomName)
                                                                        .Include(classroom => classroom.Assignment)
                                                                        .FirstOrDefault();
 
-            Assignment_SQLDTO assignmentResult = this._context.Assignments.SingleOrDefault(assignment => assignment.Id == p_id);
+            Assignment_SQLDTO assignmentResult = this._context.Assignments.SingleOrDefault(assignment => assignment.Name == p_assignment);
 
-            if (classroomResult.Assignment.Contains(assignmentResult))
+            if (classroomResult.Assignments.Contains(assignmentResult))
             {
-                classroomResult.Assignment.Remove(assignmentResult);
+                classroomResult.Assignments.Remove(assignmentResult);
 
                 this._context.Update(classroomResult);
                 this._context.SaveChanges();

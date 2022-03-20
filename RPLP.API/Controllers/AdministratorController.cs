@@ -63,7 +63,7 @@ namespace RPLP.API.Controllers
 
             this._depot.LeaveOrganisation(adminUsername, organisationName);
 
-            return Created(nameof(this.RemoveAdminFromOrganisation), adminUsername);
+            return NoContent(); 
         }
 
         [HttpPost]
