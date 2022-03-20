@@ -104,5 +104,52 @@ namespace RPLP.API.Controllers
 
             return Created(nameof(this.AddTeacherToClassroom), classroomName);
         }
+
+        [HttpPost("Name/{classroomName}/Teachers/Remove/{teacherUsername}")]
+        public ActionResult RemoveTeacherFromClassroom(string classroomName, string teacherUsername)
+        {
+            if (string.IsNullOrWhiteSpace(classroomName) || string.IsNullOrWhiteSpace(teacherUsername))
+            {
+                return BadRequest();
+            }
+
+            this._depot.RemoveTeacherFromClassroom(classroomName, teacherUsername);
+
+            return  NoContent(); 
+        }
+
+        [HttpPost("Name/{classroomName}/Students/Remove/{studentUsername}")]
+        public ActionResult RemoveStudentFromClassroom(string classroomName, string studentUsername)
+        {
+            if (string.IsNullOrWhiteSpace(classroomName) || string.IsNullOrWhiteSpace(studentUsername))
+            {
+                return BadRequest();
+            }
+
+            this._depot.RemoveStudentFromClassroom(classroomName, studentUsername);
+
+            return  NoContent(); 
+        }
+
+
+        [HttpPost("Name/{classroomName}/Assignments/Remove/{assignmentName}")]
+        public ActionResult RemoveAssignmentFromClassroom(string classroomName, string assignmentName)
+        {
+            if (string.IsNullOrWhiteSpace(classroomName) || string.IsNullOrWhiteSpace(assignmentName))
+            {
+                return BadRequest();
+            }
+
+            this._depot.RemoveAssignmentFromClassroom(classroomName, assignmentName);
+
+            return  NoContent(); 
+        }
+
+        [HttpDelete("Name/{classroomName}")]
+        public ActionResult DeleteClassroom(string classroomName)
+        {
+            this._depot.DeleteClassroom(classroomName);
+            return NoContent();
+        }
     }
 }
