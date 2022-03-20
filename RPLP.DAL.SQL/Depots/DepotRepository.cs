@@ -23,6 +23,27 @@ namespace RPLP.DAL.SQL.Depots
             return this._context.Repositories.Select(repository => repository.ToEntity()).ToList();
         }
 
+        public List<Repository> GetRepositoryByClassroomName(string p_classroomName)
+        {
+            List<Repository> repositories = new List<Repository>();
+            List<Repository_SQLDTO> repositoryResult = this._context.Repositories.Where(repository => repository.Active).ToList();
+
+            if (repositoryResult.Count >= 1)
+            {
+                foreach (Repository_SQLDTO repository in repositoryResult)
+                {
+                    string[] words = repository.FullName.Split('/');
+
+                    if (words.Contains(p_classroomName))
+                    {
+                        repositories.Add(repository.ToEntity());
+                    }
+                }
+            }
+
+            return repositories;
+        }
+
         public Repository GetRepositoryById(int id)
         {
             Repository repository = this._context.Repositories.Where(repository => repository.Id == id).Select(repository => repository.ToEntity()).FirstOrDefault();
@@ -31,6 +52,11 @@ namespace RPLP.DAL.SQL.Depots
                 return new Repository();
 
             return repository;
+        }
+
+        public Repository GetRepositoryByName(string p_repositoryName)
+        {
+            throw new NotImplementedException();
         }
 
         public void UpsertRepository(Repository p_repository)

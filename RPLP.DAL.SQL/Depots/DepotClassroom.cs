@@ -27,7 +27,7 @@ namespace RPLP.DAL.SQL.Depots
             if (classroomResult != null)
             {
                 Assignment_SQLDTO assignmentResult = this._context.Assignments.Where(assignment => assignment.Active)
-                                                                              .SingleOrDefault(assignment => assignment.Name == p_assignmentName;
+                                                                              .SingleOrDefault(assignment => assignment.Name == p_assignmentName);
 
                 if (assignmentResult != null && !classroomResult.Assignment.Contains(assignmentResult))
                 {

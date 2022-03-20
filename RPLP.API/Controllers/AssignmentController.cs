@@ -21,10 +21,16 @@ namespace RPLP.API.Controllers
             return Ok(this._depot.GetAssignments());
         }
 
-        [HttpGet("{id}")]
-        public ActionResult<Assignment> Get(int id)
+        [HttpGet("Id/{id}")]
+        public ActionResult<Assignment> GetAssignmentById(int id)
         {
             return Ok(this._depot.GetAssignmentById(id));
+        }
+
+        [HttpGet("Name/{assignmentName}")]
+        public ActionResult<Assignment> GetAssignmentByName(string assignmentName)
+        {
+            return Ok(this._depot.GetAssignmentByName(assignmentName));
         }
 
         [HttpPost]
@@ -38,6 +44,13 @@ namespace RPLP.API.Controllers
             this._depot.UpsertAssignment(p_assignment);
 
             return Created(nameof(this.Post), p_assignment);
+        }
+
+        [HttpDelete("Name/{assingmentName}")]
+        public ActionResult DeleteAssignment(string assingmentName)
+        {
+            this._depot.DeleteAssignment(assingmentName);
+            return NoContent();
         }
     }
 }
