@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RPLP.DAL.SQL", "RPLP.DAL.SQ
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{DB4EC079-9BA9-4747-91DE-2B4CD962EEE4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RPLP.UnitTesting", "..\RPLP.UnitTesting\RPLP.UnitTesting.csproj", "{367C1F3F-822C-493A-B526-BFA338FEF7E0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RPLP.UnitTesting", "RPLP.UnitTesting\RPLP.UnitTesting.csproj", "{7EA4E5C3-063D-4F8A-BB02-9D1F7AB653A1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,10 +53,10 @@ Global
 		{DB4EC079-9BA9-4747-91DE-2B4CD962EEE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DB4EC079-9BA9-4747-91DE-2B4CD962EEE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DB4EC079-9BA9-4747-91DE-2B4CD962EEE4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{367C1F3F-822C-493A-B526-BFA338FEF7E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{367C1F3F-822C-493A-B526-BFA338FEF7E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{367C1F3F-822C-493A-B526-BFA338FEF7E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{367C1F3F-822C-493A-B526-BFA338FEF7E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7EA4E5C3-063D-4F8A-BB02-9D1F7AB653A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7EA4E5C3-063D-4F8A-BB02-9D1F7AB653A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7EA4E5C3-063D-4F8A-BB02-9D1F7AB653A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7EA4E5C3-063D-4F8A-BB02-9D1F7AB653A1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
