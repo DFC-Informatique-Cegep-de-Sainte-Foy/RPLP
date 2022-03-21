@@ -33,34 +33,34 @@ namespace RPLP.API.Controllers
             return Ok(this._depot.GetOrganisationByName(organisationName));
         }
 
-        [HttpGet("Name/{organisationName}/Classrooms")]
-        public ActionResult<Classroomn> GetClassroomsByOrganisation(string organisationName)
+        [HttpGet("Administrator/{adminUsername}/Organisations/{organisationName}")]
+        public ActionResult<Administrator> GetAdministratorsByOrganisation(string organisationName)
         {
-            return Ok(this._depot.GetClassroomByOrganisation(organisationName));
+            return Ok(this._depot.GetAdministratorsByOrganisation(organisationName));
         }
-
-        [HttpPost("Name/{organisationName}/Classrooms/Add/{classroomName}")]
-        public ActionResult AddClassroomToOrganisation(string organisationName, string classroomName)
+               
+        [HttpPost("Name/{organisationName}/Administrators/Add/{adminUsername}")]
+        public ActionResult AddAdministratorToOrganisation(string organisationName, string adminUsername)
         {
-            if (string.IsNullOrWhiteSpace(organisationName) || string.IsNullOrWhiteSpace(classroomName))
+            if (string.IsNullOrWhiteSpace(organisationName) || string.IsNullOrWhiteSpace(adminUsername))
             {
                 return BadRequest();
             }
 
-            this._depot.AddClassroomToOrganisation(organisationName, classroomName);
+            this._depot.AddAdministratorToOrganisation(organisationName, adminUsername);
 
-            return Created(nameof(this.AddClassroomToOrganisation), organisationName);
+            return Created(nameof(this.AddAdministratorToOrganisation), organisationName);
         }
 
-        [HttpPost("Name/{organisationName}/Classrooms/Remove/{classroomName}")]
-        public ActionResult AddClassroomToOrganisation(string organisationName, string classroomName)
+        [HttpPost("Name/{organisationName}/Administrators/Remove/{adminUsername}")]
+        public ActionResult RemoveAdministratorToOrganisation(string organisationName, string adminUsername)
         {
-            if (string.IsNullOrWhiteSpace(organisationName) || string.IsNullOrWhiteSpace(classroomName))
+            if (string.IsNullOrWhiteSpace(organisationName) || string.IsNullOrWhiteSpace(adminUsername))
             {
                 return BadRequest();
             }
 
-            this._depot.RemoveClassroomFromOrganisation(organisationName, classroomName);
+            this._depot.RemoveAdministratorFromOrganisation(organisationName, adminUsername);
 
             return NoContent();
         }

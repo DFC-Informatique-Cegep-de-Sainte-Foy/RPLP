@@ -17,3 +17,4 @@ namespace RPLP.SERVICES.InterfacesDepots
         public void DeleteStudent(string p_studentUsername);
     }
 }
+

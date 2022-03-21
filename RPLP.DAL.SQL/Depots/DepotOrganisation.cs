@@ -1,4 +1,5 @@
-﻿using RPLP.DAL.DTO.Sql;
+﻿using Microsoft.EntityFrameworkCore;
+using RPLP.DAL.DTO.Sql;
 using RPLP.ENTITES;
 using RPLP.SERVICES.InterfacesDepots;
 using System;
@@ -17,6 +18,11 @@ namespace RPLP.DAL.SQL.Depots
         {
             this._context = new RPLPDbContext();
         }
+
+        public List<Organisation> GetOrganisations()
+        {
+            return this._context.Organisations.Select(organisation => organisation.ToEntity()).ToList();
+        }
                
         public Organisation GetOrganisationById(int p_id)
         {
@@ -28,11 +34,36 @@ namespace RPLP.DAL.SQL.Depots
             return organisation;
         }
 
-        public List<Organisation> GetOrganisations()
+        public Organisation GetOrganisationByName(string p_name)
         {
-            return this._context.Organisations.Select(organisation => organisation.ToEntity()).ToList();
+            Organisation_SQLDTO organisationResult = this._context.Organisations.Where(organisation => organisation.Name == p_name)
+                                                                       .Include(organisation => organisation.Administrators)
+                                                                       .FirstOrDefault();
+            if (organisationResult == null)
+                return new Organisation();
+
+            Organisation organisation = organisationResult.ToEntityWithoutList();
+
+            if (organisationResult.Administrators.Count >= 1)
+            {
+                List<Administrator> administrators = organisationResult.Administrators.Select(administrator => administrator.ToEntityWithoutList()).ToList();
+                organisation.Administrators = administrators;
+            }
+           
+            return organisation;
         }
 
+        public List<Administrator> GetAdministratorsByOrganisation(string p_organisationName)
+        {
+            Organisation_SQLDTO organisationResult = this._context.Organisations.Where(organisation => organisation.Name == p_organisationName)
+                                                                       .Include(organisation => organisation.Administrators)
+                                                                       .FirstOrDefault();
+
+            if (organisationResult != null && organisationResult.Administrators.Count >= 1)
+                return organisationResult.Administrators.Select(administrator => administrator.ToEntity()).ToList();
+
+            return new List<Administrator>();
+        }         
         
         public void AddAdministratorToOrganisation(string p_organisationName, string p_adminUsername)
         {
@@ -50,27 +81,8 @@ namespace RPLP.DAL.SQL.Depots
                     this._context.SaveChanges();
                 }
             }
-        }
-
+        }       
         
-        public void AddClassroomToOrganisation(string p_organisationName, string p_classroomName)
-        {
-            Classroom_SQLDTO classroomResult = this._context.Classrooms.Where(classroom => classroom.ClassroomName == p_classroomName).FirstOrDefault();
-
-            if (classroomResult != null)
-            {
-                Organisation_SQLDTO organisationResult = this._context.Organisations.Where(organisation => organisation.Name == p_organisationName).SingleOrDefault();
-
-                if (organisationResult != null)
-                {
-                    organisationResult.Classrooms.Add(classroomResult);
-
-                    this._context.Update(organisationResult);
-                    this._context.SaveChanges();
-                }
-            }
-        }
-
         public void RemoveAdministratorFromOrganisation(string p_organisationName, string p_adminUsername)
         {
             Administrator_SQLDTO adminResult = this._context.Administrators.Where(admin => admin.Username == p_adminUsername).FirstOrDefault();
@@ -88,25 +100,7 @@ namespace RPLP.DAL.SQL.Depots
                 }
             }
         }
-
-        public void RemoveClassroomFromOrganisation(string p_organisationName, string p_classroomName)
-        {
-            Classroom_SQLDTO classroomResult = this._context.Classrooms.Where(classroom => classroom.ClassroomName == p_classroomName).FirstOrDefault();
-
-            if (classroomResult != null)
-            {
-                Organisation_SQLDTO organisationResult = this._context.Organisations.Where(organisation => organisation.Name == p_organisationName).SingleOrDefault();
-
-                if (organisationResult != null)
-                {
-                    organisationResult.Classrooms.Remove(classroomResult);
-
-                    this._context.Update(organisationResult);
-                    this._context.SaveChanges();
-                }
-            }
-        }
-
+       
         public void UpsertOrganisation(Organisation p_organisation)
         {
             List<Administrator_SQLDTO> administrators = new List<Administrator_SQLDTO>();
@@ -143,7 +137,7 @@ namespace RPLP.DAL.SQL.Depots
 
         public void DeleteOrganisation(string p_organisationName)
         {
-            Organisation_SQLDTO OrganisationResult = this._context.Organisations.FirstOrDefault(organisation => organisation.Name == p_organisationName);
+            Organisation_SQLDTO organisationResult = this._context.Organisations.FirstOrDefault(organisation => organisation.Name == p_organisationName);
 
             if (organisationResult != null)
             {

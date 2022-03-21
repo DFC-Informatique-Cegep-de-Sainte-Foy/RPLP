@@ -18,6 +18,11 @@ namespace RPLP.DAL.SQL.Depots
             this._context = new RPLPDbContext();
         }
 
+        public List<Comment> GetComments()
+        {
+            return this._context.Comments.Select(comment => comment.ToEntity()).ToList();
+        }
+
         public Comment GetCommentById(int p_id)
         {
             Comment comment = this._context.Comments.Where(comment => comment.Id == p_id).Select(comment => comment.ToEntity()).FirstOrDefault();
@@ -26,12 +31,7 @@ namespace RPLP.DAL.SQL.Depots
                 return new Comment();
 
             return comment;
-        }
-
-        public List<Comment> GetComments()
-        {
-            return this._context.Comments.Select(comment => comment.ToEntity()).ToList();
-        }
+        }                
 
         public void UpsertComment(Comment p_comment)
         {
@@ -64,6 +64,19 @@ namespace RPLP.DAL.SQL.Depots
                 comment.Updated_at = p_comment.Updated_at;
 
                 this._context.Comments.Add(comment);
+                this._context.SaveChanges();
+            }
+        }
+
+        public void DeleteComment(int p_commentId)
+        {
+            Comment_SQLDTO commentResult = this._context.Comments.SingleOrDefault(comment => comment.Id == p_commentId);
+
+            if (commentResult != null)
+            {
+                commentResult.Active = false;
+
+                this._context.Update(commentResult);
                 this._context.SaveChanges();
             }
         }

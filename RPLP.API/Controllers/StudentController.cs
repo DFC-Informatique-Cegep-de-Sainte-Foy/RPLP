@@ -27,49 +27,18 @@ namespace RPLP.API.Controllers
             return Ok(this._depot.GetStudentById(id));
         }
 
-        [HttpGet("Username/{username}")]
-        public ActionResult<Student> GetStudentByUsername(string username)
+        [HttpGet("Username/{studerUsername}")]
+        public ActionResult<Student> GetStudentByUsername(string studentUsername)
         {
-            return Ok(this._depot.GetStudentByUsername(username));
+            return Ok(this._depot.GetStudentByUsername(studentUsername));
         }
 
-        [HttpGet("Username/{username}/Classrooms")]
-        public ActionResult<List<Organisation>> GetStudentClasses(string username)
+        [HttpGet("Username/{studerUsername}/Classrooms")]
+        public ActionResult<List<Classroom>> GetStudentClasses(string studentUsername)
         {
-            return Ok(this._depot.GetStudentClasses(username));
-        }
-
-        [HttpGet("Username/{username}/Comments")]
-        public ActionResult<List<Comment>> GetComments(int commentId)
-        {
-            return Ok(this._depot.GetCommmentsByUsername(commentId));
-        }
-
-        [HttpPost("Username/{username}/Add/{commentId}")]
-        public ActionResult AddCommentToStudent(string username, int commentId)
-        {
-            if (string.IsNullOrWhiteSpace(username) || commentId >= 0)
-            {
-                return BadRequest();
-            }
-
-            this._depot.AddCommentToStudent(username, commentId);
-
-            return Created(nameof(this.AddCommentToStudent), username);
-        }
-
-        [HttpPost("Username/{username}/Remove/{commentId}")]
-        public ActionResult RemoveCommentFromStudent(string username, int commentId)
-        {
-            if (string.IsNullOrWhiteSpace(username) || commentId >= 0)
-            {
-                return BadRequest();
-            }
-
-            this._depot.RemoveCommentToStudent(username, commentId);
-
-            return NoContent();
-        }
+            return Ok(this._depot.GetStudentClasses(studentUsername));
+        }              
+               
 
         [HttpPost]
         public ActionResult Post([FromBody] Student p_student)
@@ -85,9 +54,9 @@ namespace RPLP.API.Controllers
         }
 
         [HttpDelete("Username/{username}")]
-        public ActionResult DeleteStudent(string username)
+        public ActionResult DeleteStudent(string studentUsername)
         {
-            this._depot.DeleteStudent(username);
+            this._depot.DeleteStudent(studentUsername);
             return NoContent();
         }
     }

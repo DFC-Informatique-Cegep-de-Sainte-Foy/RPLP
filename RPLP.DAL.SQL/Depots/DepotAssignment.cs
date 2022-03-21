@@ -18,19 +18,11 @@ namespace RPLP.DAL.SQL.Depots
             this._context = new RPLPDbContext();
         }
 
-        public void DeleteAssignment(string p_assignmentName)
+        public List<Assignment> GetAssignments()
         {
-            Assignment_SQLDTO assignmentResult = this._context.Assignments.FirstOrDefault(assignment => assignment.Name == p_assignmentName);
-
-            if (assignmentResult != null)
-            {
-                assignmentResult.Active = false;
-
-                this._context.Update(assignmentResult);
-                this._context.SaveChanges();
-            }
+            return this._context.Assignments.Select(assignment => assignment.ToEntity()).ToList();
         }
-
+                
         public Assignment GetAssignmentById(int p_id)
         {
             Assignment assignment = this._context.Assignments.Where(assignment => assignment.Id == p_id).Select(assignment => assignment.ToEntity()).FirstOrDefault();
@@ -50,12 +42,7 @@ namespace RPLP.DAL.SQL.Depots
 
             return assignment;
         }
-
-        public List<Assignment> GetAssignments()
-        {
-            return this._context.Assignments.Select(assignment => assignment.ToEntity()).ToList();
-        }
-
+               
         public void UpsertAssignment(Assignment p_assignment)
         {
             Assignment_SQLDTO assignmentResult = this._context.Assignments.Where(assignment => assignment.Id == p_assignment.Id).FirstOrDefault();
@@ -82,6 +69,19 @@ namespace RPLP.DAL.SQL.Depots
                 assignmentDTO.Active = true;
 
                 this._context.Assignments.Add(assignmentDTO);
+                this._context.SaveChanges();
+            }
+        }
+
+        public void DeleteAssignment(string p_assignmentName)
+        {
+            Assignment_SQLDTO assignmentResult = this._context.Assignments.FirstOrDefault(assignment => assignment.Name == p_assignmentName);
+
+            if (assignmentResult != null)
+            {
+                assignmentResult.Active = false;
+
+                this._context.Update(assignmentResult);
                 this._context.SaveChanges();
             }
         }

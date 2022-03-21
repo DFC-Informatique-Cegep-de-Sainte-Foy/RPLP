@@ -43,7 +43,7 @@ namespace RPLP.API.Controllers
         [HttpDelete("Id/{id}")]
         public ActionResult DeleteComment(int id)
         {
-            this._depot.Delete(id);
+            this._depot.DeleteComment(id);
             return NoContent();
         }
     }

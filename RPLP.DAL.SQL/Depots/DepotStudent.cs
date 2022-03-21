@@ -18,6 +18,11 @@ namespace RPLP.DAL.SQL.Depots
             this._context = new RPLPDbContext();
         }
 
+        public List<Student> GetStudents()
+        {
+            return this._context.Students.Select(student => student.ToEntity()).ToList();
+        }
+
         public Student GetStudentById(int p_id)
         {
             Student student = this._context.Students.Where(student => student.Id == p_id).Select(student => student.ToEntity()).FirstOrDefault();
@@ -74,25 +79,7 @@ namespace RPLP.DAL.SQL.Depots
             }
 
             return new List<Classroom>();
-        }
-
-        public List<Student> GetStudents()
-        {
-            return this._context.Students.Select(student => student.ToEntity()).ToList();
-        }
-
-        public void DeleteStudent(string p_studentUsername)
-        {
-            Student_SQLDTO studentResult = this._context.Students.FirstOrDefault(student => student.Username == p_studentUsername);
-
-            if (studentResult != null)
-            {
-                studentResult.Active = false;
-
-                this._context.Update(studentResult);
-                this._context.SaveChanges();
-            }
-        }
+        }                       
 
         public void UpsertStudent(Student p_student)
         {
@@ -127,6 +114,19 @@ namespace RPLP.DAL.SQL.Depots
                 student.Classes = classes;
 
                 this._context.Students.Add(student);
+                this._context.SaveChanges();
+            }
+        }
+
+        public void DeleteStudent(string p_studentUsername)
+        {
+            Student_SQLDTO studentResult = this._context.Students.FirstOrDefault(student => student.Username == p_studentUsername);
+
+            if (studentResult != null)
+            {
+                studentResult.Active = false;
+
+                this._context.Update(studentResult);
                 this._context.SaveChanges();
             }
         }
