@@ -10,8 +10,15 @@ namespace RPLP.SERVICES.InterfacesDepots
     public interface IDepotOrganisation
     {
         public List<Organisation> GetOrganisations();
-        public Organisation GetOrganisationById(int id);
-        public void UpsertOrganisation(Organisation organisation);
-        public void AddAdministrator(string p_adminUsername, string p_organisationName);
+        public Organisation GetOrganisationById(int p_id);
+        public Organisation GetOrganisationByName(int p_organisationName);
+        public List<Administrator> GetAdministratorsByOrganisation(string p_organisationName)
+        public List<Classroom> GetClassroomsByOrganisation(string p_organisationName)
+        public void UpsertOrganisation(Organisation p_organisation);
+        public void AddAdministratorToOrganisation(string p_organisationName, string p_adminUsername);
+        public void RemoveAdministratorFromOrganisation(string p_organisationName, string p_adminUsername);
+        public void AddClassroomToOrganisation(string p_organisationName, string p_classroomName);
+        public void RemoveClassroomFromOrganisation(string p_organisationName, string p_classroomName);
+        public void DeleteOrganisation(string p_organisationName)
     }
 }

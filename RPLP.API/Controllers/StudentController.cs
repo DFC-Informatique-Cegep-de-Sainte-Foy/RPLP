@@ -39,6 +39,37 @@ namespace RPLP.API.Controllers
             return Ok(this._depot.GetStudentClasses(username));
         }
 
+        [HttpGet("Username/{username}/Comments")]
+        public ActionResult<List<Comment>> GetComments(int commentId)
+        {
+            return Ok(this._depot.GetCommmentsByUsername(commentId));
+        }
+
+        [HttpPost("Username/{username}/Add/{commentId}")]
+        public ActionResult AddCommentToStudent(string username, int commentId)
+        {
+            if (string.IsNullOrWhiteSpace(username) || commentId >= 0)
+            {
+                return BadRequest();
+            }
+
+            this._depot.AddCommentToStudent(username, commentId);
+
+            return Created(nameof(this.AddCommentToStudent), username);
+        }
+
+        [HttpPost("Username/{username}/Remove/{commentId}")]
+        public ActionResult RemoveCommentFromStudent(string username, int commentId)
+        {
+            if (string.IsNullOrWhiteSpace(username) || commentId >= 0)
+            {
+                return BadRequest();
+            }
+
+            this._depot.RemoveCommentToStudent(username, commentId);
+
+            return NoContent();
+        }
 
         [HttpPost]
         public ActionResult Post([FromBody] Student p_student)

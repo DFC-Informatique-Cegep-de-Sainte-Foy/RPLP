@@ -21,8 +21,8 @@ namespace RPLP.API.Controllers
             return Ok(this._depot.GetComments());
         }
 
-        [HttpGet("{id}")]
-        public ActionResult<Comment> Get(int id)
+        [HttpGet("Id/{id}")]
+        public ActionResult<Comment> GetCommentById(int id)
         {
             return Ok(this._depot.GetCommentById(id));
         }
@@ -38,6 +38,13 @@ namespace RPLP.API.Controllers
             this._depot.UpsertComment(p_comment);
 
             return Created(nameof(this.Post), p_comment);
+        }
+
+        [HttpDelete("Id/{id}")]
+        public ActionResult DeleteComment(int id)
+        {
+            this._depot.Delete(id);
+            return NoContent();
         }
     }
 }

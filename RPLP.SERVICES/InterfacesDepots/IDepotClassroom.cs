@@ -15,12 +15,12 @@ namespace RPLP.SERVICES.InterfacesDepots
         public List<Student> GetStudentsByClassroomName(string p_classroomName);
         public List<Teacher> GetTeachersByClassroomName(string p_classroomName);
         public List<Assignment> GetAssignmentsByClassroomName(string p_classroomName);
-        public void UpsertClassroom(Classroom classroom);
+        public void UpsertClassroom(Classroom p_classroom);
         public void AddTeacherToClassroom(string p_classroomName, string p_teacherUsername);
-        public void RemoveTeacherFromClassroom(string p_classroomName, string p_username);
+        public void RemoveTeacherFromClassroom(string p_classroomName, string p_teacherUsername);
         public void AddStudentToClassroom(string p_classroomName, string p_studentUsername);
-        public void RemoveStudentFromClassroom(string p_classroomName, string p_username);
-        public void AddAssignmentToClassroom(string p_classroomName, string p_assignmentName);
+        public void RemoveStudentFromClassroom(string p_classroomName, string p_studentUsername);
+        public void AddAssignmentToClassroom(string p_classroomName, string p_id);
         public void RemoveAssignmentFromClassroom(string p_classroomName, int p_id);
         public void DeleteClassroom(string p_classroomName);
     }

@@ -46,10 +46,10 @@ namespace RPLP.API.Controllers
             return Created(nameof(this.Post), p_assignment);
         }
 
-        [HttpDelete("Name/{assingmentName}")]
-        public ActionResult DeleteAssignment(string assingmentName)
+        [HttpDelete("Name/{assignmentName}")]
+        public ActionResult DeleteAssignment(string assignmentName)
         {
-            this._depot.DeleteAssignment(assingmentName);
+            this._depot.DeleteAssignment(assignmentName);
             return NoContent();
         }
     }
