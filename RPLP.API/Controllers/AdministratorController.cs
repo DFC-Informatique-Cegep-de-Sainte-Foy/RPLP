@@ -8,9 +8,9 @@ namespace RPLP.API.Controllers
     [ApiController]
     public class AdministratorController : ControllerBase
     {
-        private readonly IDepotAdminitrator _depot;
+        private readonly IDepotAdministrator _depot;
 
-        public AdministratorController(IDepotAdminitrator p_depotAdmin)
+        public AdministratorController(IDepotAdministrator p_depotAdmin)
         {
             this._depot = p_depotAdmin;
         }
@@ -22,19 +22,19 @@ namespace RPLP.API.Controllers
         }
 
         [HttpGet("Id/{id}")]
-        public ActionResult<Administrator> GetById(int id)
+        public ActionResult<Administrator> GetAdministratorById(int id)
         {
             return Ok(this._depot.GetAdministratorById(id));
         }
 
         [HttpGet("Username/{username}")]
-        public ActionResult<Administrator> GetByName(string username)
+        public ActionResult<Administrator> GetAdministratorByUsername(string username)
         {
-            return Ok(this._depot.GetAdministratorByName(username));
+            return Ok(this._depot.GetAdministratorByUsername(username));
         }
 
         [HttpGet("Username/{username}/Organisations")]
-        public ActionResult<List<Organisation>> GetOrganisations(string username)
+        public ActionResult<List<Organisation>> GetAdminOrganisations(string username)
         {
             return Ok(this._depot.GetAdminOrganisations(username));
         }

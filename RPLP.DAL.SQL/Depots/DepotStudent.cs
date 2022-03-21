@@ -28,9 +28,70 @@ namespace RPLP.DAL.SQL.Depots
             return student;
         }
 
+        public Student GetStudentByUsername(string p_studentUsername)
+        {
+            /* Student_SQLDTO studentResult = this._context.Students.Where(student => student.Username == p_studentUsername)
+                                                                  .Include(student => student.Classes)
+                                                                  .FirstOrDefault();
+            */
+            Student_SQLDTO studentResult = this._context.Students.Where(student => student.Username == p_studentUsername)
+                                                                  .FirstOrDefault();
+
+            if (studentResult == null)
+                return new Student();
+
+            Student student = studentResult.ToEntityWithoutList();
+
+            if (studentResult.Classes.Count >= 1)
+            {
+                List<Classroom> classes = studentResult.Classes.Select(classroom => classroom.ToEntityWithoutList()).ToList();
+                student.Classes = classes;
+            }
+
+            return student;
+        }
+
+        public List<Classroom> GetStudentClasses(string p_studentUsername)
+        {
+            List<Classroom> classes = new List<Classroom>();
+            /*
+            Student_SQLDTO student = this._context.Students.Include(student => student.Classes)
+                                                           .FirstOrDefault(student => student.Username == p_studentUsername);
+            */
+            Student_SQLDTO student = this._context.Students.FirstOrDefault(student => student.Username == p_studentUsername);
+
+            if (student != null)
+            {
+                if (student.Classes.Count >= 1)
+                {
+                    foreach (Classroom_SQLDTO classroom in student.Classes)
+                    {
+                        classes.Add(classroom.ToEntityWithoutList());
+                    }
+
+                    return classes;
+                }
+            }
+
+            return new List<Classroom>();
+        }
+
         public List<Student> GetStudents()
         {
             return this._context.Students.Select(student => student.ToEntity()).ToList();
+        }
+
+        public void DeleteStudent(string p_studentUsername)
+        {
+            Student_SQLDTO studentResult = this._context.Students.FirstOrDefault(student => student.Username == p_studentUsername);
+
+            if (studentResult != null)
+            {
+                studentResult.Active = false;
+
+                this._context.Update(studentResult);
+                this._context.SaveChanges();
+            }
         }
 
         public void UpsertStudent(Student p_student)

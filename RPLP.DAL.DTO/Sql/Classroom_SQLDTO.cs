@@ -14,14 +14,14 @@ namespace RPLP.DAL.DTO.Sql
         public string OrganisationName { get; set; }
         public List<Student_SQLDTO> Students { get; set; }
         public List<Teacher_SQLDTO> Teachers { get; set; }
-        public List<Assignment_SQLDTO> Assignment { get; set; }
+        public List<Assignment_SQLDTO> Assignments { get; set; }
         public bool Active { get; set; }
 
         public Classroom_SQLDTO()
         {
             this.Students = new List<Student_SQLDTO>();
             this.Teachers = new List<Teacher_SQLDTO>();
-            this.Assignment = new List<Assignment_SQLDTO>();
+            this.Assignments = new List<Assignment_SQLDTO>();
         }
 
         public Classroom_SQLDTO(Classroom classroom)
@@ -48,9 +48,9 @@ namespace RPLP.DAL.DTO.Sql
                     teachers.Add(new Teacher_SQLDTO(teacher));
                 }
             }
-            if (classroom.Assignment.Count >= 1)
+            if (classroom.Assignments.Count >= 1)
             {
-                foreach (Assignment assignment in classroom.Assignment)
+                foreach (Assignment assignment in classroom.Assignments)
                 {
                     assignments.Add(new Assignment_SQLDTO(assignment));
                 }
@@ -58,13 +58,13 @@ namespace RPLP.DAL.DTO.Sql
 
             this.Students = students;
             this.Teachers = teachers;
-            this.Assignment = assignments;
+            this.Assignments = assignments;
             this.Active = true;
         }
 
         public Classroom ToEntity()
         {
-            return new Classroom(this.Id, this.Name, this.OrganisationName, this.Students.Select(student => student.ToEntity()).ToList(), this.Teachers.Select(teacher => teacher.ToEntity()).ToList(), this.Assignment.Select(assignment => assignment.ToEntity()).ToList());
+            return new Classroom(this.Id, this.Name, this.OrganisationName, this.Students.Select(student => student.ToEntity()).ToList(), this.Teachers.Select(teacher => teacher.ToEntity()).ToList(), this.Assignments.Select(assignment => assignment.ToEntity()).ToList());
         }
 
         public Classroom ToEntityWithoutList()

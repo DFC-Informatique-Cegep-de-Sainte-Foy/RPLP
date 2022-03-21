@@ -21,11 +21,24 @@ namespace RPLP.API.Controllers
             return Ok(this._depot.GetStudents());
         }
 
-        [HttpGet("{id}")]
-        public ActionResult<Student> Get(int id)
+        [HttpGet("Id/{id}")]
+        public ActionResult<Student> GetStudentById(int id)
         {
             return Ok(this._depot.GetStudentById(id));
         }
+
+        [HttpGet("Username/{username}")]
+        public ActionResult<Student> GetStudentByUsername(string username)
+        {
+            return Ok(this._depot.GetStudentByUsername(username));
+        }
+
+        [HttpGet("Username/{username}/Classrooms")]
+        public ActionResult<List<Organisation>> GetStudentClasses(string username)
+        {
+            return Ok(this._depot.GetStudentClasses(username));
+        }
+
 
         [HttpPost]
         public ActionResult Post([FromBody] Student p_student)
@@ -38,6 +51,13 @@ namespace RPLP.API.Controllers
             this._depot.UpsertStudent(p_student);
 
             return Created(nameof(this.Post), p_student);
+        }
+
+        [HttpDelete("Username/{username}")]
+        public ActionResult DeleteStudent(string username)
+        {
+            this._depot.DeleteStudent(username);
+            return NoContent();
         }
     }
 }

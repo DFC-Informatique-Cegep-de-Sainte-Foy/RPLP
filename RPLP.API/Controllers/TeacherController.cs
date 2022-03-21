@@ -22,19 +22,19 @@ namespace RPLP.API.Controllers
         }
 
         [HttpGet("Id/{id}")]
-        public ActionResult<Teacher> GetById(int id)
+        public ActionResult<Teacher> GetTeacherById(int id)
         {
             return Ok(this._depot.GetTeacherById(id));
         }
 
         [HttpGet("Username/{username}")]
-        public ActionResult<Teacher> GetByName(string username)
+        public ActionResult<Teacher> GetTeacherByUsername(string username)
         {
-            return Ok(this._depot.GetTeacherByName(username));
+            return Ok(this._depot.GetTeacherByUsername(username));
         }
 
         [HttpGet("Username/{username}/Classrooms")]
-        public ActionResult<List<Organisation>> GetClassrooms(string username)
+        public ActionResult<List<Organisation>> GetTeacherClasses(string username)
         {
             return Ok(this._depot.GetTeacherClasses(username));
         }

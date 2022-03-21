@@ -51,7 +51,7 @@ namespace RPLP.DAL.SQL.Depots
             return teacher;
         }
 
-        public Teacher GetTeacherByName(string p_teacherUsername)
+        public Teacher GetTeacherByUsername(string p_teacherUsername)
         {
             Teacher_SQLDTO teacherResult = this._context.Teachers.Where(teacher => teacher.Username == p_teacherUsername)
                                                                  .Include(teacher => teacher.Classes)

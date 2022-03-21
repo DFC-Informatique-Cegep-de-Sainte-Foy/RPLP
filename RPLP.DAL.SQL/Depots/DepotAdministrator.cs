@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace RPLP.DAL.SQL.Depots
 {
-    public class DepotAdministrator : IDepotAdminitrator
+    public class DepotAdministrator : IDepotAdministrator
     {
         private readonly RPLPDbContext _context;
 
@@ -51,7 +51,7 @@ namespace RPLP.DAL.SQL.Depots
             return administrator;
         }
 
-        public Administrator GetAdministratorByName(string p_adminUsername)
+        public Administrator GetAdministratorByUsername(string p_adminUsername)
         {
             Administrator_SQLDTO adminResult = this._context.Administrators.Where(admin => admin.Username == p_adminUsername)
                                                                       .Include(admin => admin.Organisations)

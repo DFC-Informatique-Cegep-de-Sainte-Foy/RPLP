@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace RPLP.DAL.SQL.Depots
 {
-    public class DepotAssignments : IDepotAssignment
+    public class DepotAssignment : IDepotAssignment
     {
         private readonly RPLPDbContext _context;
 
-        public DepotAssignments()
+        public DepotAssignment()
         {
             this._context = new RPLPDbContext();
         }

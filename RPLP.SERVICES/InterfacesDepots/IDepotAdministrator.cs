@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace RPLP.SERVICES.InterfacesDepots
 {
-    public interface IDepotAdminitrator
+    public interface IDepotAdministrator
     {
         public List<Administrator> GetAdministrators();
         public Administrator GetAdministratorById(int id);
-        public Administrator GetAdministratorByName(string p_adminUsername);
+        public Administrator GetAdministratorByUsername(string p_adminUsername);
         public List<Organisation> GetAdminOrganisations(string p_adminUsername);
         public void UpsertAdministrator(Administrator administrator);
         public void JoinOrganisation(string p_adminUsername, string p_organisationName);
