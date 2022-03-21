@@ -31,6 +31,35 @@ namespace RPLP.UnitTesting
             }
         }
 
+        private void InsertAdminBACenComm()
+        {
+            using (var context = new RPLPDbContext(options))
+            {
+                context.Administrators.Add(
+                    new Administrator_SQLDTO
+                    {
+                        Username = "BACenComm",
+                        FirstName = "Melissa",
+                        LastName = "Lachapelle",
+                        Token = "token",
+                        Active = true
+                    }
+                );
+
+                context.SaveChanges();
+            }
+        }
+
+        private void InsertAdmin(Administrator_SQLDTO p_admin)
+        {
+            using (var context = new RPLPDbContext(options))
+            {
+                context.Administrators.Add(p_admin);
+                context.SaveChanges();
+            }
+        }
+
+
         [Fact]
         public void Test_GetAll_CountIsGood()
         {
@@ -41,32 +70,32 @@ namespace RPLP.UnitTesting
 
             using (var context = new RPLPDbContext(options))
             {
-                context.Administrators.Add(new Administrator_SQLDTO
-                {
-                    Username = "ThPaquet",
-                    FirstName = "Thierry",
-                    LastName = "Paquet",
-                    Token = "token",
-                    Active = true
-                });
-
-                context.Administrators.Add(new Administrator_SQLDTO
-                {
-                    Username = "ikeameatbol",
-                    FirstName = "Jonathan",
-                    LastName = "Blouin",
-                    Token = "token",
-                    Active = true
-                });
-
-                context.Administrators.Add(new Administrator_SQLDTO
-                {
-                    Username = "BACenComm",
-                    FirstName = "Melissa",
-                    LastName = "Lachapelle",
-                    Token = "token",
-                    Active = true
-                });
+                context.Administrators.AddRange(
+                    new Administrator_SQLDTO
+                    {
+                        Username = "ThPaquet",
+                        FirstName = "Thierry",
+                        LastName = "Paquet",
+                        Token = "token",
+                        Active = true
+                    },
+                    new Administrator_SQLDTO
+                    {
+                        Username = "ikeameatbol",
+                        FirstName = "Jonathan",
+                        LastName = "Blouin",
+                        Token = "token",
+                        Active = true
+                    },
+                    new Administrator_SQLDTO
+                    {
+                        Username = "BACenComm",
+                        FirstName = "Melissa",
+                        LastName = "Lachapelle",
+                        Token = "token",
+                        Active = true
+                    }
+                );
 
                 context.SaveChanges();
             }
@@ -91,19 +120,7 @@ namespace RPLP.UnitTesting
             string expectedFirstname = "Melissa";
             string result = "";
 
-            using (var context = new RPLPDbContext(options))
-            {
-                context.Administrators.Add(new Administrator_SQLDTO
-                {
-                    Username = "BACenComm",
-                    FirstName = "Melissa",
-                    LastName = "Lachapelle",
-                    Token = "token",
-                    Active = true
-                });
-
-                context.SaveChanges();
-            }
+            this.InsertAdminBACenComm();
 
             using (var context = new RPLPDbContext(options))
             {
@@ -126,19 +143,10 @@ namespace RPLP.UnitTesting
             string expectedUsername = "BACenComm";
             string result = "";
 
+            this.InsertAdminBACenComm();
+
             using (var context = new RPLPDbContext(options))
             {
-                context.Administrators.Add(new Administrator_SQLDTO
-                {
-                    Username = "BACenComm",
-                    FirstName = "Melissa",
-                    LastName = "Lachapelle",
-                    Token = "token",
-                    Active = true
-                });
-
-                context.SaveChanges();
-
                 Administrator_SQLDTO? admin = context.Administrators
                     .SingleOrDefaultAsync(a => a.Username == "BACenComm")
                     .Result;
@@ -198,19 +206,7 @@ namespace RPLP.UnitTesting
             bool expected = true;
             bool result = false;
 
-            using (var context = new RPLPDbContext(options))
-            {
-                context.Administrators.Add(new Administrator_SQLDTO
-                {
-                    Username = "BACenComm",
-                    FirstName = "Melissa",
-                    LastName = "Lachapelle",
-                    Token = "token",
-                    Active = true
-                });
-
-                context.SaveChanges();
-            }
+            this.InsertAdminBACenComm();
 
             using (var context = new RPLPDbContext(options))
             {
@@ -246,34 +242,31 @@ namespace RPLP.UnitTesting
         {
 
             this.DeleteAdministratorTableContent();
+            this.DeleteOrganisationTableContent();
             int expected = 2;
             int result = 0;
 
-            using (var context = new RPLPDbContext(options))
+
+            this.InsertAdmin(new Administrator_SQLDTO
             {
-                context.Administrators.Add(new Administrator_SQLDTO
+                Username = "BACenComm",
+                FirstName = "Melissa",
+                LastName = "Lachapelle",
+                Token = "token",
+                Organisations = new List<Organisation_SQLDTO>
                 {
-                    Username = "BACenComm",
-                    FirstName = "Melissa",
-                    LastName = "Lachapelle",
-                    Token = "token",
-                    Organisations = new List<Organisation_SQLDTO>
+                    new Organisation_SQLDTO
                     {
-                        new Organisation_SQLDTO
-                        {
-                            Name = "RPLP"
-                        },
-
-                        new Organisation_SQLDTO
-                        {
-                            Name = "Test"
-                        }
+                        Name = "RPLP"
                     },
-                    Active = true
-                });
 
-                context.SaveChanges();
-            }
+                    new Organisation_SQLDTO
+                    {
+                        Name = "Test"
+                    }
+                },
+                Active = true
+            });
 
             using (var context = new RPLPDbContext(options))
             {
@@ -291,6 +284,7 @@ namespace RPLP.UnitTesting
             }
 
             this.DeleteAdministratorTableContent();
+            this.DeleteOrganisationTableContent();
         }
 
         [Fact]
@@ -301,17 +295,10 @@ namespace RPLP.UnitTesting
             string expected = "RPLP";
             string result = "";
 
+            this.InsertAdminBACenComm();
+
             using (var context = new RPLPDbContext(options))
             {
-                context.Administrators.Add(new Administrator_SQLDTO
-                {
-                    Username = "BACenComm",
-                    FirstName = "Melissa",
-                    LastName = "Lachapelle",
-                    Token = "token",
-                    Active = true
-                });
-
                 context.Organisations.Add(new Organisation_SQLDTO
                 {
                     Name = "RPLP",
@@ -329,7 +316,7 @@ namespace RPLP.UnitTesting
 
                 Administrator_SQLDTO? admin = context.Administrators.FirstOrDefault(a => a.Username == "BACenComm");
 
-                Assert.Equal(1, admin.Organisations.Count());
+                Assert.Equal(1, admin.Organisations.Count);
                 Organisation? orgAdmin = admin.Organisations.FirstOrDefault().ToEntityWithoutAdministrators();
 
 
@@ -346,41 +333,37 @@ namespace RPLP.UnitTesting
         {
             this.DeleteAdministratorTableContent();
             this.DeleteOrganisationTableContent();
-            string expected = "RPLP";
-            string result = "";
 
             Administrator_SQLDTO? admin = null;
             Organisation_SQLDTO? organisation = null;
 
+            this.InsertAdmin(
+            new Administrator_SQLDTO
+            {
+                Username = "BACenComm",
+                FirstName = "Melissa",
+                LastName = "Lachapelle",
+                Token = "token",
+                Active = true,
+                Organisations =
+                {
+                    new Organisation_SQLDTO
+                    {
+                        Name = "RPLP",
+                        Active = true
+                    }
+                }
+            });
+
             using (var context = new RPLPDbContext(options))
             {
-                context.Administrators.Add(new Administrator_SQLDTO
-                {
-                    Username = "BACenComm",
-                    FirstName = "Melissa",
-                    LastName = "Lachapelle",
-                    Token = "token",
-                    Active = true,
-                    Organisations =
-                    {
-                        new Organisation_SQLDTO
-                        {
-                            Name = "RPLP",
-                            Active = true
-                        }
-                    }
-                });
-
-                context.SaveChanges();
-
-                admin = context.Administrators.FirstOrDefault(a => a.Username == "BACenComm");
+                admin = context.Administrators.Include(a => a.Organisations)
+                    .FirstOrDefault(a => a.Username == "BACenComm");
                 organisation = admin.Organisations.FirstOrDefault(o => o.Name == "RPLP");
 
+                Assert.NotNull(admin);
                 Assert.NotNull(organisation);
-            }
 
-            using (var context = new RPLPDbContext(options))
-            {
                 DepotAdministrator depot = new DepotAdministrator(context);
 
                 depot.LeaveOrganisation("BACenComm", "RPLP");
