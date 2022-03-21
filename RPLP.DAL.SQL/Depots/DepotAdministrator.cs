@@ -19,6 +19,11 @@ namespace RPLP.DAL.SQL.Depots
             this._context = new RPLPDbContext();
         }
 
+        public DepotAdministrator(RPLPDbContext p_context)
+        {
+            this._context = p_context;
+        }
+
         public void DeleteAdministrator(string p_adminUsername)
         {
             Administrator_SQLDTO adminResult = this._context.Administrators.FirstOrDefault(admin => admin.Username == p_adminUsername);
