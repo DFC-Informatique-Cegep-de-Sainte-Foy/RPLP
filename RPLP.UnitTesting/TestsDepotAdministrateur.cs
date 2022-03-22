@@ -9,24 +9,18 @@ using Xunit;
 
 namespace RPLP.UnitTesting
 {
+    [Collection("DatabaseTests")]
     public class TestsDepotAdministrateur
     {
         private static readonly DbContextOptions<RPLPDbContext> options = new DbContextOptionsBuilder<RPLPDbContext>()
                 .UseSqlServer("Server=localhost,1434; Database=RPLP; User Id=sa; password=Cad3pend86!")
                 .Options;
 
-        private void DeleteAdministratorTableContent()
+        private void DeleteAdministratorAndRelatedTablesContent()
         {
             using (var context = new RPLPDbContext(options))
             {
                 context.Database.ExecuteSqlRaw("DELETE from Administrators;");
-            }
-        }
-
-        private void DeleteOrganisationTableContent()
-        {
-            using (var context = new RPLPDbContext(options))
-            {
                 context.Database.ExecuteSqlRaw("DELETE from Organisations;");
             }
         }
@@ -66,7 +60,7 @@ namespace RPLP.UnitTesting
             int expected = 3;
             int result = 0;
 
-            this.DeleteAdministratorTableContent();
+            this.DeleteAdministratorAndRelatedTablesContent();
 
             using (var context = new RPLPDbContext(options))
             {
@@ -109,13 +103,13 @@ namespace RPLP.UnitTesting
                 Assert.Equal(expected, result);
             }
 
-            this.DeleteAdministratorTableContent();
+            this.DeleteAdministratorAndRelatedTablesContent();
         }
 
         [Fact]
         public void Test_GetByName()
         {
-            this.DeleteAdministratorTableContent();
+            this.DeleteAdministratorAndRelatedTablesContent();
 
             string expectedFirstname = "Melissa";
             string result = "";
@@ -131,13 +125,13 @@ namespace RPLP.UnitTesting
                 Assert.Equal(expectedFirstname, result);
             }
 
-            this.DeleteAdministratorTableContent();
+            this.DeleteAdministratorAndRelatedTablesContent();
         }
 
         [Fact]
         public void Test_GetById()
         {
-            this.DeleteAdministratorTableContent();
+            this.DeleteAdministratorAndRelatedTablesContent();
 
             int id = 0;
             string expectedUsername = "BACenComm";
@@ -163,13 +157,13 @@ namespace RPLP.UnitTesting
                 Assert.Equal(expectedUsername, result);
             }
 
-            this.DeleteAdministratorTableContent();
+            this.DeleteAdministratorAndRelatedTablesContent();
         }
 
         [Fact]
         public void Test_UpsertAdministrator_Inserts()
         {
-            this.DeleteAdministratorTableContent();
+            this.DeleteAdministratorAndRelatedTablesContent();
 
             bool expected = true;
             bool result = false;
@@ -195,13 +189,13 @@ namespace RPLP.UnitTesting
                 Assert.Equal(expected, result);
             }
 
-            this.DeleteAdministratorTableContent();
+            this.DeleteAdministratorAndRelatedTablesContent();
         }
 
         [Fact]
         public void Test_UpsertAdministrator_Updates()
         {
-            this.DeleteAdministratorTableContent();
+            this.DeleteAdministratorAndRelatedTablesContent();
 
             bool expected = true;
             bool result = false;
@@ -233,7 +227,7 @@ namespace RPLP.UnitTesting
                 Assert.Equal(expected, result);
             }
 
-            this.DeleteAdministratorTableContent();
+            this.DeleteAdministratorAndRelatedTablesContent();
         }
 
         [Fact]
@@ -241,8 +235,7 @@ namespace RPLP.UnitTesting
         public void Test_GetAdminOrganisations()
         {
 
-            this.DeleteAdministratorTableContent();
-            this.DeleteOrganisationTableContent();
+            this.DeleteAdministratorAndRelatedTablesContent();
             int expected = 2;
             int result = 0;
 
@@ -283,15 +276,13 @@ namespace RPLP.UnitTesting
                 Assert.NotNull(organisations.FirstOrDefault(o => o.Name == "Test"));
             }
 
-            this.DeleteAdministratorTableContent();
-            this.DeleteOrganisationTableContent();
+            this.DeleteAdministratorAndRelatedTablesContent();
         }
 
         [Fact]
         public void Test_JoinOrganisation()
         {
-            this.DeleteAdministratorTableContent();
-            this.DeleteOrganisationTableContent();
+            this.DeleteAdministratorAndRelatedTablesContent();
             string expected = "RPLP";
             string result = "";
 
@@ -324,15 +315,13 @@ namespace RPLP.UnitTesting
             }
 
             Assert.Equal(expected, result);
-            this.DeleteOrganisationTableContent();
-            this.DeleteAdministratorTableContent();
+            this.DeleteAdministratorAndRelatedTablesContent();
         }
 
         [Fact]
         public void Test_LeaveOrganisation()
         {
-            this.DeleteAdministratorTableContent();
-            this.DeleteOrganisationTableContent();
+            this.DeleteAdministratorAndRelatedTablesContent();
 
             Administrator_SQLDTO? admin = null;
             Organisation_SQLDTO? organisation = null;
@@ -374,8 +363,7 @@ namespace RPLP.UnitTesting
                 Assert.Null(organisation);
             }
 
-            this.DeleteAdministratorTableContent();
-            this.DeleteOrganisationTableContent();
+            this.DeleteAdministratorAndRelatedTablesContent();
         }
     }
 }

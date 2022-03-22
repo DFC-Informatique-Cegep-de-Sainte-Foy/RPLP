@@ -9,17 +9,19 @@ using Xunit;
 
 namespace RPLP.UnitTesting
 {
+    [Collection("DatabaseTests")]
     public class TestsDepotAssignment
     {
         private static readonly DbContextOptions<RPLPDbContext> options = new DbContextOptionsBuilder<RPLPDbContext>()
                 .UseSqlServer("Server=localhost,1434; Database=RPLP; User Id=sa; password=Cad3pend86!")
                 .Options;
 
-        private void DeleteAssignmentTableContent()
+        private void DeleteAssignmentAndRelatedTablesContent()
         {
             using (var context = new RPLPDbContext(options))
             {
                 context.Database.ExecuteSqlRaw("DELETE from Assignments;");
+                context.Database.ExecuteSqlRaw("DELETE from Classrooms;");
             }
         }
 
@@ -57,7 +59,7 @@ namespace RPLP.UnitTesting
         [Fact]
         public void Test_GetAssignments()
         {
-            this.DeleteAssignmentTableContent();
+            this.DeleteAssignmentAndRelatedTablesContent();
 
             List<Assignment_SQLDTO> assignments = new List<Assignment_SQLDTO>()
             {
@@ -93,13 +95,13 @@ namespace RPLP.UnitTesting
                 Assert.Equal(2, fetchedAssignments.Count);
             }
 
-            this.DeleteAssignmentTableContent();
+            this.DeleteAssignmentAndRelatedTablesContent();
         }
 
         [Fact]
         public void Test_GetAssignmentById()
         {
-            this.DeleteAssignmentTableContent();
+            this.DeleteAssignmentAndRelatedTablesContent();
             this.InsertReviewAssignment();
 
             using (var context = new RPLPDbContext(options))
@@ -113,13 +115,13 @@ namespace RPLP.UnitTesting
                 Assert.Equal("Review", assignment.Name);
             }
 
-            this.DeleteAssignmentTableContent();
+            this.DeleteAssignmentAndRelatedTablesContent();
         }
 
         [Fact]
         public void Test_GetAssignmentByName()
         {
-            this.DeleteAssignmentTableContent();
+            this.DeleteAssignmentAndRelatedTablesContent();
             this.InsertReviewAssignment();
 
             using (var context = new RPLPDbContext(options))
@@ -130,13 +132,13 @@ namespace RPLP.UnitTesting
                 Assert.NotNull(assignment);
             }
 
-            this.DeleteAssignmentTableContent();
+            this.DeleteAssignmentAndRelatedTablesContent();
         }
 
         [Fact]
         public void Test_UpsertAssignment_Inserts()
         {
-            this.DeleteAssignmentTableContent();
+            this.DeleteAssignmentAndRelatedTablesContent();
 
             using (var context = new RPLPDbContext(options))
             {
@@ -161,13 +163,13 @@ namespace RPLP.UnitTesting
                 Assert.NotNull(assignment);
             }
 
-            this.DeleteAssignmentTableContent();
+            this.DeleteAssignmentAndRelatedTablesContent();
         }
 
         [Fact]
         public void Test_UpsertAssignment_Updates()
         {
-            this.DeleteAssignmentTableContent();
+            this.DeleteAssignmentAndRelatedTablesContent();
             this.InsertReviewAssignment();
 
             using (var context = new RPLPDbContext(options))
@@ -191,13 +193,13 @@ namespace RPLP.UnitTesting
                 Assert.NotNull(modifiedAssignment);
             }
 
-            this.DeleteAssignmentTableContent();
+            this.DeleteAssignmentAndRelatedTablesContent();
         }
 
         [Fact]
         public void Test_DeleteAssignment()
         {
-            this.DeleteAssignmentTableContent();
+            this.DeleteAssignmentAndRelatedTablesContent();
             this.InsertReviewAssignment();
 
             using (var context = new RPLPDbContext(options))
@@ -214,7 +216,7 @@ namespace RPLP.UnitTesting
                 Assert.Null(context.Assignments.FirstOrDefault(a => a.Name == "Review" && a.Active == true));
             }
 
-            this.DeleteAssignmentTableContent();
+            this.DeleteAssignmentAndRelatedTablesContent();
         }
     }
 }

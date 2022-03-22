@@ -19,6 +19,11 @@ namespace RPLP.DAL.SQL.Depots
             this._context = new RPLPDbContext();
         }
 
+        public DepotClassroom(RPLPDbContext p_context)
+        {
+            this._context = p_context;
+        }
+
         public List<Classroom> GetClassrooms()
         {
             List<Classroom_SQLDTO> classesResult = this._context.Classrooms.Where(classroom => classroom.Active)
