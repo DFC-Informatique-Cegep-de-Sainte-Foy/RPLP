@@ -17,14 +17,14 @@ namespace RPLP.DAL.SQL.Depots
         public DepotAdministrator()
         {
             this._context = new RPLPDbContext();
-        }                
+        }
 
         public DepotAdministrator(RPLPDbContext p_context)
         {
             this._context = p_context;
         }
 
-        public void DeleteAdministrator(string p_adminUsername)
+        public List<Administrator> GetAdministrators()
         {
             List<Administrator_SQLDTO> adminResult = this._context.Administrators.Where(admin => admin.Active)
                                                                                  .Include(admin => admin.Organisations).ToList();

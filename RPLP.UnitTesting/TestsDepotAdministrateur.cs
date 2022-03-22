@@ -125,7 +125,7 @@ namespace RPLP.UnitTesting
             using (var context = new RPLPDbContext(options))
             {
                 DepotAdministrator depot = new DepotAdministrator(context);
-                Administrator administrator = depot.GetAdministratorByName("BACenComm");
+                Administrator administrator = depot.GetAdministratorByUsername("BACenComm");
                 result = administrator.FirstName;
 
                 Assert.Equal(expectedFirstname, result);
@@ -217,7 +217,7 @@ namespace RPLP.UnitTesting
                     .Result;
 
                 admin.Username = "LaMachine";
-                depot.UpsertAdministrator(admin.ToEntityWitouthOrganisations());
+                depot.UpsertAdministrator(admin.ToEntityWithoutList());
 
                 Administrator_SQLDTO? adminModifie = context.Administrators
                     .SingleOrDefaultAsync(a => a.Username == "LaMachine")
@@ -317,7 +317,7 @@ namespace RPLP.UnitTesting
                 Administrator_SQLDTO? admin = context.Administrators.FirstOrDefault(a => a.Username == "BACenComm");
 
                 Assert.Equal(1, admin.Organisations.Count);
-                Organisation? orgAdmin = admin.Organisations.FirstOrDefault().ToEntityWithoutAdministrators();
+                Organisation? orgAdmin = admin.Organisations.FirstOrDefault().ToEntityWithoutList();
 
 
                 result = orgAdmin.Name;
