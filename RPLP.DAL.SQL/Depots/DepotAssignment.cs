@@ -18,6 +18,11 @@ namespace RPLP.DAL.SQL.Depots
             this._context = new RPLPDbContext();
         }
 
+        public DepotAssignment(RPLPDbContext p_context)
+        {
+            this._context = p_context;
+        }
+
         public List<Assignment> GetAssignments()
         {
             return this._context.Assignments.Select(assignment => assignment.ToEntity()).ToList();
