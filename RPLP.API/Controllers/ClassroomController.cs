@@ -28,43 +28,29 @@ namespace RPLP.API.Controllers
             return Ok(this._depot.GetClassroomById(id));
         }
 
-        [HttpPost]
-        public ActionResult UpsertClassroom([FromBody] Classroom p_classroom)
-        {
-            if (p_classroom == null || !ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-
-            this._depot.UpsertClassroom(p_classroom);
-
-            return Created(nameof(this.UpsertClassroom), p_classroom);
-        }
-
         [HttpGet("Name/{classroomName}")]
-        public ActionResult<Administrator> GetClassroomByName(string classroomName)
+        public ActionResult<Classroom> GetClassroomByName(string classroomName)
         {
             return Ok(this._depot.GetClassroomByName(classroomName));
         }
-
+              
         [HttpGet("Name/{classroomName}/Teachers")]
-        public ActionResult<List<Organisation>> GetTeachers(string classroomName)
+        public ActionResult<List<Teacher>> GetTeachers(string classroomName)
         {
             return Ok(this._depot.GetTeachersByClassroomName(classroomName));
         }
 
         [HttpGet("Name/{classroomName}/Students")]
-        public ActionResult<List<Organisation>> GetStudents(string classroomName)
+        public ActionResult<List<Student>> GetStudents(string classroomName)
         {
             return Ok(this._depot.GetStudentsByClassroomName(classroomName));
         }
 
         [HttpGet("Name/{classroomName}/Assignments")]
-        public ActionResult<List<Organisation>> GetAssignments(string classroomName)
+        public ActionResult<List<Assignment>> GetAssignments(string classroomName)
         {
             return Ok(this._depot.GetAssignmentsByClassroomName(classroomName));
         }
-
 
         [HttpPost("Name/{classroomName}/Teachers/Add/{teacherUsername}")]
         public ActionResult AddTeacherToClassroom(string classroomName, string teacherUsername)
@@ -89,7 +75,7 @@ namespace RPLP.API.Controllers
 
             this._depot.AddStudentToClassroom(classroomName, studentUsername);
 
-            return Created(nameof(this.AddTeacherToClassroom), classroomName);
+            return Created(nameof(this.AddStudentToClassroom), classroomName);
         }
 
         [HttpPost("Name/{classroomName}/Assignments/Add/{assignmentName}")]
@@ -102,7 +88,7 @@ namespace RPLP.API.Controllers
 
             this._depot.AddAssignmentToClassroom(classroomName, assignmentName);
 
-            return Created(nameof(this.AddTeacherToClassroom), classroomName);
+            return Created(nameof(this.AddAssignmentToClassroom), classroomName);
         }
 
         [HttpPost("Name/{classroomName}/Teachers/Remove/{teacherUsername}")]
@@ -131,7 +117,6 @@ namespace RPLP.API.Controllers
             return  NoContent(); 
         }
 
-
         [HttpPost("Name/{classroomName}/Assignments/Remove/{assignmentName}")]
         public ActionResult RemoveAssignmentFromClassroom(string classroomName, string assignmentName)
         {
@@ -143,6 +128,19 @@ namespace RPLP.API.Controllers
             this._depot.RemoveAssignmentFromClassroom(classroomName, assignmentName);
 
             return  NoContent(); 
+        }
+
+        [HttpPost]
+        public ActionResult UpsertClassroom([FromBody] Classroom p_classroom)
+        {
+            if (p_classroom == null || !ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            this._depot.UpsertClassroom(p_classroom);
+
+            return Created(nameof(this.UpsertClassroom), p_classroom);
         }
 
         [HttpDelete("Name/{classroomName}")]

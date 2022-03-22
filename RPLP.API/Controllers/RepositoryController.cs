@@ -15,12 +15,6 @@ namespace RPLP.API.Controllers
             this._depot = p_depot;
         }
 
-        [HttpGet]
-        public ActionResult<IEnumerable<Repository>> Get()
-        {
-            return Ok(this._depot.GetRepositories());
-        }
-
         [HttpGet("Id/{id}")]
         public ActionResult<Repository> GetRepositoryById(int id)
         {
@@ -31,12 +25,6 @@ namespace RPLP.API.Controllers
         public ActionResult<Repository> GetRepositoryByName(string repositoryName)
         {
             return Ok(this._depot.GetRepositoryByName(repositoryName));
-        }
-
-        [HttpGet("Classroom/Name/{classroomName}")]
-        public ActionResult<IEnumerable<Repository>> GetRepositoryByClassroomName(string classroomName)
-        {
-            return Ok(this._depot.GetRepositoryByClassroomName(classroomName));
         }
 
         [HttpPost]
@@ -50,6 +38,13 @@ namespace RPLP.API.Controllers
             this._depot.UpsertRepository(p_repository);
 
             return Created(nameof(this.Post), p_repository);
+        }
+        
+        [HttpDelete("Name/{repositoryName}")]
+        public ActionResult DeleteRepository(string repositoryName)
+        {
+            this._depot.DeleteRepository(repositoryName);
+            return NoContent();
         }
     }
 }

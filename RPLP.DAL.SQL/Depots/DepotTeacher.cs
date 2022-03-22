@@ -17,19 +17,22 @@ namespace RPLP.DAL.SQL.Depots
         public DepotTeacher()
         {
             this._context = new RPLPDbContext();
-        }
+        }                
 
-        public void DeleteTeacher(string p_teacherUsername)
+        public List<Teacher> GetTeachers()
         {
-            Teacher_SQLDTO teacherResult = this._context.Teachers.FirstOrDefault(teacher => teacher.Username == p_teacherUsername);
+            List<Teacher_SQLDTO> teachersResult = this._context.Teachers.Where(teacher => teacher.Active)
+                                                                        .Include(admin => admin.Classes).ToList();
 
-            if (teacherResult != null)
+            List<Teacher> teachers = teachersResult.Select(teacher => teacher.ToEntityWithoutList()).ToList();
+
+            for (int i = 0; i < teachersResult.Count; i++)
             {
-                teacherResult.Active = false;
-
-                this._context.Update(teacherResult);
-                this._context.SaveChanges();
+                if (teachersResult[i].Id == teachers[i].Id && teachersResult[i].Classes.Count >= 1)
+                    teachers[i].Classes = teachersResult[i].Classes.Select(classroom => classroom.ToEntityWithoutList()).ToList();
             }
+
+            return teachers;
         }
 
         public Teacher GetTeacherById(int p_id)
@@ -51,7 +54,7 @@ namespace RPLP.DAL.SQL.Depots
             return teacher;
         }
 
-        public Teacher GetTeacherByName(string p_teacherUsername)
+        public Teacher GetTeacherByUsername(string p_teacherUsername)
         {
             Teacher_SQLDTO teacherResult = this._context.Teachers.Where(teacher => teacher.Username == p_teacherUsername)
                                                                  .Include(teacher => teacher.Classes)
@@ -91,22 +94,42 @@ namespace RPLP.DAL.SQL.Depots
             return new List<Classroom>();
         }
 
-        public List<Teacher> GetTeachers()
+        public void AddClassroomToTeacher(string p_teacherUsername, string p_classroomName)
         {
-            List<Teacher_SQLDTO> teachersResult = this._context.Teachers.Where(teacher => teacher.Active)
-                                                                        .Include(admin => admin.Classes).ToList();
+            Classroom_SQLDTO classroomResult = this._context.Classrooms.Where(classroom => classroom.Name == p_classroomName).FirstOrDefault();
 
-            List<Teacher> teachers = teachersResult.Select(teacher => teacher.ToEntityWithoutList()).ToList();
-
-            for (int i = 0; i < teachersResult.Count; i++)
+            if (classroomResult != null)
             {
-                if (teachersResult[i].Id == teachers[i].Id && teachersResult[i].Classes.Count >= 1)
-                    teachers[i].Classes = teachersResult[i].Classes.Select(classroom => classroom.ToEntityWithoutList()).ToList();
-            }
+                Teacher_SQLDTO teacherResult = this._context.Teachers.Where(teacher => teacher.Username == p_teacherUsername).SingleOrDefault();
 
-            return teachers;
+                if (teacherResult != null)
+                {
+                    teacherResult.Classes.Add(classroomResult);
+
+                    this._context.Update(teacherResult);
+                    this._context.SaveChanges();
+                }
+            }
         }
 
+        public void RemoveClassroomFromTeacher(string p_teacherUsername, string p_classroomName)
+        {
+            Classroom_SQLDTO classroomResult = this._context.Classrooms.Where(classroom => classroom.Name == p_classroomName).FirstOrDefault();
+
+            if (classroomResult != null)
+            {
+                Teacher_SQLDTO teacherResult = this._context.Teachers.Where(teacher => teacher.Username == p_teacherUsername).SingleOrDefault();
+
+                if (teacherResult != null)
+                {
+                    teacherResult.Classes.Remove(classroomResult);
+
+                    this._context.Update(teacherResult);
+                    this._context.SaveChanges();
+                }
+            }
+        }
+       
         public void UpsertTeacher(Teacher p_teacher)
         {
             List<Classroom_SQLDTO> classes = new List<Classroom_SQLDTO>();
@@ -141,6 +164,19 @@ namespace RPLP.DAL.SQL.Depots
                 teacher.Active = true;
 
                 this._context.Teachers.Add(teacher);
+                this._context.SaveChanges();
+            }
+        }
+
+        public void DeleteTeacher(string p_teacherUsername)
+        {
+            Teacher_SQLDTO teacherResult = this._context.Teachers.FirstOrDefault(teacher => teacher.Username == p_teacherUsername);
+
+            if (teacherResult != null)
+            {
+                teacherResult.Active = false;
+
+                this._context.Update(teacherResult);
                 this._context.SaveChanges();
             }
         }

@@ -48,9 +48,9 @@ namespace RPLP.DAL.DTO.Sql
                     teachers.Add(new Teacher_SQLDTO(teacher));
                 }
             }
-            if (classroom.Assignment.Count >= 1)
+            if (classroom.Assignments.Count >= 1)
             {
-                foreach (Assignment assignment in classroom.Assignment)
+                foreach (Assignment assignment in classroom.Assignments)
                 {
                     assignments.Add(new Assignment_SQLDTO(assignment));
                 }

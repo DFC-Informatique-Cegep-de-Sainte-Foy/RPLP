@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace RPLP.DAL.SQL.Depots
 {
-    public class DepotAdministrator : IDepotAdminitrator
+    public class DepotAdministrator : IDepotAdministrator
     {
         private readonly RPLPDbContext _context;
 
@@ -19,17 +19,25 @@ namespace RPLP.DAL.SQL.Depots
             this._context = new RPLPDbContext();
         }
 
-        public void DeleteAdministrator(string p_adminUsername)
+        public DepotAdministrator(RPLPDbContext p_context)
         {
-            Administrator_SQLDTO adminResult = this._context.Administrators.FirstOrDefault(admin => admin.Username == p_adminUsername);
+            this._context = p_context;
+        }
 
-            if (adminResult != null)
+        public List<Administrator> GetAdministrators()
+        {
+            List<Administrator_SQLDTO> adminResult = this._context.Administrators.Where(admin => admin.Active)
+                                                                                 .Include(admin => admin.Organisations).ToList();
+
+            List<Administrator> administrators = adminResult.Select(admin => admin.ToEntityWithoutList()).ToList();
+
+            for (int i = 0; i < adminResult.Count; i++)
             {
-                adminResult.Active = false;
-
-                this._context.Update(adminResult);
-                this._context.SaveChanges();
+                if (adminResult[i].Id == administrators[i].Id && adminResult[i].Organisations.Count >= 1)
+                    administrators[i].Organisations = adminResult[i].Organisations.Select(organisation => organisation.ToEntityWithoutList()).ToList();
             }
+
+            return administrators;
         }
 
         public Administrator GetAdministratorById(int p_id)
@@ -51,7 +59,7 @@ namespace RPLP.DAL.SQL.Depots
             return administrator;
         }
 
-        public Administrator GetAdministratorByName(string p_adminUsername)
+        public Administrator GetAdministratorByUsername(string p_adminUsername)
         {
             Administrator_SQLDTO adminResult = this._context.Administrators.Where(admin => admin.Username == p_adminUsername)
                                                                       .Include(admin => admin.Organisations)
@@ -68,23 +76,7 @@ namespace RPLP.DAL.SQL.Depots
             }
 
             return administrator;
-        }
-
-        public List<Administrator> GetAdministrators()
-        {
-            List<Administrator_SQLDTO> adminResult = this._context.Administrators.Where(admin => admin.Active)
-                                                                                 .Include(admin => admin.Organisations).ToList();
-
-            List<Administrator> administrators = adminResult.Select(admin => admin.ToEntityWithoutList()).ToList();
-
-            for (int i = 0; i < adminResult.Count; i++)
-            {
-                if (adminResult[i].Id == administrators[i].Id && adminResult[i].Organisations.Count >= 1)
-                    administrators[i].Organisations = adminResult[i].Organisations.Select(organisation => organisation.ToEntityWithoutList()).ToList();
-            }
-
-            return administrators;
-        }
+        }                
 
         public List<Organisation> GetAdminOrganisations(string p_adminUsername)
         {
@@ -184,6 +176,19 @@ namespace RPLP.DAL.SQL.Depots
                 adminDTO.Active = true;
 
                 this._context.Administrators.Add(adminDTO);
+                this._context.SaveChanges();
+            }
+        }
+
+        public void DeleteAdministrator(string p_adminUsername)
+        {
+            Administrator_SQLDTO adminResult = this._context.Administrators.FirstOrDefault(admin => admin.Username == p_adminUsername);
+
+            if (adminResult != null)
+            {
+                adminResult.Active = false;
+
+                this._context.Update(adminResult);
                 this._context.SaveChanges();
             }
         }

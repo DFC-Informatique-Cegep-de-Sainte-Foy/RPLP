@@ -22,22 +22,22 @@ namespace RPLP.API.Controllers
         }
 
         [HttpGet("Id/{id}")]
-        public ActionResult<Teacher> GetById(int id)
+        public ActionResult<Teacher> GetTeacherById(int id)
         {
             return Ok(this._depot.GetTeacherById(id));
         }
 
-        [HttpGet("Username/{username}")]
-        public ActionResult<Teacher> GetByName(string username)
+        [HttpGet("Username/{teacherUsername}")]
+        public ActionResult<Teacher> GetTeacherByUsername(string teacherUsername)
         {
-            return Ok(this._depot.GetTeacherByName(username));
+            return Ok(this._depot.GetTeacherByUsername(teacherUsername));
         }
 
-        [HttpGet("Username/{username}/Classrooms")]
-        public ActionResult<List<Organisation>> GetClassrooms(string username)
+        [HttpGet("Username/{teacherUsername}/Classrooms")]
+        public ActionResult<List<Classroom>> GetTeacherClasses(string teacherUsername)
         {
-            return Ok(this._depot.GetTeacherClasses(username));
-        }
+            return Ok(this._depot.GetTeacherClasses(teacherUsername));
+        }       
 
         [HttpPost]
         public ActionResult UpsertTeacher([FromBody] Teacher p_teacher)
@@ -52,10 +52,10 @@ namespace RPLP.API.Controllers
             return Created(nameof(this.UpsertTeacher), p_teacher);
         }
 
-        [HttpDelete("Username/{username}")]
-        public ActionResult DeleteTeacher(string username)
+        [HttpDelete("Username/{teacherUsername}")]
+        public ActionResult DeleteTeacher(string teacherUsername)
         {
-            this._depot.DeleteTeacher(username);
+            this._depot.DeleteTeacher(teacherUsername);
             return NoContent();
         }
     }
