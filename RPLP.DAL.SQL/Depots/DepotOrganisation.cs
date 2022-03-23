@@ -19,6 +19,11 @@ namespace RPLP.DAL.SQL.Depots
             this._context = new RPLPDbContext();
         }
 
+        public DepotOrganisation(RPLPDbContext p_context)
+        {
+            this._context = p_context;
+        }
+
         public List<Organisation> GetOrganisations()
         {
             List<Organisation_SQLDTO> organisationResult = this._context.Organisations.Where(organisation => organisation.Active)
