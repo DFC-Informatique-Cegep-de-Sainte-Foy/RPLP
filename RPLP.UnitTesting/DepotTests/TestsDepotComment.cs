@@ -38,6 +38,11 @@ namespace RPLP.UnitTesting
             Comment_SQLDTO comment = new Comment_SQLDTO()
             {
                 Active = true,
+                Diff_Hunk = "hunk",
+                In_Reply_To_Id = 1,
+                Original_Position = 2,
+                Path = "path",
+                Updated_at = System.DateTime.Now,
                 Created_at = System.DateTime.Now,
                 Body = "This is a comment",
                 RepositoryName = "RPLP",
@@ -136,6 +141,20 @@ namespace RPLP.UnitTesting
         {
             this.DeleteCommentsTableContent();
 
+            Comment_SQLDTO commentPreInsert = new Comment_SQLDTO()
+            {
+                Active = true,
+                Diff_Hunk = "hunk",
+                In_Reply_To_Id = 1,
+                Original_Position = 2,
+                Path = "path",
+                Updated_at = System.DateTime.Now,
+                Created_at = System.DateTime.Now,
+                Body = "This is a comment",
+                RepositoryName = "RPLP",
+                WrittenBy = "ThPaquet"
+            };
+
             using (var context = new RPLPDbContext(options))
             {
                 DepotComment depot = new DepotComment(context);
@@ -143,22 +162,23 @@ namespace RPLP.UnitTesting
                 Comment_SQLDTO? comment = context.Comments.FirstOrDefault(c => c.WrittenBy == "ThPaquet");
                 Assert.Null(comment);
 
-                comment = new Comment_SQLDTO()
-                {
-                    Active = true,
-                    Created_at = System.DateTime.Now,
-                    Body = "This is a comment",
-                    RepositoryName = "RPLP",
-                    WrittenBy = "ThPaquet"
-                };
-
-                depot.UpsertComment(comment.ToEntity());
+                depot.UpsertComment(commentPreInsert.ToEntity());
             }
 
             using (var context = new RPLPDbContext(options))
             {
                 Comment_SQLDTO? comment = context.Comments.FirstOrDefault(c => c.WrittenBy == "ThPaquet");
                 Assert.NotNull(comment);
+                Assert.Equal(commentPreInsert.Diff_Hunk, comment.Diff_Hunk);
+                Assert.Equal(commentPreInsert.In_Reply_To_Id, comment.In_Reply_To_Id);
+                Assert.Equal(commentPreInsert.Original_Position, comment.Original_Position);
+                Assert.Equal(commentPreInsert.Path, comment.Path);
+                Assert.Equal(commentPreInsert.Created_at, comment.Created_at);
+                Assert.Equal(commentPreInsert.Updated_at, comment.Updated_at);
+                Assert.Equal(commentPreInsert.Body, comment.Body);
+                Assert.Equal(commentPreInsert.RepositoryName, comment.RepositoryName);
+                Assert.Equal(commentPreInsert.WrittenBy, comment.WrittenBy);
+
             }
 
             this.DeleteCommentsTableContent();
@@ -170,7 +190,7 @@ namespace RPLP.UnitTesting
             this.DeleteCommentsTableContent();
             this.InsertPremadeComment();
 
-            string newBodyContent = "This comment has seen its body change";
+            Comment_SQLDTO? commentPreUpsert = null;
 
             using (var context = new RPLPDbContext(options))
             {
@@ -179,7 +199,17 @@ namespace RPLP.UnitTesting
                 Comment_SQLDTO? comment = context.Comments.FirstOrDefault(c => c.WrittenBy == "ThPaquet");
                 Assert.NotNull(comment);
 
-                comment.Body = newBodyContent;
+                commentPreUpsert = comment;
+
+                comment.Diff_Hunk = "diff";
+                comment.In_Reply_To_Id = 2;
+                comment.Original_Position = 3;
+                comment.Path = "anotherpath";
+                comment.Updated_at = System.DateTime.Now;
+                comment.Created_at = System.DateTime.Now;
+                comment.Body = "This is a different comment";
+                comment.RepositoryName = "ProjetSynthese";
+                comment.WrittenBy = "ikeameatbol";
 
                 depot.UpsertComment(comment.ToEntity());
             }
@@ -187,8 +217,17 @@ namespace RPLP.UnitTesting
             using (var context = new RPLPDbContext(options))
             {
                 Comment_SQLDTO? comment = context.Comments.SingleOrDefault(c => c.WrittenBy == "ThPaquet");
+
                 Assert.NotNull(comment);
-                Assert.Equal(newBodyContent, comment.Body);
+                Assert.NotEqual(commentPreUpsert.Diff_Hunk, comment.Diff_Hunk);
+                Assert.NotEqual(commentPreUpsert.In_Reply_To_Id, comment.In_Reply_To_Id);
+                Assert.NotEqual(commentPreUpsert.Original_Position, comment.Original_Position);
+                Assert.NotEqual(commentPreUpsert.Path, comment.Path);
+                Assert.NotEqual(commentPreUpsert.Created_at, comment.Created_at);
+                Assert.NotEqual(commentPreUpsert.Updated_at, comment.Updated_at);
+                Assert.NotEqual(commentPreUpsert.Body, comment.Body);
+                Assert.NotEqual(commentPreUpsert.RepositoryName, comment.RepositoryName);
+                Assert.NotEqual(commentPreUpsert.WrittenBy, comment.WrittenBy);
             }
 
             this.DeleteCommentsTableContent();
