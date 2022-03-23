@@ -15,14 +15,16 @@ namespace RPLP.API.Controllers
 
         public GithubController()
         {
-            _githubAction = new GithubApiAction("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");
-            _scriptGithub = new ScriptGithubRPLP(new DepotClassroom());
+            string token = "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";
+            _githubAction = new GithubApiAction(token);
+            _scriptGithub = new ScriptGithubRPLP(new DepotClassroom(), new DepotRepository(), token);
         }
 
-        [HttpGet("/test")]
-        public ActionResult<IEnumerable<Classroom_SQLDTO>> GetClassrooms(string organisationName)
+        [HttpGet("/test/{organisationName}/{classroomName}/{assignmentName}/{numberOfReviews}")]
+        public ActionResult<IEnumerable<Classroom_SQLDTO>> GetClassrooms(string organisationName, string classroomName, string assignmentName, int numberOfReviews)
         {
-            return Ok(this._scriptGithub.ScriptAssignStudentToAssignmentReview());
+            return Ok(this._scriptGithub.ScriptAssignStudentToAssignmentReview(organisationName, classroomName, assignmentName, numberOfReviews));
+            //return Ok();
         }
 
         [HttpGet("{organisationName}")]
@@ -68,5 +70,11 @@ namespace RPLP.API.Controllers
             return Ok(this._githubAction.AssignReviewerToPullRequestGitHub(organisationName, repositoryName, pullRequest, studentUsername));
         }
 
+
+        [HttpPut("{organisationName}/{repositoryName}/Add/Collaborator/Student/{studentUsername}")]
+        public ActionResult<string> AssignStidentToPR(string organisationName, string repositoryName, string studentUsername)
+        {
+            return Ok(this._githubAction.AddStudentAsCollaboratorToPeerRepositoryGithub(organisationName, repositoryName, studentUsername));
+        }
     }
 }

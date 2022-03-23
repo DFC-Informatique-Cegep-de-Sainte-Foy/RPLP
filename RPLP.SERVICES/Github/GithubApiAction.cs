@@ -19,12 +19,14 @@ namespace RPLP.SERVICES.Github
         private string _getBranchesFromRepositoryCommitGithub = "/repos/{organisationName}/{repositoryName}/git/refs/heads";
         private string _getPullRequestsFromRepositoryGithub = "/repos/{organisationName}/{repositoryName}/pulls?";
         private string _createNewBranchInRepositoryGithub = "/repos/{organisationName}/{repositoryName}/git/refs";
-        private string _createPullRequestOnRepositoBranch = "/repos/{organisationName}/{repositoryName}/pulls";
-        private string _assignStudentToPullRequest = "/repos/{organisationName}/{repositoryName}/pulls/{branchId}/requested_reviewers?";
+        private string _createPullRequestOnRepositoBranchGithub = "/repos/{organisationName}/{repositoryName}/pulls";
+        private string _addCollaboratorToRepositoryGithub = "/repos/{organisationName}/{repositoryName}/collaborators/{studentUsername}";
+        private string _assignStudentToPullRequestGithub = "/repos/{organisationName}/{repositoryName}/pulls/{branchId}/requested_reviewers?";
 
         private const string organisationName = "{organisationName}";
         private const string repositoryName = "{repositoryName}";
         private const string branchId = "{branchId}";
+        private const string studentUsername = "{studentUsername}";
 
         public GithubApiAction(string p_token)
         {
@@ -172,7 +174,7 @@ namespace RPLP.SERVICES.Github
 
         public string CreateNewPullRequestFeedbackGitHub(string p_organisationName, string p_repositoryName, string p_BranchName, string p_title, string p_body)
         {
-            string fullPath = _createPullRequestOnRepositoBranch.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName);
+            string fullPath = _createPullRequestOnRepositoBranchGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName);
             Task<string> statusCode = NewPullRequestFeedbackGitHubApiRequest(fullPath, p_BranchName, p_title, p_body);
             statusCode.Wait();
 
@@ -188,6 +190,23 @@ namespace RPLP.SERVICES.Github
             return response.StatusCode.ToString();
         }
 
+        public string AddStudentAsCollaboratorToPeerRepositoryGithub(string p_organisationName, string p_repositoryName, string p_studentUsername)
+        {
+            string fullPath = _addCollaboratorToRepositoryGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName).Replace(studentUsername, p_studentUsername);
+            Task<string> statusCode = AddStudentAsCollaboratorToPeerRepositoryGithubApiRequest(fullPath);
+            statusCode.Wait();
+
+            return statusCode.Result;
+        }
+
+        private async Task<string> AddStudentAsCollaboratorToPeerRepositoryGithubApiRequest(string p_githubLink)
+        {
+            string permission = "{\"permission\":\"Triage\"}";
+            HttpResponseMessage response = _httpClient.PutAsync(p_githubLink, new StringContent(permission, Encoding.UTF8, "application/json")).Result;
+
+            return response.StatusCode.ToString();
+        }
+
         public string AssignReviewerToPullRequestGitHub(string p_organisationName, string p_repositoryName, string p_pullRequestName, string p_studentUsername)
         {
             List<PullRequest_JSONDTO> pullRequests = GetRepositoryPullRequestsGithub(p_organisationName, p_repositoryName);
@@ -196,7 +215,7 @@ namespace RPLP.SERVICES.Github
             {
                 int branchIdResult = pullRequests.Where(pullRequest => pullRequest.title.ToLower() == p_pullRequestName.ToLower()).Select(branch => branch.number).SingleOrDefault();
 
-                string fullPath = _assignStudentToPullRequest.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName).Replace(branchId, branchIdResult.ToString());
+                string fullPath = _assignStudentToPullRequestGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName).Replace(branchId, branchIdResult.ToString());
 
                 Task<string> statusCode = AssignReviewerToPullRequestGitHubApiRequest(fullPath, p_studentUsername);
                 statusCode.Wait();
