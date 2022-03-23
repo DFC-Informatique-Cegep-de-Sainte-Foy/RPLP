@@ -37,11 +37,6 @@ namespace RPLP.API.Controllers
             return Ok(this._githubAction.GetRepositoryInfoGithub(organisationName, repositoryName));
         }
 
-        [HttpGet("{organisationName}/{repositoryName}/Commit/Ref")]
-        public ActionResult<IEnumerable<Repository_JSONDTO>> GetRepositoryCommitRef(string organisationName, string repositoryName)
-        {
-            return Ok(this._githubAction.GetRepositoryCommitRefGithub(organisationName, repositoryName));
-        }
 
         [HttpGet("{organisationName}/{repositoryName}/Commit/")]
         public ActionResult<IEnumerable<Repository_JSONDTO>> GetRepositoryCommits(string organisationName, string repositoryName)

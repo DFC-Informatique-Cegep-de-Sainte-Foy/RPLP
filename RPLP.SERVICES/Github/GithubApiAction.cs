@@ -16,8 +16,8 @@ namespace RPLP.SERVICES.Github
         private string _getOrganisationRepositoriesGithub = "/orgs/{organisationName}/repos";
         private string _getRepositoryInfoGithub = "/repos/{organisationName}/{repositoryName}";
         private string _getRepositoryCommitsGithub = "/repos/{organisationName}/{repositoryName}/commits";
-        private string _getRefAndSHAFromRepositoryCommitGithub = "/repos/{organisationName}/{repositoryName}/git/refs/heads";
-        private string _getBranchesFromRepositoryGithub = "/repos/{organisationName}/{repositoryName}/pulls?";
+        private string _getBranchesFromRepositoryCommitGithub = "/repos/{organisationName}/{repositoryName}/git/refs/heads";
+        private string _getPullRequestsFromRepositoryGithub = "/repos/{organisationName}/{repositoryName}/pulls?";
         private string _createNewBranchInRepositoryGithub = "/repos/{organisationName}/{repositoryName}/git/refs";
         private string _createPullRequestOnRepositoBranch = "/repos/{organisationName}/{repositoryName}/pulls";
         private string _assignStudentToPullRequest = "/repos/{organisationName}/{repositoryName}/pulls/{branchId}/requested_reviewers?";
@@ -81,24 +81,24 @@ namespace RPLP.SERVICES.Github
             return repository;
         }
 
-        public List<Ref_JSONDTO> GetRepositoryCommitRefGithub(string p_organisationName, string p_repositoryName)
+        public List<Branch_JSONDTO> GetRepositoryBranchesGithub(string p_organisationName, string p_repositoryName)
         {
-            string fullPath = _getRefAndSHAFromRepositoryCommitGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName);
-            Task<List<Ref_JSONDTO>> refsJSON = RepositoryCommitRefGithubApiRequest(fullPath);
+            string fullPath = _getBranchesFromRepositoryCommitGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName);
+            Task<List<Branch_JSONDTO>> refsJSON = RepositoryBranchesGithubApiRequest(fullPath);
             refsJSON.Wait();
 
             return refsJSON.Result;
         }
 
-        private static async Task<List<Ref_JSONDTO>> RepositoryCommitRefGithubApiRequest(string p_githubLink)
+        private static async Task<List<Branch_JSONDTO>> RepositoryBranchesGithubApiRequest(string p_githubLink)
         {
-            List<Ref_JSONDTO> refs = new List<Ref_JSONDTO>();
+            List<Branch_JSONDTO> refs = new List<Branch_JSONDTO>();
             HttpResponseMessage response = await _httpClient.GetAsync(p_githubLink);
 
             if (response.IsSuccessStatusCode)
             {
                 string JSONContent = await response.Content.ReadAsStringAsync();
-                refs = JsonConvert.DeserializeObject<List<Ref_JSONDTO>>(JSONContent);
+                refs = JsonConvert.DeserializeObject<List<Branch_JSONDTO>>(JSONContent);
             }
 
             return refs;
@@ -127,24 +127,24 @@ namespace RPLP.SERVICES.Github
             return commits;
         }
 
-        public List<Branch_JSONDTO> GetRepositoryBranchesGithub(string p_organisationName, string p_repositoryName)
+        public List<PullRequest_JSONDTO> GetRepositoryPullRequestsGithub(string p_organisationName, string p_repositoryName)
         {
-            string fullPath = _getBranchesFromRepositoryGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName);
-            Task<List<Branch_JSONDTO>> branches = RepositoryBranchesGithubApiRequest(fullPath);
-            branches.Wait();
+            string fullPath = _getPullRequestsFromRepositoryGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName);
+            Task<List<PullRequest_JSONDTO>> pullRequests = RepositoryPullRequestsGithubApiRequest(fullPath);
+            pullRequests.Wait();
 
-            return branches.Result;
+            return pullRequests.Result;
         }
 
-        private static async Task<List<Branch_JSONDTO>> RepositoryBranchesGithubApiRequest(string p_githubLink)
+        private static async Task<List<PullRequest_JSONDTO>> RepositoryPullRequestsGithubApiRequest(string p_githubLink)
         {
-            List<Branch_JSONDTO> branches = new List<Branch_JSONDTO>();
+            List<PullRequest_JSONDTO> branches = new List<PullRequest_JSONDTO>();
             HttpResponseMessage response = await _httpClient.GetAsync(p_githubLink);
 
             if (response.IsSuccessStatusCode)
             {
                 string JSONContent = await response.Content.ReadAsStringAsync();
-                branches = JsonConvert.DeserializeObject<List<Branch_JSONDTO>>(JSONContent);
+                branches = JsonConvert.DeserializeObject<List<PullRequest_JSONDTO>>(JSONContent);
             }
 
             return branches;
@@ -181,20 +181,20 @@ namespace RPLP.SERVICES.Github
 
         private async Task<string> NewPullRequestFeedbackGitHubApiRequest(string p_githubLink, string p_BranchName, string p_title, string p_body)
         {
-            PullRequest_JSONDTO pr = new PullRequest_JSONDTO { fromBranch = "main", targetBranch = p_BranchName, title = p_title, body = p_body };
-            string pullRequest = JsonConvert.SerializeObject(pr);
+            PullRequest_JSONRequest pullRequest_request = new PullRequest_JSONRequest { fromBranch = "main", targetBranch = p_BranchName, title = p_title, body = p_body };
+            string pullRequest = JsonConvert.SerializeObject(pullRequest_request);
             HttpResponseMessage response = _httpClient.PostAsync(p_githubLink, new StringContent(pullRequest, Encoding.UTF8, "application/json")).Result;
 
             return response.StatusCode.ToString();
         }
 
-        public string AssignReviewerToPullRequestGitHub(string p_organisationName, string p_repositoryName, string p_BranchName, string p_studentUsername)
+        public string AssignReviewerToPullRequestGitHub(string p_organisationName, string p_repositoryName, string p_pullRequestName, string p_studentUsername)
         {
-            List<Branch_JSONDTO> branches = GetRepositoryBranchesGithub(p_organisationName, p_repositoryName);
+            List<PullRequest_JSONDTO> pullRequests = GetRepositoryPullRequestsGithub(p_organisationName, p_repositoryName);
 
-            if (branches.Count >= 1)
+            if (pullRequests.Count >= 1)
             {
-                int branchIdResult = branches.Where(branch => branch.title.ToLower() == p_BranchName.ToLower()).Select(branch => branch.number).SingleOrDefault();
+                int branchIdResult = pullRequests.Where(pullRequest => pullRequest.title.ToLower() == p_pullRequestName.ToLower()).Select(branch => branch.number).SingleOrDefault();
 
                 string fullPath = _assignStudentToPullRequest.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName).Replace(branchId, branchIdResult.ToString());
 
