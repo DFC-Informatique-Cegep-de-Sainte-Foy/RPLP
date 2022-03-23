@@ -16,7 +16,12 @@ namespace RPLP.DAL.SQL.Depots
 
         public DepotClassroom()
         {
-            this._context = new RPLPDbContext();
+            this._context = new RPLPDbContext(new DbContextOptionsBuilder<RPLPDbContext>().UseSqlServer("Server=rplp.db; Database=RPLP; User Id=sa; password=Cad3pend86!").Options);
+        }
+
+        public DepotClassroom(RPLPDbContext context)
+        {
+            this._context = context;
         }
 
         public List<Classroom> GetClassrooms()
@@ -27,7 +32,7 @@ namespace RPLP.DAL.SQL.Depots
                                                                        .Include(classroom => classroom.Assignments)
                                                                        .ToList();
             if (classesResult.Count <= 0)
-             
+
                 return new List<Classroom>();
             else
             {
@@ -59,8 +64,8 @@ namespace RPLP.DAL.SQL.Depots
 
                 return classes;
             }
-        }                  
-        
+        }
+
         public Classroom GetClassroomById(int p_id)
         {
             Classroom_SQLDTO classroomResult = this._context.Classrooms.Where(classroom => classroom.Id == p_id)
@@ -137,7 +142,7 @@ namespace RPLP.DAL.SQL.Depots
                 return classroomResult.Assignments.Select(assignment => assignment.ToEntity()).ToList();
 
             return new List<Assignment>();
-        }               
+        }
 
         public List<Student> GetStudentsByClassroomName(string p_classroomName)
         {

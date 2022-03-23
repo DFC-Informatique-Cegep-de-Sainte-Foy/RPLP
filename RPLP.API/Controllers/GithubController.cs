@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RPLP.DAL.DTO.Json;
+using RPLP.DAL.DTO.Sql;
+using RPLP.DAL.SQL.Depots;
 using RPLP.SERVICES.Github;
 
 namespace RPLP.API.Controllers
@@ -9,10 +11,18 @@ namespace RPLP.API.Controllers
     public class GithubController : ControllerBase
     {
         private GithubApiAction _githubAction;
+        private ScriptGithubRPLP _scriptGithub;
 
         public GithubController()
         {
             _githubAction = new GithubApiAction("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");
+            _scriptGithub = new ScriptGithubRPLP(new DepotClassroom());
+        }
+
+        [HttpGet("/test")]
+        public ActionResult<IEnumerable<Classroom_SQLDTO>> GetClassrooms(string organisationName)
+        {
+            return Ok(this._scriptGithub.ScriptAssignStudentToAssignmentReview());
         }
 
         [HttpGet("{organisationName}")]
