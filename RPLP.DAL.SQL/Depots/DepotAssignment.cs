@@ -18,15 +18,22 @@ namespace RPLP.DAL.SQL.Depots
             this._context = new RPLPDbContext();
         }
 
+        public DepotAssignment(RPLPDbContext p_context)
+        {
+            this._context = p_context;
+        }
+
         public List<Assignment> GetAssignments()
         {
-            return this._context.Assignments.Select(assignment => assignment.ToEntity()).ToList();
+            return this._context.Assignments.Where(assignment => assignment.Active)
+                                            .Select(assignment => assignment.ToEntity()).ToList();
         }
-                
+
         public Assignment GetAssignmentById(int p_id)
         {
-            Assignment assignment = this._context.Assignments.Where(assignment => assignment.Id == p_id).Select(assignment => assignment.ToEntity()).FirstOrDefault();
-
+            Assignment assignment = this._context.Assignments.Where(assignment => assignment.Active)
+                                                             .Select(assignment => assignment.ToEntity())
+                                                             .FirstOrDefault(assignment => assignment.Id == p_id);
             if (assignment == null)
                 return new Assignment();
 
@@ -35,18 +42,19 @@ namespace RPLP.DAL.SQL.Depots
 
         public Assignment GetAssignmentByName(string p_assignmentName)
         {
-            Assignment assignment = this._context.Assignments.Where(assignment => assignment.Name == p_assignmentName).Select(assignment => assignment.ToEntity()).FirstOrDefault();
-
+            Assignment assignment = this._context.Assignments.Where(assignment => assignment.Active)
+                                                             .Select(assignment => assignment.ToEntity())
+                                                             .FirstOrDefault(assignment => assignment.Name == p_assignmentName);
             if (assignment == null)
                 return new Assignment();
 
             return assignment;
         }
-               
+
         public void UpsertAssignment(Assignment p_assignment)
         {
-            Assignment_SQLDTO assignmentResult = this._context.Assignments.Where(assignment => assignment.Id == p_assignment.Id).FirstOrDefault();
-
+            Assignment_SQLDTO assignmentResult = this._context.Assignments.Where(assignment => assignment.Active)
+                                                                          .FirstOrDefault(assignment => assignment.Id == p_assignment.Id);
             if (assignmentResult != null)
             {
                 assignmentResult.Name = p_assignment.Name;
@@ -75,8 +83,8 @@ namespace RPLP.DAL.SQL.Depots
 
         public void DeleteAssignment(string p_assignmentName)
         {
-            Assignment_SQLDTO assignmentResult = this._context.Assignments.FirstOrDefault(assignment => assignment.Name == p_assignmentName);
-
+            Assignment_SQLDTO assignmentResult = this._context.Assignments.Where(assignment => assignment.Active)
+                                                                          .FirstOrDefault(assignment => assignment.Name == p_assignmentName);
             if (assignmentResult != null)
             {
                 assignmentResult.Active = false;

@@ -21,24 +21,44 @@ namespace RPLP.DAL.SQL.Depots
 
         public List<Organisation> GetOrganisations()
         {
-            return this._context.Organisations.Select(organisation => organisation.ToEntity()).ToList();
+            List<Organisation_SQLDTO> organisationResult = this._context.Organisations.Where(organisation => organisation.Active)
+                                                                                      .Include(organisation => organisation.Administrators.Where(admin => admin.Active)).ToList();
+
+            List<Organisation> organisations = organisationResult.Select(admin => admin.ToEntityWithoutList()).ToList();
+
+            for (int i = 0; i < organisationResult.Count; i++)
+            {
+                if (organisationResult[i].Id == organisations[i].Id && organisationResult[i].Administrators.Count >= 1)
+                    organisations[i].Administrators = organisationResult[i].Administrators.Select(organisation => organisation.ToEntityWithoutList()).ToList();
+            }
+
+            return organisations;
         }
-               
+
         public Organisation GetOrganisationById(int p_id)
         {
-            Organisation organisation = this._context.Organisations.Where(organisation => organisation.Id == p_id).Select(organisation => organisation.ToEntity()).FirstOrDefault();
-
-            if (organisation == null)
+            Organisation_SQLDTO organisationResult = this._context.Organisations.Where(organisation => organisation.Active)
+                                                                           .Include(organisation => organisation.Administrators.Where(admin => admin.Active))
+                                                                           .FirstOrDefault(organisation => organisation.Id == p_id);
+            if (organisationResult == null)
                 return new Organisation();
+
+            Organisation organisation = organisationResult.ToEntityWithoutList();
+
+            if (organisationResult.Administrators.Count >= 1)
+            {
+                List<Administrator> administrators = organisationResult.Administrators.Select(admin => admin.ToEntityWithoutList()).ToList();
+                organisation.Administrators = administrators;
+            }
 
             return organisation;
         }
 
         public Organisation GetOrganisationByName(string p_name)
         {
-            Organisation_SQLDTO organisationResult = this._context.Organisations.Where(organisation => organisation.Name == p_name)
-                                                                       .Include(organisation => organisation.Administrators)
-                                                                       .FirstOrDefault();
+            Organisation_SQLDTO organisationResult = this._context.Organisations.Where(organisation => organisation.Active)
+                                                                                .Include(organisation => organisation.Administrators.Where(admin => admin.Active))
+                                                                                .FirstOrDefault(organisation => organisation.Name == p_name);
             if (organisationResult == null)
                 return new Organisation();
 
@@ -49,26 +69,26 @@ namespace RPLP.DAL.SQL.Depots
                 List<Administrator> administrators = organisationResult.Administrators.Select(administrator => administrator.ToEntityWithoutList()).ToList();
                 organisation.Administrators = administrators;
             }
-           
+
             return organisation;
         }
 
         public List<Administrator> GetAdministratorsByOrganisation(string p_organisationName)
         {
-            Organisation_SQLDTO organisationResult = this._context.Organisations.Where(organisation => organisation.Name == p_organisationName)
-                                                                       .Include(organisation => organisation.Administrators)
-                                                                       .FirstOrDefault();
+            Organisation_SQLDTO organisationResult = this._context.Organisations.Where(organisation => organisation.Active)
+                                                                                .Include(organisation => organisation.Administrators)
+                                                                                .FirstOrDefault(organisation => organisation.Name == p_organisationName);
 
             if (organisationResult != null && organisationResult.Administrators.Count >= 1)
                 return organisationResult.Administrators.Select(administrator => administrator.ToEntity()).ToList();
 
             return new List<Administrator>();
-        }         
-        
+        }
+
         public void AddAdministratorToOrganisation(string p_organisationName, string p_adminUsername)
         {
-            Administrator_SQLDTO adminResult = this._context.Administrators.Where(admin => admin.Username == p_adminUsername).FirstOrDefault();
-
+            Administrator_SQLDTO adminResult = this._context.Administrators.Where(admin => admin.Active)
+                                                                           .FirstOrDefault(admin => admin.Username == p_adminUsername);
             if (adminResult != null)
             {
                 Organisation_SQLDTO organisationResult = this._context.Organisations.Where(organisation => organisation.Name == p_organisationName).SingleOrDefault();
@@ -81,15 +101,15 @@ namespace RPLP.DAL.SQL.Depots
                     this._context.SaveChanges();
                 }
             }
-        }       
-        
+        }
+
         public void RemoveAdministratorFromOrganisation(string p_organisationName, string p_adminUsername)
         {
-            Administrator_SQLDTO adminResult = this._context.Administrators.Where(admin => admin.Username == p_adminUsername).FirstOrDefault();
-                        
+            Administrator_SQLDTO adminResult = this._context.Administrators.Where(admin => admin.Active)
+                                                                           .FirstOrDefault(admin => admin.Username == p_adminUsername);
             if (adminResult != null)
             {
-                Organisation_SQLDTO organisationResult = this._context.Organisations.Where(organisation => organisation.Name == p_organisationName).SingleOrDefault();
+                Organisation_SQLDTO organisationResult = this._context.Organisations.SingleOrDefault(organisation => organisation.Name == p_organisationName);
 
                 if (organisationResult != null)
                 {
@@ -100,7 +120,7 @@ namespace RPLP.DAL.SQL.Depots
                 }
             }
         }
-       
+
         public void UpsertOrganisation(Organisation p_organisation)
         {
             List<Administrator_SQLDTO> administrators = new List<Administrator_SQLDTO>();
@@ -113,8 +133,8 @@ namespace RPLP.DAL.SQL.Depots
                 }
             }
 
-            Organisation_SQLDTO organisationResult = this._context.Organisations.Where(organisation => organisation.Id == p_organisation.Id).FirstOrDefault();
-
+            Organisation_SQLDTO organisationResult = this._context.Organisations.Where(organisation => organisation.Active)
+                                                                                .FirstOrDefault(organisation => organisation.Id == p_organisation.Id);
             if (organisationResult != null)
             {
                 organisationResult.Name = p_organisation.Name;
@@ -137,8 +157,8 @@ namespace RPLP.DAL.SQL.Depots
 
         public void DeleteOrganisation(string p_organisationName)
         {
-            Organisation_SQLDTO organisationResult = this._context.Organisations.FirstOrDefault(organisation => organisation.Name == p_organisationName);
-
+            Organisation_SQLDTO organisationResult = this._context.Organisations.Where(organisation => organisation.Active)
+                                                                                .FirstOrDefault(organisation => organisation.Name == p_organisationName);
             if (organisationResult != null)
             {
                 organisationResult.Active = false;

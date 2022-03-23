@@ -27,7 +27,7 @@ namespace RPLP.DAL.SQL.Depots
         public List<Administrator> GetAdministrators()
         {
             List<Administrator_SQLDTO> adminResult = this._context.Administrators.Where(admin => admin.Active)
-                                                                                 .Include(admin => admin.Organisations).ToList();
+                                                                                 .Include(admin => admin.Organisations.Where(organisation => organisation.Active)).ToList();
 
             List<Administrator> administrators = adminResult.Select(admin => admin.ToEntityWithoutList()).ToList();
 
@@ -42,9 +42,9 @@ namespace RPLP.DAL.SQL.Depots
 
         public Administrator GetAdministratorById(int p_id)
         {
-            Administrator_SQLDTO adminResult = this._context.Administrators.Where(admin => admin.Id == p_id)
-                                                                      .Include(admin => admin.Organisations)
-                                                                      .FirstOrDefault();
+            Administrator_SQLDTO adminResult = this._context.Administrators.Where(admin => admin.Active)
+                                                                           .Include(admin => admin.Organisations.Where(organisation => organisation.Active))
+                                                                           .FirstOrDefault(admin => admin.Id == p_id);
             if (adminResult == null)
                 return new Administrator();
 
@@ -61,9 +61,9 @@ namespace RPLP.DAL.SQL.Depots
 
         public Administrator GetAdministratorByUsername(string p_adminUsername)
         {
-            Administrator_SQLDTO adminResult = this._context.Administrators.Where(admin => admin.Username == p_adminUsername)
-                                                                      .Include(admin => admin.Organisations)
-                                                                      .FirstOrDefault();
+            Administrator_SQLDTO adminResult = this._context.Administrators.Where(admin => admin.Active)
+                                                                           .Include(admin => admin.Organisations.Where(organisation => organisation.Active))
+                                                                           .FirstOrDefault(admin => admin.Username == p_adminUsername);
             if (adminResult == null)
                 return new Administrator();
 
@@ -76,12 +76,13 @@ namespace RPLP.DAL.SQL.Depots
             }
 
             return administrator;
-        }                
+        }
 
         public List<Organisation> GetAdminOrganisations(string p_adminUsername)
         {
             List<Organisation> organisations = new List<Organisation>();
-            Administrator_SQLDTO admin = this._context.Administrators.Include(admin => admin.Organisations)
+            Administrator_SQLDTO admin = this._context.Administrators.Where(admin => admin.Active)
+                                                                     .Include(admin => admin.Organisations.Where(organisation => organisation.Active))
                                                                      .FirstOrDefault(admin => admin.Username == p_adminUsername);
             if (admin != null)
             {
@@ -101,13 +102,14 @@ namespace RPLP.DAL.SQL.Depots
 
         public void JoinOrganisation(string p_adminUsername, string p_organisationName)
         {
-            Administrator_SQLDTO adminResult = this._context.Administrators.Where(admin => admin.Username == p_adminUsername)
-                                                                           .Include(admin => admin.Organisations)
-                                                                           .FirstOrDefault();
+            Administrator_SQLDTO adminResult = this._context.Administrators.Where(admin => admin.Active)
+                                                                           .Include(admin => admin.Organisations.Where(organisation => organisation.Active))
+                                                                           .FirstOrDefault(admin => admin.Username == p_adminUsername);
             if (adminResult != null)
             {
                 Organisation_SQLDTO organisationResult = this._context.Organisations.Where(organisation => organisation.Active)
                                                                                     .SingleOrDefault(organisation => organisation.Name == p_organisationName);
+
                 if (organisationResult != null && !adminResult.Organisations.Contains(organisationResult))
                 {
                     adminResult.Organisations.Add(organisationResult);
@@ -120,13 +122,14 @@ namespace RPLP.DAL.SQL.Depots
 
         public void LeaveOrganisation(string p_adminUsername, string p_organisationName)
         {
-            Administrator_SQLDTO adminResult = this._context.Administrators.Where(admin => admin.Username == p_adminUsername)
-                                                                           .Include(admin => admin.Organisations)
-                                                                           .FirstOrDefault();
+            Administrator_SQLDTO adminResult = this._context.Administrators.Where(admin => admin.Active)
+                                                                           .Include(admin => admin.Organisations.Where(organisation => organisation.Active))
+                                                                           .FirstOrDefault(admin => admin.Username == p_adminUsername);
             if (adminResult != null)
             {
                 Organisation_SQLDTO organisationResult = this._context.Organisations.Where(organisation => organisation.Active)
                                                                                     .SingleOrDefault(organisation => organisation.Name == p_organisationName);
+
                 if (organisationResult != null && adminResult.Organisations.Contains(organisationResult))
                 {
                     adminResult.Organisations.Remove(organisationResult);
@@ -149,9 +152,9 @@ namespace RPLP.DAL.SQL.Depots
                 }
             }
 
-            Administrator_SQLDTO adminResult = this._context.Administrators.Where(admin => admin.Id == p_administrator.Id)
-                                                                           .Include(admin => admin.Organisations)
-                                                                           .FirstOrDefault();
+            Administrator_SQLDTO adminResult = this._context.Administrators.Where(admin => admin.Active)
+                                                                           .Include(admin => admin.Organisations.Where(organisation => organisation.Active))
+                                                                           .FirstOrDefault(admin => admin.Id == p_administrator.Id);
 
             if (adminResult != null)
             {
@@ -182,8 +185,8 @@ namespace RPLP.DAL.SQL.Depots
 
         public void DeleteAdministrator(string p_adminUsername)
         {
-            Administrator_SQLDTO adminResult = this._context.Administrators.FirstOrDefault(admin => admin.Username == p_adminUsername);
-
+            Administrator_SQLDTO adminResult = this._context.Administrators.Where(admin => admin.Active)
+                                                                           .FirstOrDefault(admin => admin.Username == p_adminUsername);
             if (adminResult != null)
             {
                 adminResult.Active = false;

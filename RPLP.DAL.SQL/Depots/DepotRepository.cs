@@ -21,8 +21,9 @@ namespace RPLP.DAL.SQL.Depots
 
         public Repository GetRepositoryById(int id)
         {
-            Repository repository = this._context.Repositories.Where(repository => repository.Id == id).Select(repository => repository.ToEntity()).FirstOrDefault();
-
+            Repository repository = this._context.Repositories.Where(repository => repository.Active)
+                                                              .Select(repository => repository.ToEntity())
+                                                              .FirstOrDefault(repository => repository.Id == id);
             if (repository == null)
                 return new Repository();
 
@@ -31,8 +32,9 @@ namespace RPLP.DAL.SQL.Depots
 
         public Repository GetRepositoryByName(string p_repositoryName)
         {
-            Repository repository = this._context.Repositories.Where(repository => repository.Name == p_repositoryName).Select(repository => repository.ToEntity()).FirstOrDefault();
-
+            Repository repository = this._context.Repositories.Where(repository => repository.Active)
+                                                              .Select(repository => repository.ToEntity())
+                                                              .FirstOrDefault(repository => repository.Name == p_repositoryName);
             if (repository == null)
                 return new Repository();
 
@@ -41,8 +43,8 @@ namespace RPLP.DAL.SQL.Depots
 
         public void UpsertRepository(Repository p_repository)
         {
-            Repository_SQLDTO repositoryResult = this._context.Repositories.Where(repository => repository.Id == p_repository.Id).SingleOrDefault();
-
+            Repository_SQLDTO repositoryResult = this._context.Repositories.Where(repository => repository.Active)
+                                                                           .SingleOrDefault(repository => repository.Id == p_repository.Id);
             if (repositoryResult != null)
             {
                 repositoryResult.Name = p_repository.Name;
@@ -67,8 +69,8 @@ namespace RPLP.DAL.SQL.Depots
 
         public void DeleteRepository(string p_repositoryName)
         {
-            Repository_SQLDTO repositoryResult = this._context.Repositories.FirstOrDefault(repository => repository.Name == p_repositoryName);
-
+            Repository_SQLDTO repositoryResult = this._context.Repositories.Where(repository => repository.Active)
+                                                                           .FirstOrDefault(repository => repository.Name == p_repositoryName);
             if (repositoryResult != null)
             {
                 repositoryResult.Active = false;

@@ -20,22 +20,25 @@ namespace RPLP.DAL.SQL.Depots
 
         public List<Comment> GetComments()
         {
-            return this._context.Comments.Select(comment => comment.ToEntity()).ToList();
+            return this._context.Comments.Where(comment => comment.Active)
+                                         .Select(comment => comment.ToEntity()).ToList();
         }
 
         public Comment GetCommentById(int p_id)
         {
-            Comment comment = this._context.Comments.Where(comment => comment.Id == p_id).Select(comment => comment.ToEntity()).FirstOrDefault();
-
+            Comment comment = this._context.Comments.Where(comment => comment.Active)
+                                                    .Select(comment => comment.ToEntity())
+                                                    .FirstOrDefault(comment => comment.Id == p_id);
             if (comment == null)
                 return new Comment();
 
             return comment;
-        }                
+        }
 
         public void UpsertComment(Comment p_comment)
         {
-            Comment_SQLDTO commentResult = this._context.Comments.Where(comment => comment.Id == p_comment.Id).FirstOrDefault();
+            Comment_SQLDTO commentResult = this._context.Comments.Where(comment => comment.Active)
+                                                                 .FirstOrDefault(comment => comment.Id == p_comment.Id);
 
             if (commentResult != null)
             {
@@ -47,6 +50,7 @@ namespace RPLP.DAL.SQL.Depots
                 commentResult.In_Reply_To_Id = p_comment.In_Reply_To_Id;
                 commentResult.Created_at = p_comment.Created_at;
                 commentResult.Updated_at = p_comment.Updated_at;
+                commentResult.Body = p_comment.Body;
 
                 this._context.Update(commentResult);
                 this._context.SaveChanges();
@@ -54,6 +58,7 @@ namespace RPLP.DAL.SQL.Depots
             else
             {
                 Comment_SQLDTO comment = new Comment_SQLDTO();
+                comment.Body = p_comment.Body;
                 comment.RepositoryName = p_comment.RepositoryName;
                 comment.Diff_Hunk = p_comment.Diff_Hunk;
                 comment.Path = p_comment.Path;
@@ -70,8 +75,8 @@ namespace RPLP.DAL.SQL.Depots
 
         public void DeleteComment(int p_commentId)
         {
-            Comment_SQLDTO commentResult = this._context.Comments.SingleOrDefault(comment => comment.Id == p_commentId);
-
+            Comment_SQLDTO commentResult = this._context.Comments.Where(comment => comment.Active)
+                                                                 .SingleOrDefault(comment => comment.Id == p_commentId && comment.Active);
             if (commentResult != null)
             {
                 commentResult.Active = false;
