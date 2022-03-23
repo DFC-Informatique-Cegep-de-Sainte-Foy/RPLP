@@ -82,12 +82,12 @@ namespace RPLP.DAL.SQL.Depots
 
         public List<Repository> GetRepositories()
         {
-            throw new NotImplementedException();
+            return this._context.Repositories.Where(repository => repository.Active).Select(repository => repository.ToEntity()).ToList();
         }
 
         public List<Repository> GetRepositoriesFromOrganisationName(string p_organisationName)
         {
-            throw new NotImplementedException();
+            return this._context.Repositories.Where(repository => repository.Active && repository.OrganisationName == p_organisationName).Select(repository => repository.ToEntity()).ToList();
         }
     }
 }

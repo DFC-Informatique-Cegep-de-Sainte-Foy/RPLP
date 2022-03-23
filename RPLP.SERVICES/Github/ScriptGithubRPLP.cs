@@ -1,4 +1,5 @@
-﻿using RPLP.DAL.DTO.Sql;
+﻿using RPLP.DAL.DTO.Json;
+using RPLP.DAL.DTO.Sql;
 using RPLP.ENTITES;
 using RPLP.SERVICES.InterfacesDepots;
 using System;
@@ -31,20 +32,84 @@ namespace RPLP.SERVICES.Github
 
             if (students.Count >= p_ReviewsPerRepository + 1)
             {
-                List<Assignment> assignmentsResult = _depotClassroom.GetAssignmentsByClassroomName(p_classRoomName);
+                List<Repository> repositoriesToAssign = getRepositoriesToAssign(p_organisationName, p_classRoomName, p_assignmentName, students);
 
-                if (assignmentsResult.Count >= 1)
+                foreach (Repository repository in repositoriesToAssign)
                 {
-                    foreach (Assignment assignment in assignmentsResult)
+                    string[] splitRepository = repository.Name.Split('-');
+                    Branch_JSONDTO branchDTO = new Branch_JSONDTO();
+                    List<Branch_JSONDTO> branchesResult = this._githubApiAction.GetRepositoryBranchesGithub(p_organisationName, repository.Name);
+
+                    foreach (Branch_JSONDTO branch in branchesResult)
                     {
-                        if (assignment.Name == p_assignmentName)
+                        string[] branchName = branch.reference.Split("/");
+
+                        if (branchName[2] == "feedback")
                         {
-
-
-
-                            return "Request Completed";
+                            branchDTO = branch;
+                            break;
                         }
                     }
+
+                    if (branchDTO != null)
+                    {
+                        int numberStudentAdded = 0;
+
+                        for (int i = 0; i < students.Count; i++)
+                        {
+                            if (students[i].Username.ToLower() != splitRepository[1].ToLower() && numberStudentAdded <= p_ReviewsPerRepository)
+                            {
+                                string newBranchName = $"Feedback-{students[i].Username}";
+
+                                string resultCreateBRanch = this._githubApiAction.CreateNewBranchForFeedbackGitHub(p_organisationName, repository.Name, branchDTO.gitObject.sha, newBranchName);
+
+                                string resultCreatePR = this._githubApiAction.CreateNewPullRequestFeedbackGitHub(p_organisationName, repository.Name, newBranchName, newBranchName.ToLower(), "Voici ou vous devez mettre vos commentaires");
+
+                                this._githubApiAction.AddStudentAsCollaboratorToPeerRepositoryGithub(p_organisationName, repository.Name, students[i].Username);
+                                numberStudentAdded++;
+                            }
+                        }
+
+                    }
+                }
+
+                return "ok";
+            }
+
+            return "not ok";
+        }
+
+        public List<Repository> getRepositoriesToAssign(string p_organisationName, string p_classRoomName, string p_assignmentName, List<Student> p_students)
+        {
+            List<Assignment> assignmentsResult = _depotClassroom.GetAssignmentsByClassroomName(p_classRoomName);
+
+            if (assignmentsResult.Count >= 1)
+            {
+                Assignment assignment = assignmentsResult.SingleOrDefault(assignment => assignment.Name == p_assignmentName);
+
+                if (assignment != null)
+                {
+                    List<Repository> repositories = new List<Repository>();
+                    List<Repository> repositoriesResult = this._depotRepository.GetRepositoriesFromOrganisationName(p_organisationName);
+
+                    foreach (Repository repository in repositoriesResult)
+                    {
+                        string[] splitRepository = repository.Name.Split('-');
+
+                        if (splitRepository[0] == assignment.Name)
+                        {
+                            foreach (Student student in p_students)
+                            {
+                                if (splitRepository[1] == student.Username)
+                                {
+                                    repositories.Add(repository);
+                                }
+                            }
+
+                        }
+                    }
+
+                    return repositories;
                 }
             }
 
