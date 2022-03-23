@@ -18,6 +18,11 @@ namespace RPLP.DAL.SQL.Depots
             this._context = new RPLPDbContext();
         }
 
+        public DepotComment(RPLPDbContext p_context)
+        {
+            this._context = p_context;
+        }
+
         public List<Comment> GetComments()
         {
             return this._context.Comments.Select(comment => comment.ToEntity()).ToList();
