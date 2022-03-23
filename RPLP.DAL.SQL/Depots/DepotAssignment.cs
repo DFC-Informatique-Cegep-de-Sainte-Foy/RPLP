@@ -20,7 +20,8 @@ namespace RPLP.DAL.SQL.Depots
 
         public List<Assignment> GetAssignments()
         {
-            return this._context.Assignments.Select(assignment => assignment.ToEntity()).ToList();
+            return this._context.Assignments.Where(assignment => assignment.Active)
+                                            .Select(assignment => assignment.ToEntity()).ToList();
         }
 
         public Assignment GetAssignmentById(int p_id)
@@ -47,8 +48,8 @@ namespace RPLP.DAL.SQL.Depots
 
         public void UpsertAssignment(Assignment p_assignment)
         {
-            Assignment_SQLDTO assignmentResult = this._context.Assignments.Where(assignment => assignment.Active).FirstOrDefault(assignment => assignment.Id == p_assignment.Id);
-
+            Assignment_SQLDTO assignmentResult = this._context.Assignments.Where(assignment => assignment.Active)
+                                                                          .FirstOrDefault(assignment => assignment.Id == p_assignment.Id);
             if (assignmentResult != null)
             {
                 assignmentResult.Name = p_assignment.Name;
@@ -77,8 +78,8 @@ namespace RPLP.DAL.SQL.Depots
 
         public void DeleteAssignment(string p_assignmentName)
         {
-            Assignment_SQLDTO assignmentResult = this._context.Assignments.FirstOrDefault(assignment => assignment.Name == p_assignmentName);
-
+            Assignment_SQLDTO assignmentResult = this._context.Assignments.Where(assignment => assignment.Active)
+                                                                          .FirstOrDefault(assignment => assignment.Name == p_assignmentName);
             if (assignmentResult != null)
             {
                 assignmentResult.Active = false;

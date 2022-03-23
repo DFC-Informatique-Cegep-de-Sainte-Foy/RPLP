@@ -20,13 +20,15 @@ namespace RPLP.DAL.SQL.Depots
 
         public List<Comment> GetComments()
         {
-            return this._context.Comments.Where(comment => comment.Active).Select(comment => comment.ToEntity()).ToList();
+            return this._context.Comments.Where(comment => comment.Active)
+                                         .Select(comment => comment.ToEntity()).ToList();
         }
 
         public Comment GetCommentById(int p_id)
         {
-            Comment comment = this._context.Comments.Where(comment => comment.Id == p_id && comment.Active).Select(comment => comment.ToEntity()).FirstOrDefault();
-
+            Comment comment = this._context.Comments.Where(comment => comment.Active)
+                                                    .Select(comment => comment.ToEntity())
+                                                    .FirstOrDefault(comment => comment.Id == p_id);
             if (comment == null)
                 return new Comment();
 
@@ -35,7 +37,8 @@ namespace RPLP.DAL.SQL.Depots
 
         public void UpsertComment(Comment p_comment)
         {
-            Comment_SQLDTO commentResult = this._context.Comments.Where(comment => comment.Id == p_comment.Id && comment.Active).FirstOrDefault();
+            Comment_SQLDTO commentResult = this._context.Comments.Where(comment => comment.Active)
+                                                                 .FirstOrDefault(comment => comment.Id == p_comment.Id);
 
             if (commentResult != null)
             {
@@ -72,8 +75,8 @@ namespace RPLP.DAL.SQL.Depots
 
         public void DeleteComment(int p_commentId)
         {
-            Comment_SQLDTO commentResult = this._context.Comments.SingleOrDefault(comment => comment.Id == p_commentId && comment.Active);
-
+            Comment_SQLDTO commentResult = this._context.Comments.Where(comment => comment.Active)
+                                                                 .SingleOrDefault(comment => comment.Id == p_commentId && comment.Active);
             if (commentResult != null)
             {
                 commentResult.Active = false;
