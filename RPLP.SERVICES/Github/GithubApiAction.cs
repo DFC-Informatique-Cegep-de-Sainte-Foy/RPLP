@@ -181,8 +181,8 @@ namespace RPLP.SERVICES.Github
 
         private async Task<string> NewPullRequestFeedbackGitHubApiRequest(string p_githubLink, string p_BranchName, string p_title, string p_body)
         {
-            PullRequest_JSONDTO pr = new PullRequest_JSONDTO { fromBranch = "main", targetBranch = p_BranchName, title = p_title, body = p_body };
-            string pullRequest = JsonConvert.SerializeObject(pr);
+            PullRequest_JSONDTO newPullRequest = new PullRequest_JSONDTO { fromBranch = "main", targetBranch = p_BranchName, title = p_title, body = p_body };
+            string pullRequest = JsonConvert.SerializeObject(newPullRequest);
             HttpResponseMessage response = _httpClient.PostAsync(p_githubLink, new StringContent(pullRequest, Encoding.UTF8, "application/json")).Result;
 
             return response.StatusCode.ToString();
@@ -205,7 +205,7 @@ namespace RPLP.SERVICES.Github
             }
 
             return "No Branches";
-            
+
         }
 
         private async Task<string> AssignReviewerToPullRequestGitHubApiRequest(string p_githubLink, string p_studentUsername)
