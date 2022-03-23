@@ -67,10 +67,10 @@ namespace RPLP.API.Controllers
             return Ok(this._githubAction.CreateNewPullRequestFeedbackGitHub(organisationName, repositoryName, branchName, title, body));
         }
 
-        [HttpPost("{organisationName}/{repositoryName}/Assign/Branch/{branchName}/Student/{studentUsername}")]
-        public ActionResult<string> AssignStidentToPR(string organisationName, string repositoryName, string branchName, string studentUsername)
+        [HttpPost("{organisationName}/{repositoryName}/Assign/PullRequest/{pullRequest}/Student/{studentUsername}")]
+        public ActionResult<string> AssignStidentToPR(string organisationName, string repositoryName, string pullRequest, string studentUsername)
         {
-            return Ok(this._githubAction.AssignReviewerToPullRequestGitHub(organisationName, repositoryName, branchName, studentUsername));
+            return Ok(this._githubAction.AssignReviewerToPullRequestGitHub(organisationName, repositoryName, pullRequest, studentUsername));
         }
 
     }

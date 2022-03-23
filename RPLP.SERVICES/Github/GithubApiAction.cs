@@ -205,14 +205,14 @@ namespace RPLP.SERVICES.Github
             }
 
             return "No Branches";
-            
+
         }
 
         private async Task<string> AssignReviewerToPullRequestGitHubApiRequest(string p_githubLink, string p_studentUsername)
         {
             string[] reviewer = { p_studentUsername };
-            Reviewer_JSONDTO pr = new Reviewer_JSONDTO { reviewers = reviewer };
-            string reviewers = JsonConvert.SerializeObject(pr);
+            Reviewer_JSONDTO reviewerJSON = new Reviewer_JSONDTO { reviewers = reviewer };
+            string reviewers = JsonConvert.SerializeObject(reviewerJSON);
             HttpResponseMessage response = _httpClient.PostAsync(p_githubLink, new StringContent(reviewers, Encoding.UTF8, "application/json")).Result;
 
             return response.StatusCode.ToString();
