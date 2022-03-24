@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
-namespace RPLP.UnitTesting
+namespace RPLP.UnitTesting.DepotTests
 {
     [Collection("DatabaseTests")]
     public class TestsDepotAssignment

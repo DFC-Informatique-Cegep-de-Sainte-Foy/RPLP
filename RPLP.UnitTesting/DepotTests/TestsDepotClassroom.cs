@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
-namespace RPLP.UnitTesting
+namespace RPLP.UnitTesting.DepotTests
 {
     [Collection("DatabaseTests")]
     public class TestsDepotClassroom
@@ -157,7 +157,18 @@ namespace RPLP.UnitTesting
                 ClassroomName = "ProjetSynthese",
                 DistributionDate = System.DateTime.Now,
                 Description = "Review a partner\'s code",
-                DeliveryDeadline = System.DateTime.Now.AddDays(1)
+                DeliveryDeadline = System.DateTime.Now.AddDays(1),
+                Active = true
+            });
+
+            classroom.Assignments.Add(new Assignment_SQLDTO()
+            {
+                Name = "Scrum",
+                ClassroomName = "ProjetSynthese",
+                DistributionDate = System.DateTime.Now,
+                Description = "Daily briefing",
+                DeliveryDeadline = System.DateTime.Now.AddDays(1),
+                Active = true
             });
 
             classroom.Students.Add(new Student_SQLDTO()
@@ -231,6 +242,9 @@ namespace RPLP.UnitTesting
                 Assert.Contains(classrooms, c => c.Name == "OOP");
 
                 Classroom? projetSyntheseClassroom = classrooms.FirstOrDefault(c => c.Name == "ProjetSynthese");
+                Assert.NotNull(projetSyntheseClassroom);
+
+                Assert.Equal(2, projetSyntheseClassroom.Assignments.Count);
 
                 Assert.Contains(projetSyntheseClassroom.Assignments, a => a.Name == "Review");
                 Assert.Contains(projetSyntheseClassroom.Students, s => s.Username == "ThPaquet");

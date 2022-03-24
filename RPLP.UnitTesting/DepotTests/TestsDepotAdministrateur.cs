@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
-namespace RPLP.UnitTesting
+namespace RPLP.UnitTesting.DepotTests
 {
     [Collection("DatabaseTests")]
     public class TestsDepotAdministrateur
@@ -250,12 +250,14 @@ namespace RPLP.UnitTesting
                 {
                     new Organisation_SQLDTO
                     {
-                        Name = "RPLP"
+                        Name = "RPLP",
+                        Active = true
                     },
 
                     new Organisation_SQLDTO
                     {
-                        Name = "Test"
+                        Name = "Test",
+                        Active = true
                     }
                 },
                 Active = true

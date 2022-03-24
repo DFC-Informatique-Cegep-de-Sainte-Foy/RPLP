@@ -7,9 +7,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
-namespace RPLP.UnitTesting
+namespace RPLP.UnitTesting.DepotTests
 {
-    [Collection ("DatabaseTests")]
+    [Collection("DatabaseTests")]
     public class TestsDepotComment
     {
         private static readonly DbContextOptions<RPLPDbContext> options = new DbContextOptionsBuilder<RPLPDbContext>()
@@ -123,14 +123,21 @@ namespace RPLP.UnitTesting
             {
                 DepotComment depot = new DepotComment(context);
 
-                int idCommentThPaquet = context.Comments.SingleOrDefault(c => c.WrittenBy == "ThPaquet").Id;
-                int idCommentBACenComm = context.Comments.SingleOrDefault(c => c.WrittenBy == "BACenComm").Id;
+                Comment_SQLDTO commentFromContextThPaquet = context.Comments.SingleOrDefault(c => c.WrittenBy == "ThPaquet");
+                Comment_SQLDTO commentFromContextBACenComm = context.Comments.SingleOrDefault(c => c.WrittenBy == "BACenComm");
+
+                Assert.NotNull(commentFromContextThPaquet);
+                Assert.NotNull(commentFromContextBACenComm);
+
+                int idCommentThPaquet = commentFromContextThPaquet.Id;
+                int idCommentBACenComm = commentFromContextBACenComm.Id;
 
                 Comment? commentThPaquet = depot.GetCommentById(idCommentThPaquet);
                 Comment? commentBACenComm = depot.GetCommentById(idCommentBACenComm);
 
                 Assert.NotNull(commentThPaquet);
-                Assert.Null(commentBACenComm);
+                Assert.Null(commentBACenComm.Body);
+                Assert.Null(commentBACenComm.In_Reply_To_Id);
             }
 
             this.DeleteCommentsTableContent();
@@ -190,7 +197,7 @@ namespace RPLP.UnitTesting
             this.DeleteCommentsTableContent();
             this.InsertPremadeComment();
 
-            Comment_SQLDTO? commentPreUpsert = null;
+            Comment_SQLDTO? commentPreUpsert = new Comment_SQLDTO();
 
             using (var context = new RPLPDbContext(options))
             {
@@ -199,7 +206,15 @@ namespace RPLP.UnitTesting
                 Comment_SQLDTO? comment = context.Comments.FirstOrDefault(c => c.WrittenBy == "ThPaquet");
                 Assert.NotNull(comment);
 
-                commentPreUpsert = comment;
+                commentPreUpsert.Diff_Hunk = comment.Diff_Hunk;
+                commentPreUpsert.In_Reply_To_Id = comment.In_Reply_To_Id;
+                commentPreUpsert.Original_Position = comment.Original_Position;
+                commentPreUpsert.Path = comment.Path;
+                commentPreUpsert.Updated_at = comment.Updated_at;
+                commentPreUpsert.Created_at = comment.Created_at;
+                commentPreUpsert.Body = comment.Body;
+                commentPreUpsert.RepositoryName = comment.RepositoryName;
+                commentPreUpsert.WrittenBy = comment.WrittenBy;
 
                 comment.Diff_Hunk = "diff";
                 comment.In_Reply_To_Id = 2;
@@ -216,8 +231,10 @@ namespace RPLP.UnitTesting
 
             using (var context = new RPLPDbContext(options))
             {
-                Comment_SQLDTO? comment = context.Comments.SingleOrDefault(c => c.WrittenBy == "ThPaquet");
+                Comment_SQLDTO? preUpdatedComment = context.Comments.SingleOrDefault(c => c.WrittenBy == "ThPaquet");
+                Comment_SQLDTO? comment = context.Comments.SingleOrDefault(c => c.WrittenBy == "ikeameatbol" && c.Path == "anotherpath");
 
+                Assert.Null(preUpdatedComment);
                 Assert.NotNull(comment);
                 Assert.NotEqual(commentPreUpsert.Diff_Hunk, comment.Diff_Hunk);
                 Assert.NotEqual(commentPreUpsert.In_Reply_To_Id, comment.In_Reply_To_Id);
@@ -253,7 +270,7 @@ namespace RPLP.UnitTesting
 
             using (var context = new RPLPDbContext(options))
             {
-                Comment_SQLDTO? comment = context.Comments.SingleOrDefault(c => c.WrittenBy == "ThPaquet" && c.Active == false);
+                Comment_SQLDTO? comment = context.Comments.SingleOrDefault(c => c.WrittenBy == "ThPaquet" && c.Active == true);
                 Assert.Null(comment);
             }
 

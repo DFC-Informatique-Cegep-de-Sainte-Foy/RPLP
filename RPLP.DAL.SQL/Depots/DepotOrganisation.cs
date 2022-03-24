@@ -80,12 +80,14 @@ namespace RPLP.DAL.SQL.Depots
 
         public List<Administrator> GetAdministratorsByOrganisation(string p_organisationName)
         {
-            Organisation_SQLDTO organisationResult = this._context.Organisations.Where(organisation => organisation.Active)
-                                                                                .Include(organisation => organisation.Administrators)
-                                                                                .FirstOrDefault(organisation => organisation.Name == p_organisationName);
+            Organisation_SQLDTO organisationResult = this._context.Organisations
+                .Include(organisation => organisation.Administrators.Where(a => a.Active))
+                .FirstOrDefault(organisation => organisation.Name == p_organisationName && organisation.Active);
+                                                                                
+                                                                                
 
             if (organisationResult != null && organisationResult.Administrators.Count >= 1)
-                return organisationResult.Administrators.Select(administrator => administrator.ToEntity()).ToList();
+                return organisationResult.Administrators.Select(administrator => administrator.ToEntityWithoutList()).ToList();
 
             return new List<Administrator>();
         }

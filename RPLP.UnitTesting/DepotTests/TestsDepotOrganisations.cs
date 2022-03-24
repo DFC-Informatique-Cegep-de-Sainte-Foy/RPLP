@@ -9,14 +9,14 @@ using Xunit;
 
 namespace RPLP.UnitTesting.DepotTests
 {
-    [Collection ("DatabaseTests")]
+    [Collection("DatabaseTests")]
     public class TestsDepotOrganisations
     {
         private static readonly DbContextOptions<RPLPDbContext> options = new DbContextOptionsBuilder<RPLPDbContext>()
                 .UseSqlServer("Server=localhost,1434; Database=RPLP; User Id=sa; password=Cad3pend86!")
                 .Options;
 
-        private void DeleteCommentsAndRelatedTablesContent()
+        private void DeleteOrganisationsAndRelatedTablesContent()
         {
             using (var context = new RPLPDbContext(options))
             {
@@ -96,7 +96,7 @@ namespace RPLP.UnitTesting.DepotTests
         [Fact]
         public void Test_GetOrganisations()
         {
-            this.DeleteCommentsAndRelatedTablesContent();
+            this.DeleteOrganisationsAndRelatedTablesContent();
             this.InsertPremadeOrganisations();
 
             using (var context = new RPLPDbContext(options))
@@ -111,13 +111,13 @@ namespace RPLP.UnitTesting.DepotTests
                 Assert.Equal(2, organisations.FirstOrDefault(o => o.Name == "CEGEP Ste-Foy").Administrators.Count);
             }
 
-            this.DeleteCommentsAndRelatedTablesContent();
+            this.DeleteOrganisationsAndRelatedTablesContent();
         }
 
         [Fact]
         public void Test_GetOrganisationById()
         {
-            this.DeleteCommentsAndRelatedTablesContent();
+            this.DeleteOrganisationsAndRelatedTablesContent();
             this.InsertPremadeOrganisations();
             
             using (var context = new RPLPDbContext(options))
@@ -131,13 +131,13 @@ namespace RPLP.UnitTesting.DepotTests
                 Assert.Equal(2, organisation.Administrators.Count);
             }
 
-            this.DeleteCommentsAndRelatedTablesContent();
+            this.DeleteOrganisationsAndRelatedTablesContent();
         }
 
         [Fact]
         public void Test_GetOrganisationByName()
         {
-            this.DeleteCommentsAndRelatedTablesContent();
+            this.DeleteOrganisationsAndRelatedTablesContent();
             this.InsertPremadeOrganisations();
 
             using (var context = new RPLPDbContext(options))
@@ -149,13 +149,13 @@ namespace RPLP.UnitTesting.DepotTests
                 Assert.Equal(2, organisation.Administrators.Count);
             }
 
-            this.DeleteCommentsAndRelatedTablesContent();
+            this.DeleteOrganisationsAndRelatedTablesContent();
         }
 
         [Fact]
         public void Test_GetAdministratorsByOrganisation()
         {
-            this.DeleteCommentsAndRelatedTablesContent();
+            this.DeleteOrganisationsAndRelatedTablesContent();
             this.InsertPremadeOrganisations();
 
             using (var context = new RPLPDbContext(options))
@@ -167,13 +167,13 @@ namespace RPLP.UnitTesting.DepotTests
                 Assert.Equal(2, administrators.Count);
             }
 
-            this.DeleteCommentsAndRelatedTablesContent();
+            this.DeleteOrganisationsAndRelatedTablesContent();
         }
 
         [Fact]
         public void Test_AddAdministratorToOrganisation()
         {
-            this.DeleteCommentsAndRelatedTablesContent();
+            this.DeleteOrganisationsAndRelatedTablesContent();
             this.InsertPremadeOrganisations();
 
             Administrator_SQLDTO newAdministrator = new Administrator_SQLDTO()
@@ -219,13 +219,13 @@ namespace RPLP.UnitTesting.DepotTests
                 Assert.NotNull(administrator);
             }
 
-            this.DeleteCommentsAndRelatedTablesContent();
+            this.DeleteOrganisationsAndRelatedTablesContent();
         }
 
         [Fact]
         public void Test_RemoveAdministratorFromOrganisation()
         {
-            this.DeleteCommentsAndRelatedTablesContent();
+            this.DeleteOrganisationsAndRelatedTablesContent();
             this.InsertPremadeOrganisations();
 
             string administratorUserName = "ThPaquet";
@@ -258,13 +258,13 @@ namespace RPLP.UnitTesting.DepotTests
                 Assert.Null(administrator);
             }
 
-            this.DeleteCommentsAndRelatedTablesContent();
+            this.DeleteOrganisationsAndRelatedTablesContent();
         }
 
         [Fact]
         public void Test_UpsertOrganisation_Inserts()
         {
-            this.DeleteCommentsAndRelatedTablesContent();
+            this.DeleteOrganisationsAndRelatedTablesContent();
 
             string organisationName = "RPLP";
             string administratorUserName = "ThPaquet";
@@ -311,13 +311,13 @@ namespace RPLP.UnitTesting.DepotTests
                 Assert.NotNull(organisation.Administrators.FirstOrDefault(a => a.Token == administratorToken));
             }
 
-            this.DeleteCommentsAndRelatedTablesContent();
+            this.DeleteOrganisationsAndRelatedTablesContent();
         }
 
         [Fact]
         public void Test_UpsertOrganisation_Updates()
         {
-            this.DeleteCommentsAndRelatedTablesContent();
+            this.DeleteOrganisationsAndRelatedTablesContent();
             this.InsertPremadeOrganisations();
 
             string organisationName = "RPLP";
@@ -352,7 +352,7 @@ namespace RPLP.UnitTesting.DepotTests
             using (var context = new RPLPDbContext(options))
             {
                 Organisation_SQLDTO? organisation = context.Organisations
-                                                            .Include(o => o.Administrators)
+                                                            .Include(o => o.Administrators.Where(a => a.Active))
                                                             .FirstOrDefault(o => o.Name == "RPLP");
                 Assert.NotNull(organisation);
                 Assert.Equal(3, organisation.Administrators.Count);
@@ -363,13 +363,13 @@ namespace RPLP.UnitTesting.DepotTests
                 Assert.NotNull(organisation.Administrators.FirstOrDefault(a => a.Token == administratorToken));
             }
 
-            this.DeleteCommentsAndRelatedTablesContent();
+            this.DeleteOrganisationsAndRelatedTablesContent();
         }
 
         [Fact]
         public void Test_DeleteOrganisation()
         {
-            this.DeleteCommentsAndRelatedTablesContent();
+            this.DeleteOrganisationsAndRelatedTablesContent();
             this.InsertPremadeOrganisations();
 
             using (var context = new RPLPDbContext(options))
@@ -387,7 +387,7 @@ namespace RPLP.UnitTesting.DepotTests
                 Assert.Null(organisation);
             }
 
-            this.DeleteCommentsAndRelatedTablesContent();
+            this.DeleteOrganisationsAndRelatedTablesContent();
         }
     }
 }

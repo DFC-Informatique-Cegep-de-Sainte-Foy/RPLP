@@ -31,9 +31,9 @@ namespace RPLP.DAL.SQL.Depots
 
         public Assignment GetAssignmentById(int p_id)
         {
-            Assignment assignment = this._context.Assignments.Where(assignment => assignment.Active)
-                                                             .Select(assignment => assignment.ToEntity())
-                                                             .FirstOrDefault(assignment => assignment.Id == p_id);
+            Assignment assignment = this._context.Assignments.FirstOrDefault(assignment => assignment.Id == p_id && assignment.Active)
+                                                             .ToEntity();
+                                                             
             if (assignment == null)
                 return new Assignment();
 
@@ -42,9 +42,10 @@ namespace RPLP.DAL.SQL.Depots
 
         public Assignment GetAssignmentByName(string p_assignmentName)
         {
-            Assignment assignment = this._context.Assignments.Where(assignment => assignment.Active)
-                                                             .Select(assignment => assignment.ToEntity())
-                                                             .FirstOrDefault(assignment => assignment.Name == p_assignmentName);
+            Assignment assignment = this._context.Assignments
+                                                .FirstOrDefault(assignment => assignment.Name == p_assignmentName && assignment.Active)
+                                                .ToEntity();
+                                                             
             if (assignment == null)
                 return new Assignment();
 

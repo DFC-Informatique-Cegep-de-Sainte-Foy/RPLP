@@ -55,7 +55,7 @@ namespace RPLP.DAL.SQL.Depots
 
                         if (classesResult[i].Assignments.Count >= 1)
                         {
-                            List<Assignment> assignments = classesResult[i].Assignments.Select(student => student.ToEntity()).ToList();
+                            List<Assignment> assignments = classesResult[i].Assignments.Select(assignments => assignments.ToEntity()).ToList();
                             classes[i].Assignments = assignments;
                         }
                     }

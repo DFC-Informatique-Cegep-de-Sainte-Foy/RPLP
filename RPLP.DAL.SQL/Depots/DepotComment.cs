@@ -31,13 +31,12 @@ namespace RPLP.DAL.SQL.Depots
 
         public Comment GetCommentById(int p_id)
         {
-            Comment comment = this._context.Comments.Where(comment => comment.Active)
-                                                    .Select(comment => comment.ToEntity())
-                                                    .FirstOrDefault(comment => comment.Id == p_id);
+            Comment_SQLDTO? comment = this._context.Comments
+                                            .FirstOrDefault(comment => comment.Id == p_id && comment.Active);
             if (comment == null)
                 return new Comment();
 
-            return comment;
+            return comment.ToEntity();
         }
 
         public void UpsertComment(Comment p_comment)
@@ -80,8 +79,7 @@ namespace RPLP.DAL.SQL.Depots
 
         public void DeleteComment(int p_commentId)
         {
-            Comment_SQLDTO commentResult = this._context.Comments.Where(comment => comment.Active)
-                                                                 .SingleOrDefault(comment => comment.Id == p_commentId && comment.Active);
+            Comment_SQLDTO commentResult = this._context.Comments.SingleOrDefault(comment => comment.Id == p_commentId && comment.Active);
             if (commentResult != null)
             {
                 commentResult.Active = false;
