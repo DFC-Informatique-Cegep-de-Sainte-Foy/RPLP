@@ -1,4 +1,5 @@
-﻿using RPLP.DAL.DTO.Sql;
+﻿using Microsoft.EntityFrameworkCore;
+using RPLP.DAL.DTO.Sql;
 using RPLP.ENTITES;
 using RPLP.SERVICES.InterfacesDepots;
 using System;
@@ -15,7 +16,7 @@ namespace RPLP.DAL.SQL.Depots
 
         public DepotRepository()
         {
-            this._context = new RPLPDbContext();
+            this._context = new RPLPDbContext(new DbContextOptionsBuilder<RPLPDbContext>().UseSqlServer("Server=rplp.db; Database=RPLP; User Id=sa; password=Cad3pend86!").Options);
         }
 
         public Repository GetRepositoryById(int id)
@@ -77,6 +78,16 @@ namespace RPLP.DAL.SQL.Depots
                 this._context.Update(repositoryResult);
                 this._context.SaveChanges();
             }
+        }
+
+        public List<Repository> GetRepositories()
+        {
+            return this._context.Repositories.Where(repository => repository.Active).Select(repository => repository.ToEntity()).ToList();
+        }
+
+        public List<Repository> GetRepositoriesFromOrganisationName(string p_organisationName)
+        {
+            return this._context.Repositories.Where(repository => repository.Active && repository.OrganisationName == p_organisationName).Select(repository => repository.ToEntity()).ToList();
         }
     }
 }

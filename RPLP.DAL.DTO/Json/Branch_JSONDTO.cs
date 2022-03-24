@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,11 +9,10 @@ namespace RPLP.DAL.DTO.Json
 {
     public class Branch_JSONDTO
     {
-        public int number { get; set; }
-        public string state { get; set; }
-        public string title { get; set; }
-        public DateTime created_at { get; set; }
-        public DateTime updated_at { get; set; }
-        public List<User_JSONDTO> requested_reviewers { get; set; }
+        [JsonProperty("ref")]
+        public string reference { get; set; }
+
+        [JsonProperty("object")]
+        public Object_JSONDTO gitObject { get; set; }
     }
 }
