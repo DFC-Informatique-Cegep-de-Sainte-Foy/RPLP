@@ -10,7 +10,8 @@ namespace RPLP.SERVICES.InterfacesDepots
     public interface IDepotComment
     {
         public List<Comment> GetComments();
-        public Comment GetCommentById(int id);
-        public void UpsertComment(Comment comment);
+        public Comment GetCommentById(int p_id);
+        public void UpsertComment(Comment p_comment);
+        public void DeleteComment(int p_commentId);
     }
 }

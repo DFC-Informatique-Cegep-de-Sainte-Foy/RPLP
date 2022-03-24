@@ -40,7 +40,12 @@ namespace RPLP.DAL.DTO.Sql
 
         public Organisation ToEntity()
         {
-            return new Organisation(this.Id, this.Name, this.Administrators.Select(administrator => administrator.ToEntity()).ToList());
+            return new Organisation(this.Id, this.Name, this.Administrators.Select(admin => admin.ToEntity()).ToList());
+        }
+
+        public Organisation ToEntityWithoutList()
+        {
+            return new Organisation(this.Id, this.Name, new List<Administrator>());
         }
     }
 }

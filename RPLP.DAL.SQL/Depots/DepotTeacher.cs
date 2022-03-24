@@ -1,4 +1,5 @@
-﻿using RPLP.DAL.DTO.Sql;
+﻿using Microsoft.EntityFrameworkCore;
+using RPLP.DAL.DTO.Sql;
 using RPLP.ENTITES;
 using RPLP.SERVICES.InterfacesDepots;
 using System;
@@ -18,19 +19,117 @@ namespace RPLP.DAL.SQL.Depots
             this._context = new RPLPDbContext();
         }
 
+        public List<Teacher> GetTeachers()
+        {
+            List<Teacher_SQLDTO> teachersResult = this._context.Teachers.Where(teacher => teacher.Active)
+                                                                        .Include(admin => admin.Classes.Where(classroom => classroom.Active)).ToList();
+
+            List<Teacher> teachers = teachersResult.Select(teacher => teacher.ToEntityWithoutList()).ToList();
+
+            for (int i = 0; i < teachersResult.Count; i++)
+            {
+                if (teachersResult[i].Id == teachers[i].Id && teachersResult[i].Classes.Count >= 1)
+                    teachers[i].Classes = teachersResult[i].Classes.Select(classroom => classroom.ToEntityWithoutList()).ToList();
+            }
+
+            return teachers;
+        }
+
         public Teacher GetTeacherById(int p_id)
         {
-            Teacher teacher = this._context.Teachers.Where(teacher => teacher.Id == p_id).Select(teacher => teacher.ToEntity()).FirstOrDefault();
-
-            if (teacher == null)
+            Teacher_SQLDTO teacherResult = this._context.Teachers.Where(teacher => teacher.Active)
+                                                                 .Include(teacher => teacher.Classes.Where(classroom => classroom.Active))
+                                                                 .FirstOrDefault(teacher => teacher.Id == p_id);
+            if (teacherResult == null)
                 return new Teacher();
+
+            Teacher teacher = teacherResult.ToEntityWithoutList();
+
+            if (teacherResult.Classes.Count >= 1)
+            {
+                List<Classroom> classes = teacherResult.Classes.Select(classroom => classroom.ToEntityWithoutList()).ToList();
+                teacher.Classes = classes;
+            }
 
             return teacher;
         }
 
-        public List<Teacher> GetTeachers()
+        public Teacher GetTeacherByUsername(string p_teacherUsername)
         {
-            return this._context.Teachers.Select(teacher => teacher.ToEntity()).ToList();
+            Teacher_SQLDTO teacherResult = this._context.Teachers.Where(teacher => teacher.Active)
+                                                                 .Include(teacher => teacher.Classes.Where(classroom => classroom.Active))
+                                                                 .FirstOrDefault(teacher => teacher.Username == p_teacherUsername);
+            if (teacherResult == null)
+                return new Teacher();
+
+            Teacher teacher = teacherResult.ToEntityWithoutList();
+
+            if (teacherResult.Classes.Count >= 1)
+            {
+                List<Classroom> classes = teacherResult.Classes.Select(classroom => classroom.ToEntityWithoutList()).ToList();
+                teacher.Classes = classes;
+            }
+
+            return teacher;
+        }
+
+        public List<Classroom> GetTeacherClasses(string p_teacherUsername)
+        {
+            List<Classroom> classes = new List<Classroom>();
+            Teacher_SQLDTO teacher = this._context.Teachers.Where(teacher => teacher.Active)
+                                                           .Include(teacher => teacher.Classes.Where(classroom => classroom.Active))
+                                                           .FirstOrDefault(teacher => teacher.Username == p_teacherUsername);
+            if (teacher != null)
+            {
+                if (teacher.Classes.Count >= 1)
+                {
+                    foreach (Classroom_SQLDTO classroom in teacher.Classes)
+                    {
+                        classes.Add(classroom.ToEntityWithoutList());
+                    }
+
+                    return classes;
+                }
+            }
+
+            return new List<Classroom>();
+        }
+
+        public void AddClassroomToTeacher(string p_teacherUsername, string p_classroomName)
+        {
+            Classroom_SQLDTO classroomResult = this._context.Classrooms.Where(classroom => classroom.Active)
+                                                                       .FirstOrDefault(classroom => classroom.Name == p_classroomName);
+
+            if (classroomResult != null)
+            {
+                Teacher_SQLDTO teacherResult = this._context.Teachers.Where(teacher => teacher.Active)
+                                                                     .SingleOrDefault(teacher => teacher.Username == p_teacherUsername);
+                if (teacherResult != null)
+                {
+                    teacherResult.Classes.Add(classroomResult);
+
+                    this._context.Update(teacherResult);
+                    this._context.SaveChanges();
+                }
+            }
+        }
+
+        public void RemoveClassroomFromTeacher(string p_teacherUsername, string p_classroomName)
+        {
+            Classroom_SQLDTO classroomResult = this._context.Classrooms.Where(classroom => classroom.Active)
+                                                                       .FirstOrDefault(classroom => classroom.Name == p_classroomName);
+            if (classroomResult != null)
+            {
+                Teacher_SQLDTO teacherResult = this._context.Teachers.Where(teacher => teacher.Active)
+                                                                     .SingleOrDefault(teacher => teacher.Username == p_teacherUsername);
+                if (teacherResult != null)
+                {
+                    teacherResult.Classes.Remove(classroomResult);
+
+                    this._context.Update(teacherResult);
+                    this._context.SaveChanges();
+                }
+            }
         }
 
         public void UpsertTeacher(Teacher p_teacher)
@@ -45,8 +144,8 @@ namespace RPLP.DAL.SQL.Depots
                 }
             }
 
-            Teacher_SQLDTO teacherResult = this._context.Teachers.Where(teacher => teacher.Id == p_teacher.Id).SingleOrDefault();
-
+            Teacher_SQLDTO teacherResult = this._context.Teachers.Where(teacher => teacher.Active)
+                                                                 .SingleOrDefault(teacher => teacher.Id == p_teacher.Id);
             if (teacherResult != null)
             {
                 teacherResult.Username = p_teacher.Username;
@@ -64,8 +163,23 @@ namespace RPLP.DAL.SQL.Depots
                 teacher.FirstName = p_teacher.FirstName;
                 teacher.LastName = p_teacher.LastName;
                 teacher.Classes = classes;
+                teacher.Active = true;
 
                 this._context.Teachers.Add(teacher);
+                this._context.SaveChanges();
+            }
+        }
+
+        public void DeleteTeacher(string p_teacherUsername)
+        {
+            Teacher_SQLDTO teacherResult = this._context.Teachers.Where(teacher => teacher.Active)
+                                                                 .FirstOrDefault(teacher => teacher.Username == p_teacherUsername);
+
+            if (teacherResult != null)
+            {
+                teacherResult.Active = false;
+
+                this._context.Update(teacherResult);
                 this._context.SaveChanges();
             }
         }

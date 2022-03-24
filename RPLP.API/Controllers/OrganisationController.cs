@@ -21,10 +21,48 @@ namespace RPLP.API.Controllers
             return Ok(this._depot.GetOrganisations());
         }
 
-        [HttpGet("{id}")]
-        public ActionResult<Organisation> Get(int id)
+        [HttpGet("Id/{id}")]
+        public ActionResult<Organisation> GetOrganisationById(int id)
         {
             return Ok(this._depot.GetOrganisationById(id));
+        }
+
+        [HttpGet("Name/{organisationName}")]
+        public ActionResult<Organisation> GetOrganisationByName(string organisationName)
+        {
+            return Ok(this._depot.GetOrganisationByName(organisationName));
+        }
+
+        [HttpGet("Administrator/{adminUsername}/Organisations/{organisationName}")]
+        public ActionResult<Administrator> GetAdministratorsByOrganisation(string organisationName)
+        {
+            return Ok(this._depot.GetAdministratorsByOrganisation(organisationName));
+        }
+               
+        [HttpPost("Name/{organisationName}/Administrators/Add/{adminUsername}")]
+        public ActionResult AddAdministratorToOrganisation(string organisationName, string adminUsername)
+        {
+            if (string.IsNullOrWhiteSpace(organisationName) || string.IsNullOrWhiteSpace(adminUsername))
+            {
+                return BadRequest();
+            }
+
+            this._depot.AddAdministratorToOrganisation(organisationName, adminUsername);
+
+            return Created(nameof(this.AddAdministratorToOrganisation), organisationName);
+        }
+
+        [HttpPost("Name/{organisationName}/Administrators/Remove/{adminUsername}")]
+        public ActionResult RemoveAdministratorToOrganisation(string organisationName, string adminUsername)
+        {
+            if (string.IsNullOrWhiteSpace(organisationName) || string.IsNullOrWhiteSpace(adminUsername))
+            {
+                return BadRequest();
+            }
+
+            this._depot.RemoveAdministratorFromOrganisation(organisationName, adminUsername);
+
+            return NoContent();
         }
 
         [HttpPost]
@@ -38,6 +76,13 @@ namespace RPLP.API.Controllers
             this._depot.UpsertOrganisation(p_organisation);
 
             return Created(nameof(this.Post), p_organisation);
+        }
+
+        [HttpDelete("Name/{organisationName}")]
+        public ActionResult DeleteOrganisation(string organisationName)
+        {
+            this._depot.DeleteOrganisation(organisationName);
+            return NoContent();
         }
     }
 }

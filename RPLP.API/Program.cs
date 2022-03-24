@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using RPLP.DAL.SQL;
 using RPLP.DAL.SQL.Depots;
 using RPLP.SERVICES.InterfacesDepots;
 
@@ -10,9 +12,13 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddDbContext<RPLPDbContext>(
+        options => options.UseSqlServer("Server=rplp.db; Database=RPLP; User Id=sa; password=Cad3pend86!")
+        .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
+
 builder.Services.AddScoped<IDepotClassroom, DepotClassroom>();
-builder.Services.AddScoped<IDepotAdminitrator, DepotAdministrator>();
-builder.Services.AddScoped<IDepotAssignment, DepotAssignments>();
+builder.Services.AddScoped<IDepotAdministrator, DepotAdministrator>();
+builder.Services.AddScoped<IDepotAssignment, DepotAssignment>();
 builder.Services.AddScoped<IDepotComment, DepotComment>();
 builder.Services.AddScoped<IDepotOrganisation, DepotOrganisation>();
 builder.Services.AddScoped<IDepotRepository, DepotRepository>();

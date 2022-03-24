@@ -8,11 +8,11 @@ namespace RPLP.API.Controllers
     [ApiController]
     public class AdministratorController : ControllerBase
     {
-        private readonly IDepotAdminitrator _depot;
+        private readonly IDepotAdministrator _depot;
 
-        public AdministratorController(IDepotAdminitrator p_depot)
+        public AdministratorController(IDepotAdministrator p_depotAdmin)
         {
-            this._depot = p_depot;
+            this._depot = p_depotAdmin;
         }
 
         [HttpGet]
@@ -21,14 +21,53 @@ namespace RPLP.API.Controllers
             return Ok(this._depot.GetAdministrators());
         }
 
-        [HttpGet("{id}")]
-        public ActionResult<Administrator> Get(int id)
+        [HttpGet("Id/{id}")]
+        public ActionResult<Administrator> GetAdministratorById(int id)
         {
             return Ok(this._depot.GetAdministratorById(id));
         }
 
+        [HttpGet("Username/{username}")]
+        public ActionResult<Administrator> GetAdministratorByUsername(string username)
+        {
+            return Ok(this._depot.GetAdministratorByUsername(username));
+        }
+
+        [HttpGet("Username/{username}/Organisations")]
+        public ActionResult<List<Organisation>> GetAdminOrganisations(string username)
+        {
+            return Ok(this._depot.GetAdminOrganisations(username));
+        }
+
+
+        [HttpPost("Username/{adminUsername}/Orgs/Add/{organisationName}")]
+        public ActionResult AddAdminToOrganisation(string adminUsername, string organisationName)
+        {
+            if (string.IsNullOrWhiteSpace(adminUsername) || string.IsNullOrWhiteSpace(organisationName))
+            {
+                return BadRequest();
+            }
+
+            this._depot.JoinOrganisation(adminUsername, organisationName);
+
+            return Created(nameof(this.AddAdminToOrganisation), adminUsername);
+        }
+
+        [HttpPost("Username/{adminUsername}/Orgs/Remove/{organisationName}")]
+        public ActionResult RemoveAdminFromOrganisation(string adminUsername, string organisationName)
+        {
+            if (string.IsNullOrWhiteSpace(adminUsername) || string.IsNullOrWhiteSpace(organisationName))
+            {
+                return BadRequest();
+            }
+
+            this._depot.LeaveOrganisation(adminUsername, organisationName);
+
+            return NoContent(); 
+        }
+
         [HttpPost]
-        public ActionResult Post([FromBody] Administrator p_admin)
+        public ActionResult UpsertAdmin([FromBody] Administrator p_admin)
         {
             if (p_admin == null || !ModelState.IsValid)
             {
@@ -37,7 +76,15 @@ namespace RPLP.API.Controllers
 
             this._depot.UpsertAdministrator(p_admin);
 
-            return Created(nameof(this.Post), p_admin);
+            return Created(nameof(this.UpsertAdmin), p_admin);
+        }
+
+        [HttpDelete("Username/{username}")]
+        public ActionResult DeleteAdmin(string username)
+        {
+            this._depot.DeleteAdministrator(username);
+            return NoContent();
         }
     }
 }
+

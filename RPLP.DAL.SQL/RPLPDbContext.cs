@@ -5,13 +5,13 @@ namespace RPLP.DAL.SQL
 {
     public class RPLPDbContext : DbContext
     {
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public RPLPDbContext()
         {
-            optionsBuilder.UseSqlServer("Server=rplp.db; Database=RPLP; User Id=sa; password=Cad3pend86!")
-                .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+            Database.Migrate();
         }
 
-        public RPLPDbContext()
+        public RPLPDbContext(DbContextOptions<RPLPDbContext> options) :
+            base(options)
         {
             Database.Migrate();
         }

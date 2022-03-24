@@ -10,7 +10,9 @@ namespace RPLP.SERVICES.InterfacesDepots
     public interface IDepotAssignment
     {
         public List<Assignment> GetAssignments();
-        public Assignment GetAssignmentById(int id);
-        public void UpsertAssignment(Assignment assignment);
+        public Assignment GetAssignmentById(int p_id);
+        public Assignment GetAssignmentByName(string p_assignmentName);
+        public void UpsertAssignment(Assignment p_assignment);
+        public void DeleteAssignment(string p_assignmentName);
     }
 }
