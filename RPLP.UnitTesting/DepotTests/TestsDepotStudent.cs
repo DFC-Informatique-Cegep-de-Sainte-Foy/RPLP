@@ -34,6 +34,27 @@ namespace RPLP.UnitTesting.DepotTests
                     Username = "ThPaquet",
                     FirstName = "Thierry",
                     LastName = "Paquet",
+                    Classes =
+                    {
+                        new Classroom_SQLDTO()
+                        {
+                            Name = "ProjetSynthese",
+                            OrganisationName = "CEGEP Ste-Foy",
+                            Active = true
+                        },
+                        new Classroom_SQLDTO()
+                        {
+                            Name = "RPLP",
+                            OrganisationName = "CEGEP Ste-Foy",
+                            Active = true
+                        },
+                        new Classroom_SQLDTO()
+                        {
+                            Name = "OOP",
+                            OrganisationName = "CEGEP Ste-Foy",
+                            Active = false
+                        }
+                    },
                     Active = true
                 },
                 new Student_SQLDTO()
@@ -73,7 +94,7 @@ namespace RPLP.UnitTesting.DepotTests
                 Assert.DoesNotContain(students, s => s.Username == "BACenComm");
                 Assert.Contains(students, s => s.Username == "ThPaquet");
                 Assert.Contains(students, s => s.Username == "ikeameatbol");
-                Assert.Equal(2, students.Count);
+                Assert.Equal(2, students.FirstOrDefault(s => s.Username == "ThPaquet").Classes.Count);
             }
 
             this.DeleteStudentsAndRelatedTablesContent();
@@ -99,6 +120,7 @@ namespace RPLP.UnitTesting.DepotTests
                 Assert.Equal("ThPaquet", student.Username);
                 Assert.Equal("Thierry", student.FirstName);
                 Assert.Equal("Paquet", student.LastName);
+                Assert.Equal(2, student.Classes.Count);
             }
 
             this.DeleteStudentsAndRelatedTablesContent();
@@ -158,6 +180,122 @@ namespace RPLP.UnitTesting.DepotTests
                 Student student = depot.GetStudentByUsername("BACenComm");
 
                 Assert.Null(student);
+            }
+
+            this.DeleteStudentsAndRelatedTablesContent();
+        }
+
+        [Fact]
+        public void Test_GetStudentClasses()
+        {
+            this.DeleteStudentsAndRelatedTablesContent();
+            this.InsertPremadeStudents();
+
+            using (var context = new RPLPDbContext(options))
+            {
+                DepotStudent depot = new DepotStudent(context);
+                List<Classroom> classes = depot.GetStudentClasses("ThPaquet");
+
+                Assert.NotNull(classes);
+                Assert.Equal(2, classes.Count);
+                Assert.Contains(classes, c => c.Name == "RPLP");
+            }
+
+            this.DeleteStudentsAndRelatedTablesContent();
+        }
+
+        [Fact]
+        public void Test_UpsertStudent_Inserts()
+        {
+            this.DeleteStudentsAndRelatedTablesContent();
+
+            using (var context = new RPLPDbContext(options))
+            {
+                DepotStudent depot = new DepotStudent(context);
+                Student_SQLDTO? studentInContext = context.Students.FirstOrDefault(s => s.Username == "ThPaquet");
+                Assert.Null(studentInContext);
+
+                Student student = new Student()
+                {
+                    Username = "ThPaquet",
+                    FirstName = "Thierry",
+                    LastName = "Paquet"
+                };
+
+                depot.UpsertStudent(student);
+            }
+
+            using (var context = new RPLPDbContext(options))
+            {
+                Student_SQLDTO? studentInContext = context.Students
+                                                .Include(s => s.Classes)
+                                                .SingleOrDefault(s => s.Username == "ThPaquet");
+
+                Assert.NotNull(studentInContext);
+                Assert.Equal("ThPaquet", studentInContext.Username);
+                Assert.Equal("Thierry", studentInContext.FirstName);
+                Assert.Equal("Paquet", studentInContext.LastName);
+            }
+
+            this.DeleteStudentsAndRelatedTablesContent();
+        }
+
+        [Fact]
+        public void Test_UpsertStudent_Updates()
+        {
+            this.DeleteStudentsAndRelatedTablesContent();
+            this.InsertPremadeStudents();
+
+            using (var context = new RPLPDbContext(options))
+            {
+                DepotStudent depot = new DepotStudent(context);
+
+                Student_SQLDTO? studentInContext = context.Students.FirstOrDefault(s => s.Username == "ThPaquet");
+                Assert.NotNull(studentInContext);
+
+                studentInContext.Username = "Upserted";
+                studentInContext.FirstName = "Upserty";
+                studentInContext.LastName = "McUpserton";
+
+                depot.UpsertStudent(studentInContext.ToEntity());
+            }
+
+            using (var context = new RPLPDbContext(options))
+            {
+                Student_SQLDTO? studentInContext = context.Students
+                                                .Include(s => s.Classes)
+                                                .SingleOrDefault(s => s.Username == "Upserted");
+
+                Assert.NotNull(studentInContext);
+                Assert.Equal(3, studentInContext.Classes.Count);
+                Assert.Equal("Upserted", studentInContext.Username);
+                Assert.Equal("Upserty", studentInContext.FirstName);
+                Assert.Equal("McUpserton", studentInContext.LastName);
+            }
+
+            this.DeleteStudentsAndRelatedTablesContent();
+        }
+
+        [Fact]
+        public void Test_DeleteStudent()
+        {
+            this.DeleteStudentsAndRelatedTablesContent();
+            this.InsertPremadeStudents();
+
+            using (var context = new RPLPDbContext(options))
+            {
+                DepotStudent depot = new DepotStudent(context);
+
+                Student_SQLDTO? studentInContext = context.Students.SingleOrDefault(s => s.Username == "ThPaquet");
+                Assert.NotNull(studentInContext);
+
+                depot.DeleteStudent("ThPaquet");
+            }
+
+            using (var context = new RPLPDbContext(options))
+            {
+                Student_SQLDTO? studentInContext = context.Students.SingleOrDefault(s => s.Username == "ThPaquet" && s.Active);
+                Assert.Null(studentInContext);
             }
 
             this.DeleteStudentsAndRelatedTablesContent();
