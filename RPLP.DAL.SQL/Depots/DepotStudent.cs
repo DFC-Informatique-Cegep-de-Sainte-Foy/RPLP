@@ -19,6 +19,11 @@ namespace RPLP.DAL.SQL.Depots
             this._context = new RPLPDbContext(new DbContextOptionsBuilder<RPLPDbContext>().UseSqlServer("Server=rplp.db; Database=RPLP; User Id=sa; password=Cad3pend86!").Options);
         }
 
+        public DepotStudent(RPLPDbContext p_context)
+        {
+            this._context = p_context;
+        }
+
         public List<Student> GetStudents()
         {
             List<Student_SQLDTO> studentsResult = this._context.Students.Where(student => student.Active)
@@ -37,11 +42,13 @@ namespace RPLP.DAL.SQL.Depots
 
         public Student GetStudentById(int p_id)
         {
-            Student_SQLDTO studentResult = this._context.Students.Where(student => student.Active)
-                                                                 .Include(student => student.Classes.Where(classroom => classroom.Active))
-                                                                 .FirstOrDefault(student => student.Id == p_id);
+            Student_SQLDTO studentResult = this._context.Students
+                .Include(student => student.Classes.Where(classroom => classroom.Active))
+                .FirstOrDefault(student => student.Id == p_id && student.Active);
+                                                                 
+                                                                 
             if (studentResult == null)
-                return new Student();
+                return null;
 
             Student student = studentResult.ToEntityWithoutList();
 
@@ -56,11 +63,12 @@ namespace RPLP.DAL.SQL.Depots
 
         public Student GetStudentByUsername(string p_studentUsername)
         {
-            Student_SQLDTO studentResult = this._context.Students.Where(student => student.Active)
-                                                                 .Include(student => student.Classes.Where(classroom => classroom.Active))
-                                                                 .FirstOrDefault(student => student.Username == p_studentUsername);
+            Student_SQLDTO studentResult = this._context.Students
+                .Include(student => student.Classes.Where(classroom => classroom.Active))
+                .FirstOrDefault(student => student.Username == p_studentUsername && student.Active);
+                                                                 
             if (studentResult == null)
-                return new Student();
+                return null;
 
             Student student = studentResult.ToEntityWithoutList();
 
