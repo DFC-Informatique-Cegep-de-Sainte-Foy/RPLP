@@ -180,5 +180,113 @@ namespace RPLP.UnitTesting.EntityTests
             Assert.Equal(createdAt, comment.Created_at);
             Assert.Equal(updatedAt, comment.Updated_at);
         }
+
+        [Fact]
+        public void Test_OrganisationContructor_WithoutArguments()
+        {
+            Organisation organisation = new Organisation();
+
+            Assert.NotNull(organisation);
+            Assert.NotNull(organisation.Administrators);
+            Assert.Empty(organisation.Administrators);
+        }
+
+        [Fact]
+        public void Test_OrganisationContructor_WithArguments()
+        {
+            int id = 5;
+            string name = "CEGEP Ste-Foy";
+            List<Administrator> administrators = new List<Administrator>();
+
+            Organisation organisation = new Organisation(id, name, administrators);
+
+            Assert.NotNull(organisation);
+            Assert.Equal(id, organisation.Id);
+            Assert.Equal(name, organisation.Name);
+            Assert.Equal(administrators, organisation.Administrators);
+        }
+
+        [Fact]
+        public void Test_RepositoryConstructor_WithoutArguments()
+        {
+            Repository repository = new Repository();
+
+            Assert.NotNull(repository);
+        }
+
+        [Fact]
+        public void Test_RepositoryConstructor_WithArguments()
+        {
+            int id = 6;
+            string name = "ThPaquet";
+            string organisationName = "CEGEP Ste-Foy";
+            string fullName = "Thierry Paquet";
+
+            Repository repository = new Repository(id, name, organisationName, fullName);
+
+            Assert.NotNull(repository);
+            Assert.Equal(id, repository.Id);
+            Assert.Equal(name, repository.Name);
+            Assert.Equal(organisationName, repository.OrganisationName);
+            Assert.Equal(fullName, repository.FullName);
+        }
+
+        [Fact]
+        public void Test_StudentConstructor_WithoutArguments()
+        {
+            Student student = new Student();
+
+            Assert.NotNull(student);
+            Assert.NotNull(student.Classes);
+            Assert.Empty(student.Classes);
+        }
+
+        [Fact]
+        public void Test_StudentConstructor_WithArguments()
+        {
+            int id = 7;
+            string username = "ThPaquet";
+            string firstName = "Thierry";
+            string lastName = "Paquet";
+            List<Classroom> classes = new List<Classroom>();
+
+            Student student = new Student(id, username, firstName, lastName, classes);
+
+            Assert.NotNull(student);
+            Assert.Equal(id, student.Id);
+            Assert.Equal(username, student.Username);
+            Assert.Equal(firstName, student.FirstName);
+            Assert.Equal(lastName, student.LastName);
+            Assert.Equal(classes, student.Classes);
+        }
+
+        [Fact]
+        public void Test_TeacherConstructor_WithoutArguments()
+        {
+            Teacher teacher = new Teacher();
+
+            Assert.NotNull(teacher);
+            Assert.NotNull(teacher.Classes);
+            Assert.Empty(teacher.Classes);
+        }
+
+        [Fact]
+        public void Test_TeacherConstructor_WithArguments()
+        {
+            int id = 7;
+            string username = "ThPaquet";
+            string firstName = "Thierry";
+            string lastName = "Paquet";
+            List<Classroom> classes = new List<Classroom>();
+
+            Teacher teacher = new Teacher(id, username, firstName, lastName, classes);
+
+            Assert.NotNull(teacher);
+            Assert.Equal(id, teacher.Id);
+            Assert.Equal(username, teacher.Username);
+            Assert.Equal(firstName, teacher.FirstName);
+            Assert.Equal(lastName, teacher.LastName);
+            Assert.Equal(classes, teacher.Classes);
+        }
     }
 }
