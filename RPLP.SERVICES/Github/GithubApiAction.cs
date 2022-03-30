@@ -163,11 +163,15 @@ namespace RPLP.SERVICES.Github
 
         private async Task<string> NewBranchForFeedbackGithubApiRequest(string p_githubLink, string p_sha, string p_newBranchName)
         {
-            HttpRequestMessage requestMessage = new HttpRequestMessage(new HttpMethod("POST"), p_githubLink);
+            Branch_JSONRequest branch_request = new Branch_JSONRequest
+            {
+                reference = $"refs/heads/{p_newBranchName}",
+                sha = p_sha,
+            };
 
-            requestMessage.Content = new StringContent("{\"ref\":\"refs/heads/" + p_newBranchName + "\",\"sha\":\"" + p_sha + "\"}", Encoding.UTF8, "application/json");
+            string branchRequest = JsonConvert.SerializeObject(branch_request);
 
-            HttpResponseMessage response = _httpClient.SendAsync(requestMessage).Result;
+            HttpResponseMessage response = _httpClient.PostAsync(p_githubLink, new StringContent(branchRequest, Encoding.UTF8, "application/json")).Result;
 
             return response.StatusCode.ToString();
         }
