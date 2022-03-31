@@ -28,7 +28,6 @@ namespace RPLP.DAL.SQL.Depots
         {
             List<Administrator_SQLDTO> adminResult = this._context.Administrators.Where(admin => admin.Active)
                                                                                  .Include(admin => admin.Organisations.Where(organisation => organisation.Active)).ToList();
-
             List<Administrator> administrators = adminResult.Select(admin => admin.ToEntityWithoutList()).ToList();
 
             for (int i = 0; i < adminResult.Count; i++)
