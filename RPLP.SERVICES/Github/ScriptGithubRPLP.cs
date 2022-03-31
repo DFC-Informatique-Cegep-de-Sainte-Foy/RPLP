@@ -52,6 +52,8 @@ namespace RPLP.SERVICES.Github
             foreach (Repository repository in repositoriesToAssign)
             {
                 result = prepareRepositoryAndCreatePullRequest(p_organisationName, repository.Name, studentDictionary, p_reviewsPerRepository);
+                if (result != "Created")
+                    return result;
             }
 
             return result;
