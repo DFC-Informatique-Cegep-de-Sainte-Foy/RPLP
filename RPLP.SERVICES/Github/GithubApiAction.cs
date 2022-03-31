@@ -32,7 +32,7 @@ namespace RPLP.SERVICES.Github
         {
             _httpClient = new HttpClient();
             _httpClient.BaseAddress = new Uri("https://api.github.com");
-            _httpClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("RPLP"));
+            _httpClient.DefaultRequestHeaders.UserAgent.Add(new System.Net.Http.Headers.ProductInfoHeaderValue("RPLP", "1.0"));
             _httpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
             _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Token", p_token);
         }
