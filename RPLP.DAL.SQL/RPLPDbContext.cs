@@ -7,13 +7,40 @@ namespace RPLP.DAL.SQL
     {
         public RPLPDbContext()
         {
-            Database.Migrate();
+           Database.Migrate();
         }
 
         public RPLPDbContext(DbContextOptions<RPLPDbContext> options) :
             base(options)
         {
-            Database.Migrate();
+           Database.Migrate();
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Administrator_SQLDTO>()
+                .HasIndex(a => a.Email)
+                .IsUnique();
+
+            modelBuilder.Entity<Administrator_SQLDTO>()
+                .HasIndex(a => a.Username)
+                .IsUnique();
+
+            modelBuilder.Entity<Student_SQLDTO>()
+                .HasIndex(a => a.Email)
+                .IsUnique();
+
+            modelBuilder.Entity<Student_SQLDTO>()
+                .HasIndex(a => a.Username)
+                .IsUnique();
+
+            modelBuilder.Entity<Teacher_SQLDTO>()
+                .HasIndex(a => a.Email)
+                .IsUnique();
+
+            modelBuilder.Entity<Teacher_SQLDTO>()
+                .HasIndex(a => a.Username)
+                .IsUnique();
         }
 
         public DbSet<Classroom_SQLDTO> Classrooms { get; set; }
