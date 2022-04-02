@@ -31,6 +31,7 @@ namespace RPLP.UnitTesting.EntityTests
                 FirstName = "Thierry",
                 LastName = "Paquet",
                 Username = "ThPaquet",
+                Email = "ThPaquet@hotmail.com",
                 Token = "Token",
                 Organisations = new List<Organisation>()
                 {
@@ -50,6 +51,7 @@ namespace RPLP.UnitTesting.EntityTests
             Assert.Equal(administrator.Username, administrator_SQLDTO.Username);
             Assert.Equal(administrator.FirstName, administrator_SQLDTO.FirstName);
             Assert.Equal(administrator.LastName, administrator_SQLDTO.LastName);
+            Assert.Equal(administrator.Email, administrator_SQLDTO.Email);
             Assert.Equal(administrator.Token, administrator_SQLDTO.Token);
             Assert.Equal(administrator.Organisations.First().Name, administrator_SQLDTO.Organisations.First().Name);
             Assert.True(administrator_SQLDTO.Active);
@@ -284,6 +286,7 @@ namespace RPLP.UnitTesting.EntityTests
                 Username = "ThPaquet",
                 FirstName = "Thierry",
                 LastName = "Paquet",
+                Email = "ThPaquet@hotmail.com",
                 Classes = new List<Classroom>()
                 {
                     new Classroom()
@@ -301,6 +304,7 @@ namespace RPLP.UnitTesting.EntityTests
             Assert.Equal(student.Username, student_SQLDTO.Username);
             Assert.Equal(student.FirstName, student_SQLDTO.FirstName);
             Assert.Equal(student.LastName, student_SQLDTO.LastName);
+            Assert.Equal(student.Email, student_SQLDTO.Email);
             Assert.Equal(student.Classes.First().Name, student_SQLDTO.Classes.First().Name);
             Assert.True(student_SQLDTO.Active);
         }
@@ -325,6 +329,7 @@ namespace RPLP.UnitTesting.EntityTests
                 Username = "ThPaquet",
                 FirstName = "Thierry",
                 LastName = "Paquet",
+                Email = "ThPaquet@hotmail.com",
                 Classes = new List<Classroom>()
                 {
                     new Classroom()
@@ -342,6 +347,7 @@ namespace RPLP.UnitTesting.EntityTests
             Assert.Equal(teacher.Username, teacher_SQLDTO.Username);
             Assert.Equal(teacher.FirstName, teacher_SQLDTO.FirstName);
             Assert.Equal(teacher.LastName, teacher_SQLDTO.LastName);
+            Assert.Equal(teacher.Email, teacher_SQLDTO.Email);
             Assert.Equal(teacher.Classes.First().Name, teacher_SQLDTO.Classes.First().Name);
             Assert.True(teacher_SQLDTO.Active);
         }
