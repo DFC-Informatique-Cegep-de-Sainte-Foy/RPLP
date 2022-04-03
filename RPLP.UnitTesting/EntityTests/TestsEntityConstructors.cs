@@ -29,13 +29,15 @@ namespace RPLP.UnitTesting.EntityTests
             string token = "Token";
             string firstName = "Thierry";
             string lastName = "Paquet";
+            string email = "Th_Paquet@hotmail.com";
             List<Organisation> organisations = new List<Organisation>();
-            Administrator administrator = new Administrator(id, username, token, firstName, lastName, organisations);
+            Administrator administrator = new Administrator(id, username, token, firstName, lastName, email, organisations);
 
             Assert.Equal(id, administrator.Id);
             Assert.Equal(username, administrator.Username);
             Assert.Equal(token, administrator.Token);
             Assert.Equal(lastName, administrator.LastName);
+            Assert.Equal(email, administrator.Email);
             Assert.Equal(organisations, administrator.Organisations);
         }
 
@@ -248,15 +250,17 @@ namespace RPLP.UnitTesting.EntityTests
             string username = "ThPaquet";
             string firstName = "Thierry";
             string lastName = "Paquet";
+            string email = "Th_Paquet@hotmail.com";
             List<Classroom> classes = new List<Classroom>();
 
-            Student student = new Student(id, username, firstName, lastName, classes);
+            Student student = new Student(id, username, firstName, lastName, email, classes);
 
             Assert.NotNull(student);
             Assert.Equal(id, student.Id);
             Assert.Equal(username, student.Username);
             Assert.Equal(firstName, student.FirstName);
             Assert.Equal(lastName, student.LastName);
+            Assert.Equal(email, student.Email);
             Assert.Equal(classes, student.Classes);
         }
 
@@ -277,15 +281,17 @@ namespace RPLP.UnitTesting.EntityTests
             string username = "ThPaquet";
             string firstName = "Thierry";
             string lastName = "Paquet";
+            string email = "Th_Paquet@hotmail.com";
             List<Classroom> classes = new List<Classroom>();
 
-            Teacher teacher = new Teacher(id, username, firstName, lastName, classes);
+            Teacher teacher = new Teacher(id, username, firstName, lastName, email, classes);
 
             Assert.NotNull(teacher);
             Assert.Equal(id, teacher.Id);
             Assert.Equal(username, teacher.Username);
             Assert.Equal(firstName, teacher.FirstName);
             Assert.Equal(lastName, teacher.LastName);
+            Assert.Equal(email, teacher.Email);
             Assert.Equal(classes, teacher.Classes);
         }
     }
