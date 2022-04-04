@@ -17,4 +17,9 @@
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.14.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\RPLP.DAL.SQL\RPLP.DAL.SQL.csproj" />
+    <ProjectReference Include="..\RPLP.SERVICES\RPLP.SERVICES.csproj" />
+  </ItemGroup>
+
 </Project>

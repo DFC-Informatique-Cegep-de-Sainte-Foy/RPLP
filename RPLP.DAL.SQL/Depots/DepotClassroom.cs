@@ -351,5 +351,19 @@ namespace RPLP.DAL.SQL.Depots
                 this._context.SaveChanges();
             }
         }
+
+        public List<Classroom> GetClassroomsByOrganisationName(string p_organisationName)
+        {
+            List<Classroom_SQLDTO> classesResult = this._context.Classrooms.Where(classroom => classroom.Active && classroom.OrganisationName == p_organisationName).ToList();
+            
+            if (classesResult.Count <= 0)
+                return new List<Classroom>();
+            else
+            {
+                List<Classroom> classes = classesResult.Select(classroom => classroom.ToEntityWithoutList()).ToList();
+
+                return classes;
+            }
+        }
     }
 }

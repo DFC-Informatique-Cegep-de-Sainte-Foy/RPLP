@@ -1,4 +1,5 @@
-﻿using RPLP.DAL.DTO.Sql;
+﻿using Microsoft.EntityFrameworkCore;
+using RPLP.DAL.DTO.Sql;
 using RPLP.ENTITES;
 using RPLP.SERVICES.InterfacesDepots;
 using System;
@@ -15,7 +16,7 @@ namespace RPLP.DAL.SQL.Depots
 
         public DepotAssignment()
         {
-            this._context = new RPLPDbContext();
+            this._context = new RPLPDbContext(new DbContextOptionsBuilder<RPLPDbContext>().UseSqlServer("Server=rplp.db; Database=RPLP; User Id=sa; password=Cad3pend86!").Options);
         }
 
         public DepotAssignment(RPLPDbContext p_context)
