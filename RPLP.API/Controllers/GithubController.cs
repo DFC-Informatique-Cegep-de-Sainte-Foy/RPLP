@@ -21,10 +21,18 @@ namespace RPLP.API.Controllers
         }
 
         [HttpGet("/test/{organisationName}/{classroomName}/{assignmentName}/{numberOfReviews}")]
-        public ActionResult<IEnumerable<Classroom_SQLDTO>> GetClassrooms(string organisationName, string classroomName, string assignmentName, int numberOfReviews)
+        public ActionResult StartScript(string organisationName, string classroomName, string assignmentName, int numberOfReviews)
         {
-            return Ok(this._scriptGithub.ScriptAssignStudentToAssignmentReview(organisationName, classroomName, assignmentName, numberOfReviews));
-            //return Ok();
+            try
+            {
+                this._scriptGithub.ScriptAssignStudentToAssignmentReview(organisationName, classroomName, assignmentName, numberOfReviews);
+                return Ok("Assigned successfully");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
         }
 
         [HttpGet("{organisationName}")]
@@ -65,14 +73,14 @@ namespace RPLP.API.Controllers
         }
 
         [HttpPost("{organisationName}/{repositoryName}/Assign/PullRequest/{pullRequest}/Student/{studentUsername}")]
-        public ActionResult<string> AssignStidentToPR(string organisationName, string repositoryName, string pullRequest, string studentUsername)
+        public ActionResult<string> AssignStudentToPR(string organisationName, string repositoryName, string pullRequest, string studentUsername)
         {
             return Ok(this._githubAction.AssignReviewerToPullRequestGitHub(organisationName, repositoryName, pullRequest, studentUsername));
         }
 
 
         [HttpPut("{organisationName}/{repositoryName}/Add/Collaborator/Student/{studentUsername}")]
-        public ActionResult<string> AssignStidentToPR(string organisationName, string repositoryName, string studentUsername)
+        public ActionResult<string> AssignStudentToPR(string organisationName, string repositoryName, string studentUsername)
         {
             return Ok(this._githubAction.AddStudentAsCollaboratorToPeerRepositoryGithub(organisationName, repositoryName, studentUsername));
         }

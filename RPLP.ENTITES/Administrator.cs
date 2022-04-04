@@ -13,6 +13,7 @@ namespace RPLP.ENTITES
         public string Token { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public string Email { get; set; }
         public List<Organisation> Organisations { get; set; }
 
         public Administrator()
@@ -20,13 +21,14 @@ namespace RPLP.ENTITES
             this.Organisations = new List<Organisation>();
         }
 
-        public Administrator(int p_id, string p_username,string p_token ,string p_firstName, string p_lastName, List<Organisation> p_organisations)
+        public Administrator(int p_id, string p_username,string p_token ,string p_firstName, string p_lastName, string p_email, List<Organisation> p_organisations)
         {
             this.Id = p_id;
             this.Username = p_username;
             this.Token = p_token;
             this.FirstName = p_firstName;
             this.LastName = p_lastName;
+            this.Email = p_email;
             this.Organisations = p_organisations;
         }
     }
