@@ -123,6 +123,7 @@ namespace RPLP.DAL.SQL.Depots
                 studentResult.Username = p_student.Username;
                 studentResult.FirstName = p_student.FirstName;
                 studentResult.LastName = p_student.LastName;
+                studentResult.Email = p_student.Email;
                 studentResult.Classes = classes;
 
                 this._context.Update(studentResult);
@@ -134,6 +135,7 @@ namespace RPLP.DAL.SQL.Depots
                 student.Username = p_student.Username;
                 student.FirstName = p_student.FirstName;
                 student.LastName = p_student.LastName;
+                student.Email = p_student.Email;
                 student.Classes = classes;
 
                 this._context.Students.Add(student);

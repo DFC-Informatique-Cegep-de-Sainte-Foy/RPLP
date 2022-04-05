@@ -14,6 +14,7 @@ namespace RPLP.UnitTesting.DepotTests
     {
         private static readonly DbContextOptions<RPLPDbContext> options = new DbContextOptionsBuilder<RPLPDbContext>()
                 .UseSqlServer("Server=localhost,1434; Database=RPLP; User Id=sa; password=Cad3pend86!")
+                //.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
                 .Options;
 
         private void DeleteOrganisationsAndRelatedTablesContent()
@@ -43,6 +44,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Username = "ThPaquet",
                     FirstName = "Thierry",
                     LastName = "Paquet",
+                    Email = "ThPaquet@hotmail.com",
                     Token = "token",
                     Active = true
                 },
@@ -51,6 +53,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Username = "ikeameatbol",
                     FirstName = "Jonathan",
                     LastName = "Blouin",
+                    Email = "ikeameatbol@hotmail.com",
                     Token = "token",
                     Active = true
                 },
@@ -59,6 +62,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Username = "BACenComm",
                     FirstName = "Melissa",
                     LastName = "Lachapelle",
+                    Email = "BACenComm@hotmail.com",
                     Token = "token",
                     Active = false
                 }
@@ -182,6 +186,7 @@ namespace RPLP.UnitTesting.DepotTests
                 FirstName = "Pierre-Francois",
                 LastName = "Leon",
                 Token = "token",
+                Email = "email",
                 Active = true
             };
 
@@ -270,6 +275,7 @@ namespace RPLP.UnitTesting.DepotTests
             string administratorUserName = "ThPaquet";
             string administratorFirstName = "Thierry";
             string administratorLastName = "Paquet";
+            string administratorEmail = "email";
             string administratorToken = "token";
 
             using (var context = new RPLPDbContext(options))
@@ -289,6 +295,7 @@ namespace RPLP.UnitTesting.DepotTests
                             Username = administratorUserName,
                             FirstName = administratorFirstName,
                             LastName = administratorLastName,
+                            Email = administratorEmail,
                             Token = administratorToken
                         }
                     }
@@ -320,31 +327,16 @@ namespace RPLP.UnitTesting.DepotTests
             this.DeleteOrganisationsAndRelatedTablesContent();
             this.InsertPremadeOrganisations();
 
-            string organisationName = "RPLP";
-            string administratorUserName = "JackJackson";
-            string administratorFirstName = "Jack";
-            string administratorLastName = "Jackson";
-            string administratorToken = "anotherToken";
+            string name = "testOrg";
 
             using (var context = new RPLPDbContext(options))
             {
+                DepotOrganisation depot = new DepotOrganisation(context);
+
                 Organisation_SQLDTO? organisation = context.Organisations.FirstOrDefault(o => o.Name == "CEGEP Ste-Foy");
                 Assert.NotNull(organisation);
 
-                DepotOrganisation depot = new DepotOrganisation(context);
-
-                Administrator_SQLDTO administrator = new Administrator_SQLDTO()
-                {
-                    Username = administratorUserName,
-                    FirstName = administratorFirstName,
-                    LastName = administratorLastName,
-                    Token = administratorToken,
-                    Active = true
-                };
-
-                organisation.Name = organisationName;
-                organisation.Administrators.Add(administrator);
-
+                organisation.Name = name;
 
                 depot.UpsertOrganisation(organisation.ToEntity());
             }
@@ -354,13 +346,16 @@ namespace RPLP.UnitTesting.DepotTests
                 Organisation_SQLDTO? organisation = context.Organisations
                                                             .Include(o => o.Administrators.Where(a => a.Active))
                                                             .FirstOrDefault(o => o.Name == "RPLP");
+                Assert.Null(organisation);
+
+                organisation = context.Organisations
+                                        .Include(o => o.Administrators.Where(a => a.Active))
+                                        .FirstOrDefault(o => o.Name == name);
                 Assert.NotNull(organisation);
-                Assert.Equal(3, organisation.Administrators.Count);
-                Assert.Equal(organisationName, organisation.Name);
-                Assert.NotNull(organisation.Administrators.FirstOrDefault(a => a.Username == administratorUserName));
-                Assert.NotNull(organisation.Administrators.FirstOrDefault(a => a.FirstName == administratorFirstName));
-                Assert.NotNull(organisation.Administrators.FirstOrDefault(a => a.LastName == administratorLastName));
-                Assert.NotNull(organisation.Administrators.FirstOrDefault(a => a.Token == administratorToken));
+
+
+                Assert.Equal(2, organisation.Administrators.Count);
+                Assert.Equal(name, organisation.Name);
             }
 
             this.DeleteOrganisationsAndRelatedTablesContent();

@@ -14,12 +14,14 @@ namespace RPLP.UnitTesting.DepotTests
     {
         private static readonly DbContextOptions<RPLPDbContext> options = new DbContextOptionsBuilder<RPLPDbContext>()
                 .UseSqlServer("Server=localhost,1434; Database=RPLP; User Id=sa; password=Cad3pend86!")
+                //.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
                 .Options;
 
         private void DeleteStudentsAndRelatedTablesContent()
         {
             using (var context = new RPLPDbContext(options))
             {
+                context.Database.ExecuteSqlRaw("DELETE from Assignments;");
                 context.Database.ExecuteSqlRaw("DELETE from Students;");
                 context.Database.ExecuteSqlRaw("DELETE from Classrooms;");
             }
@@ -34,6 +36,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Username = "ThPaquet",
                     FirstName = "Thierry",
                     LastName = "Paquet",
+                    Email = "ThPaquet@hotmail.com",
                     Classes =
                     {
                         new Classroom_SQLDTO()
@@ -62,6 +65,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Username = "ikeameatbol",
                     FirstName = "Jonathan",
                     LastName = "Blouin",
+                    Email = "ikeameatbol@hotmail.com",
                     Active = true
                 },
                 new Student_SQLDTO()
@@ -69,6 +73,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Username = "BACenComm",
                     FirstName = "Melissa",
                     LastName = "Lachapelle",
+                    Email = "BACenComm@hotmail.com",
                     Active = false
                 }
             };
@@ -219,7 +224,8 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Username = "ThPaquet",
                     FirstName = "Thierry",
-                    LastName = "Paquet"
+                    LastName = "Paquet",
+                    Email = "ThPaquet@hotmail.com"
                 };
 
                 depot.UpsertStudent(student);
@@ -235,6 +241,7 @@ namespace RPLP.UnitTesting.DepotTests
                 Assert.Equal("ThPaquet", studentInContext.Username);
                 Assert.Equal("Thierry", studentInContext.FirstName);
                 Assert.Equal("Paquet", studentInContext.LastName);
+                Assert.Equal("ThPaquet@hotmail.com", studentInContext.Email);
             }
 
             this.DeleteStudentsAndRelatedTablesContent();

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static RPLP.DAL.SQL.Depots.VerificatorForDepot;
 
 namespace RPLP.DAL.SQL.Depots
 {
@@ -45,7 +46,7 @@ namespace RPLP.DAL.SQL.Depots
                                                                            .Include(admin => admin.Organisations.Where(organisation => organisation.Active))
                                                                            .FirstOrDefault(admin => admin.Id == p_id);
             if (adminResult == null)
-                return new Administrator();
+                return null;
 
             Administrator administrator = adminResult.ToEntityWithoutList();
 
@@ -64,7 +65,7 @@ namespace RPLP.DAL.SQL.Depots
                                                                            .Include(admin => admin.Organisations.Where(organisation => organisation.Active))
                                                                            .FirstOrDefault(admin => admin.Username == p_adminUsername);
             if (adminResult == null)
-                return new Administrator();
+                return null;
 
             Administrator administrator = adminResult.ToEntityWithoutList();
 
@@ -101,13 +102,11 @@ namespace RPLP.DAL.SQL.Depots
 
         public void JoinOrganisation(string p_adminUsername, string p_organisationName)
         {
-            Administrator_SQLDTO adminResult = this._context.Administrators.Where(admin => admin.Active)
-                                                                           .Include(admin => admin.Organisations.Where(organisation => organisation.Active))
-                                                                           .FirstOrDefault(admin => admin.Username == p_adminUsername);
+            Administrator_SQLDTO adminResult = this._context.Administrators.Include(admin => admin.Organisations.Where(organisation => organisation.Active))
+                                                                           .FirstOrDefault(admin => admin.Username == p_adminUsername && admin.Active);
             if (adminResult != null)
             {
-                Organisation_SQLDTO organisationResult = this._context.Organisations.Where(organisation => organisation.Active)
-                                                                                    .SingleOrDefault(organisation => organisation.Name == p_organisationName);
+                Organisation_SQLDTO organisationResult = this._context.Organisations.SingleOrDefault(organisation => organisation.Name == p_organisationName && organisation.Active);
 
                 if (organisationResult != null && !adminResult.Organisations.Contains(organisationResult))
                 {
@@ -141,6 +140,7 @@ namespace RPLP.DAL.SQL.Depots
 
         public void UpsertAdministrator(Administrator p_administrator)
         {
+            VerificatorForDepot verificator = new VerificatorForDepot(this._context);
             List<Organisation_SQLDTO> organisations = new List<Organisation_SQLDTO>();
 
             if (p_administrator.Organisations.Count >= 1)
@@ -151,17 +151,37 @@ namespace RPLP.DAL.SQL.Depots
                 }
             }
 
-            Administrator_SQLDTO adminResult = this._context.Administrators.Where(admin => admin.Active)
-                                                                           .Include(admin => admin.Organisations.Where(organisation => organisation.Active))
-                                                                           .FirstOrDefault(admin => admin.Id == p_administrator.Id);
+            Administrator_SQLDTO? adminResult = this._context.Administrators
+                .AsNoTracking()
+                .Include(admin => admin.Organisations.Where(organisation => organisation.Active))
+                .FirstOrDefault(admin => admin.Id == p_administrator.Id);
+
+            if ((adminResult != null && adminResult.Username != p_administrator.Username && 
+                verificator.CheckUsernameTaken(p_administrator.Username)) ||
+                adminResult == null && verificator.CheckUsernameTaken(p_administrator.Username))
+            {
+                throw new ArgumentException("Username already taken.");
+            }
+
+            if ((adminResult != null && adminResult.Email != p_administrator.Email && verificator.CheckEmailTaken(p_administrator.Email)) ||
+                adminResult == null && verificator.CheckEmailTaken(p_administrator.Email))
+            {
+                throw new ArgumentException("Email already in use.");
+            }
 
             if (adminResult != null)
             {
+                if (!adminResult.Active)
+                {
+                    throw new ArgumentException("Deleted accounts cannot be updated.");
+                }
+
                 adminResult.Id = p_administrator.Id;
                 adminResult.Username = p_administrator.Username;
                 adminResult.Token = p_administrator.Token;
                 adminResult.FirstName = p_administrator.FirstName;
                 adminResult.LastName = p_administrator.LastName;
+                adminResult.Email = p_administrator.Email;
                 adminResult.Organisations = organisations;
 
                 this._context.Update(adminResult);
@@ -169,11 +189,13 @@ namespace RPLP.DAL.SQL.Depots
             }
             else
             {
+
                 Administrator_SQLDTO adminDTO = new Administrator_SQLDTO();
                 adminDTO.Username = p_administrator.Username;
                 adminDTO.Token = p_administrator.Token;
                 adminDTO.FirstName = p_administrator.FirstName;
                 adminDTO.LastName = p_administrator.LastName;
+                adminDTO.Email = p_administrator.Email;
                 adminDTO.Organisations = organisations;
                 adminDTO.Active = true;
 

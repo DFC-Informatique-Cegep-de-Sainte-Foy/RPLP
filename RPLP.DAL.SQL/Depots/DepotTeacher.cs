@@ -126,11 +126,12 @@ namespace RPLP.DAL.SQL.Depots
             if (classroomResult != null)
             {
                 Teacher_SQLDTO teacherResult = this._context.Teachers
+                    .Include(t => t.Classes)
                     .SingleOrDefault(teacher => teacher.Username == p_teacherUsername && teacher.Active);
+
                 if (teacherResult != null)
                 {
                     teacherResult.Classes.Remove(classroomResult);
-
                     this._context.Update(teacherResult);
                     this._context.SaveChanges();
                 }
@@ -155,6 +156,7 @@ namespace RPLP.DAL.SQL.Depots
                 teacherResult.Username = p_teacher.Username;
                 teacherResult.FirstName = p_teacher.FirstName;
                 teacherResult.LastName = p_teacher.LastName;
+                teacherResult.Email = p_teacher.Email;
                 teacherResult.Classes = classes;
 
                 this._context.Update(teacherResult);
@@ -166,6 +168,7 @@ namespace RPLP.DAL.SQL.Depots
                 teacher.Username = p_teacher.Username;
                 teacher.FirstName = p_teacher.FirstName;
                 teacher.LastName = p_teacher.LastName;
+                teacher.Email = p_teacher.Email;
                 teacher.Classes = classes;
                 teacher.Active = true;
 
