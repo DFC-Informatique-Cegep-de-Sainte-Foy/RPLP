@@ -153,7 +153,6 @@ namespace RPLP.DAL.SQL.Depots
 
             Administrator_SQLDTO? adminResult = this._context.Administrators
                 .AsNoTracking()
-                .Include(admin => admin.Organisations.Where(organisation => organisation.Active))
                 .FirstOrDefault(admin => admin.Id == p_administrator.Id);
 
             if ((adminResult != null && adminResult.Username != p_administrator.Username && 
@@ -182,7 +181,6 @@ namespace RPLP.DAL.SQL.Depots
                 adminResult.FirstName = p_administrator.FirstName;
                 adminResult.LastName = p_administrator.LastName;
                 adminResult.Email = p_administrator.Email;
-                adminResult.Organisations = organisations;
 
                 this._context.Update(adminResult);
                 this._context.SaveChanges();
@@ -196,7 +194,6 @@ namespace RPLP.DAL.SQL.Depots
                 adminDTO.FirstName = p_administrator.FirstName;
                 adminDTO.LastName = p_administrator.LastName;
                 adminDTO.Email = p_administrator.Email;
-                adminDTO.Organisations = organisations;
                 adminDTO.Active = true;
 
                 this._context.Administrators.Add(adminDTO);
