@@ -154,6 +154,18 @@ namespace RPLP.UnitTesting.APITests
         }
 
         [Fact]
+        public void Test_Post_CatchesException_ReturnBadRequest()
+        {
+            Mock<IDepotTeacher> depot = new Mock<IDepotTeacher>();
+            TeacherController controller = new TeacherController(depot.Object);
+            Teacher teacher = new Teacher();
+
+            depot.Setup(d => d.UpsertTeacher(teacher)).Throws<ArgumentException>();
+
+            Assert.IsType<BadRequestObjectResult>(controller.UpsertTeacher(teacher));
+        }
+
+        [Fact]
         public void Test_UpsertTeacher_Created()
         {
             Mock<IDepotTeacher> depot = new Mock<IDepotTeacher>();
