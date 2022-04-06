@@ -3,6 +3,7 @@ using RPLP.DAL.DTO.Sql;
 using RPLP.DAL.SQL;
 using RPLP.DAL.SQL.Depots;
 using RPLP.ENTITES;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
@@ -257,7 +258,9 @@ namespace RPLP.UnitTesting.DepotTests
             {
                 DepotStudent depot = new DepotStudent(context);
 
-                Student_SQLDTO? studentInContext = context.Students.FirstOrDefault(s => s.Username == "ThPaquet");
+                Student_SQLDTO? studentInContext = context.Students
+                    .AsNoTracking()
+                    .FirstOrDefault(s => s.Username == "ThPaquet");
                 Assert.NotNull(studentInContext);
 
                 studentInContext.Username = "Upserted";
@@ -270,6 +273,7 @@ namespace RPLP.UnitTesting.DepotTests
             using (var context = new RPLPDbContext(options))
             {
                 Student_SQLDTO? studentInContext = context.Students
+                                                .AsNoTracking()
                                                 .Include(s => s.Classes)
                                                 .SingleOrDefault(s => s.Username == "Upserted");
 
@@ -303,6 +307,140 @@ namespace RPLP.UnitTesting.DepotTests
             {
                 Student_SQLDTO? studentInContext = context.Students.SingleOrDefault(s => s.Username == "ThPaquet" && s.Active);
                 Assert.Null(studentInContext);
+            }
+
+            this.DeleteStudentsAndRelatedTablesContent();
+        }
+
+        [Fact]
+        public void Test_UpsertStudent_ThrowUpdateDeletedAccount()
+        {
+            this.DeleteStudentsAndRelatedTablesContent();
+            this.InsertPremadeStudents();
+
+            using (var context = new RPLPDbContext(options))
+            {
+                DepotStudent depot = new DepotStudent(context);
+
+                Student_SQLDTO? student = context.Students.SingleOrDefault(a => a.Username == "BACenComm");
+
+                Assert.Throws<ArgumentException>(
+                    () =>
+                    {
+                        depot.UpsertStudent(student.ToEntityWithoutList());
+                    });
+            }
+
+            this.DeleteStudentsAndRelatedTablesContent();
+        }
+
+        [Fact]
+        public void Test_UpsertStudent_ThrowUsernameTaken_UsernameTakenNotActive()
+        {
+            this.DeleteStudentsAndRelatedTablesContent();
+            this.InsertPremadeStudents();
+
+            using (var context = new RPLPDbContext(options))
+            {
+                DepotStudent depot = new DepotStudent(context);
+
+                Student_SQLDTO? student = context.Students.SingleOrDefault(a => a.Username == "ikeameatbol");
+                Assert.NotNull(student);
+
+                student.Username = "BACenComm";
+
+                Assert.Throws<ArgumentException>(
+                    () =>
+                    {
+                        depot.UpsertStudent(student.ToEntityWithoutList());
+                    });
+            }
+
+            this.DeleteStudentsAndRelatedTablesContent();
+        }
+
+        [Fact]
+        public void Test_UpsertStudent_ThrowUsernameTaken_NewAdmin()
+        {
+            this.DeleteStudentsAndRelatedTablesContent();
+            this.InsertPremadeStudents();
+
+            using (var context = new RPLPDbContext(options))
+            {
+                DepotStudent depot = new DepotStudent(context);
+
+                Student_SQLDTO student = new Student_SQLDTO()
+                {
+                    Username = "ThPaquet",
+                    FirstName = "Thierry",
+                    LastName = "Paquet",
+                    Classes = new List<Classroom_SQLDTO>(),
+                    Email = "swerve@hotmail.com",
+                    Active = true
+                };
+
+                Assert.Throws<ArgumentException>(
+                    () =>
+                    {
+                        depot.UpsertStudent(student.ToEntityWithoutList());
+                    });
+            }
+
+            this.DeleteStudentsAndRelatedTablesContent();
+        }
+
+        [Fact]
+        public void Test_UpsertStudent_ThrowEmailTaken_EmailTakenNotActive()
+        {
+            this.DeleteStudentsAndRelatedTablesContent();
+            this.InsertPremadeStudents();
+
+            using (var context = new RPLPDbContext(options))
+            {
+
+                DepotStudent depot = new DepotStudent(context);
+
+                Student_SQLDTO? student = context.Students.SingleOrDefault(a => a.Email == "ikeameatbol@hotmail.com");
+                Assert.NotNull(student);
+
+
+                student.Email = "BACenComm@hotmail.com";
+
+                Assert.Throws<ArgumentException>(
+                    () =>
+                    {
+                        depot.UpsertStudent(student.ToEntityWithoutList());
+                    });
+            }
+
+            this.DeleteStudentsAndRelatedTablesContent();
+        }
+
+        [Fact]
+        public void Test_UpsertStudent_ThrowEmailTaken_NewAdmin()
+        {
+            this.DeleteStudentsAndRelatedTablesContent();
+            this.InsertPremadeStudents();
+
+            using (var context = new RPLPDbContext(options))
+            {
+                DepotStudent depot = new DepotStudent(context);
+
+                Student_SQLDTO student = new Student_SQLDTO()
+                {
+                    Username = "Swerve",
+                    FirstName = "Thierry",
+                    LastName = "Paquet",
+                    Classes = new List<Classroom_SQLDTO>(),
+                    Email = "ThPaquet@hotmail.com",
+                    Active = true
+                };
+
+                Assert.Throws<ArgumentException>(
+                    () =>
+                    {
+                        depot.UpsertStudent(student.ToEntityWithoutList());
+                    });
             }
 
             this.DeleteStudentsAndRelatedTablesContent();

@@ -45,8 +45,8 @@ namespace RPLP.DAL.SQL.Depots
             Teacher_SQLDTO teacherResult = this._context.Teachers
                 .Include(teacher => teacher.Classes.Where(classroom => classroom.Active))
                 .FirstOrDefault(teacher => teacher.Id == p_id && teacher.Active);
-                                                                 
-                                                                 
+
+
             if (teacherResult == null)
                 return null;
 
@@ -141,6 +141,7 @@ namespace RPLP.DAL.SQL.Depots
         public void UpsertTeacher(Teacher p_teacher)
         {
             List<Classroom_SQLDTO> classes = new List<Classroom_SQLDTO>();
+            VerificatorForDepot verificator = new VerificatorForDepot(this._context);
 
             if (p_teacher.Classes.Count >= 1)
             {
@@ -150,9 +151,31 @@ namespace RPLP.DAL.SQL.Depots
                 }
             }
 
-            Teacher_SQLDTO teacherResult = this._context.Teachers.SingleOrDefault(teacher => teacher.Id == p_teacher.Id && teacher.Active);
+            Teacher_SQLDTO teacherResult = this._context.Teachers
+                .AsNoTracking()
+                .SingleOrDefault(teacher => teacher.Id == p_teacher.Id && teacher.Active);
+
+            if ((teacherResult != null && teacherResult.Username != p_teacher.Username &&
+                verificator.CheckUsernameTaken(p_teacher.Username)) ||
+                teacherResult == null && verificator.CheckUsernameTaken(p_teacher.Username))
+            {
+                throw new ArgumentException("Username already taken.");
+            }
+
+            if ((teacherResult != null && teacherResult.Email != p_teacher.Email && verificator.CheckEmailTaken(p_teacher.Email)) ||
+                teacherResult == null && verificator.CheckEmailTaken(p_teacher.Email))
+            {
+                throw new ArgumentException("Email already in use.");
+            }
+
             if (teacherResult != null)
             {
+
+                if (!teacherResult.Active)
+                {
+                    throw new ArgumentException("Deleted accounts cannot be updated.");
+                }
+
                 teacherResult.Username = p_teacher.Username;
                 teacherResult.FirstName = p_teacher.FirstName;
                 teacherResult.LastName = p_teacher.LastName;

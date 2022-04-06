@@ -107,6 +107,7 @@ namespace RPLP.DAL.SQL.Depots
         public void UpsertStudent(Student p_student)
         {
             List<Classroom_SQLDTO> classes = new List<Classroom_SQLDTO>();
+            VerificatorForDepot verificator = new VerificatorForDepot(this._context);
 
             if (p_student.Classes.Count >= 1)
             {
@@ -116,10 +117,30 @@ namespace RPLP.DAL.SQL.Depots
                 }
             }
 
-            Student_SQLDTO studentResult = this._context.Students.Where(student => student.Active)
-                                                                 .SingleOrDefault(student => student.Id == p_student.Id);
+            Student_SQLDTO? studentResult = this._context.Students
+                .AsNoTracking()
+                .SingleOrDefault(student => student.Id == p_student.Id && student.Active);
+
+            if ((studentResult != null && studentResult.Username != p_student.Username &&
+                verificator.CheckUsernameTaken(p_student.Username)) ||
+                studentResult == null && verificator.CheckUsernameTaken(p_student.Username))
+            {
+                throw new ArgumentException("Username already taken.");
+            }
+
+            if ((studentResult != null && studentResult.Email != p_student.Email && verificator.CheckEmailTaken(p_student.Email)) ||
+                studentResult == null && verificator.CheckEmailTaken(p_student.Email))
+            {
+                throw new ArgumentException("Email already in use.");
+            }
+
             if (studentResult != null)
             {
+                if (!studentResult.Active)
+                {
+                    throw new ArgumentException("Deleted accounts cannot be updated.");
+                }
+
                 studentResult.Username = p_student.Username;
                 studentResult.FirstName = p_student.FirstName;
                 studentResult.LastName = p_student.LastName;
