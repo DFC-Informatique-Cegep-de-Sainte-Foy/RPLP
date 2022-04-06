@@ -4,7 +4,7 @@
 
 namespace RPLP.DAL.SQL.Migrations
 {
-    public partial class UserinfotableTriggerless : Migration
+    public partial class Userinfotable : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

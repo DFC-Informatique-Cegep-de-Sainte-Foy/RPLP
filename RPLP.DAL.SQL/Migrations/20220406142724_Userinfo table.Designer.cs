@@ -13,7 +13,7 @@ namespace RPLP.DAL.SQL.Migrations
 {
     [DbContext(typeof(RPLPDbContext))]
     [Migration("20220406142724_Userinfo table Triggerless")]
-    partial class UserinfotableTriggerless
+    partial class Userinfotable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
