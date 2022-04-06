@@ -15,6 +15,7 @@ namespace RPLP.SERVICES.InterfacesDepots
         public List<Student> GetStudentsByClassroomName(string p_classroomName);
         public List<Teacher> GetTeachersByClassroomName(string p_classroomName);
         public List<Assignment> GetAssignmentsByClassroomName(string p_classroomName);
+        public List<Classroom> GetClassroomsByOrganisationName(string p_organisationName);
         public void AddTeacherToClassroom(string p_classroomName, string p_teacherUsername);
         public void RemoveTeacherFromClassroom(string p_classroomName, string p_teacherUsername);
         public void AddStudentToClassroom(string p_classroomName, string p_studentUsername);
