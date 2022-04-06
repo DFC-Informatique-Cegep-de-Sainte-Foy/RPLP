@@ -7,13 +7,13 @@ namespace RPLP.DAL.SQL
     {
         public RPLPDbContext()
         {
-           Database.Migrate();
+            Database.Migrate();
         }
 
         public RPLPDbContext(DbContextOptions<RPLPDbContext> options) :
             base(options)
         {
-           Database.Migrate();
+            Database.Migrate();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
