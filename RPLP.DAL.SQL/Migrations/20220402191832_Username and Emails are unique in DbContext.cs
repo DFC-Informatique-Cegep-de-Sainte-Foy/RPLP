@@ -8,6 +8,7 @@ namespace RPLP.DAL.SQL.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+
             migrationBuilder.AlterColumn<string>(
                 name: "Username",
                 table: "Teachers",

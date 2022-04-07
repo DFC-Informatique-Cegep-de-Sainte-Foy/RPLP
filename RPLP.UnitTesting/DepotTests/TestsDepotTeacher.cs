@@ -3,6 +3,7 @@ using RPLP.DAL.DTO.Sql;
 using RPLP.DAL.SQL;
 using RPLP.DAL.SQL.Depots;
 using RPLP.ENTITES;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
@@ -14,6 +15,7 @@ namespace RPLP.UnitTesting.DepotTests
     {
         private static readonly DbContextOptions<RPLPDbContext> options = new DbContextOptionsBuilder<RPLPDbContext>()
                 .UseSqlServer("Server=localhost,1434; Database=RPLP; User Id=sa; password=Cad3pend86!")
+                //.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
                 .Options;
 
         private void DeleteTeachersAndRelatedTablesContent()
@@ -34,6 +36,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Username = "ThPaquet",
                     FirstName = "Thierry",
                     LastName = "Paquet",
+                    Email = "ThPaquet@hotmail.com",
                     Classes =
                     {
                         new Classroom_SQLDTO()
@@ -62,6 +65,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Username = "ikeameatbol",
                     FirstName = "Jonathan",
                     LastName = "Blouin",
+                    Email = "ikeameatbol@hotmail.com",
                     Active = true
                 },
                 new Teacher_SQLDTO()
@@ -69,6 +73,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Username = "BACenComm",
                     FirstName = "Melissa",
                     LastName = "Lachapelle",
+                    Email = "BACenComm@hotmail.com",
                     Active = false
                 }
             };
@@ -143,6 +148,51 @@ namespace RPLP.UnitTesting.DepotTests
 
                 DepotTeacher depot = new DepotTeacher(context);
                 Teacher teacher = depot.GetTeacherById(teacherId);
+
+                Assert.Null(teacher);
+            }
+
+            this.DeleteTeachersAndRelatedTablesContent();
+        }
+
+        [Fact]
+        private void Test_GetTeacherByEmail()
+        {
+            this.DeleteTeachersAndRelatedTablesContent();
+            this.InsertPremadeTeachers();
+
+            using (var context = new RPLPDbContext(options))
+            {
+                Teacher_SQLDTO thPaquetInContext = context.Teachers.FirstOrDefault(t => t.Email == "ThPaquet@hotmail.com");
+                Assert.NotNull(thPaquetInContext);
+
+                DepotTeacher depot = new DepotTeacher(context);
+                Teacher teacher = depot.GetTeacherByEmail("ThPaquet@hotmail.com");
+
+                Assert.NotNull(teacher);
+                Assert.Equal("ThPaquet", teacher.Username);
+                Assert.Equal("Thierry", teacher.FirstName);
+                Assert.Equal("Paquet", teacher.LastName);
+                Assert.Equal(2, teacher.Classes.Count);
+            }
+
+            this.DeleteTeachersAndRelatedTablesContent();
+        }
+
+        [Fact]
+        private void Test_GetTeacherByEmail_NotActive()
+        {
+            this.DeleteTeachersAndRelatedTablesContent();
+            this.InsertPremadeTeachers();
+
+            using (var context = new RPLPDbContext(options))
+            {
+                Teacher_SQLDTO teacherInContext = context.Teachers.FirstOrDefault(t => t.Email == "BACenComm@hotmail.com");
+                Assert.NotNull(teacherInContext);
+                Assert.False(teacherInContext.Active);
+
+                DepotTeacher depot = new DepotTeacher(context);
+                Teacher teacher = depot.GetTeacherByEmail("BACenComm@hotmail.com");
 
                 Assert.Null(teacher);
             }
@@ -300,7 +350,8 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Username = "ThPaquet",
                     FirstName = "Thierry",
-                    LastName = "Paquet"
+                    LastName = "Paquet",
+                    Email = "ThPaquet@hotmail.com"
                 };
 
                 Teacher_SQLDTO teacherInContext = context.Teachers.FirstOrDefault(t => t.Username == "ThPaquet");
@@ -331,14 +382,19 @@ namespace RPLP.UnitTesting.DepotTests
             {
                 DepotTeacher depot = new DepotTeacher(context);
 
-                Teacher_SQLDTO teacherInContext = context.Teachers.FirstOrDefault(t => t.Username == "ThPaquet");
+                Teacher_SQLDTO teacherInContext = context.Teachers
+                    .AsNoTracking()
+                    .FirstOrDefault(t => t.Username == "ThPaquet");
                 Assert.NotNull(teacherInContext);
 
                 teacherInContext.Username = "Upserted";
                 teacherInContext.FirstName = "Upserty";
                 teacherInContext.LastName = "McUpserton";
 
-                Teacher_SQLDTO updatedTeacherBeforeUpsert = context.Teachers.FirstOrDefault(t => t.Username == "Upserted");
+                Teacher_SQLDTO updatedTeacherBeforeUpsert = context.Teachers
+                    .AsNoTracking()
+                    .FirstOrDefault(t => t.Username == "Upserted");
+
                 Assert.Null(updatedTeacherBeforeUpsert);
 
                 depot.UpsertTeacher(teacherInContext.ToEntityWithoutList());
@@ -346,7 +402,9 @@ namespace RPLP.UnitTesting.DepotTests
 
             using (var context = new RPLPDbContext(options))
             {
-                Teacher_SQLDTO teacherInContext = context.Teachers.FirstOrDefault(t => t.Username == "Upserted");
+                Teacher_SQLDTO teacherInContext = context.Teachers
+                    .AsNoTracking()
+                    .FirstOrDefault(t => t.Username == "Upserted");
 
                 Assert.NotNull(teacherInContext);
                 Assert.Equal("Upserty", teacherInContext.FirstName);
@@ -355,6 +413,140 @@ namespace RPLP.UnitTesting.DepotTests
                 Teacher_SQLDTO teacherBeforeUpsert = context.Teachers.FirstOrDefault(t => t.Username == "ThPaquet");
 
                 Assert.Null(teacherBeforeUpsert);
+            }
+
+            this.DeleteTeachersAndRelatedTablesContent();
+        }
+
+        [Fact]
+        public void Test_UpsertTeacher_ThrowUpdateDeletedAccount()
+        {
+            this.DeleteTeachersAndRelatedTablesContent();
+            this.InsertPremadeTeachers();
+
+            using (var context = new RPLPDbContext(options))
+            {
+                DepotTeacher depot = new DepotTeacher(context);
+
+                Teacher_SQLDTO? teacher = context.Teachers.SingleOrDefault(a => a.Username == "BACenComm");
+
+                Assert.Throws<ArgumentException>(
+                    () =>
+                    {
+                        depot.UpsertTeacher(teacher.ToEntityWithoutList());
+                    });
+            }
+
+            this.DeleteTeachersAndRelatedTablesContent();
+        }
+
+        [Fact]
+        public void Test_UpsertTeacher_ThrowUsernameTaken_UsernameTakenNotActive()
+        {
+            this.DeleteTeachersAndRelatedTablesContent();
+            this.InsertPremadeTeachers();
+
+            using (var context = new RPLPDbContext(options))
+            {
+                DepotTeacher depot = new DepotTeacher(context);
+
+                Teacher_SQLDTO? teacher = context.Teachers.SingleOrDefault(a => a.Username == "ikeameatbol");
+                Assert.NotNull(teacher);
+
+                teacher.Username = "BACenComm";
+
+                Assert.Throws<ArgumentException>(
+                    () =>
+                    {
+                        depot.UpsertTeacher(teacher.ToEntityWithoutList());
+                    });
+            }
+
+            this.DeleteTeachersAndRelatedTablesContent();
+        }
+
+        [Fact]
+        public void Test_UpsertTeacher_ThrowUsernameTaken_NewAdmin()
+        {
+            this.DeleteTeachersAndRelatedTablesContent();
+            this.InsertPremadeTeachers();
+
+            using (var context = new RPLPDbContext(options))
+            {
+                DepotTeacher depot = new DepotTeacher(context);
+
+                Teacher_SQLDTO teacher = new Teacher_SQLDTO()
+                {
+                    Username = "ThPaquet",
+                    FirstName = "Thierry",
+                    LastName = "Paquet",
+                    Classes = new List<Classroom_SQLDTO>(),
+                    Email = "swerve@hotmail.com",
+                    Active = true
+                };
+
+                Assert.Throws<ArgumentException>(
+                    () =>
+                    {
+                        depot.UpsertTeacher(teacher.ToEntityWithoutList());
+                    });
+            }
+
+            this.DeleteTeachersAndRelatedTablesContent();
+        }
+
+        [Fact]
+        public void Test_UpsertTeacher_ThrowEmailTaken_EmailTakenNotActive()
+        {
+            this.DeleteTeachersAndRelatedTablesContent();
+            this.InsertPremadeTeachers();
+
+            using (var context = new RPLPDbContext(options))
+            {
+
+                DepotTeacher depot = new DepotTeacher(context);
+
+                Teacher_SQLDTO? teacher = context.Teachers.SingleOrDefault(a => a.Email == "ikeameatbol@hotmail.com");
+                Assert.NotNull(teacher);
+
+
+                teacher.Email = "BACenComm@hotmail.com";
+
+                Assert.Throws<ArgumentException>(
+                    () =>
+                    {
+                        depot.UpsertTeacher(teacher.ToEntityWithoutList());
+                    });
+            }
+
+            this.DeleteTeachersAndRelatedTablesContent();
+        }
+
+        [Fact]
+        public void Test_UpsertTeacher_ThrowEmailTaken_NewAdmin()
+        {
+            this.DeleteTeachersAndRelatedTablesContent();
+            this.InsertPremadeTeachers();
+
+            using (var context = new RPLPDbContext(options))
+            {
+                DepotTeacher depot = new DepotTeacher(context);
+
+                Teacher_SQLDTO teacher = new Teacher_SQLDTO()
+                {
+                    Username = "Swerve",
+                    FirstName = "Thierry",
+                    LastName = "Paquet",
+                    Classes = new List<Classroom_SQLDTO>(),
+                    Email = "ThPaquet@hotmail.com",
+                    Active = true
+                };
+
+                Assert.Throws<ArgumentException>(
+                    () =>
+                    {
+                        depot.UpsertTeacher(teacher.ToEntityWithoutList());
+                    });
             }
 
             this.DeleteTeachersAndRelatedTablesContent();
