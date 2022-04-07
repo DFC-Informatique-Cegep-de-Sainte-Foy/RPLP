@@ -19,14 +19,16 @@ namespace RPLP.SERVICES.Github
         private string _getBranchesFromRepositoryCommitGithub = "/repos/{organisationName}/{repositoryName}/git/refs/heads";
         private string _getPullRequestsFromRepositoryGithub = "/repos/{organisationName}/{repositoryName}/pulls?";
         private string _createNewBranchInRepositoryGithub = "/repos/{organisationName}/{repositoryName}/git/refs";
-        private string _createPullRequestOnRepositoBranchGithub = "/repos/{organisationName}/{repositoryName}/pulls";
+        private string _createPullRequestOnRepositoryBranchGithub = "/repos/{organisationName}/{repositoryName}/pulls";
         private string _addCollaboratorToRepositoryGithub = "/repos/{organisationName}/{repositoryName}/collaborators/{studentUsername}";
+        private string _addFileToContentsGithub = "/repos/{organisationName}/{repositoryName}/contents/{newFileName}";
         private string _assignStudentToPullRequestGithub = "/repos/{organisationName}/{repositoryName}/pulls/{branchId}/requested_reviewers?";
 
         private const string organisationName = "{organisationName}";
         private const string repositoryName = "{repositoryName}";
         private const string branchId = "{branchId}";
         private const string studentUsername = "{studentUsername}";
+        private const string newFileName = "{newFileName}";
 
         public GithubApiAction(string p_token)
         {
@@ -178,7 +180,7 @@ namespace RPLP.SERVICES.Github
 
         public string CreateNewPullRequestFeedbackGitHub(string p_organisationName, string p_repositoryName, string p_BranchName, string p_title, string p_body)
         {
-            string fullPath = _createPullRequestOnRepositoBranchGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName);
+            string fullPath = _createPullRequestOnRepositoryBranchGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName);
             Task<string> statusCode = NewPullRequestFeedbackGitHubApiRequest(fullPath, p_BranchName, p_title, p_body);
             statusCode.Wait();
 
@@ -243,5 +245,35 @@ namespace RPLP.SERVICES.Github
 
 
 
+        #region Teacher
+
+        public string AddFileToContentsGitHub(string p_organisationName, string p_repositoryName, string p_branchName,string p_newFileName, string p_content, string p_message)
+        {
+            string fullPath = _addFileToContentsGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName).Replace(newFileName,p_newFileName);
+            Task<string > statusCode = addFileToContentsGithubApiRequest(fullPath, p_branchName, p_content, p_message );
+            statusCode.Wait();
+
+            return statusCode.Result;
+        }
+
+        private async Task<string> addFileToContentsGithubApiRequest(string p_githubLink, string p_branchName, string p_content, string p_message)
+        {
+            Content_JSONDTO content_request = new Content_JSONDTO
+            {
+                branch = p_branchName,
+                content = p_content,
+                message = p_message
+            };
+
+            string contentRequest = JsonConvert.SerializeObject(content_request);
+
+            HttpResponseMessage response = _httpClient.PutAsync(p_githubLink, new StringContent(contentRequest, Encoding.UTF8, "application/json")).Result;
+
+            return response.StatusCode.ToString();
+        }
+
+        #endregion
     }
 }
+
+
