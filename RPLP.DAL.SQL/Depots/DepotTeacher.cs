@@ -40,6 +40,27 @@ namespace RPLP.DAL.SQL.Depots
             return teachers;
         }
 
+        public Teacher GetTeacherByEmail(string p_teacherEmail)
+        {
+            Teacher_SQLDTO teacherResult = this._context.Teachers
+                            .Include(teacher => teacher.Classes.Where(classroom => classroom.Active))
+                            .FirstOrDefault(teacher => teacher.Email == p_teacherEmail && teacher.Active);
+
+
+            if (teacherResult == null)
+                return null;
+
+            Teacher teacher = teacherResult.ToEntityWithoutList();
+
+            if (teacherResult.Classes.Count >= 1)
+            {
+                List<Classroom> classes = teacherResult.Classes.Select(classroom => classroom.ToEntityWithoutList()).ToList();
+                teacher.Classes = classes;
+            }
+
+            return teacher;
+        }
+
         public Teacher GetTeacherById(int p_id)
         {
             Teacher_SQLDTO teacherResult = this._context.Teachers

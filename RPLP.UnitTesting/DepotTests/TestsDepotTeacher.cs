@@ -156,6 +156,51 @@ namespace RPLP.UnitTesting.DepotTests
         }
 
         [Fact]
+        private void Test_GetTeacherByEmail()
+        {
+            this.DeleteTeachersAndRelatedTablesContent();
+            this.InsertPremadeTeachers();
+
+            using (var context = new RPLPDbContext(options))
+            {
+                Teacher_SQLDTO thPaquetInContext = context.Teachers.FirstOrDefault(t => t.Email == "ThPaquet@hotmail.com");
+                Assert.NotNull(thPaquetInContext);
+
+                DepotTeacher depot = new DepotTeacher(context);
+                Teacher teacher = depot.GetTeacherByEmail("ThPaquet@hotmail.com");
+
+                Assert.NotNull(teacher);
+                Assert.Equal("ThPaquet", teacher.Username);
+                Assert.Equal("Thierry", teacher.FirstName);
+                Assert.Equal("Paquet", teacher.LastName);
+                Assert.Equal(2, teacher.Classes.Count);
+            }
+
+            this.DeleteTeachersAndRelatedTablesContent();
+        }
+
+        [Fact]
+        private void Test_GetTeacherByEmail_NotActive()
+        {
+            this.DeleteTeachersAndRelatedTablesContent();
+            this.InsertPremadeTeachers();
+
+            using (var context = new RPLPDbContext(options))
+            {
+                Teacher_SQLDTO teacherInContext = context.Teachers.FirstOrDefault(t => t.Email == "BACenComm@hotmail.com");
+                Assert.NotNull(teacherInContext);
+                Assert.False(teacherInContext.Active);
+
+                DepotTeacher depot = new DepotTeacher(context);
+                Teacher teacher = depot.GetTeacherByEmail("BACenComm@hotmail.com");
+
+                Assert.Null(teacher);
+            }
+
+            this.DeleteTeachersAndRelatedTablesContent();
+        }
+
+        [Fact]
         private void Test_GetTeacherByUsername()
         {
             this.DeleteTeachersAndRelatedTablesContent();

@@ -55,17 +55,7 @@ namespace RPLP.DAL.SQL.Migrations
                 column: "Username",
                 unique: true);
 
-            migrationBuilder.Sql("CREATE OR REPLACE TRIGGER AdminInsertToUserInfo ON Administrators BEFORE INSERT AS BEGIN " +
-                "INSERT INTO UserInfo (username, email, adminId) " +
-                "VALUES (administrators.username, administrators.email, administrators.ID) END");
-
-            migrationBuilder.Sql("CREATE OR REPLACE TRIGGER StudentInsertToUserInfo ON Students BEFORE INSERT AS BEGIN " +
-                "INSERT INTO UserInfo (username, email, StudentId) " +
-                "VALUES (students.username, students.email, students.ID) END");
-
-            migrationBuilder.Sql("CREATE OR REPLACE TRIGGER TeacherInsertToUserInfo ON Teachers BEFORE INSERT AS BEGIN " +
-                "INSERT INTO UserInfo (username, email, teacherId) " +
-                "VALUES (Teachers.username, Teachers.email, Teachers.ID) END");
+            
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -81,9 +71,7 @@ namespace RPLP.DAL.SQL.Migrations
                 name: "IX_UserInfo_Email",
                 table: "UserInfo");
 
-            migrationBuilder.Sql("DROP TRIGGER AdminInsertToUserInfo");
-            migrationBuilder.Sql("DROP TRIGGER StudentInsertToUserInfo");
-            migrationBuilder.Sql("DROP TRIGGER TeacherInsertToUserInfo");
+
         }
     }
 }
