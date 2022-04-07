@@ -4,6 +4,8 @@ using RPLP.DAL.SQL.Depots;
 using RPLP.ENTITES;
 using RPLP.MVC.Models;
 using RPLP.SERVICES.InterfacesDepots;
+using System.Collections.Generic;
+using System.Security.Claims;
 
 namespace RPLP.MVC.Controllers
 {
@@ -11,11 +13,29 @@ namespace RPLP.MVC.Controllers
     {
         private readonly IDepotOrganisation _depotOrganisation = new DepotOrganisation();
         private readonly IDepotClassroom _depotClassroom = new DepotClassroom();
+        private readonly IDepotTeacher _depotTeacher = new DepotTeacher();
+        private readonly IDepotAdministrator _depotAdministrator = new DepotAdministrator();
+        private readonly VerificatorForDepot verificator = new VerificatorForDepot();
 
         public IActionResult Index()
         {
             PeerReviewViewModel model = new PeerReviewViewModel();
-            model.Organisations = GetOrganisations();
+            List<Organisation> organisations = new List<Organisation>();
+
+            string email = User.FindFirst(u => u.Type == ClaimTypes.Email)?.Value;
+            Type userType = this.verificator.GetUserTypeByEmail(email);
+
+            if (userType == typeof(Administrator))
+            {
+                Administrator administrator = this._depotAdministrator.GetAdministratorByEmail(email);
+                organisations = this._depotAdministrator.GetAdminOrganisations(administrator.Username);
+            }
+
+            else if (userType == typeof(Teacher))
+            {
+                Teacher teacher = this._depotTeacher.GetTeacherByEmail(email);
+                organisations = _depotTeacher.GetTeacherOrganisations(teacher.Username);
+            }
 
             return View(model);
         }

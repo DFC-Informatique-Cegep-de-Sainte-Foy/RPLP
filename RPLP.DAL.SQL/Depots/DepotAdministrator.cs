@@ -59,6 +59,26 @@ namespace RPLP.DAL.SQL.Depots
             return administrator;
         }
 
+        public Administrator GetAdministratorByEmail(string p_email)
+        {
+            Administrator_SQLDTO? adminResult = this._context.Administrators
+                .Include(admin => admin.Organisations.Where(organisation => organisation.Active))
+                .FirstOrDefault(admin => admin.Email == p_email && admin.Active);
+            if (adminResult == null)
+                return null;
+
+            Administrator administrator = adminResult.ToEntityWithoutList();
+
+            if (adminResult.Organisations.Count >= 1)
+            {
+                List<Organisation> organisations = adminResult.Organisations.Select(organisation => organisation.ToEntityWithoutList()).ToList();
+                administrator.Organisations = organisations;
+            }
+
+            return administrator;
+        }
+
+
         public Administrator GetAdministratorByUsername(string p_adminUsername)
         {
             Administrator_SQLDTO adminResult = this._context.Administrators.Where(admin => admin.Active)

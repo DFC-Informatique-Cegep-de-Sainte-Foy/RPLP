@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RPLP.ENTITES;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,9 +11,36 @@ namespace RPLP.DAL.SQL.Depots
     {
         private readonly RPLPDbContext _context;
 
+        public VerificatorForDepot()
+        {
+            this._context = new RPLPDbContext();
+        }
+
+
         public VerificatorForDepot(RPLPDbContext p_context)
         {
             this._context = p_context;
+        }
+
+        public Type GetUserTypeByEmail(string p_email)
+        {
+            if (this._context.Administrators.FirstOrDefault(a => a.Email == p_email) != null)
+            {
+                return typeof(Administrator); 
+            }
+
+            else if (this._context.Students.FirstOrDefault(s => s.Email == p_email) != null)
+            {
+                return typeof(Student);
+            }
+                
+            else if (this._context.Teachers.FirstOrDefault(t => t.Email == p_email) != null)
+            {
+                return typeof(Teacher);
+            }
+
+            return null;
+                
         }
 
         public bool CheckUsernameTaken(string p_username)

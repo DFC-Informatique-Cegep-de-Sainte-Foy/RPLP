@@ -121,6 +121,33 @@ namespace RPLP.DAL.SQL.Depots
             return new List<Classroom>();
         }
 
+        public List<Organisation> GetTeacherOrganisations(string p_teacherUsername)
+        {
+            // untested 
+
+            List<Organisation> organisations = new List<Organisation>();
+            List<Classroom_SQLDTO> classrooms = new List<Classroom_SQLDTO>();
+
+            Teacher_SQLDTO? teacher = this._context.Teachers.Include(teacher => teacher.Classes.Where(classroom => classroom.Active))
+                                                           .FirstOrDefault(teacher => teacher.Username == p_teacherUsername && teacher.Active);
+
+            classrooms = teacher.Classes;
+
+            HashSet<string> organisationNames = classrooms.Select(c => c.OrganisationName).ToHashSet();
+
+            foreach (string organisationName in organisationNames)
+            {
+                Organisation_SQLDTO? organisationToAdd = this._context.Organisations.FirstOrDefault(o => o.Name == organisationName);
+                
+                if (organisationToAdd != null)
+                {
+                    organisations.Add(organisationToAdd.ToEntity());
+                }
+            }
+
+            return organisations;
+        }
+
         public void AddClassroomToTeacher(string p_teacherUsername, string p_classroomName)
         {
             Classroom_SQLDTO classroomResult = this._context.Classrooms
