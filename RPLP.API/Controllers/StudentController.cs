@@ -48,7 +48,15 @@ namespace RPLP.API.Controllers
                 return BadRequest();
             }
 
-            this._depot.UpsertStudent(p_student);
+            try
+            {
+                this._depot.UpsertStudent(p_student);
+            }
+
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
 
             return Created(nameof(this.Post), p_student);
         }

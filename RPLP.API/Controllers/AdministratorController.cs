@@ -74,7 +74,15 @@ namespace RPLP.API.Controllers
                 return BadRequest();
             }
 
-            this._depot.UpsertAdministrator(p_admin);
+            try
+            {
+                this._depot.UpsertAdministrator(p_admin);
+            }
+            
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
 
             return Created(nameof(this.UpsertAdmin), p_admin);
         }

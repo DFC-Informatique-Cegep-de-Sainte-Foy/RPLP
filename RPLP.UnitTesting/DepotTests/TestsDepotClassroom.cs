@@ -14,6 +14,7 @@ namespace RPLP.UnitTesting.DepotTests
     {
         private static readonly DbContextOptions<RPLPDbContext> options = new DbContextOptionsBuilder<RPLPDbContext>()
                 .UseSqlServer("Server=localhost,1434; Database=RPLP; User Id=sa; password=Cad3pend86!")
+                //.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
                 .Options;
 
         private void DeleteClassroomAndRelatedTablesContent()
@@ -44,99 +45,6 @@ namespace RPLP.UnitTesting.DepotTests
                 context.Classrooms.AddRange(p_classrooms);
                 context.SaveChanges();
             }
-        }
-
-        private void InsertClassroomProjetSynthese()
-        {
-            Classroom_SQLDTO classroom = new Classroom_SQLDTO()
-            {
-                Name = "ProjetSynthese",
-                OrganisationName = "CEGEP Ste-Foy",
-                Assignments = new List<Assignment_SQLDTO>(),
-                Students = new List<Student_SQLDTO>(),
-                Teachers = new List<Teacher_SQLDTO>(),
-                Active = true
-            };
-
-            classroom.Assignments.Add(new Assignment_SQLDTO()
-            {
-                Name = "Review",
-                ClassroomName = "ProjetSynthese",
-                DistributionDate = System.DateTime.Now,
-                Description = "Review a partner\'s code",
-                DeliveryDeadline = System.DateTime.Now.AddDays(1),
-                Active = true
-            });
-
-            classroom.Assignments.Add(new Assignment_SQLDTO()
-            {
-                Name = "Scrum",
-                ClassroomName = "ProjetSynthese",
-                DistributionDate = System.DateTime.Now,
-                Description = "Daily briefing",
-                DeliveryDeadline = System.DateTime.Now.AddDays(1),
-                Active = true
-            });
-
-            classroom.Assignments.Add(new Assignment_SQLDTO()
-            {
-                Name = "Recap",
-                ClassroomName = "ProjetSynthese",
-                DistributionDate = System.DateTime.Now,
-                Description = "Recapituclation of the iteration",
-                DeliveryDeadline = System.DateTime.Now.AddDays(1),
-                Active = false
-            });
-
-            classroom.Students.Add(new Student_SQLDTO()
-            {
-                Username = "ThPaquet",
-                FirstName = "Thierry",
-                LastName = "Paquet",
-                Active = true
-            });
-
-            classroom.Students.Add(new Student_SQLDTO()
-            {
-                Username = "ikeameatbol",
-                FirstName = "Jonathan",
-                LastName = "Blouin",
-                Active = true
-            });
-
-            classroom.Students.Add(new Student_SQLDTO()
-            {
-                Username = "BACenComm",
-                FirstName = "Melissa",
-                LastName = "Lachapelle",
-                Active = false
-            });
-
-            classroom.Teachers.Add(new Teacher_SQLDTO()
-            {
-                Username = "PiFou86",
-                FirstName = "Pierre-Francois",
-                LastName = "Leon",
-                Active = true
-            });
-
-            classroom.Teachers.Add(new Teacher_SQLDTO()
-            {
-                Username = "JPDuch",
-                FirstName = "Jean-Pierre",
-                LastName = "Duchesneau",
-                Active = true
-            });
-
-            classroom.Teachers.Add(new Teacher_SQLDTO()
-            {
-                Username = "BoumBoum",
-                FirstName = "Andre",
-                LastName = "Boumso",
-                Active = false
-            });
-
-            InsertClassroom(classroom);
         }
 
         private void InsertMultiplePremadeClassrooms()
@@ -176,6 +84,7 @@ namespace RPLP.UnitTesting.DepotTests
                 Username = "ThPaquet",
                 FirstName = "Thierry",
                 LastName = "Paquet",
+                Email = "ThPaquet@hotmail.com",
                 Active = true
             });
 
@@ -184,6 +93,7 @@ namespace RPLP.UnitTesting.DepotTests
                 Username = "PiFou86",
                 FirstName = "Pierre-Francois",
                 LastName = "Leon",
+                Email = "PiFou86@hotmail.com",
                 Active = true
             });
 
@@ -208,17 +118,19 @@ namespace RPLP.UnitTesting.DepotTests
 
             classroom.Students.Add(new Student_SQLDTO()
             {
-                Username = "ThPaquet",
-                FirstName = "Thierry",
-                LastName = "Paquet",
+                Username = "ikeameatbol",
+                FirstName = "Jonathan",
+                LastName = "Blouin",
+                Email = "ikeameatbol@hotmail.com",
                 Active = true
             });
 
             classroom.Teachers.Add(new Teacher_SQLDTO()
             {
-                Username = "PiFou86",
-                FirstName = "Pierre-Francois",
-                LastName = "Leon",
+                Username = "BACenComm",
+                FirstName = "Melissa",
+                LastName = "Lachapelle",
+                Email = "BACenComm@hotmail.com",
                 Active = true
             });
 
@@ -258,7 +170,7 @@ namespace RPLP.UnitTesting.DepotTests
         public void Test_GetClassroomById()
         {
             this.DeleteClassroomAndRelatedTablesContent();
-            this.InsertClassroomProjetSynthese();
+            this.InsertMultiplePremadeClassrooms();
 
             using (var context = new RPLPDbContext(options))
             {
@@ -280,7 +192,8 @@ namespace RPLP.UnitTesting.DepotTests
         public void Test_GetClassroomByName()
         {
             this.DeleteClassroomAndRelatedTablesContent();
-            this.InsertClassroomProjetSynthese();
+            this.InsertMultiplePremadeClassrooms();
+
 
             using (var context = new RPLPDbContext(options))
             {
@@ -301,7 +214,7 @@ namespace RPLP.UnitTesting.DepotTests
         public void Test_GetAssignmentsByClassroomName()
         {
             this.DeleteClassroomAndRelatedTablesContent();
-            this.InsertClassroomProjetSynthese();
+            this.InsertMultiplePremadeClassrooms();
 
             using (var context = new RPLPDbContext(options))
             {
@@ -321,7 +234,7 @@ namespace RPLP.UnitTesting.DepotTests
         public void Test_GetStudentsByClassroomName()
         {
             this.DeleteClassroomAndRelatedTablesContent();
-            this.InsertClassroomProjetSynthese();
+            this.InsertMultiplePremadeClassrooms();
 
             using (var context = new RPLPDbContext(options))
             {
@@ -342,7 +255,7 @@ namespace RPLP.UnitTesting.DepotTests
         public void Test_GetTeachersByClassroomName()
         {
             this.DeleteClassroomAndRelatedTablesContent();
-            this.InsertClassroomProjetSynthese();
+            this.InsertMultiplePremadeClassrooms();
 
             using (var context = new RPLPDbContext(options))
             {
@@ -363,7 +276,7 @@ namespace RPLP.UnitTesting.DepotTests
         public void Test_AddAssignmentToClassroom()
         {
             this.DeleteClassroomAndRelatedTablesContent();
-            this.InsertClassroomProjetSynthese();
+            this.InsertMultiplePremadeClassrooms();
 
             using (var context = new RPLPDbContext(options))
             {
@@ -411,13 +324,14 @@ namespace RPLP.UnitTesting.DepotTests
         public void Test_AddStudentToClassroom()
         {
             this.DeleteClassroomAndRelatedTablesContent();
-            this.InsertClassroomProjetSynthese();
+            this.InsertMultiplePremadeClassrooms();
 
             using (var context = new RPLPDbContext(options))
             {
                 Classroom_SQLDTO? classroom = context.Classrooms
                                                     .Include(c => c.Assignments)
                                                     .FirstOrDefault(c => c.Name == "ProjetSynthese");
+
                 Student_SQLDTO? student = classroom.Students.FirstOrDefault(a => a.Username == "Test");
 
                 Assert.Null(student);
@@ -427,6 +341,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Username = "Test",
                     FirstName = "Tester",
                     LastName = "McTesty",
+                    Email = "Test@hotmail.com",
                     Active = true
                 });
 
@@ -457,7 +372,7 @@ namespace RPLP.UnitTesting.DepotTests
         public void Test_AddTeacherToClassroom()
         {
             this.DeleteClassroomAndRelatedTablesContent();
-            this.InsertClassroomProjetSynthese();
+            this.InsertMultiplePremadeClassrooms();
 
             using (var context = new RPLPDbContext(options))
             {
@@ -473,6 +388,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Username = "Test",
                     FirstName = "Tester",
                     LastName = "McTesty",
+                    Email = "Test@hotmail.com",
                     Active = true
                 });
 
@@ -503,7 +419,7 @@ namespace RPLP.UnitTesting.DepotTests
         public void Test_RemoveAssignmentFromClassroom()
         {
             this.DeleteClassroomAndRelatedTablesContent();
-            this.InsertClassroomProjetSynthese();
+            this.InsertMultiplePremadeClassrooms();
 
             using (var context = new RPLPDbContext(options))
             {
@@ -514,7 +430,9 @@ namespace RPLP.UnitTesting.DepotTests
                 Assignment_SQLDTO assignment = classroom.Assignments.FirstOrDefault(a => a.Name == "Review");
 
 
+                Assert.NotNull(classroom);
                 Assert.NotNull(assignment);
+                Assert.Contains(classroom.Assignments, a => a.Id == assignment.Id);
             }
 
             using (var context = new RPLPDbContext(options))
@@ -541,7 +459,7 @@ namespace RPLP.UnitTesting.DepotTests
         public void Test_RemoveStudentFromClassroom()
         {
             this.DeleteClassroomAndRelatedTablesContent();
-            this.InsertClassroomProjetSynthese();
+            this.InsertMultiplePremadeClassrooms();
 
             using (var context = new RPLPDbContext(options))
             {
@@ -549,14 +467,13 @@ namespace RPLP.UnitTesting.DepotTests
                     .Classrooms
                     .Include(c => c.Students)
                     .FirstOrDefault(c => c.Name == "ProjetSynthese");
+
                 Student_SQLDTO student = classroom.Students.FirstOrDefault(a => a.Username == "ThPaquet");
 
-
+                Assert.NotNull(classroom);
                 Assert.NotNull(student);
-            }
+                Assert.Contains<Student_SQLDTO>(student, classroom.Students);
 
-            using (var context = new RPLPDbContext(options))
-            {
                 DepotClassroom depot = new DepotClassroom(context);
                 depot.RemoveStudentFromClassroom("ProjetSynthese", "ThPaquet");
             }
@@ -579,7 +496,7 @@ namespace RPLP.UnitTesting.DepotTests
         public void Test_RemoveTeacherFromClassroom()
         {
             this.DeleteClassroomAndRelatedTablesContent();
-            this.InsertClassroomProjetSynthese();
+            this.InsertMultiplePremadeClassrooms();
 
             using (var context = new RPLPDbContext(options))
             {
@@ -649,7 +566,7 @@ namespace RPLP.UnitTesting.DepotTests
         public void Test_UpsertClassroom_Updates()
         {
             this.DeleteClassroomAndRelatedTablesContent();
-            this.InsertClassroomProjetSynthese();
+            this.InsertMultiplePremadeClassrooms();
 
             using (var context = new RPLPDbContext(options))
             {
@@ -674,6 +591,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Username = "TestStudent",
                     FirstName = "Testy",
                     LastName = "McTestson",
+                    Email = "Test@hotmail.com",
                     Active = true
                 });
 
@@ -682,6 +600,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Username = "TestTeacher",
                     FirstName = "Test-Francois",
                     LastName = "Testeon",
+                    Email = "Testeon@hotmail.com",
                     Active = true
                 });
 
@@ -709,7 +628,7 @@ namespace RPLP.UnitTesting.DepotTests
         public void Test_DeleteClassroom()
         {
             this.DeleteClassroomAndRelatedTablesContent();
-            this.InsertClassroomProjetSynthese();
+            this.InsertMultiplePremadeClassrooms();
 
             using (var context = new RPLPDbContext(options))
             {
