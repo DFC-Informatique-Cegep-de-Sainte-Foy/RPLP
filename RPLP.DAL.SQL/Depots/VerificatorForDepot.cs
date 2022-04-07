@@ -19,16 +19,16 @@ namespace RPLP.DAL.SQL.Depots
         {
             return
                 this._context.Administrators.FirstOrDefault(a => a.Username == p_username) != null ||
-                this._context.Students.FirstOrDefault(a => a.Username == p_username) != null ||
-                this._context.Teachers.FirstOrDefault(a => a.Username == p_username) != null;
+                this._context.Students.FirstOrDefault(s => s.Username == p_username) != null ||
+                this._context.Teachers.FirstOrDefault(t => t.Username == p_username) != null;
         }
 
         public bool CheckEmailTaken(string p_email)
         {
             return
                 this._context.Administrators.FirstOrDefault(a => a.Email == p_email) != null ||
-                this._context.Students.FirstOrDefault(a => a.Email == p_email) != null ||
-                this._context.Teachers.FirstOrDefault(a => a.Email == p_email) != null;
+                this._context.Students.FirstOrDefault(s => s.Email == p_email) != null ||
+                this._context.Teachers.FirstOrDefault(t => t.Email == p_email) != null;
         }
     }
 }
