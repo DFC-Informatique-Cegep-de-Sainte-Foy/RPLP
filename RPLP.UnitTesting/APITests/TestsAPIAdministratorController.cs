@@ -251,6 +251,19 @@ namespace RPLP.UnitTesting.APITests
         }
 
         [Fact]
+        public void Test_UpsertAdmin_CatchException_ReturnBadRequest()
+        {
+            var mockDepotAdministrator = new Mock<IDepotAdministrator>();
+            AdministratorController controller = new AdministratorController(mockDepotAdministrator.Object);
+
+            Administrator mockAdmin = new Administrator();
+
+            mockDepotAdministrator.Setup(d => d.UpsertAdministrator(mockAdmin)).Throws<ArgumentException>();
+
+            Assert.IsType<BadRequestObjectResult>(controller.UpsertAdmin(mockAdmin));
+        }
+
+        [Fact]
         public void Test_UpsertAdmin_Created()
         {
             var mockDepotAdministrator = new Mock<IDepotAdministrator>();
@@ -267,6 +280,7 @@ namespace RPLP.UnitTesting.APITests
             var result = Assert.IsType<CreatedResult>(response);
             Assert.NotNull(result);
         }
+        
 
         [Fact]
         public void Test_DeleteAdmin_NoContent()
