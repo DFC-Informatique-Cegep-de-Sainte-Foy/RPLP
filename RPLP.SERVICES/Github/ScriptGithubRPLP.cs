@@ -173,15 +173,15 @@ namespace RPLP.SERVICES.Github
             //Faire l'action
             foreach (Repository repository in repositoriesToAssign)
             {
-                createPullRequestForTeacher(p_organisationName, repository.Name);
+                createPullRequestForTeacher(p_organisationName, repository.Name, "FichierTexte.txt", "FeedbackTeacher", "RmljaGllciB0ZXh0ZSBwb3VyIGNyw6nDqSBQUg==" ); //À MODIFIER
             }
         }             
 
-        private void createPullRequestForTeacher(string p_organisationName, string p_repositoryName)
+        private void createPullRequestForTeacher(string p_organisationName, string p_repositoryName, string p_newFileName, string p_message, string p_content)
         {
             Branch_JSONDTO branchDTO = new Branch_JSONDTO();
 
-            List<Branch_JSONDTO> branchesResult = this._githubApiAction.AddFileToContentsGitHub(p_organisationName, p_repositoryName);
+            List<Branch_JSONDTO> branchesResult = this._githubApiAction.GetRepositoryBranchesGithub(p_organisationName, p_repositoryName);
 
             if (branchesResult == null)
                 throw new ArgumentNullException($"Branch does not exist or wrong name was entered");
@@ -197,22 +197,22 @@ namespace RPLP.SERVICES.Github
                 }
             }
 
-            createPullRequestAndAssignTeacher(p_organisationName, p_repositoryName, branchDTO.gitObject.sha);
+            createPullRequestAndAssignTeacher(p_organisationName, p_repositoryName, branchDTO.gitObject.sha, p_newFileName, p_message, p_content);
 
         }
 
-        private void createPullRequestAndAssignTeacher(string p_organisationName, string p_repositoryName, string p_sha)
+        private void createPullRequestAndAssignTeacher(string p_organisationName, string p_repositoryName, string p_sha, string p_newFileName, string p_message, string p_content)
         {
             string newBranchName = $"feedback";
 
             //un return a été mis à chacun pour que si une erreur apparaît entre les actions, ça s'arrête.
-            string resultCreateBranch = this._githubApiAction.AddFileToContentsGitHub(p_organisationName, p_repositoryName, p_sha);
+            string resultCreateBranch = this._githubApiAction.CreateNewBranchForFeedbackGitHub(p_organisationName, p_repositoryName, p_sha, newBranchName);
             if (resultCreateBranch != "Created")
                 throw new ArgumentException($"Branch not created in {p_repositoryName}");
 
-            //Il manque quelque chose...
+            this._githubApiAction.AddFileToContentsGitHub(p_organisationName, p_repositoryName, newBranchName, p_newFileName, p_message, p_content);
 
-            string resultCreatePR = this._githubApiAction.CreateNewPullRequestFeedbackGitHub(p_organisationName, p_repositoryName, newBranchName, newBranchName.ToLower(), "Voici où vous devez mettre vos commentaires");
+            string resultCreatePR = this._githubApiAction.CreateNewPullRequestFeedbackGitHub(p_organisationName, p_repositoryName, newBranchName,"Feedback", "Voici où vous devez mettre vos commentaires");
             if (resultCreatePR != "Created")
                 throw new ArgumentException($"PullRequest not created in {p_repositoryName}");
         }
