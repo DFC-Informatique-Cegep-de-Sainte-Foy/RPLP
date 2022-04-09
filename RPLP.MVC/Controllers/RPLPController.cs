@@ -60,21 +60,32 @@ namespace RPLP.MVC.Controllers
         public ActionResult<List<ClassroomViewModel>> GetClassroomsOfOrganisationByName(string orgName)
         {
             List<ClassroomViewModel> classes = new List<ClassroomViewModel>();
-            List<Classroom> databaseClasses = _depotClassroom.GetClassroomsByOrganisationName(orgName);
+            string email = User.FindFirst(u => u.Type == ClaimTypes.Email)?.Value;
+            Type userType = this.verificator.GetUserTypeByEmail(email);
 
-            if (databaseClasses.Count >= 1)
+            if (userType == typeof(Administrator))
             {
-                foreach (Classroom classroom in databaseClasses)
+                List<Classroom> databaseClasses = _depotClassroom.GetClassroomsByOrganisationName(orgName);
+
+                if (databaseClasses.Count >= 1)
                 {
-                    classes.Add(new ClassroomViewModel(classroom.Name));
+                    foreach (Classroom classroom in databaseClasses)
+                    {
+                        classes.Add(new ClassroomViewModel(classroom.Name));
+                    }
                 }
+            }
+
+            else if (userType == typeof(Teacher))
+            {
+                Teacher teacher = this._depotTeacher.GetTeacherByEmail(email);
+                classes = GetClassroomsOfTeacherInOrganisation(teacher.Username, orgName);
             }
 
             return classes;
         }
 
-        [HttpGet]
-        public ActionResult<List<ClassroomViewModel>> GetClassroomsOfTeacherInOrganisation(string p_teacherUsername, string p_organisationName)
+        public List<ClassroomViewModel> GetClassroomsOfTeacherInOrganisation(string p_teacherUsername, string p_organisationName)
         {
             var classes = new List<ClassroomViewModel>();
             List<Classroom> databaseClasses = _depotClassroom.GetClassrooms()
