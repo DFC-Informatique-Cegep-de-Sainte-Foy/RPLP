@@ -74,6 +74,22 @@ namespace RPLP.MVC.Controllers
         }
 
         [HttpGet]
+        public ActionResult<List<ClassroomViewModel>> GetClassroomsOfTeacherInOrganisation(string p_teacherUsername, string p_organisationName)
+        {
+            var classes = new List<ClassroomViewModel>();
+            List<Classroom> databaseClasses = _depotClassroom.GetClassrooms()
+                .Where(c => c.Teachers.FirstOrDefault(t => t.Username == p_teacherUsername) != null && c.OrganisationName == p_organisationName)
+                .ToList();
+
+            foreach (Classroom classroom in databaseClasses)
+            {
+                classes.Add(new ClassroomViewModel(classroom.Name));
+            }
+
+            return classes;
+        }
+
+        [HttpGet]
         public ActionResult<List<AssignmentViewModel>> GetAssignmentsOfClassroomByName(string classroomName)
         {
             List<AssignmentViewModel> assignments = new List<AssignmentViewModel>();
