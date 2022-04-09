@@ -16,8 +16,12 @@ services:
     build:
       context: .
       dockerfile: RPLP.MVC/Dockerfile
-    ports: 
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
       - "80:80"
+      - "443:443"
+
 
   rplp.db:
     container_name: rplp.db
