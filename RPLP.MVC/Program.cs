@@ -1,4 +1,8 @@
 using Auth0.AspNetCore.Authentication;
+using Microsoft.EntityFrameworkCore;
+using RPLP.DAL.SQL;
+using RPLP.DAL.SQL.Depots;
+using RPLP.SERVICES.InterfacesDepots;
 using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,6 +28,7 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
 }
+
 app.UseStaticFiles();
 
 app.UseRouting();
