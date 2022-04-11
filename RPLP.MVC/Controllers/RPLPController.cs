@@ -37,6 +37,8 @@ namespace RPLP.MVC.Controllers
                 organisations = _depotTeacher.GetTeacherOrganisations(teacher.Username);
             }
 
+            organisations.ForEach(o => model.Organisations.Add(new OrganisationViewModel(o.Name)));
+
             return View(model);
         }
 
