@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using RPLP.DAL.SQL.Depots;
 using RPLP.ENTITES;
 using RPLP.MVC.Models;
+using RPLP.SERVICES.Github;
 using RPLP.SERVICES.InterfacesDepots;
 using System.Collections.Generic;
 using System.Security.Claims;
@@ -16,6 +17,13 @@ namespace RPLP.MVC.Controllers
         private readonly IDepotTeacher _depotTeacher = new DepotTeacher();
         private readonly IDepotAdministrator _depotAdministrator = new DepotAdministrator();
         private readonly VerificatorForDepot verificator = new VerificatorForDepot();
+
+        public RPLPController()
+        {
+            string token = "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";
+            GithubApiAction _githubAction = new GithubApiAction(token);
+            _scriptGithub = new ScriptGithubRPLP(new DepotClassroom(), new DepotRepository(), token);
+        }
 
         public IActionResult Index()
         {
@@ -117,6 +125,21 @@ namespace RPLP.MVC.Controllers
             }
 
             return assignments;
+        }
+
+        [HttpGet]
+        public ActionResult StartStudentAssignationScript(string organisationName, string classroomName, string assignmentName, int numberOfReviews)
+        {
+            try
+            {
+                _scriptGithub.ScriptAssignStudentToAssignmentReview(organisationName, classroomName, assignmentName, numberOfReviews);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
         }
     }
 
