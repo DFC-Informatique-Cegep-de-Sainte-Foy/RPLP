@@ -16,6 +16,7 @@ namespace RPLP.MVC.Controllers
         private readonly IDepotClassroom _depotClassroom = new DepotClassroom();
         private readonly IDepotTeacher _depotTeacher = new DepotTeacher();
         private readonly IDepotAdministrator _depotAdministrator = new DepotAdministrator();
+        private readonly ScriptGithubRPLP _scriptGithub;
         private readonly VerificatorForDepot verificator = new VerificatorForDepot();
 
         public RPLPController()
