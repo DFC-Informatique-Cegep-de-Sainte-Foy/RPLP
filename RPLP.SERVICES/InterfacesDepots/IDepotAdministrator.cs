@@ -12,6 +12,7 @@ namespace RPLP.SERVICES.InterfacesDepots
         public List<Administrator> GetAdministrators();
         public Administrator GetAdministratorById(int p_id);
         public Administrator GetAdministratorByUsername(string p_adminUsername);
+        public Administrator GetAdministratorByEmail(string p_email);
         public List<Organisation> GetAdminOrganisations(string p_adminUsername);
         public void UpsertAdministrator(Administrator p_administrator);
         public void JoinOrganisation(string p_adminUsername, string p_organisationName);
