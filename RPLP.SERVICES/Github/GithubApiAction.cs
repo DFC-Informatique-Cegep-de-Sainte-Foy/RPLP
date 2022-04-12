@@ -247,10 +247,10 @@ namespace RPLP.SERVICES.Github
 
         #region Teacher
 
-        public string AddFileToContentsGitHub(string p_organisationName, string p_repositoryName, string p_branchName,string p_newFileName, string p_content, string p_message)
+        public string AddFileToContentsGitHub(string p_organisationName, string p_repositoryName, string p_branchName,string p_newFileName, string p_message, string p_content)
         {
             string fullPath = _addFileToContentsGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName).Replace(newFileName,p_newFileName);
-            Task<string > statusCode = addFileToContentsGithubApiRequest(fullPath, p_branchName, p_content, p_message );
+            Task<string > statusCode = addFileToContentsGithubApiRequest(fullPath, p_branchName, p_content, p_message);
             statusCode.Wait();
 
             return statusCode.Result;

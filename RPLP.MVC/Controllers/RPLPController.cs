@@ -142,6 +142,21 @@ namespace RPLP.MVC.Controllers
             }
 
         }
+
+        [HttpGet]
+        public ActionResult StartTeachertAssignationScript(string organisationName, string classroomName, string assignmentName)
+        {
+            try
+            {
+                _scriptGithub.ScriptAssignTeacherToAssignmentReview(organisationName, classroomName, assignmentName);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
     }
 
 }
