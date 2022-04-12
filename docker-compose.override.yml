@@ -15,7 +15,7 @@ services:
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
     volumes:
       - "./%USERPROFILE%/.aspnet/https:/https:ro"
-    command: bash -c "cd /https && li && cd .."
+    command: bash -c 'dotnet dev-certs https --clean && dotnet dev-certs https --trust -ep "./%USERPROFILE%/.aspnet/https/aspnetapp.pfx"'
     ports:
       - "80:80"
       - "443:443"
