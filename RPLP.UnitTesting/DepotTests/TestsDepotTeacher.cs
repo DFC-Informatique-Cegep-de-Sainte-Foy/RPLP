@@ -450,7 +450,7 @@ namespace RPLP.UnitTesting.DepotTests
             {
                 DepotTeacher depot = new DepotTeacher(context);
 
-                Teacher_SQLDTO? teacher = context.Teachers.SingleOrDefault(a => a.Username == "ikeameatbol");
+                Teacher_SQLDTO? teacher = context.Teachers.SingleOrDefault(t => t.Username == "ikeameatbol");
                 Assert.NotNull(teacher);
 
                 teacher.Username = "BACenComm";
@@ -506,7 +506,7 @@ namespace RPLP.UnitTesting.DepotTests
 
                 DepotTeacher depot = new DepotTeacher(context);
 
-                Teacher_SQLDTO? teacher = context.Teachers.SingleOrDefault(a => a.Email == "ikeameatbol@hotmail.com");
+                Teacher_SQLDTO? teacher = context.Teachers.SingleOrDefault(t => t.Email == "ikeameatbol@hotmail.com");
                 Assert.NotNull(teacher);
 
 
