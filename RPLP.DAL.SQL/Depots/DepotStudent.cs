@@ -19,6 +19,11 @@ namespace RPLP.DAL.SQL.Depots
             this._context = new RPLPDbContext(new DbContextOptionsBuilder<RPLPDbContext>().UseSqlServer("Server=rplp.db; Database=RPLP; User Id=sa; password=Cad3pend86!").Options);
         }
 
+        public DepotStudent(RPLPDbContext p_context)
+        {
+            this._context = p_context;
+        }
+
         public List<Student> GetStudents()
         {
             List<Student_SQLDTO> studentsResult = this._context.Students.Where(student => student.Active)
@@ -37,11 +42,13 @@ namespace RPLP.DAL.SQL.Depots
 
         public Student GetStudentById(int p_id)
         {
-            Student_SQLDTO studentResult = this._context.Students.Where(student => student.Active)
-                                                                 .Include(student => student.Classes.Where(classroom => classroom.Active))
-                                                                 .FirstOrDefault(student => student.Id == p_id);
+            Student_SQLDTO studentResult = this._context.Students
+                .Include(student => student.Classes.Where(classroom => classroom.Active))
+                .FirstOrDefault(student => student.Id == p_id && student.Active);
+                                                                 
+                                                                 
             if (studentResult == null)
-                return new Student();
+                return null;
 
             Student student = studentResult.ToEntityWithoutList();
 
@@ -56,11 +63,12 @@ namespace RPLP.DAL.SQL.Depots
 
         public Student GetStudentByUsername(string p_studentUsername)
         {
-            Student_SQLDTO studentResult = this._context.Students.Where(student => student.Active)
-                                                                 .Include(student => student.Classes.Where(classroom => classroom.Active))
-                                                                 .FirstOrDefault(student => student.Username == p_studentUsername);
+            Student_SQLDTO studentResult = this._context.Students
+                .Include(student => student.Classes.Where(classroom => classroom.Active))
+                .FirstOrDefault(student => student.Username == p_studentUsername && student.Active);
+                                                                 
             if (studentResult == null)
-                return new Student();
+                return null;
 
             Student student = studentResult.ToEntityWithoutList();
 
@@ -99,6 +107,7 @@ namespace RPLP.DAL.SQL.Depots
         public void UpsertStudent(Student p_student)
         {
             List<Classroom_SQLDTO> classes = new List<Classroom_SQLDTO>();
+            VerificatorForDepot verificator = new VerificatorForDepot(this._context);
 
             if (p_student.Classes.Count >= 1)
             {
@@ -108,13 +117,34 @@ namespace RPLP.DAL.SQL.Depots
                 }
             }
 
-            Student_SQLDTO studentResult = this._context.Students.Where(student => student.Active)
-                                                                 .SingleOrDefault(student => student.Id == p_student.Id);
+            Student_SQLDTO? studentResult = this._context.Students
+                .AsNoTracking()
+                .SingleOrDefault(student => student.Id == p_student.Id && student.Active);
+
+            if ((studentResult != null && studentResult.Username != p_student.Username &&
+                verificator.CheckUsernameTaken(p_student.Username)) ||
+                studentResult == null && verificator.CheckUsernameTaken(p_student.Username))
+            {
+                throw new ArgumentException("Username already taken.");
+            }
+
+            if ((studentResult != null && studentResult.Email != p_student.Email && verificator.CheckEmailTaken(p_student.Email)) ||
+                studentResult == null && verificator.CheckEmailTaken(p_student.Email))
+            {
+                throw new ArgumentException("Email already in use.");
+            }
+
             if (studentResult != null)
             {
+                if (!studentResult.Active)
+                {
+                    throw new ArgumentException("Deleted accounts cannot be updated.");
+                }
+
                 studentResult.Username = p_student.Username;
                 studentResult.FirstName = p_student.FirstName;
                 studentResult.LastName = p_student.LastName;
+                studentResult.Email = p_student.Email;
                 studentResult.Classes = classes;
 
                 this._context.Update(studentResult);
@@ -126,6 +156,7 @@ namespace RPLP.DAL.SQL.Depots
                 student.Username = p_student.Username;
                 student.FirstName = p_student.FirstName;
                 student.LastName = p_student.LastName;
+                student.Email = p_student.Email;
                 student.Classes = classes;
 
                 this._context.Students.Add(student);

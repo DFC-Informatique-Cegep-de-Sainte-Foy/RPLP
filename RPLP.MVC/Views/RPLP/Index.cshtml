@@ -1,0 +1,254 @@
+﻿@using RPLP.MVC.Controllers
+@model RPLP.MVC.Models.PeerReviewViewModel
+
+@Html.HiddenFor(model => model.Assignment)
+@Html.HiddenFor(model => model.Classrooms)
+
+<div class="container mt-3">
+
+    <div class="wrapper">
+        <div id="orgsCollapsible" class="collapsible">
+            <input type="checkbox" id="collapsible-orgs" name="checkboxOrg" />
+            <label for="collapsible-orgs">Organisations</label>
+            <div class="collapsible-content">
+                @foreach (var org in Model.Organisations)
+                {
+                    <Button class="btn-lg btn-outline-primary p-2 buttons" onclick="SetOrganisationName('@org.Name')" id='@org.Name'>@org.Name</Button>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="wrapper">
+        <div id="classroomCollapsible" class="collapsible" hidden>
+            <input type="checkbox" id="collapsible-class" name="checkboxClass" />
+            <label for="collapsible-class">Classes</label>
+            <div class="collapsible-content" id="classroomContent">
+            </div>
+        </div>
+    </div>
+
+    <div class="wrapper">
+        <div id="assignmentCollapsible" class="collapsible" hidden>
+            <input type="checkbox" id="collapsible-assignments" name="checkboxAssignment" />
+            <label for="collapsible-assignments">Assignments</label>
+            <div class="collapsible-content" id="assignmentContent">
+            </div>
+        </div>
+    </div>
+
+    <div class="wrapper" id="scriptStart" hidden>
+        <label for="numberOfReview">Nombre de revue par etudiants</label>
+        <input class="p-2 buttons" type="number" id="numberOfReview" min="0" max="10" value="3" />
+        <button class="btn-lg btn-primary p-2 buttons" onclick="StartStudentAssignationScript()">Lancer le script de revue des pairs</button>
+        <button class="btn-lg btn-primary p-2 buttons" onclick="StartTeacherAssignationScript()">Lancer le script de revue du Prof</button>
+    </div>
+</div>
+
+<style>
+    .buttons {
+        margin-right: 10px;
+        margin-bottom: 10px;
+    }
+
+</style>
+
+<script src="/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+
+    });
+
+    var SelectedOrganisationName = "";
+    var SelectedClassroomName = "";
+    var SelectedAssignmentName = "";
+
+    var organisations = @Html.Raw(Json.Serialize(Model.Organisations));
+    var classrooms = [];
+    var assignments = [];
+
+    function SetOrganisationName (organisationName){
+        if(organisationName != "")
+        {
+            SelectedOrganisationName = organisationName;
+            GetClassroomsOfOrganisationByName(SelectedOrganisationName);
+
+            organisations.forEach(organisation => {
+                if(organisation.name == organisationName)
+                {
+                    document.getElementById(organisation.name).classList.remove("btn-outline-primary");
+                    document.getElementById(organisation.name).classList.add("btn-primary");
+                } else {
+                    document.getElementById(organisation.name).classList.add("btn-outline-primary");
+                    document.getElementById(organisation.name).classList.remove("btn-primary");
+                }
+            });
+        }
+    }
+
+    function SetClassroomName (classroomName){
+        if(classroomName != "")
+        {
+            SelectedClassroomName = classroomName;
+            GetAssignmentsOfClassroomByName(SelectedClassroomName);
+
+            classrooms.forEach(classroom => {
+                if(classroom.name == classroomName)
+                {
+                    document.getElementById(classroom.name).classList.remove("btn-outline-primary");
+                    document.getElementById(classroom.name).classList.add("btn-primary");
+                } else {
+                    document.getElementById(classroom.name).classList.add("btn-outline-primary");
+                    document.getElementById(classroom.name).classList.remove("btn-primary");
+                }
+            });
+
+        }
+    }
+
+    function SetAssignmentName (assignmentName) {
+        if(assignmentName != "")
+        {
+            SelectedAssignmentName = assignmentName;
+
+            assignments.forEach(assignment => {
+                if(assignment.name == assignmentName)
+                {
+                    console.log("test")
+                    document.getElementById(assignment.name).classList.remove("btn-outline-primary");
+                    document.getElementById(assignment.name).classList.add("btn-primary");
+                } else {
+                    document.getElementById(assignment.name).classList.add("btn-outline-primary");
+                    document.getElementById(assignment.name).classList.remove("btn-primary");
+                }
+            });
+
+            $("#scriptStart").removeAttr("hidden");
+         }
+    }
+
+    function GetClassroomsOfOrganisationByName(organisationName){
+       var ajaxURL = '/RPLP/GetClassroomsOfOrganisationByName';
+
+        $.ajax({
+            type: 'GET',
+            url: ajaxURL,
+            data: { orgName : organisationName},
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            beforeSend: function () {
+                console.log('firing ajax call');
+            },
+            success: function (data) {
+                classrooms = data;
+                ShowClassrooms();
+            },
+            error: function (ex) {
+                console.log('Error');
+            }
+        });
+    }
+
+    function GetAssignmentsOfClassroomByName (classroomName){
+        var ajaxURL = '/RPLP/GetAssignmentsOfClassroomByName';
+
+        $.ajax({
+            type: 'GET',
+            url: ajaxURL,
+            data: { classroomName : classroomName},
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            beforeSend: function () {
+                console.log('firing ajax call');
+            },
+            success: function (data) {
+                assignments = data;
+                ShowAssignments();
+            },
+            error: function (ex) {
+                console.log('Error');
+            }
+        });
+    }
+
+    function ShowClassrooms() {
+        var myDiv = document.getElementById("classroomContent");
+        myDiv.replaceChildren();
+
+        classrooms.forEach(classroom => {
+            var button = document.createElement("BUTTON");
+            button.innerHTML = classroom.name;
+            button.classList.add("btn-lg", "btn-outline-primary", "p-2", "buttons");
+            button.setAttribute('id',classroom.name ) ;
+            button.onclick = function() { SetClassroomName(classroom.name); };
+            myDiv.appendChild(button);
+        });
+
+        $("#classroomCollapsible").removeAttr("hidden");
+        $("#assignmentCollapsible").attr("hidden", true);
+        $("#scriptStart").attr("hidden", true);
+    }
+
+    function ShowAssignments() {
+        var myDiv = document.getElementById("assignmentContent");
+        myDiv.replaceChildren();
+
+        assignments.forEach(assignment => {
+            var button = document.createElement("BUTTON");
+            button.innerHTML = assignment.name;
+            button.classList.add("btn-lg", "btn-outline-primary", "p-2", "buttons");
+            button.setAttribute('id',assignment.name ) ;
+            button.onclick = function() { SetAssignmentName(assignment.name); };
+            myDiv.appendChild(button);
+        });
+
+        $("#assignmentCollapsible").removeAttr("hidden");
+        $("#scriptStart").attr("hidden", true);
+    }
+
+    function StartStudentAssignationScript (){
+        var ajaxURL = '/RPLP/StartStudentAssignationScript';
+        var numberOfReviewsRequired = $("#numberOfReview").val();
+
+        $.ajax({
+            type: 'GET',
+            url: ajaxURL,
+            data: { organisationName: SelectedOrganisationName, classroomName: SelectedClassroomName, assignmentName: SelectedAssignmentName, numberOfReviews: numberOfReviewsRequired},
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            beforeSend: function () {
+                console.log('firing ajax call');
+            },
+            success: function (data) {
+                console.log("works!");
+            },
+            error: function (ex) {
+                console.log(ex);
+            }
+        });
+
+    }
+
+    function StartTeacherAssignationScript (){
+        var ajaxURL = '/RPLP/StartTeachertAssignationScript';
+
+        $.ajax({
+            type: 'GET',
+            url: ajaxURL,
+            data: { organisationName: SelectedOrganisationName, classroomName: SelectedClassroomName, assignmentName: SelectedAssignmentName},
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            beforeSend: function () {
+                console.log('firing ajax call');
+            },
+            success: function (data) {
+                console.log("works!");
+            },
+            error: function (ex) {
+                console.log(ex);
+            }
+        });
+
+    }
+
+</script>

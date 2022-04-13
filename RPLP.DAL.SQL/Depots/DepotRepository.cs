@@ -19,32 +19,34 @@ namespace RPLP.DAL.SQL.Depots
             this._context = new RPLPDbContext(new DbContextOptionsBuilder<RPLPDbContext>().UseSqlServer("Server=rplp.db; Database=RPLP; User Id=sa; password=Cad3pend86!").Options);
         }
 
+        public DepotRepository(RPLPDbContext p_context)
+        {
+            this._context = p_context;
+        }
+
         public Repository GetRepositoryById(int id)
         {
-            Repository repository = this._context.Repositories.Where(repository => repository.Active)
-                                                              .Select(repository => repository.ToEntity())
-                                                              .FirstOrDefault(repository => repository.Id == id);
+            Repository_SQLDTO repository = this._context.Repositories.FirstOrDefault(repository => repository.Id == id && repository.Active);
             if (repository == null)
-                return new Repository();
+                return null;
 
-            return repository;
+            return repository.ToEntity();
         }
 
         public Repository GetRepositoryByName(string p_repositoryName)
         {
-            Repository repository = this._context.Repositories.Where(repository => repository.Active)
-                                                              .Select(repository => repository.ToEntity())
-                                                              .FirstOrDefault(repository => repository.Name == p_repositoryName);
-            if (repository == null)
-                return new Repository();
+            Repository_SQLDTO repository = this._context.Repositories.FirstOrDefault(repository => repository.Name == p_repositoryName && repository.Active);
 
-            return repository;
+            if (repository == null)
+                return null;
+
+            return repository.ToEntity();
         }
 
         public void UpsertRepository(Repository p_repository)
         {
-            Repository_SQLDTO repositoryResult = this._context.Repositories.Where(repository => repository.Active)
-                                                                           .SingleOrDefault(repository => repository.Id == p_repository.Id);
+            Repository_SQLDTO repositoryResult = this._context.Repositories.SingleOrDefault(repository => repository.Id == p_repository.Id && 
+                                                                                            repository.Active);
             if (repositoryResult != null)
             {
                 repositoryResult.Name = p_repository.Name;

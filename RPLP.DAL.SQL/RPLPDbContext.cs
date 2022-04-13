@@ -16,6 +16,41 @@ namespace RPLP.DAL.SQL
             Database.Migrate();
         }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseSqlServer("Server=rplp.db; Database=RPLP; User Id=sa; password=Cad3pend86!");
+            }
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Administrator_SQLDTO>()
+                .HasIndex(a => a.Email)
+                .IsUnique();
+
+            modelBuilder.Entity<Administrator_SQLDTO>()
+                .HasIndex(a => a.Username)
+                .IsUnique();
+
+            modelBuilder.Entity<Student_SQLDTO>()
+                .HasIndex(a => a.Email)
+                .IsUnique();
+
+            modelBuilder.Entity<Student_SQLDTO>()
+                .HasIndex(a => a.Username)
+                .IsUnique();
+
+            modelBuilder.Entity<Teacher_SQLDTO>()
+                .HasIndex(a => a.Email)
+                .IsUnique();
+
+            modelBuilder.Entity<Teacher_SQLDTO>()
+                .HasIndex(a => a.Username)
+                .IsUnique();
+        }
+
         public DbSet<Classroom_SQLDTO> Classrooms { get; set; }
         public DbSet<Administrator_SQLDTO> Administrators { get; set; }
         public DbSet<Assignment_SQLDTO> Assignments { get; set; }

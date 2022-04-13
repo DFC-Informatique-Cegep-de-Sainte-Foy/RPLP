@@ -13,6 +13,7 @@ namespace RPLP.DAL.DTO.Sql
         public string Username { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public string Email { get; set; }
         public List<Classroom_SQLDTO> Classes { get; set; }
         public bool Active { get; set; }
 
@@ -29,6 +30,7 @@ namespace RPLP.DAL.DTO.Sql
             this.Username = p_teacher.Username;
             this.FirstName = p_teacher.FirstName;
             this.LastName = p_teacher.LastName;
+            this.Email = p_teacher.Email;
 
             if (p_teacher.Classes.Count >= 1)
             {
@@ -44,12 +46,12 @@ namespace RPLP.DAL.DTO.Sql
 
         public Teacher ToEntity()
         {
-            return new Teacher(this.Id, this.Username, this.FirstName, this.LastName, this.Classes.Select(classroom => classroom.ToEntity()).ToList());
+            return new Teacher(this.Id, this.Username, this.FirstName, this.LastName, this.Email, this.Classes.Select(classroom => classroom.ToEntity()).ToList());
         }
 
         public Teacher ToEntityWithoutList()
         {
-            return new Teacher(this.Id, this.Username, this.FirstName, this.LastName, new List<Classroom>());
+            return new Teacher(this.Id, this.Username, this.FirstName, this.LastName, this.Email, new List<Classroom>());
         }
     }
 }

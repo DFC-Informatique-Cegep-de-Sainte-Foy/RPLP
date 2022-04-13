@@ -78,6 +78,10 @@ namespace RPLP.DAL.SQL.Migrations
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -92,9 +96,15 @@ namespace RPLP.DAL.SQL.Migrations
 
                     b.Property<string>("Username")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("Username")
+                        .IsUnique();
 
                     b.ToTable("Administrators");
                 });
@@ -267,6 +277,10 @@ namespace RPLP.DAL.SQL.Migrations
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -277,9 +291,15 @@ namespace RPLP.DAL.SQL.Migrations
 
                     b.Property<string>("Username")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("Username")
+                        .IsUnique();
 
                     b.ToTable("Students");
                 });
@@ -295,6 +315,10 @@ namespace RPLP.DAL.SQL.Migrations
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -305,9 +329,15 @@ namespace RPLP.DAL.SQL.Migrations
 
                     b.Property<string>("Username")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("Username")
+                        .IsUnique();
 
                     b.ToTable("Teachers");
                 });
@@ -360,13 +390,13 @@ namespace RPLP.DAL.SQL.Migrations
             modelBuilder.Entity("RPLP.DAL.DTO.Sql.Assignment_SQLDTO", b =>
                 {
                     b.HasOne("RPLP.DAL.DTO.Sql.Classroom_SQLDTO", null)
-                        .WithMany("Assignment")
+                        .WithMany("Assignments")
                         .HasForeignKey("Classroom_SQLDTOId");
                 });
 
             modelBuilder.Entity("RPLP.DAL.DTO.Sql.Classroom_SQLDTO", b =>
                 {
-                    b.Navigation("Assignment");
+                    b.Navigation("Assignments");
                 });
 #pragma warning restore 612, 618
         }
