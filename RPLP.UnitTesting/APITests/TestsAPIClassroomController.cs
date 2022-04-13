@@ -152,7 +152,7 @@ namespace RPLP.UnitTesting.APITests
             depot.Verify(d => d.GetStudentsByClassroomName("ProjetSynthese"), Times.Once);
             Assert.NotNull(result);
             Assert.Equal(2, student.Count);
-            Assert.Contains(student, t => t.Username == "ThPaquet");
+            Assert.Contains(student, s => s.Username == "ThPaquet");
         }
 
         [Fact]
@@ -183,7 +183,7 @@ namespace RPLP.UnitTesting.APITests
             depot.Verify(d => d.GetAssignmentsByClassroomName("ProjetSynthese"), Times.Once);
             Assert.NotNull(result);
             Assert.Equal(2, assignments.Count);
-            Assert.Contains(assignments, t => t.Name == "RPLP");
+            Assert.Contains(assignments, a => a.Name == "RPLP");
         }
 
         [Fact]
