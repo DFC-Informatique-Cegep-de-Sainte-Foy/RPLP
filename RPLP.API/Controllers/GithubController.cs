@@ -35,6 +35,21 @@ namespace RPLP.API.Controllers
 
         }
 
+        [HttpGet("/test/{organisationName}/{classroomName}/{assignmentName}")]
+        public ActionResult StartScriptProf(string organisationName, string classroomName, string assignmentName)
+        {
+            try
+            {
+                this._scriptGithub.ScriptAssignTeacherToAssignmentReview(organisationName, classroomName, assignmentName);
+                return Ok("Assigned successfully");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
+
         [HttpGet("{organisationName}")]
         public ActionResult<IEnumerable<Repository_JSONDTO>> GetRepositories(string organisationName)
         {

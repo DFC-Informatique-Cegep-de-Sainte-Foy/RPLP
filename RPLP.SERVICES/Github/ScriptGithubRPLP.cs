@@ -151,9 +151,9 @@ namespace RPLP.SERVICES.Github
 
         #region Teacher
 
-        public void ScriptAssignTeacherToAssignmentReview(string p_organisationName, string p_classRoomName, string p_assignmentName, int p_reviewsPerRepository)
+        public void ScriptAssignTeacherToAssignmentReview(string p_organisationName, string p_classRoomName, string p_assignmentName)
         {
-            if (p_reviewsPerRepository <= 0 || string.IsNullOrWhiteSpace(p_organisationName) || string.IsNullOrWhiteSpace(p_classRoomName) || string.IsNullOrWhiteSpace(p_assignmentName))
+            if (string.IsNullOrWhiteSpace(p_organisationName) || string.IsNullOrWhiteSpace(p_classRoomName) || string.IsNullOrWhiteSpace(p_assignmentName))
                 throw new ArgumentException("One of the provided value is incorrect or null");
 
             List<Student> students = _depotClassroom.GetStudentsByClassroomName(p_classRoomName);
@@ -166,16 +166,16 @@ namespace RPLP.SERVICES.Github
                 throw new ArgumentException("Number of teachers cannot be less than one");
 
             List<Repository> repositoriesToAssign = getRepositoriesToAssign(p_organisationName, p_classRoomName, p_assignmentName, students);
-            
+
             if (repositoriesToAssign == null)
                 throw new ArgumentNullException($"No repositories to assign in {p_classRoomName}");
-                       
+
             //Faire l'action
             foreach (Repository repository in repositoriesToAssign)
             {
-                createPullRequestForTeacher(p_organisationName, repository.Name, "FichierTexte.txt", "FeedbackTeacher", "RmljaGllciB0ZXh0ZSBwb3VyIGNyw6nDqSBQUg==" ); //À MODIFIER
+                createPullRequestForTeacher(p_organisationName, repository.Name, "FichierTexte.txt", "FeedbackTeacher", "RmljaGllciB0ZXh0ZSBwb3VyIGNyw6nDqSBQUg=="); //À MODIFIER
             }
-        }             
+        }
 
         private void createPullRequestForTeacher(string p_organisationName, string p_repositoryName, string p_newFileName, string p_message, string p_content)
         {
@@ -183,7 +183,7 @@ namespace RPLP.SERVICES.Github
 
             List<Branch_JSONDTO> branchesResult = this._githubApiAction.GetRepositoryBranchesGithub(p_organisationName, p_repositoryName);
 
-            if (branchesResult == null)
+            if (branchesResult.Count <= 0)
                 throw new ArgumentNullException($"Branch does not exist or wrong name was entered");
 
             foreach (Branch_JSONDTO branch in branchesResult)
@@ -203,7 +203,7 @@ namespace RPLP.SERVICES.Github
 
         private void createPullRequestAndAssignTeacher(string p_organisationName, string p_repositoryName, string p_sha, string p_newFileName, string p_message, string p_content)
         {
-            string newBranchName = $"feedback";
+            string newBranchName = "feedback";
 
             //un return a été mis à chacun pour que si une erreur apparaît entre les actions, ça s'arrête.
             string resultCreateBranch = this._githubApiAction.CreateNewBranchForFeedbackGitHub(p_organisationName, p_repositoryName, p_sha, newBranchName);
@@ -212,7 +212,7 @@ namespace RPLP.SERVICES.Github
 
             this._githubApiAction.AddFileToContentsGitHub(p_organisationName, p_repositoryName, newBranchName, p_newFileName, p_message, p_content);
 
-            string resultCreatePR = this._githubApiAction.CreateNewPullRequestFeedbackGitHub(p_organisationName, p_repositoryName, newBranchName,"Feedback", "Voici où vous devez mettre vos commentaires");
+            string resultCreatePR = this._githubApiAction.CreateNewPullRequestFeedbackGitHub(p_organisationName, p_repositoryName, newBranchName, "Feedback", "Voici où vous devez mettre vos commentaires");
             if (resultCreatePR != "Created")
                 throw new ArgumentException($"PullRequest not created in {p_repositoryName}");
         }
