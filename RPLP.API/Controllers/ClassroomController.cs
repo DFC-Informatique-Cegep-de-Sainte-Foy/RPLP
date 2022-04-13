@@ -33,7 +33,19 @@ namespace RPLP.API.Controllers
         {
             return Ok(this._depot.GetClassroomByName(classroomName));
         }
-              
+
+        [HttpGet("Organisation/{organisationName}")]
+        public ActionResult<Classroom> GetClassroomsByOrganisationName(string organisationName)
+        {
+            return Ok(this._depot.GetClassroomsByOrganisationName(organisationName));
+        }
+
+        [HttpGet("Assignments/{classroomName}")]
+        public ActionResult<List<Assignment>> GetAssignmentsByClassroomName(string classroomName)
+        {
+            return Ok(this._depot.GetAssignmentsByClassroomName(classroomName));
+        }
+
         [HttpGet("Name/{classroomName}/Teachers")]
         public ActionResult<List<Teacher>> GetTeachers(string classroomName)
         {
