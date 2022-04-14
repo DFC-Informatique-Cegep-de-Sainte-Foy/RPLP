@@ -48,7 +48,7 @@ namespace RPLP.MVC.Controllers
                     .Result;
             }
 
-            else if (userType == typeof(Administrator).ToString())
+            else if (userType == typeof(Teacher).ToString())
             {
                 organisations = this._httpClient
                     .GetFromJsonAsync<List<Organisation>>($"Teacher/Email/{email}/Organisations")
@@ -110,12 +110,10 @@ namespace RPLP.MVC.Controllers
         public List<ClassroomViewModel> GetClassroomsOfTeacherInOrganisation(string p_teacherUsername, string p_organisationName)
         {
             var classes = new List<ClassroomViewModel>();
-            string? teacherEmail = this._httpClient
-                .GetFromJsonAsync<Teacher>($"Teacher/{p_teacherUsername}")
-                .Result.Email;
+            string? teacherEmail = User.FindFirst(c => c.Type == ClaimTypes.Email)?.Value;
 
             List<Classroom>? databaseClasses = this._httpClient
-                .GetFromJsonAsync<List<Classroom>>($"Classroom/Email/{teacherEmail}/Organisation/{p_organisationName}/Classrooms")
+                .GetFromJsonAsync<List<Classroom>>($"Teacher/Email/{teacherEmail}/Organisation/{p_organisationName}/Classrooms")
                 .Result;
 
             foreach (Classroom classroom in databaseClasses)
@@ -131,7 +129,7 @@ namespace RPLP.MVC.Controllers
         {
             List<AssignmentViewModel> assignments = new List<AssignmentViewModel>();
             List<Assignment>? databaseAssignments = this._httpClient
-                .GetFromJsonAsync<List<Assignment>>($"Assignments/{classroomName}")
+                .GetFromJsonAsync<List<Assignment>>($"Assignment/Classroom/{classroomName}/Assignments")
                 .Result;
 
             foreach (Assignment assignment in databaseAssignments)

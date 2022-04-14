@@ -266,6 +266,25 @@ namespace RPLP.UnitTesting.DepotTests
         }
 
         [Fact]
+        private void Test_GetTeacherClassesInOrganisation()
+        {
+            this.DeleteTeachersAndRelatedTablesContent();
+            this.InsertPremadeTeachers();
+
+            using (var context = new RPLPDbContext(options))
+            {
+                DepotTeacher depot = new DepotTeacher(context);
+                List<Classroom> classes = depot.GetTeacherClassesInOrganisation("ThPaquet", "CEGEP Ste-Foy");
+
+                Assert.Equal(2, classes.Count);
+                Assert.Contains(classes, c => c.Name == "RPLP");
+                Assert.DoesNotContain(classes, c => c.Name == "OOP");
+            }
+
+            this.DeleteTeachersAndRelatedTablesContent();
+        }
+
+        [Fact]
         private void Test_AddClassroomToTeacher()
         {
             this.DeleteTeachersAndRelatedTablesContent();

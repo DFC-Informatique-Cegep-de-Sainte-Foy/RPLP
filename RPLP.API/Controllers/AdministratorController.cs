@@ -48,7 +48,13 @@ namespace RPLP.API.Controllers
         [HttpGet("Email/{email}/Organisations")]
         public ActionResult<List<Organisation>> GetAdminOrganisationsByEmail(string email)
         {
-            string username = this._depot.GetAdministratorByEmail(email).Username;
+            string? username = this._depot.GetAdministratorByEmail(email)?.Username;
+
+            if (string.IsNullOrWhiteSpace(username))
+            {
+                return BadRequest();
+            }
+
             return Ok(this._depot.GetAdminOrganisations(username));
         }
 
