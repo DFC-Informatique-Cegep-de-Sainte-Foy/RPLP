@@ -146,7 +146,7 @@ namespace RPLP.SERVICES.Github
             return repositories;
         }
 
-        public void ScriptAssignTeacherToAssignmentReview(string p_organisationName, string p_classRoomName, string p_assignmentName, int p_reviewsPerRepository)
+        public void ScriptAssignTeacherToAssignmentReview(string p_organisationName, string p_classRoomName, string p_assignmentName)
         {
             if (string.IsNullOrWhiteSpace(p_organisationName) || string.IsNullOrWhiteSpace(p_classRoomName) || string.IsNullOrWhiteSpace(p_assignmentName))
                 throw new ArgumentException("One of the provided value is incorrect or null");
