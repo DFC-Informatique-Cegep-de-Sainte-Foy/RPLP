@@ -20,4 +20,8 @@
     <ProjectReference Include="..\RPLP.ENTITES\RPLP.ENTITES.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Downloads\" />
+  </ItemGroup>
+
 </Project>

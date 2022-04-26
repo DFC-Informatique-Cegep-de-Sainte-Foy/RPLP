@@ -23,6 +23,8 @@ namespace RPLP.SERVICES.Github
         private string _addCollaboratorToRepositoryGithub = "/repos/{organisationName}/{repositoryName}/collaborators/{studentUsername}";
         private string _addFileToContentsGithub = "/repos/{organisationName}/{repositoryName}/contents/{newFileName}";
         private string _assignStudentToPullRequestGithub = "/repos/{organisationName}/{repositoryName}/pulls/{branchId}/requested_reviewers?";
+        private string _getLinkToDownloadRepository= "/repos/{organisationName}/{repositoryName}/zipball";
+
 
         private const string organisationName = "{organisationName}";
         private const string repositoryName = "{repositoryName}";
@@ -244,13 +246,10 @@ namespace RPLP.SERVICES.Github
         }
 
 
-
-        #region Teacher
-
-        public string AddFileToContentsGitHub(string p_organisationName, string p_repositoryName, string p_branchName,string p_newFileName, string p_content, string p_message)
+        public string AddFileToContentsGitHub(string p_organisationName, string p_repositoryName, string p_branchName, string p_newFileName, string p_content, string p_message)
         {
-            string fullPath = _addFileToContentsGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName).Replace(newFileName,p_newFileName);
-            Task<string > statusCode = addFileToContentsGithubApiRequest(fullPath, p_branchName, p_content, p_message );
+            string fullPath = _addFileToContentsGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName).Replace(newFileName, p_newFileName);
+            Task<string> statusCode = addFileToContentsGithubApiRequest(fullPath, p_branchName, p_content, p_message);
             statusCode.Wait();
 
             return statusCode.Result;
@@ -272,7 +271,22 @@ namespace RPLP.SERVICES.Github
             return response.StatusCode.ToString();
         }
 
-        #endregion
+        public HttpResponseMessage GetLinkToDownloadRepository(string p_organisationName, string p_repositoryName)
+        {
+            string fullPath = _getLinkToDownloadRepository.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName);
+            Task<HttpResponseMessage> statusCode = getLinkToDownloadRepository(fullPath);
+            statusCode.Wait();
+
+            return statusCode.Result;
+        }
+
+        private Task<HttpResponseMessage> getLinkToDownloadRepository(string p_githubLink)
+        {
+            Task<HttpResponseMessage> response = _httpClient.GetAsync(p_githubLink);
+
+            return response;
+        }
+
     }
 }
 

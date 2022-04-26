@@ -4,6 +4,7 @@ using RPLP.ENTITES;
 using RPLP.SERVICES.InterfacesDepots;
 using System;
 using System.Collections.Generic;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,7 +24,6 @@ namespace RPLP.SERVICES.Github
             this._githubApiAction = new GithubApiAction(p_token);
         }
 
-        #region Student
         public void ScriptAssignStudentToAssignmentReview(string p_organisationName, string p_classRoomName, string p_assignmentName, int p_reviewsPerRepository)
         {
             if (p_reviewsPerRepository <= 0 || string.IsNullOrWhiteSpace(p_organisationName) || string.IsNullOrWhiteSpace(p_classRoomName) || string.IsNullOrWhiteSpace(p_assignmentName))
@@ -146,11 +146,6 @@ namespace RPLP.SERVICES.Github
             return repositories;
         }
 
-        #endregion Student
-
-
-        #region Teacher
-
         public void ScriptAssignTeacherToAssignmentReview(string p_organisationName, string p_classRoomName, string p_assignmentName, int p_reviewsPerRepository)
         {
             if (p_reviewsPerRepository <= 0 || string.IsNullOrWhiteSpace(p_organisationName) || string.IsNullOrWhiteSpace(p_classRoomName) || string.IsNullOrWhiteSpace(p_assignmentName))
@@ -166,16 +161,16 @@ namespace RPLP.SERVICES.Github
                 throw new ArgumentException("Number of teachers cannot be less than one");
 
             List<Repository> repositoriesToAssign = getRepositoriesToAssign(p_organisationName, p_classRoomName, p_assignmentName, students);
-            
+
             if (repositoriesToAssign == null)
                 throw new ArgumentNullException($"No repositories to assign in {p_classRoomName}");
-                       
+
             //Faire l'action
             foreach (Repository repository in repositoriesToAssign)
             {
-                createPullRequestForTeacher(p_organisationName, repository.Name, "FichierTexte.txt", "FeedbackTeacher", "RmljaGllciB0ZXh0ZSBwb3VyIGNyw6nDqSBQUg==" ); //À MODIFIER
+                createPullRequestForTeacher(p_organisationName, repository.Name, "FichierTexte.txt", "FeedbackTeacher", "RmljaGllciB0ZXh0ZSBwb3VyIGNyw6nDqSBQUg==");
             }
-        }             
+        }
 
         private void createPullRequestForTeacher(string p_organisationName, string p_repositoryName, string p_newFileName, string p_message, string p_content)
         {
@@ -212,12 +207,152 @@ namespace RPLP.SERVICES.Github
 
             this._githubApiAction.AddFileToContentsGitHub(p_organisationName, p_repositoryName, newBranchName, p_newFileName, p_message, p_content);
 
-            string resultCreatePR = this._githubApiAction.CreateNewPullRequestFeedbackGitHub(p_organisationName, p_repositoryName, newBranchName,"Feedback", "Voici où vous devez mettre vos commentaires");
+            string resultCreatePR = this._githubApiAction.CreateNewPullRequestFeedbackGitHub(p_organisationName, p_repositoryName, newBranchName, "Feedback", "Voici où vous devez mettre vos commentaires");
             if (resultCreatePR != "Created")
                 throw new ArgumentException($"PullRequest not created in {p_repositoryName}");
         }
 
-        #endregion Teacher
+        public string ScriptDownloadAllRepositoriesForAssignment(string p_organisationName, string p_classRoomName, string p_assignmentName)
+        {
+            if (string.IsNullOrWhiteSpace(p_organisationName) || string.IsNullOrWhiteSpace(p_classRoomName) || string.IsNullOrWhiteSpace(p_assignmentName))
+                throw new ArgumentException("One of the provided value is incorrect or null");
 
+
+            List<Student> students = _depotClassroom.GetStudentsByClassroomName(p_classRoomName);
+
+            if (students.Count < 1)
+                throw new ArgumentException("Number of students cannot be less than one");
+
+
+            List<Assignment> assignmentsResult = _depotClassroom.GetAssignmentsByClassroomName(p_classRoomName);
+
+            if (assignmentsResult.Count < 1)
+                throw new ArgumentException($"No assignment in {p_classRoomName}");
+
+            Assignment assignment = assignmentsResult.SingleOrDefault(assignment => assignment.Name == p_assignmentName);
+
+            if (assignment == null)
+                throw new ArgumentException($"No assignment with name {p_assignmentName}");
+
+
+            List<Repository> repositories = new List<Repository>();
+            List<Repository> repositoriesResult = this._depotRepository.GetRepositoriesFromOrganisationName(p_organisationName);
+
+            foreach (Repository repository in repositoriesResult)
+            {
+                string[] splitRepository = repository.Name.Split('-');
+
+                if (splitRepository[0] == assignment.Name)
+                {
+                    foreach (Student student in students)
+                    {
+                        if (splitRepository[1] == student.Username)
+                        {
+                            repositories.Add(repository);
+                            break;
+                        }
+                    }
+                }
+            }
+
+
+            //Faire l'action                        
+
+            string sourceFolderPath = @".\Downloads\";
+            string assignmentFolderPath = Path.Combine(sourceFolderPath, assignment.Name);
+            string zippedAssignmentFolderPath = Path.Combine(sourceFolderPath, assignment.Name, ".zip");
+
+            DirectoryInfo repositoriesDirectory = Directory.CreateDirectory(assignmentFolderPath);
+
+            foreach (Repository repository in repositories)
+            {
+                string repositoryName = repository.Name;
+                string repositoryFolderPath = Path.Combine(assignmentFolderPath, "_", repositoryName);
+
+
+                HttpResponseMessage response = this._githubApiAction.GetLinkToDownloadRepository(p_organisationName, repositoryName);
+
+
+                DirectoryInfo repositoryDirectory = System.IO.Directory.CreateDirectory(repositoryFolderPath);
+
+               /* foreach (var file in repositoryDirectory.GetFiles(responseFolderPath))
+                {
+                    File.Move(responseFolderPath, Path.Combine(repositoryFolderPath, file.Name));
+                }
+               */
+            }
+
+            ZipFile.CreateFromDirectory(assignmentFolderPath, zippedAssignmentFolderPath, CompressionLevel.Fastest, true);
+
+
+            Directory.Delete(assignmentFolderPath);
+
+            return zippedAssignmentFolderPath;
+
+        }
+
+
+
+        //une autre méthode
+        //Supprimer tout le dossier ./Downloads/ spécifique à mon assignment
+
+
+        public void ScriptDownloadOneRepositoryForAssignment(string p_organisationName, string p_classRoomName, string p_assignmentName, string p_repositoryName)
+        {
+            if (string.IsNullOrWhiteSpace(p_organisationName) || string.IsNullOrWhiteSpace(p_classRoomName) || string.IsNullOrWhiteSpace(p_assignmentName) || string.IsNullOrWhiteSpace(p_repositoryName))
+                throw new ArgumentException("One of the provided value is incorrect or null");
+
+
+            List<Student> students = _depotClassroom.GetStudentsByClassroomName(p_classRoomName);
+
+            if (students.Count < 1)
+                throw new ArgumentException("Number of students cannot be less than one");
+
+
+            List<Assignment> assignmentsResult = _depotClassroom.GetAssignmentsByClassroomName(p_classRoomName);
+
+            if (assignmentsResult.Count < 1)
+                throw new ArgumentException($"No assignment in {p_classRoomName}");
+
+            Assignment assignment = assignmentsResult.SingleOrDefault(assignment => assignment.Name == p_assignmentName);
+
+            if (assignment == null)
+                throw new ArgumentException($"No assignment with name {p_assignmentName}");
+
+
+
+            Repository repository = _depotRepository.GetRepositoryByName(p_repositoryName);
+
+
+
+            //Faire l'action                        
+
+            string sourceFolderPath = @"~\Downloads\"; //Anglais vs Français - un enjeu?
+            string assignmentFolderPath = Path.Combine(sourceFolderPath, assignment.Name);
+            string zippedAssignmentFolderPath = Path.Combine(sourceFolderPath, assignment.Name, ".zip");
+
+            DirectoryInfo repositoriesDirectory = Directory.CreateDirectory(assignmentFolderPath);
+
+            string repositoryName = repository.Name;
+            string repositoryFolderPath = Path.Combine(assignmentFolderPath, "_", repositoryName);
+
+
+            HttpResponseMessage response = this._githubApiAction.GetLinkToDownloadRepository(p_organisationName, repositoryName);
+
+
+            DirectoryInfo repositoryDirectory = System.IO.Directory.CreateDirectory(repositoryFolderPath);
+
+            /*
+            foreach (var file in repositoryDirectory.GetFiles(responseFolderPath))
+            {
+                File.Move(responseFolderPath, Path.Combine(repositoryFolderPath, file.Name));
+            }
+            */
+
+            ZipFile.CreateFromDirectory(assignmentFolderPath, zippedAssignmentFolderPath, CompressionLevel.Fastest, true);
+            Directory.Delete(assignmentFolderPath);
+
+
+        }
     }
 }

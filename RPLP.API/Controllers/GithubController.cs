@@ -34,6 +34,39 @@ namespace RPLP.API.Controllers
             }
 
         }
+        
+        [HttpGet("/telechargement/{organisationName}/{classroomName}/{assignmentName}")]
+        public ActionResult StartScriptTelechargement(string organisationName, string classroomName, string assignmentName)
+        {
+            try
+            {
+                this._scriptGithub.ScriptDownloadAllRepositoriesForAssignment(organisationName, classroomName, assignmentName);
+                return Ok("Assigned successfully");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+
+        }
+
+        /*
+        [HttpGet("/teachers/{organisationName}/{classroomName}/{assignmentName}/{numberOfReviews}")]
+        public ActionResult StartScriptAssignTeachers(string organisationName, string classroomName, string assignmentName, int numberOfReviews)
+        {
+            try
+            {
+                this._scriptGithub.ScriptAssignTeacherToAssignmentReview(organisationName, classroomName, assignmentName, numberOfReviews);
+                return Ok("Assigned successfully");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
+        */
 
         [HttpGet("{organisationName}")]
         public ActionResult<IEnumerable<Repository_JSONDTO>> GetRepositories(string organisationName)
@@ -54,8 +87,8 @@ namespace RPLP.API.Controllers
             return Ok(this._githubAction.GetRepositoryCommitsGithub(organisationName, repositoryName));
         }
 
-        [HttpGet("{organisationName}/{repositoryName}/BRanches/")]
-        public ActionResult<IEnumerable<Repository_JSONDTO>> GetRepositoryBranches(string organisationName, string repositoryName)
+        [HttpGet("{organisationName}/{repositoryName}/Branches/")]
+        public ActionResult<IEnumerable<Repository_JSONDTO>> GetRepositoryBranches(string organisationName, string repositoryName) 
         {
             return Ok(this._githubAction.GetRepositoryBranchesGithub(organisationName, repositoryName));
         }
