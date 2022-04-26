@@ -148,7 +148,7 @@ namespace RPLP.SERVICES.Github
 
         public void ScriptAssignTeacherToAssignmentReview(string p_organisationName, string p_classRoomName, string p_assignmentName, int p_reviewsPerRepository)
         {
-            if (p_reviewsPerRepository <= 0 || string.IsNullOrWhiteSpace(p_organisationName) || string.IsNullOrWhiteSpace(p_classRoomName) || string.IsNullOrWhiteSpace(p_assignmentName))
+            if (string.IsNullOrWhiteSpace(p_organisationName) || string.IsNullOrWhiteSpace(p_classRoomName) || string.IsNullOrWhiteSpace(p_assignmentName))
                 throw new ArgumentException("One of the provided value is incorrect or null");
 
             List<Student> students = _depotClassroom.GetStudentsByClassroomName(p_classRoomName);
@@ -178,7 +178,7 @@ namespace RPLP.SERVICES.Github
 
             List<Branch_JSONDTO> branchesResult = this._githubApiAction.GetRepositoryBranchesGithub(p_organisationName, p_repositoryName);
 
-            if (branchesResult == null)
+            if (branchesResult.Count <= 0)
                 throw new ArgumentNullException($"Branch does not exist or wrong name was entered");
 
             foreach (Branch_JSONDTO branch in branchesResult)
@@ -198,7 +198,7 @@ namespace RPLP.SERVICES.Github
 
         private void createPullRequestAndAssignTeacher(string p_organisationName, string p_repositoryName, string p_sha, string p_newFileName, string p_message, string p_content)
         {
-            string newBranchName = $"feedback";
+            string newBranchName = "feedback";
 
             //un return a été mis à chacun pour que si une erreur apparaît entre les actions, ça s'arrête.
             string resultCreateBranch = this._githubApiAction.CreateNewBranchForFeedbackGitHub(p_organisationName, p_repositoryName, p_sha, newBranchName);

@@ -2,6 +2,7 @@
 using RPLP.DAL.DTO.Sql;
 using RPLP.DAL.SQL;
 using RPLP.DAL.SQL.Depots;
+using RPLP.ENTITES;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -136,6 +137,75 @@ namespace RPLP.UnitTesting.DepotTests
             }
 
             this.DeleteRelatedTablesContent();
+        }
+
+        [Fact]
+        public void Test_GetUserType_Administrator()
+        {
+            this.DeleteRelatedTablesContent();
+            this.InsertPremades();
+
+            using (var context = new RPLPDbContext(options))
+            {
+                VerificatorForDepot verificator = new VerificatorForDepot(context);
+                Administrator? administrator = context.Administrators.FirstOrDefault(a => a.Email == "ThPaquet@hotmail.com")?.ToEntityWithoutList();
+                Assert.NotNull(administrator);
+
+
+                Assert.Equal(typeof(Administrator), verificator.GetUserTypeByEmail("ThPaquet@hotmail.com"));
+            }
+
+            this.DeleteRelatedTablesContent();
+        }
+
+        [Fact]
+        public void Test_GetUserType_Student()
+        {
+            this.DeleteRelatedTablesContent();
+            this.InsertPremades();
+
+            using (var context = new RPLPDbContext(options))
+            {
+                VerificatorForDepot verificator = new VerificatorForDepot(context);
+                Student? student = context.Students.FirstOrDefault(a => a.Email == "ikeameatbol@hotmail.com")?.ToEntityWithoutList();
+                Assert.NotNull(student);
+
+
+                Assert.Equal(typeof(Student), verificator.GetUserTypeByEmail("ikeameatbol@hotmail.com"));
+            }
+
+            this.DeleteRelatedTablesContent();
+        }
+
+        [Fact]
+        public void Test_GetUserType_Teacher()
+        {
+            this.DeleteRelatedTablesContent();
+            this.InsertPremades();
+
+            using (var context = new RPLPDbContext(options))
+            {
+                VerificatorForDepot verificator = new VerificatorForDepot(context);
+                Teacher? teacher = context.Teachers.FirstOrDefault(a => a.Email == "BACenComm@hotmail.com")?.ToEntityWithoutList();
+                Assert.NotNull(teacher);
+
+
+                Assert.Equal(typeof(Teacher), verificator.GetUserTypeByEmail("BACenComm@hotmail.com"));
+            }
+
+            this.DeleteRelatedTablesContent();
+        }
+
+        [Fact]
+        public void Test_GetUserType_Null()
+        {
+            this.DeleteRelatedTablesContent();
+
+            using (var context = new RPLPDbContext(options))
+            {
+                VerificatorForDepot verificator = new VerificatorForDepot(context);
+                Assert.Null(verificator.GetUserTypeByEmail("whatever@hotmail.com"));
+            }
         }
     }
 }

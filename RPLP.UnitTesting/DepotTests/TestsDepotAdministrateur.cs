@@ -187,6 +187,51 @@ namespace RPLP.UnitTesting.DepotTests
         }
 
         [Fact]
+        public void Test_GetByEmail()
+        {
+            this.DeleteAdministratorAndRelatedTablesContent();
+            this.InsertPremadeAdmins();
+
+            using (var context = new RPLPDbContext(options))
+            {
+                Administrator_SQLDTO? admin = context.Administrators
+                    .SingleOrDefault(a => a.Email == "ThPaquet@hotmail.com");
+
+                DepotAdministrator depot = new DepotAdministrator(context);
+                Administrator administrator = depot.GetAdministratorByEmail("ThPaquet@hotmail.com");
+
+                Assert.NotNull(administrator);
+                Assert.Equal("Thierry", administrator.FirstName);
+                Assert.Equal("Paquet", administrator.LastName);
+                Assert.Equal("token", administrator.Token);
+                Assert.NotEmpty(administrator.Organisations);
+            }
+
+            this.DeleteAdministratorAndRelatedTablesContent();
+        }
+
+        [Fact]
+        public void Test_GetByEmail_NotActive()
+        {
+            this.DeleteAdministratorAndRelatedTablesContent();
+            this.InsertPremadeAdmins();
+
+            using (var context = new RPLPDbContext(options))
+            {
+                Administrator_SQLDTO? adminInContext = context.Administrators
+                    .SingleOrDefault(a => a.Email == "BACenComm@hotmail.com" && a.Active == false);
+                Assert.NotNull(adminInContext);
+
+                DepotAdministrator depot = new DepotAdministrator(context);
+                Administrator administrator = depot.GetAdministratorByEmail("BACenComm@hotmail.com");
+
+                Assert.Null(administrator);
+            }
+
+            this.DeleteAdministratorAndRelatedTablesContent();
+        }
+
+        [Fact]
         public void Test_UpsertAdministrator_Inserts()
         {
             this.DeleteAdministratorAndRelatedTablesContent();
