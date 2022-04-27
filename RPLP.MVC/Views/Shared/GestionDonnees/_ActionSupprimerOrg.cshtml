@@ -1,0 +1,50 @@
+﻿@model RPLP.MVC.Models.GestionDonneeViewModel
+
+<form id="deleteOrgForm">
+    <div class="titlePartial">
+    <h2 >Supprimer une organisation</H2>
+    </div>
+
+    <div class="form-group">
+        <select id="supprimerOrgDropdown" class="form-control" onchange="supprimerOrg.choisirOrg()">
+
+        </select>
+        <br />
+    </div>
+
+  <input type="button" class="btn-lg btn-danger titlePartial" value="Supprimer">
+  <input type="button" class="btn-lg btn-primary titlePartial" onclick="supprimerOrg.refreshForm()" value=" Rafraîchir le formulaire">
+</form>
+
+<script src="/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        var option = document.createElement("option");
+        option.text = "Faites un choix";
+        option.value = -1;
+        var select = document.getElementById("supprimerOrgDropdown");
+        select.appendChild(option);
+
+        @foreach (var d in Model.Organisations)
+        {
+            @:var option = document.createElement("option");
+            @:option.text = "@d.Name";
+            @:option.value = "@d.Name";
+            @:var select = document.getElementById("supprimerOrgDropdown");
+            @:select.appendChild(option);
+        }
+    });
+
+    var supprimerOrg = {};
+
+    supprimerOrg.refreshForm = function ()
+    {
+       document.getElementById("deleteOrgForm").reset();
+       document.getElementById("supprimerOrgDropdown").value = -1;
+    }
+
+    supprimerOrg.choisirOrg = function ()
+    {
+
+    }
+</script>

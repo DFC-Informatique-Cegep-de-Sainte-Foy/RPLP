@@ -46,9 +46,70 @@ namespace RPLP.MVC.Controllers
                 organisations = _depotTeacher.GetTeacherOrganisations(teacher.Username);
             }
 
-            organisations.ForEach(o => model.Organisations.Add(new OrganisationViewModel(o.Name)));
+            organisations.ForEach(o => model.Organisations.Add(new OrganisationViewModel { Name = o.Name }));
 
             return View(model);
+        }
+
+        public IActionResult GestionDonnees()
+        {
+            GestionDonneeViewModel model = getGestionDonneeModel();
+
+            return View("GestionDonnees", model);
+        }
+
+        public GestionDonneeViewModel getGestionDonneeModel()
+        {
+            string email = User.FindFirst(u => u.Type == ClaimTypes.Email)?.Value;
+            Type userType = this.verificator.GetUserTypeByEmail(email);
+            GestionDonneeViewModel model = new GestionDonneeViewModel();
+
+            if (userType == typeof(Administrator))
+            {
+                model.RoleType = "Administrator";
+            }
+            else if (userType == typeof(Teacher))
+            {
+                model.RoleType = "Teacher";
+            }
+
+            List<Administrator> adminsResult = _depotAdministrator.GetAdministrators();
+            if (adminsResult.Count >= 1)
+                adminsResult.ForEach(admin =>
+                {
+                    if (admin.Email != email)
+                    {
+                        model.Administrators.Add(new AdministratorViewModel { Id = admin.Id, Email = admin.Email, Token = admin.Token, FirstName = admin.FirstName, LastName = admin.LastName, Username = admin.Username });
+                    }
+                });
+
+            List<Organisation> organisationsResult = new List<Organisation>();
+
+            if (userType == typeof(Administrator))
+            {
+                organisationsResult = _depotOrganisation.GetOrganisations();
+            }
+            else if (userType == typeof(Teacher))
+            {
+                Teacher teacher = this._depotTeacher.GetTeacherByEmail(email);
+                organisationsResult = _depotTeacher.GetTeacherOrganisations(teacher.Username);
+            }
+
+            if (organisationsResult.Count >= 1)
+                organisationsResult.ForEach(organisation =>
+                {
+                    model.Organisations.Add(new OrganisationViewModel { Id = organisation.Id, Name = organisation.Name });
+                });
+
+
+            List<Teacher> teachersResult = _depotTeacher.GetTeachers();
+            if (teachersResult.Count >= 1)
+                teachersResult.ForEach(teacher =>
+                {
+                    model.Teachers.Add(new TeacherViewModel { Id = teacher.Id, Email = teacher.Email, FirstName = teacher.FirstName, LastName = teacher.LastName, Username = teacher.Username });
+                });
+
+            return model;
         }
 
         private List<OrganisationViewModel> GetOrganisations()
@@ -60,7 +121,7 @@ namespace RPLP.MVC.Controllers
             {
                 foreach (Organisation org in databaseOrganisations)
                 {
-                    organisations.Add(new OrganisationViewModel(org.Name));
+                    organisations.Add(new OrganisationViewModel { Name = org.Name });
                 }
             }
 

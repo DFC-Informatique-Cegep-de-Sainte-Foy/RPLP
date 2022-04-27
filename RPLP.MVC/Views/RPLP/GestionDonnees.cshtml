@@ -1,0 +1,188 @@
+﻿@model RPLP.MVC.Models.GestionDonneeViewModel
+
+<div class="container mt-3">
+    <div class="wrapper">
+        <div class="col-6">
+            @if (Model.RoleType == "Administrator")
+            {
+                <div class="wrapper">
+                    <div id="adminsCollapsible" class="collapsible">
+                        <input type="checkbox" id="collapsible-admins" name="checkboxadmins" />
+                        <label class="col-10" for="collapsible-admins">Administrateurs</label>
+                        <div class="collapsible-content">
+                            <button id="btnCreateAdmin" class="btn-lg btn-outline-primary buttons" onclick="FormUnlock('createAdmin', 'btnCreateAdmin')">Créer</button>
+                            <button id="btnModifyAdmin" class="btn-lg btn-outline-primary buttons" onclick="FormUnlock('modifyAdmin', 'btnModifyAdmin')">Modifier</button>
+                            <button id="btnDeleteAdmin" class="btn-lg btn-outline-primary buttons" onclick="FormUnlock('deleteAdmin', 'btnDeleteAdmin')">Supprimer</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="wrapper">
+                    <div id="orgsCollapsible" class="collapsible">
+                        <input type="checkbox" id="collapsible-orgs" name="checkboxOrgs" />
+                        <label class="col-10" for="collapsible-orgs">Organisations</label>
+                        <div class="collapsible-content">
+                            <button id="btnCreateOrganisation" class="btn-lg btn-outline-primary buttons" onclick="FormUnlock('createOrganisation', 'btnCreateOrganisation')">Créer</button>
+                            <button id="btnModifyOrganisation" class="btn-lg btn-outline-primary buttons" onclick="FormUnlock('modifyOrganisation', 'btnModifyOrganisation')">Modifier</button>
+                            <button id="btnDeleteOrganisation" class="btn-lg btn-outline-primary buttons" onclick="FormUnlock('deleteOrganisation', 'btnDeleteOrganisation')">Supprimer</button>
+                            <br>
+                            <button id="btnAddAdminToOrg" class="btn-lg btn-outline-primary buttons" onclick="FormUnlock('addAdminToOrg', 'btnAddAdminToOrg')">Ajouter Administrateur </button>
+                            <button id="btnRemoveAdminFromOrg" class="btn-lg btn-outline-primary buttons" onclick="FormUnlock('removeAdminFromOrg', 'btnRemoveAdminFromOrg')">Retirer Administrateur</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="wrapper">
+                    <div id="teacherCollapsible" class="collapsible">
+                        <input type="checkbox" id="collapsible-teacher" name="checkboxTeacher" />
+                        <label class="col-10" for="collapsible-teacher">Professeurs</label>
+                        <div class="collapsible-content">
+                            <button id="btnCreateTeacher" class="btn-lg btn-outline-primary buttons" onclick="FormUnlock('createTeacher', 'btnCreateTeacher')">Créer</button>
+                            <button id="btnModifyTeacher" class="btn-lg btn-outline-primary buttons" onclick="FormUnlock('modifyTeacher', 'btnModifyTeacher')">Modifier</button>
+                            <button id="btnDeleteTeacher" class="btn-lg btn-outline-primary buttons" onclick="FormUnlock('deleteTeacher', 'btnDeleteTeacher')">Supprimer</button>
+                        </div>
+                    </div>
+                </div>
+            }
+            @if (Model.RoleType == "Administrator" || Model.RoleType == "Teacher")
+            {
+                <div class="wrapper">
+                    <div id="classesCollapsible" class="collapsible">
+                        <input type="checkbox" id="collapsible-classes" name="checkboxClasses" />
+                        <label class="col-10" for="collapsible-classes">Classes</label>
+                        <div class="collapsible-content">
+                            <button id="btnCreateClassroom" class="btn-lg btn-outline-primary buttons" onclick="FormUnlock('createClassroom', 'btnCreateClassroom')">Créer</button>
+                            <button id="btnModifyClassroom" class="btn-lg btn-outline-primary buttons" onclick="FormUnlock('modifyClassroom', 'btnModifyClassroom')">Modifier</button>
+                            <button id="btnDeleteClassroom" class="btn-lg btn-outline-primary buttons" onclick="FormUnlock('deleteClassroom', 'btnDeleteClassroom')">Supprimer</button>
+                            <br>
+                            <button id="btnAddTeacherToClassroom" class="btn-lg btn-outline-primary buttons" onclick="FormUnlock('addTeacherToClassroom', 'btnAddTeacherToClassroom')">Ajouter Professeur</button>
+                            <button id="btnRemoveTeacherFromClassroom" class="btn-lg btn-outline-primary buttons" onclick="FormUnlock('removeTeacherFromClassroom', 'btnRemoveTeacherFromClassroom')">Retirer Professeur</button>
+                            <br>
+                            <button id="btnAddStudentToClassroom" class="btn-lg btn-outline-primary buttons" onclick="FormUnlock('addStudentToClassroom', 'btnAddStudentToClassroom')">Ajouter Étudiant</button>
+                            <button id="btnRemoveStudentFromClassroom" class="btn-lg btn-outline-primary buttons" onclick="FormUnlock('removeStudentFromClassroom', 'btnRemoveStudentFromClassroom')">Retirer Étudiant</button>
+                            <br>
+                            <button id="btnAddAssignmentToClassroom" class="btn-lg btn-outline-primary buttons" onclick="FormUnlock('addAssignmentToClassroom', 'btnAddAssignmentToClassroom')">Ajouter Travail</button>
+                            <button id="btnRemoveAssignmentFromClassroom" class="btn-lg btn-outline-primary buttons" onclick="FormUnlock('removeAssignmentFromClassroom', 'btnRemoveAssignmentFromClassroom')">Retirer Travail</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="wrapper">
+                    <div id="assignmentCollapsible" class="collapsible">
+                        <input type="checkbox" id="collapsible-assignment" name="checkboxAssignment" />
+                        <label class="col-10" for="collapsible-assignment">Travaux</label>
+                        <div class="collapsible-content">
+                            <button id="btnCreateAssignment" class="btn-lg btn-outline-primary buttons" onclick="FormUnlock('createAssignment', 'btnCreateAssignment')">Créer</button>
+                            <button id="btnModifyAssignment" class="btn-lg btn-outline-primary buttons" onclick="FormUnlock('modifyAssignment', 'btnModifyAssignment')">Modifier</button>
+                            <button id="btnDeleteAssignment" class="btn-lg btn-outline-primary buttons" onclick="FormUnlock('deleteAssignment', 'btnDeleteAssignment')">Supprimer</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="wrapper">
+                    <div id="studentCollapsible" class="collapsible">
+                        <input type="checkbox" id="collapsible-student" name="checkboxStudent" />
+                        <label class="col-10" for="collapsible-student">Étudiants</label>
+                        <div class="collapsible-content">
+                            <button id="btnCreateStudent" class="btn-lg btn-outline-primary buttons" onclick="FormUnlock('createStudent', 'btnCreateStudent')">Créer</button>
+                            <button id="btnModifyStudent" class="btn-lg btn-outline-primary buttons" onclick="FormUnlock('modifyStudent', 'btnModifyStudent')">Modifier</button>
+                            <button id="btnDeleteStudent" class="btn-lg btn-outline-primary buttons" onclick="FormUnlock('deleteStudent', 'btnDeleteStudent')">Supprimer</button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="col-6">
+            <div id="createAdmin" hidden>
+                @{
+                    Html.RenderPartial(@"../Shared/GestionDonnees/_ActionAjouterAdmin.cshtml");
+                }
+            </div>
+
+            <div id="modifyAdmin" hidden>
+                @{
+                    Html.RenderPartial(@"../Shared/GestionDonnees/_ActionModifierAdmin.cshtml", Model);
+                }
+            </div>
+
+            <div id="deleteAdmin" hidden>
+                @{
+                    Html.RenderPartial(@"../Shared/GestionDonnees/_ActionSupprimerAdmin.cshtml", Model);
+                }
+            </div>
+
+            <div id="createOrganisation" hidden>
+                @{
+                    Html.RenderPartial(@"../Shared/GestionDonnees/_ActionAjouterOrg.cshtml");
+                }
+            </div>
+
+            <div id="modifyOrganisation" hidden>
+                @{
+                    Html.RenderPartial(@"../Shared/GestionDonnees/_ActionModifierOrg.cshtml", Model);
+                }
+            </div>
+
+            <div id="deleteOrganisation" hidden>
+                @{
+                    Html.RenderPartial(@"../Shared/GestionDonnees/_ActionSupprimerOrg.cshtml", Model);
+                }
+            </div>
+
+            <div id="createTeacher" hidden>
+                @{
+                    Html.RenderPartial(@"../Shared/GestionDonnees/_ActionAjouterTeacher.cshtml");
+                }
+            </div>
+
+            <div id="modifyTeacher" hidden>
+                @{
+                    Html.RenderPartial(@"../Shared/GestionDonnees/_ActionModifierTeacher.cshtml");
+                }
+            </div>
+
+            <div id="createClassroom" hidden>
+                @{
+                    Html.RenderPartial(@"../Shared/GestionDonnees/_ActionAjouterClassroom.cshtml", Model);
+                }
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<script type="text/javascript">
+    var buttons = ["btnCreateAdmin","btnModifyAdmin","btnDeleteAdmin",
+                   "btnCreateOrganisation","btnModifyOrganisation","btnDeleteOrganisation","btnAddAdminToOrg","btnRemoveAdminFromOrg",
+                   "btnCreateTeacher","btnModifyTeacher","btnDeleteTeacher",
+                   "btnCreateClassroom","btnModifyClassroom","btnDeleteClassroom","btnAddTeacherToClassroom","btnRemoveTeacherFromClassroom","btnAddStudentToClassroom","btnRemoveStudentFromClassroom","btnAddAssignmentToClassroom","btnRemoveAssignmentFromClassroom",
+                   "btnCreateAssignment","btnModifyAssignment","btnDeleteAssignment",
+                   "btnCreateStudent","btnModifyStudent","btnDeleteStudent"];
+    var forms = ["createAdmin","modifyAdmin","deleteAdmin",
+                 "createOrganisation","modifyOrganisation","deleteOrganisation",
+                 "createTeacher","modifyTeacher",
+                 "createClassroom"];
+
+    function FormUnlock( formName, ButtonName)
+    {
+        buttons.forEach(button => {
+            document.getElementById(button).classList.add("btn-outline-primary");
+            document.getElementById(button).classList.remove("btn-primary");
+
+            if(button == ButtonName)
+            {
+                document.getElementById(button).classList.remove("btn-outline-primary");
+                document.getElementById(button).classList.add("btn-primary");
+            }
+        });
+
+        forms.forEach(form => {
+            document.getElementById(form).hidden = true;
+
+            if(form == formName)
+                document.getElementById(form).hidden = false;
+        });
+    }
+</script>

@@ -1,0 +1,82 @@
+﻿<form id="ajouterAdminForm">
+    <div class="titlePartial">
+    <h2 >Créer un compte d’administrateur</H2>
+    </div>
+
+    <div class="form-group">
+        <label for="InputGithubUsernameAjouterAdmin">Github Username</label>
+        <input type="text" class="form-control" id="InputGithubUsernameAjouterAdmin">
+    </div>
+
+    <div class="form-group">
+        <label for="InputGithubTokenAjouterAdmin">Github Token</label>
+        <input type="text" class="form-control" id="InputGithubTokenAjouterAdmin">
+    </div>
+
+    <div class="form-group">
+        <label for="InputPrenomAjouterAdmin">Prénom</label>
+        <input type="text" class="form-control" id="InputPrenomAjouterAdmin">
+    </div>
+
+    <div class="form-group">
+        <label for="InputNomAjouterAdmin">Nom</label>
+        <input type="text" class="form-control" id="InputNomAjouterAdmin">
+    </div>
+
+    <div class="form-group">
+        <label for="inputEmailAjouterAdmin">Adresse courriel</label>
+        <input type="email" class="form-control" id="inputEmailAjouterAdmin">
+    </div>
+
+  <input type="button" class="btn-lg btn-success titlePartial" onclick="ajouterAdmin.verifyDataThenCreate()" value="Créer">
+  <input type="button" class="btn-lg btn-primary titlePartial" onclick="ajouterAdmin.refreshForm()" value=" Rafraîchir le formulaire">
+</form>
+
+
+<script type="text/javascript">
+
+    var ajouterAdmin = {}
+
+    ajouterAdmin.refreshForm = function ()
+    {
+       document.getElementById("ajouterAdminForm").reset();
+    }
+
+    ajouterAdmin.verifyDataThenCreate = function()
+    {
+        var username = document.getElementById("InputGithubUsernameAjouterAdmin").value ;
+        var token = document.getElementById("InputGithubTokenAjouterAdmin").value ;
+        var prenom = document.getElementById("InputPrenomAjouterAdmin").value ;
+        var nom = document.getElementById("InputNomAjouterAdmin").value ;
+        var email = document.getElementById("inputEmailAjouterAdmin").value ;
+
+        if(username == "" || token == "" || prenom == "" || nom == "" || email == "" )
+        {
+            alert("Veulliez remplir les champs vide");
+        } else {
+            ajouterAdmin.createNewAdmin(username, token, prenom, nom, email);
+        }
+    }
+
+    ajouterAdmin.createNewAdmin = function(username, token, firstName, lastName, email)
+    {
+        $.ajax({
+            type: 'POST',
+            url: "https://rplp.api/api/Administrator",
+            data: '{ "id": 0, "username":'+ username +',"token":'+ token +',"firstName":'+ firstName +',"lastName":'+ lastName +',"email":'+ email +',"organisations": [] }',
+            contentType: "application/json; charset=utf-8",
+            dataType: 'jsonp',
+            crossDomain: true,
+            beforeSend: function () {
+                console.log('firing ajax call');
+            },
+            success: function (data) {
+                alert("Success");
+            },
+            error: function (ex) {
+                 alert('Error' + ex);
+                 console.log(ex);
+            }
+        });
+    }
+</script>

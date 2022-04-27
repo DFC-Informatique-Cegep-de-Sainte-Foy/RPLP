@@ -1,0 +1,59 @@
+﻿<form id="ajouterTeacherForm">
+    <div class="titlePartial">
+    <h2 >Créer un compte enseignant</H2>
+    </div>
+
+    <div class="form-group">
+        <label for="InputGithubUsernameAjouterTeacher">Github Username</label>
+        <input type="text" class="form-control" id="InputGithubUsernameAjouterTeacher">
+    </div>
+
+    <div class="form-group">
+        <label for="InputPrenomAjouterTeacher">Prénom</label>
+        <input type="text" class="form-control" id="InputPrenomAjouterTeacher">
+    </div>
+
+    <div class="form-group">
+        <label for="InputNomAjouterTeacher">Nom</label>
+        <input type="text" class="form-control" id="InputNomAjouterTeacher">
+    </div>
+
+    <div class="form-group">
+        <label for="inputEmailAjouterTeacher">Adresse courriel</label>
+        <input type="email" class="form-control" id="inputEmailAjouterTeacher">
+    </div>
+
+  <input type="button" class="btn-lg btn-success titlePartial" onclick="ajouterTeacher.verifyDataThenCreate()" value="Créer">
+  <input type="button" class="btn-lg btn-primary titlePartial" onclick="ajouterTeacher.refreshForm()" value=" Rafraîchir le formulaire">
+</form>
+
+
+<script type="text/javascript">
+
+    var ajouterTeacher = {}
+
+    ajouterTeacher.refreshForm = function ()
+    {
+       document.getElementById("ajouterTeacherForm").reset();
+    }
+
+    ajouterTeacher.verifyDataThenCreate = function()
+    {
+        var username = document.getElementById("InputGithubUsernameAjouterTeacher").value ;
+        var prenom = document.getElementById("InputPrenomAjouterTeacher").value ;
+        var nom = document.getElementById("InputNomAjouterTeacher").value ;
+        var email = document.getElementById("inputEmailAjouterTeacher").value ;
+
+        if(username == "" || prenom == "" || nom == "" || email == "" )
+        {
+            alert("Veulliez remplir les champs vide");
+        } else {
+            ajouterTeacher.createNewAdmin(username, prenom, nom, email);
+        }
+    }
+
+    ajouterTeacher.createNewAdmin = function(username, token, firstName, lastName, email)
+    {
+        //script ajax
+    }
+</script>

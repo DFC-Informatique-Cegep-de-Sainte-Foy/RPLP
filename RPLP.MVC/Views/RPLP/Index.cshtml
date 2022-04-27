@@ -1,11 +1,7 @@
 ﻿@using RPLP.MVC.Controllers
 @model RPLP.MVC.Models.PeerReviewViewModel
 
-@Html.HiddenFor(model => model.Assignment)
-@Html.HiddenFor(model => model.Classrooms)
-
 <div class="container mt-3">
-
     <div class="wrapper">
         <div id="orgsCollapsible" class="collapsible">
             <input type="checkbox" id="collapsible-orgs" name="checkboxOrg" />
@@ -31,7 +27,7 @@
     <div class="wrapper">
         <div id="assignmentCollapsible" class="collapsible" hidden>
             <input type="checkbox" id="collapsible-assignments" name="checkboxAssignment" />
-            <label for="collapsible-assignments">Assignments</label>
+            <label for="collapsible-assignments">Travaux</label>
             <div class="collapsible-content" id="assignmentContent">
             </div>
         </div>
@@ -46,11 +42,6 @@
 </div>
 
 <style>
-    .buttons {
-        margin-right: 10px;
-        margin-bottom: 10px;
-    }
-
 </style>
 
 <script src="/lib/jquery/dist/jquery.min.js"></script>

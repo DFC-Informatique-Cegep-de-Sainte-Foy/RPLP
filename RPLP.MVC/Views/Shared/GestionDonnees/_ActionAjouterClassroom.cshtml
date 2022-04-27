@@ -1,0 +1,71 @@
+﻿@model RPLP.MVC.Models.GestionDonneeViewModel
+
+<form id="ajouterClassroomForm">
+    <div class="titlePartial">
+    <h2 >Créer une classe</H2>
+    </div>
+
+    <div class="form-group">
+        <label for="InputOrgNameAjouterClassroom">Nom de l'organisation</label>
+        <select id="ajouterClassroomDropdown" class="form-control">
+
+        </select>
+        <br />
+    </div>
+
+    <div class="form-group">
+        <label for="InputClassroomNameAjouterOrg">Nom de la classe</label>
+        <input type="text" class="form-control" id="InputClassroomNameAjouterOrg">
+    </div>
+
+  <input type="button" class="btn-lg btn-success titlePartial" onclick="ajouterClassroom.verifyDataThenCreate()" value="Créer">
+  <input type="button" class="btn-lg btn-primary titlePartial" onclick="ajouterClassroom.refreshForm()" value=" Rafraîchir le formulaire">
+</form>
+
+
+<script src="/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        var option = document.createElement("option");
+        option.text = "Faites un choix";
+        option.value = -1;
+        var select = document.getElementById("ajouterClassroomDropdown");
+        select.appendChild(option);
+
+        @foreach (var d in Model.Organisations)
+        {
+            @:var option = document.createElement("option");
+            @:option.text = "@d.Name";
+            @:option.value = "@d.Name";
+            @:var select = document.getElementById("ajouterClassroomDropdown");
+            @:select.appendChild(option);
+        }
+    });
+
+    var ajouterClassroom = {}
+
+    ajouterClassroom.refreshForm = function ()
+    {
+       document.getElementById("ajouterClassroomForm").reset();
+       $('input[name=InputClassroomNameAjouterOrg]').prop('disabled', true);
+       document.getElementById("ajouterClassroomDropdown").value = -1;
+    }
+
+    ajouterClassroom.verifyDataThenCreate = function()
+    {
+        var className = document.getElementById("InputClassroomNameAjouterOrg").value ;
+
+        if(className == "" )
+        {
+            alert("Veulliez remplir le champ vide");
+        } else {
+            ajouterClassroom.createNewClassroom();
+        }
+    }
+
+    ajouterClassroom.createNewClassroom = function(OrganisationName,ClassroomName)
+    {
+
+    }
+</script>
+
