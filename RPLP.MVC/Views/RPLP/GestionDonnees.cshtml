@@ -2,7 +2,7 @@
 
 <div class="container mt-3">
     <div class="wrapper">
-        <div class="col-6">
+        <div class="col-6" id="ActionButtons">
             @if (Model.RoleType == "Administrator")
             {
                 <div class="wrapper">
@@ -93,7 +93,7 @@
             }
         </div>
 
-        <div class="col-6">
+        <div class="col-6" id="formulaires">
             <div id="createAdmin" hidden>
                 @{
                     Html.RenderPartial(@"../Shared/GestionDonnees/_ActionAjouterAdmin.cshtml");
@@ -142,9 +142,21 @@
                 }
             </div>
 
+            <div id="deleteTeacher" hidden>
+                @{
+                    Html.RenderPartial(@"../Shared/GestionDonnees/_ActionSupprimerTeacher.cshtml");
+                }
+            </div>
+
             <div id="createClassroom" hidden>
                 @{
                     Html.RenderPartial(@"../Shared/GestionDonnees/_ActionAjouterClassroom.cshtml", Model);
+                }
+            </div>
+
+            <div id="modifyClassroom" hidden>
+                @{
+                    Html.RenderPartial(@"../Shared/GestionDonnees/_ActionModifierClassroom.cshtml", Model);
                 }
             </div>
 
@@ -154,35 +166,40 @@
 </div>
 
 <script type="text/javascript">
-    var buttons = ["btnCreateAdmin","btnModifyAdmin","btnDeleteAdmin",
-                   "btnCreateOrganisation","btnModifyOrganisation","btnDeleteOrganisation","btnAddAdminToOrg","btnRemoveAdminFromOrg",
-                   "btnCreateTeacher","btnModifyTeacher","btnDeleteTeacher",
-                   "btnCreateClassroom","btnModifyClassroom","btnDeleteClassroom","btnAddTeacherToClassroom","btnRemoveTeacherFromClassroom","btnAddStudentToClassroom","btnRemoveStudentFromClassroom","btnAddAssignmentToClassroom","btnRemoveAssignmentFromClassroom",
-                   "btnCreateAssignment","btnModifyAssignment","btnDeleteAssignment",
-                   "btnCreateStudent","btnModifyStudent","btnDeleteStudent"];
-    var forms = ["createAdmin","modifyAdmin","deleteAdmin",
-                 "createOrganisation","modifyOrganisation","deleteOrganisation",
-                 "createTeacher","modifyTeacher",
-                 "createClassroom"];
-
-    function FormUnlock( formName, ButtonName)
+    @if (Model.RoleType == "Administrator")
     {
-        buttons.forEach(button => {
-            document.getElementById(button).classList.add("btn-outline-primary");
-            document.getElementById(button).classList.remove("btn-primary");
-
-            if(button == ButtonName)
-            {
-                document.getElementById(button).classList.remove("btn-outline-primary");
-                document.getElementById(button).classList.add("btn-primary");
-            }
-        });
-
-        forms.forEach(form => {
-            document.getElementById(form).hidden = true;
-
-            if(form == formName)
-                document.getElementById(form).hidden = false;
-        });
+        @Html.Raw("var buttons = ['btnCreateAdmin', 'btnModifyAdmin', 'btnDeleteAdmin','btnCreateOrganisation', 'btnModifyOrganisation', 'btnDeleteOrganisation','btnAddAdminToOrg', 'btnRemoveAdminFromOrg','btnCreateTeacher', 'btnModifyTeacher', 'btnDeleteTeacher','btnCreateClassroom', 'btnModifyClassroom', 'btnDeleteClassroom', 'btnAddTeacherToClassroom', 'btnRemoveTeacherFromClassroom', 'btnAddStudentToClassroom', 'btnRemoveStudentFromClassroom', 'btnAddAssignmentToClassroom', 'btnRemoveAssignmentFromClassroom','btnCreateAssignment', 'btnModifyAssignment', 'btnDeleteAssignment','btnCreateStudent', 'btnModifyStudent', 'btnDeleteStudent'];")
     }
+    else if (Model.RoleType == "Teacher")
+    {
+        @Html.Raw("var buttons = ['btnCreateClassroom', 'btnModifyClassroom', 'btnDeleteClassroom', 'btnAddTeacherToClassroom', 'btnRemoveTeacherFromClassroom', 'btnAddStudentToClassroom', 'btnRemoveStudentFromClassroom', 'btnAddAssignmentToClassroom', 'btnRemoveAssignmentFromClassroom','btnCreateAssignment', 'btnModifyAssignment', 'btnDeleteAssignment','btnCreateStudent', 'btnModifyStudent', 'btnDeleteStudent'];")
+    }
+
+
+        var forms = ["createAdmin", "modifyAdmin", "deleteAdmin",
+                     "createOrganisation", "modifyOrganisation", "deleteOrganisation",
+                     "createTeacher", "modifyTeacher", "deleteTeacher",
+                     "createClassroom", "modifyClassroom"];
+
+
+        function FormUnlock(formName, ButtonName)
+    {
+            buttons.forEach(button => {
+                document.getElementById(button).classList.add("btn-outline-primary");
+                document.getElementById(button).classList.remove("btn-primary");
+
+                if(button == ButtonName)
+                {
+                    document.getElementById(button).classList.remove("btn-outline-primary");
+                    document.getElementById(button).classList.add("btn-primary");
+                }
+            });
+
+            forms.forEach(form => {
+                document.getElementById(form).hidden = true;
+
+                if(form == formName)
+                    document.getElementById(form).hidden = false;
+            });
+        }
 </script>

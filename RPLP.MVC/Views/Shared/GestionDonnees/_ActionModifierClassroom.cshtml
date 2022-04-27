@@ -1,0 +1,147 @@
+﻿@model RPLP.MVC.Models.GestionDonneeViewModel
+
+<form id="modifyClassroomForm">
+    <div class="titlePartial">
+    <h2 >Modifier une classe</H2>
+    </div>
+
+    <div class="form-group">
+        <select id="modifyClassroomOrgDropdown" class="form-control" onchange="modifyClassroom.choisirOrg()">
+
+        </select>
+        <br />
+    </div>
+
+    <div class="form-group">
+        <select id="modifyClassroomDropdown" class="form-control" onchange="modifyClassroom.choisirClassroom()" disabled>
+
+        </select>
+        <br />
+    </div>
+
+    <div class="form-group">
+        <label for="InputClassroomNameModifyClassroom">Nom de la classe</label>
+        <input type="text" class="form-control" name="InputClassroomNameModifyClassroom" id="InputClassroomNameModifyClassroom" disabled>
+    </div>
+
+  <input type="button" class="btn-lg btn-warning titlePartial" value="Modifier">
+  <input type="button" class="btn-lg btn-primary titlePartial" onclick="modifyClassroom.refreshForm()" value=" Rafraîchir le formulaire">
+</form>
+
+<script src="/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        var option = document.createElement("option");
+        option.text = "Faites un choix";
+        option.value = -1;
+        var select = document.getElementById("modifyClassroomOrgDropdown");
+        select.appendChild(option);
+
+        @foreach (var d in Model.Organisations)
+        {
+            @:var option = document.createElement("option");
+            @:option.text = "@d.Name";
+            @:option.value = "@d.Name";
+            @:var select = document.getElementById("modifyClassroomOrgDropdown");
+            @:select.appendChild(option);
+        }
+    });
+
+    var modifyClassroom = {};
+    var classrooms = [];
+
+    modifyClassroom.refreshForm = function ()
+    {
+       document.getElementById("modifyOrgForm").reset();
+       document.getElementById("modifyClassroomOrgDropdown").value = -1;
+
+       const classes = document.getElementById("modifyClassroomDropdown");
+       classes.innerHTML = '';
+       document.getElementById("modifyClassroomDropdown").disabled = true;
+       
+       $('input[name=InputClassroomNameModifyClassroom]').prop('disabled', true);
+       document.getElementById("InputClassroomNameModifyClassroom").value = "";
+    }
+
+    modifyClassroom.choisirOrg = function ()
+    {
+       if(document.getElementById("modifyClassroomOrgDropdown").value == -1)
+       {
+            $('input[name=InputOrgNameModifyOrg]').prop('disabled', true);
+            document.getElementById("InputOrgNameModifyOrg").value = "";
+
+            const classes = document.getElementById("modifyClassroomDropdown");
+            classes.innerHTML = '';
+            document.getElementById("modifyClassroomDropdown").disabled = true;
+       
+            $('input[name=InputClassroomNameModifyClassroom]').prop('disabled', true);
+            document.getElementById("InputClassroomNameModifyClassroom").value = "";
+       } else {
+            var orgName = document.getElementById("modifyClassroomOrgDropdown").value;  
+            modifyClassroom.GetClassroomsOfOrganisationByName(orgName);
+
+            $('input[name=InputClassroomNameModifyClassroom]').prop('disabled', true);
+            document.getElementById("InputClassroomNameModifyClassroom").value = "";
+
+            document.getElementById("modifyClassroomDropdown").disabled = false;
+       }
+    }
+
+    modifyClassroom.choisirClassroom = function ()
+    {
+       if(document.getElementById("modifyClassroomDropdown").value == -1)
+       {
+            $('input[name=InputClassroomNameModifyClassroom]').prop('disabled', true);
+            document.getElementById("InputClassroomNameModifyClassroom").value = "";
+       } else {
+           $('input[name=InputClassroomNameModifyClassroom]').prop('disabled', '');
+
+            var name = document.getElementById("modifyClassroomDropdown").value;  
+            var classroom = classrooms.find(classroom => classroom.name == name);
+
+            document.getElementById("InputClassroomNameModifyClassroom").value = classroom.name;
+       }
+    }
+
+     modifyClassroom.GetClassroomsOfOrganisationByName = function (organisationName)
+     {
+       var ajaxURL = '/RPLP/GetClassroomsOfOrganisationByName';
+        $.ajax({
+            type: 'GET',
+            url: ajaxURL,
+            data: { orgName : organisationName},
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            beforeSend: function () {
+                console.log('firing ajax call');
+            },
+            success: function (data) {
+                classrooms = data;
+                modifyClassroom.ShowClassrooms();
+            },
+            error: function (ex) {
+                console.log('Error');
+            }
+        });
+    }
+
+    modifyClassroom.ShowClassrooms = function()
+    {
+        const classes = document.getElementById("modifyClassroomDropdown");
+        classes.innerHTML = '';
+
+        var option = document.createElement("option");
+        option.text = "Faites un choix";
+        option.value = -1;
+        var select = document.getElementById("modifyClassroomDropdown");
+        select.appendChild(option);
+
+        classrooms.forEach(classroom => {
+            var option = document.createElement("option");
+            option.text = classroom.name;
+            option.value = classroom.name;
+            var select = document.getElementById("modifyClassroomDropdown");
+            select.appendChild(option);
+        });
+    }
+</script>

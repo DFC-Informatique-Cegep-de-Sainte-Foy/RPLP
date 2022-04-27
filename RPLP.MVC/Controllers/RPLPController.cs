@@ -39,7 +39,6 @@ namespace RPLP.MVC.Controllers
                 Administrator administrator = this._depotAdministrator.GetAdministratorByEmail(email);
                 organisations = this._depotAdministrator.GetAdminOrganisations(administrator.Username);
             }
-
             else if (userType == typeof(Teacher))
             {
                 Teacher teacher = this._depotTeacher.GetTeacherByEmail(email);
@@ -87,7 +86,8 @@ namespace RPLP.MVC.Controllers
 
             if (userType == typeof(Administrator))
             {
-                organisationsResult = _depotOrganisation.GetOrganisations();
+                Administrator administrator = this._depotAdministrator.GetAdministratorByEmail(email);
+                organisationsResult = this._depotAdministrator.GetAdminOrganisations(administrator.Username);
             }
             else if (userType == typeof(Teacher))
             {

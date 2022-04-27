@@ -1,0 +1,45 @@
+﻿@model RPLP.MVC.Models.GestionDonneeViewModel
+
+<form id="deleteTeacherForm">
+    <div class="titlePartial">
+    <h2 >Supprimer un compte enseignant</H2>
+    </div>
+
+    <div class="form-group">
+        <select id="supprimerTeacherDropdown" class="form-control">
+
+        </select>
+        <br />
+    </div>
+
+  <input type="button" class="btn-lg btn-danger titlePartial" value="Supprimer">
+  <input type="button" class="btn-lg btn-primary titlePartial" onclick="supprimerTeacher.refreshForm()" value=" Rafraîchir le formulaire">
+</form>
+
+<script src="/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        var option = document.createElement("option");
+        option.text = "Faites un choix";
+        option.value = -1;
+        var select = document.getElementById("supprimerTeacherDropdown");
+        select.appendChild(option);
+
+        @foreach (var d in Model.Teachers)
+        {
+            @:var option = document.createElement("option");
+            @:option.text = "@d.FirstName @d.LastName";
+            @:option.value = "@d.Email";
+            @:var select = document.getElementById("supprimerTeacherDropdown");
+            @:select.appendChild(option);
+        }
+    });
+
+    var supprimerTeacher = {};
+
+    supprimerTeacher.refreshForm = function ()
+    {
+       document.getElementById("deleteTeacherForm").reset();
+       document.getElementById("supprimerTeacherDropdown").value = -1;
+    }
+</script>
