@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RPLP.SERVICES.Github.GithubReviewCommentFetcher.Entities
 {
-    public class Comment
+    public class CodeComment
     {
         public string Username { get; set; }
         public string Body { get; set; }

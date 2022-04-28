@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using RPLP.ENTITES;
 using RPLP.SERVICES.Github.GithubReviewCommentFetcher.Entities;
+using RPLP.SERVICES.InterfacesDepots;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,16 +15,41 @@ namespace RPLP.SERVICES.Github.GithubReviewCommentFetcher
     public class GithubPRCommentFetcher
     {
         private HttpClient _client;
-        public GithubPRCommentFetcher()
+        private readonly IDepotClassroom _depotClassroom;
+
+        public GithubPRCommentFetcher(string p_token)
         {
             this._client = new HttpClient();
             this._client.BaseAddress = new Uri("https://api.github.com");
             this._client.DefaultRequestHeaders.Accept
                 .Add(new MediaTypeWithQualityHeaderValue("application/json"));
             this._client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("RPLP", "1"));
+            this._client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Token", p_token);
         }
 
+        public async Task<CommentAggregate> GetUserCommentsReviewsAndIssues(List<Pull> p_pulls, string p_username)
+        {
+            List<CodeComment> codeComments = new List<CodeComment>();
+            List<Issue> issues = new List<Issue>();
+            List<Review> reviews = new List<Review>();
 
+            foreach (Pull pull in p_pulls)
+            {
+                codeComments.AddRange(pull.Comments.Where(c => c.Username.ToLower() == p_username.ToLower()));
+                issues.AddRange(pull.Issues.Where(i => i.Username.ToLower() == p_username.ToLower()));
+                reviews.AddRange(pull.Reviews.Where(r => r.Username.ToLower() == p_username.ToLower()));
+            }
+
+            CommentAggregate commentAggregate = new CommentAggregate()
+            {
+                Username = p_username,
+                Comments = codeComments,
+                Reviews = reviews,
+                Issues = issues
+            };
+
+            return commentAggregate;
+        }
 
         public async Task<List<Issue>> GetPullRequestIssueAsync(string p_owner, string p_repository)
         {
@@ -65,16 +92,16 @@ namespace RPLP.SERVICES.Github.GithubReviewCommentFetcher
             return reviews;
         }
 
-        public async Task<List<Comment>> GetPullRequestCommentsAsync(string p_owner, string p_repository)
+        public async Task<List<CodeComment>> GetPullRequestCommentsAsync(string p_owner, string p_repository)
         {
-            List<Comment> comments = new List<Comment>();
+            List<CodeComment> comments = new List<CodeComment>();
 
             var jsonComments = JArray.Parse(
                 GetPullRequestCommentsJSONStringAsync(p_owner, p_repository).Result);
 
             foreach (var comment in jsonComments)
             {
-                comments.Add(new Comment
+                comments.Add(new CodeComment
                 {
                     Username = comment["user"]["login"].ToString(),
                     Diff_Hunk = comment["diff_hunk"].ToString(),
@@ -97,10 +124,16 @@ namespace RPLP.SERVICES.Github.GithubReviewCommentFetcher
 
             foreach (var pull in jsonPulls)
             {
-                pulls.Add(new Pull(p_owner, p_repository, Convert.ToInt32(pull["number"].ToString()))
+                int prNumber = Convert.ToInt32(pull["number"].ToString());
+
+                pulls.Add(new Pull(p_owner, p_repository)
                 {
                     Username = pull["user"]["login"].ToString(),
-                    HTML_Url = pull["html_url"].ToString()
+                    HTML_Url = pull["html_url"].ToString(),
+                    Number = prNumber,
+                    Issues = this.GetPullRequestIssueAsync(p_owner, p_repository).Result,
+                    Reviews = this.GetPullRequestReviewCommentsAsync(p_owner, p_repository, prNumber).Result,
+                    Comments = this.GetPullRequestCommentsAsync(p_owner, p_repository).Result
                 });
             }
 

@@ -11,17 +11,15 @@ namespace RPLP.SERVICES.Github.GithubReviewCommentFetcher.Entities
         public string Username { get; set; }
         public int Number { get; set; }
         public string HTML_Url { get; set; }
+        public string Repository { get; set; }
         public List<Issue> Issues { get; set; }
         public List<Review> Reviews { get; set; }
-        public List<Comment> Comments { get; set; }
+        public List<CodeComment> Comments { get; set; }
 
-        public Pull(string p_owner, string p_repository, int p_number)
+        public Pull(string p_owner, string p_repository)
         {
-            GithubPRCommentFetcher fetcher = new GithubPRCommentFetcher();
-
-            this.Issues = fetcher.GetPullRequestIssueAsync(p_owner, p_repository).Result;
-            this.Reviews = fetcher.GetPullRequestReviewCommentsAsync(p_owner, p_repository, p_number).Result;
-            this.Comments = fetcher.GetPullRequestCommentsAsync(p_owner, p_repository).Result;
+            this.Username = p_owner;
+            this.Repository = p_repository;
         }
 
         public override string ToString()

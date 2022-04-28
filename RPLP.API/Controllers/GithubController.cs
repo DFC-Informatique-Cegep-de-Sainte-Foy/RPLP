@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using RPLP.DAL.DTO.Json;
 using RPLP.DAL.DTO.Sql;
 using RPLP.DAL.SQL.Depots;
 using RPLP.SERVICES.Github;
+using RPLP.SERVICES.Github.GithubReviewCommentFetcher;
+using RPLP.SERVICES.Github.GithubReviewCommentFetcher.Entities;
 
 namespace RPLP.API.Controllers
 {
@@ -11,12 +14,14 @@ namespace RPLP.API.Controllers
     public class GithubController : ControllerBase
     {
         private GithubApiAction _githubAction;
+        private GithubPRCommentFetcher _githubPRCommentFetcher;
         private ScriptGithubRPLP _scriptGithub;
 
         public GithubController()
         {
             string token = "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";
             _githubAction = new GithubApiAction(token);
+            _githubPRCommentFetcher = new GithubPRCommentFetcher(token);
             _scriptGithub = new ScriptGithubRPLP(new DepotClassroom(), new DepotRepository(), token);
         }
 
@@ -99,5 +104,23 @@ namespace RPLP.API.Controllers
         {
             return Ok(this._githubAction.AddStudentAsCollaboratorToPeerRepositoryGithub(organisationName, repositoryName, studentUsername));
         }
+
+        #region CommentFetcher
+
+        [HttpGet("{teacherUsername}/{repositoryName}/PullRequests")]
+        public ActionResult<Pull> GetPullRequestsFromRepository(string teacherUsername, string repositoryName)
+        {
+            return Ok(this._githubPRCommentFetcher.GetPullRequestsFromRepositoryAsync(teacherUsername, repositoryName).Result);
+        }
+
+        [HttpGet("{teacherUsername}/{repositoryName}/PullRequests/Comments/{studentName}")]
+        public ActionResult<CommentAggregate> GetIssuesReviewsAndCommentsByStudentOnAssignment(
+            string teacherUsername, string repositoryName, string studentName)
+        {
+            List<Pull> pulls =  this._githubPRCommentFetcher.GetPullRequestsFromRepositoryAsync(teacherUsername, repositoryName).Result;
+
+            return Ok(this._githubPRCommentFetcher.GetUserCommentsReviewsAndIssues(pulls, studentName).Result);
+        }
     }
 }
+        #endregion
