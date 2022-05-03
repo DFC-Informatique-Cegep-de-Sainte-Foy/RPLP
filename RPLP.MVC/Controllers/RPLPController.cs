@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using RPLP.DAL.DTO.Json;
 using RPLP.DAL.SQL.Depots;
 using RPLP.ENTITES;
 using RPLP.MVC.Models;
@@ -7,11 +8,13 @@ using RPLP.SERVICES.Github;
 using RPLP.SERVICES.InterfacesDepots;
 using System.Collections.Generic;
 using System.Security.Claims;
+using System.Text;
 
 namespace RPLP.MVC.Controllers
 {
     public class RPLPController : Controller
     {
+        private readonly HttpClient _httpClient;
         private readonly IDepotOrganisation _depotOrganisation = new DepotOrganisation();
         private readonly IDepotClassroom _depotClassroom = new DepotClassroom();
         private readonly IDepotTeacher _depotTeacher = new DepotTeacher();
@@ -24,6 +27,13 @@ namespace RPLP.MVC.Controllers
             string token = "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";
             GithubApiAction _githubAction = new GithubApiAction(token);
             _scriptGithub = new ScriptGithubRPLP(new DepotClassroom(), new DepotRepository(), token);
+
+            this._httpClient = new HttpClient();
+            this._httpClient.BaseAddress = new Uri("http://rplp.api/api/");
+            this._httpClient.DefaultRequestHeaders.Accept
+                .Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+            this._httpClient.DefaultRequestHeaders.Accept
+               .Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/octet-stream"));
         }
 
         public IActionResult Index()
@@ -155,7 +165,26 @@ namespace RPLP.MVC.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
 
+        [HttpGet]
+        public async Task<IActionResult> DownloadCommentsOfPullRequestByAssignment(string organisationName, string assignmentName)
+        {
+            Stream stream;
+            FileStreamResult fileStreamResult;
+
+            try
+            {
+                stream = await this._httpClient.GetStreamAsync($"Github/{organisationName}/{assignmentName}/PullRequests/Comments/File");
+                fileStreamResult = new FileStreamResult(stream, "application/octet-stream");
+                fileStreamResult.FileDownloadName = $"Comments_{assignmentName}_{DateTime.Now}.json";
+            }
+            catch (Exception)
+            {
+                return NotFound("Ce dépôt n'a pas pu être trouvé. Il est peut-être privé et inaccessible à l'utilisateur.");
+            }
+
+            return fileStreamResult;
         }
     }
 

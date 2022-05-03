@@ -5,7 +5,7 @@ using RPLP.DAL.DTO.Sql;
 using RPLP.DAL.SQL.Depots;
 using RPLP.SERVICES.Github;
 using RPLP.SERVICES.Github.GithubReviewCommentFetcher;
-using RPLP.SERVICES.Github.GithubReviewCommentFetcher.Entities;
+using System.Text;
 
 namespace RPLP.API.Controllers
 {
@@ -108,9 +108,18 @@ namespace RPLP.API.Controllers
         #region CommentFetcher
 
         [HttpGet("{teacherUsername}/{repositoryName}/PullRequests")]
-        public ActionResult<Pull> GetPullRequestsFromRepository(string teacherUsername, string repositoryName)
+        public ActionResult<List<Pull>> GetPullRequestsFromRepository(string teacherUsername, string repositoryName)
         {
             return Ok(this._githubPRCommentFetcher.GetPullRequestsFromRepositoryAsync(teacherUsername, repositoryName).Result);
+        }
+
+        [HttpPost("{teacherUsername}/{repositoryName}/PullRequests/Comments/Students")]
+        public ActionResult<CommentAggregate> GetIssuesReviewsAndCommentsByStudentOnAssignment(
+            string teacherUsername, string repositoryName, [FromBody] List<string> studentNames)
+        {
+            List<Pull> pulls = this._githubPRCommentFetcher.GetPullRequestsFromRepositoryAsync(teacherUsername, repositoryName).Result;
+
+            return Ok(this._githubPRCommentFetcher.GetMultipleUsersCommentsReviewsAndIssues(pulls, studentNames).Result);
         }
 
         [HttpGet("{teacherUsername}/{repositoryName}/PullRequests/Comments/{studentName}")]
@@ -120,6 +129,17 @@ namespace RPLP.API.Controllers
             List<Pull> pulls =  this._githubPRCommentFetcher.GetPullRequestsFromRepositoryAsync(teacherUsername, repositoryName).Result;
 
             return Ok(this._githubPRCommentFetcher.GetUserCommentsReviewsAndIssues(pulls, studentName).Result);
+        }
+
+        [HttpGet("{teacherUsername}/{repositoryName}/PullRequests/Comments/File")]
+        public FileStreamResult GetFileWithCommentsOfPullRequestByAssignment(string teacherUsername, string repositoryName)
+        {
+            List<Pull>? pull = this._githubPRCommentFetcher.GetPullRequestsFromRepositoryAsync(teacherUsername, repositoryName).Result;
+            var stream = new MemoryStream(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(pull)));
+            FileStreamResult fileStreamResult = new FileStreamResult(stream, "application/octet-stream");
+            fileStreamResult.FileDownloadName = $"Comments_{repositoryName}_{DateTime.Now}.json";
+
+            return fileStreamResult;
         }
     }
 }

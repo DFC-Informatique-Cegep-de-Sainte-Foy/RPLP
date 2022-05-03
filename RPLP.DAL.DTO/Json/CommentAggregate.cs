@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RPLP.SERVICES.Github.GithubReviewCommentFetcher.Entities
+namespace RPLP.DAL.DTO.Json
 {
     public class CommentAggregate
     {

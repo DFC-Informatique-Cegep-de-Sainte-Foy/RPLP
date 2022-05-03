@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using RPLP.DAL.DTO.Json;
 using RPLP.ENTITES;
-using RPLP.SERVICES.Github.GithubReviewCommentFetcher.Entities;
 using RPLP.SERVICES.InterfacesDepots;
 using System;
 using System.Collections.Generic;
@@ -25,6 +25,37 @@ namespace RPLP.SERVICES.Github.GithubReviewCommentFetcher
                 .Add(new MediaTypeWithQualityHeaderValue("application/json"));
             this._client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("RPLP", "1"));
             this._client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Token", p_token);
+        }
+
+        public async Task<List<CommentAggregate>> GetMultipleUsersCommentsReviewsAndIssues(List<Pull> p_pulls, List<string> p_usernames)
+        {
+            List<CommentAggregate> comments = new List<CommentAggregate>();
+
+            foreach (string username in p_usernames)
+            {
+                List<CodeComment> codeComments = new List<CodeComment>();
+                List<Issue> issues = new List<Issue>();
+                List<Review> reviews = new List<Review>();
+
+                foreach (Pull pull in p_pulls)
+                {
+                    codeComments.AddRange(pull.Comments.Where(c => c.Username.ToLower() == username.ToLower()));
+                    issues.AddRange(pull.Issues.Where(i => i.Username.ToLower() == username.ToLower()));
+                    reviews.AddRange(pull.Reviews.Where(r => r.Username.ToLower() == username.ToLower()));
+                }
+
+                CommentAggregate commentAggregate = new CommentAggregate()
+                {
+                    Username = username,
+                    Comments = codeComments,
+                    Reviews = reviews,
+                    Issues = issues
+                };
+
+                comments.Add(commentAggregate);
+            }  
+
+            return comments;
         }
 
         public async Task<CommentAggregate> GetUserCommentsReviewsAndIssues(List<Pull> p_pulls, string p_username)

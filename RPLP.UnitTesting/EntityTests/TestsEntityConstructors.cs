@@ -57,14 +57,16 @@ namespace RPLP.UnitTesting.EntityTests
             int id = 2;
             string name = "NewAssignment";
             string classroomName = "ProjetSynthese";
+            string repositoryName = "PiFou86";
             string description = "RPLP";
             DateTime distributionDate = DateTime.Now;
 
-            Assignment assignment = new Assignment(id, name, classroomName, description, distributionDate);
+            Assignment assignment = new Assignment(id, name, classroomName, repositoryName, description, distributionDate);
 
             Assert.Equal(id, assignment.Id);
             Assert.Equal(name, assignment.Name);
             Assert.Equal(classroomName, assignment.ClassroomName);
+            Assert.Equal(repositoryName, assignment.RepositoryOwnerName);
             Assert.Equal(description, assignment.Description);
             Assert.Equal(distributionDate, assignment.DistributionDate);
         }
@@ -75,15 +77,17 @@ namespace RPLP.UnitTesting.EntityTests
             int id = 2;
             string name = "NewAssignment";
             string classroomName = "ProjetSynthese";
+            string repositoryName = "PiFou86";
             string description = "RPLP";
             DateTime distributionDate = DateTime.Now;
             DateTime deadline = DateTime.Now.AddDays(1);
 
-            Assignment assignment = new Assignment(id, name, classroomName, description, deadline, distributionDate);
+            Assignment assignment = new Assignment(id, name, classroomName, repositoryName, description, deadline, distributionDate);
 
             Assert.Equal(id, assignment.Id);
             Assert.Equal(name, assignment.Name);
             Assert.Equal(classroomName, assignment.ClassroomName);
+            Assert.Equal(repositoryName, assignment.RepositoryOwnerName);
             Assert.Equal(description, assignment.Description);
             Assert.Equal(distributionDate, assignment.DistributionDate);
             Assert.Equal(deadline, assignment.DeliveryDeadline);
