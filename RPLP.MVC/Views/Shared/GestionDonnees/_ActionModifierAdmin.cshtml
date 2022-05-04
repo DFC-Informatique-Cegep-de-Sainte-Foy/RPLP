@@ -99,8 +99,6 @@
             var admins = JSON.parse('@Html.Raw(Json.Serialize(Model.Administrators))');
             var admin = admins.find(admin => admin.email == email);
 
-            console.log(admin);
-
             document.getElementById("InputGithubUsernameModifyAdmin").value = admin.username;
             document.getElementById("InputGithubTokenModifyAdmin").value = admin.token;
             document.getElementById("InputPrenomModifyAdmin").value = admin.firstName;

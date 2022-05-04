@@ -1,0 +1,54 @@
+﻿<form id="ajouterStudentForm">
+    <div class="titlePartial">
+    <h2 >Créer un compte étudiant</H2>
+    </div>
+
+    <div class="form-group">
+        <label for="InputGithubUsernameAjouterStudent">Github Username</label>
+        <input type="text" class="form-control" id="InputGithubUsernameAjouterStudent">
+    </div>
+
+    <div class="form-group">
+        <label for="InputPrenomAjouterStudent">Prénom</label>
+        <input type="text" class="form-control" id="InputPrenomAjouterStudent">
+    </div>
+
+    <div class="form-group">
+        <label for="InputNomAjouterStudent">Nom</label>
+        <input type="text" class="form-control" id="InputNomAjouterStudent">
+    </div>
+
+    <div class="form-group">
+        <label for="inputEmailAjouterStudent">Adresse courriel</label>
+        <input type="email" class="form-control" id="inputEmailAjouterStudent">
+    </div>
+
+  <input type="button" class="btn-lg btn-success titlePartial" value="Créer">
+  <input type="button" class="btn-lg btn-primary titlePartial" onclick="ajouterStudent.refreshForm()" value=" Rafraîchir le formulaire">
+</form>
+
+
+<script type="text/javascript">
+
+    var ajouterStudent = {}
+
+    ajouterStudent.refreshForm = function ()
+    {
+       document.getElementById("ajouterStudentForm").reset();
+    }
+
+    ajouterStudent.verifyDataThenCreate = function()
+    {
+        var username = document.getElementById("InputGithubUsernameAjouterStudent").value ;
+        var prenom = document.getElementById("InputPrenomAjouterStudent").value ;
+        var nom = document.getElementById("InputNomAjouterStudent").value ;
+        var email = document.getElementById("inputEmailAjouterStudent").value ;
+
+        if(username == "" || prenom == "" || nom == "" || email == "" )
+        {
+            alert("Veulliez remplir les champs vide");
+        } else {
+           // ajouterStudent.createNewStudent(username, prenom, nom, email);
+        }
+    }
+</script>

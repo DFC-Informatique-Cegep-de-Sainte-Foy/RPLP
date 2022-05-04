@@ -16,6 +16,8 @@ namespace RPLP.MVC.Controllers
         private readonly IDepotClassroom _depotClassroom = new DepotClassroom();
         private readonly IDepotTeacher _depotTeacher = new DepotTeacher();
         private readonly IDepotAdministrator _depotAdministrator = new DepotAdministrator();
+        private readonly IDepotAssignment _depotAssignment = new DepotAssignment();
+        private readonly IDepotStudent _depotStudent = new DepotStudent();
         private readonly ScriptGithubRPLP _scriptGithub;
         private readonly VerificatorForDepot verificator = new VerificatorForDepot();
 
@@ -109,6 +111,20 @@ namespace RPLP.MVC.Controllers
                     model.Teachers.Add(new TeacherViewModel { Id = teacher.Id, Email = teacher.Email, FirstName = teacher.FirstName, LastName = teacher.LastName, Username = teacher.Username });
                 });
 
+            List<Assignment> assignmentsResult = _depotAssignment.GetAssignments();
+            if (assignmentsResult.Count >= 1)
+                assignmentsResult.ForEach(assignment =>
+                {
+                    model.Assignments.Add(new AssignmentViewModel { Name = assignment.Name, Deadline = assignment.DeliveryDeadline });
+                });
+
+            List<Student> studentsResult = _depotStudent.GetStudents();
+            if (studentsResult.Count >= 1)
+                studentsResult.ForEach(student =>
+                {
+                    model.Students.Add(new StudentViewModel { Username = student.Username, Email = student.Email, FirstName = student.FirstName, LastName = student.LastName });
+                });
+
             return model;
         }
 
@@ -157,6 +173,23 @@ namespace RPLP.MVC.Controllers
             return classes;
         }
 
+        [HttpGet]
+        public ActionResult<List<AssignmentViewModel>> GetAssignmentOfClassroomByName(string classroomName)
+        {
+            List<AssignmentViewModel> assignments = new List<AssignmentViewModel>();
+            List<Assignment> databaseAssignments = _depotClassroom.GetAssignmentsByClassroomName(classroomName);
+
+            if (databaseAssignments.Count >= 1)
+            {
+                foreach (Assignment assignment in databaseAssignments)
+                {
+                    assignments.Add(new AssignmentViewModel { Name = assignment.Name, Deadline = assignment.DeliveryDeadline });
+                }
+            }
+
+            return assignments;
+        }
+
         public List<ClassroomViewModel> GetClassroomsOfTeacherInOrganisation(string p_teacherUsername, string p_organisationName)
         {
             var classes = new List<ClassroomViewModel>();
@@ -172,6 +205,8 @@ namespace RPLP.MVC.Controllers
             return classes;
         }
 
+        //DANS LA METHODE POUR AJOUTER UN ASSIGNEMENT, FAIRE QUE SA CREE L'ASSIGNMENT ET QUE SA L'ASSIGNE A LA CLASSE PAR LA SUITE
+
         [HttpGet]
         public ActionResult<List<AssignmentViewModel>> GetAssignmentsOfClassroomByName(string classroomName)
         {
@@ -182,11 +217,70 @@ namespace RPLP.MVC.Controllers
             {
                 foreach (Assignment assignment in databaseAssignments)
                 {
-                    assignments.Add(new AssignmentViewModel(assignment.Name));
+                    assignments.Add(new AssignmentViewModel { Name = assignment.Name });
                 }
             }
 
             return assignments;
+        }
+
+        [HttpGet]
+        public ActionResult<List<AdministratorViewModel>> GetAdminsNotInOrganisationByName(string orgName)
+        {
+            List<AdministratorViewModel> admins = new List<AdministratorViewModel>();
+
+            List<Administrator> databaseAdminInOrg = _depotOrganisation.GetAdministratorsByOrganisation(orgName);
+            List<Administrator> databaseAdmin = _depotAdministrator.GetAdministrators();
+
+            if (databaseAdminInOrg.Count >= 1 || databaseAdmin.Count >= 1)
+            {
+                foreach (Administrator admin in databaseAdmin)
+                {
+                    if (!databaseAdminInOrg.Any(a => a.Username == admin.Username))
+                    {
+                        admins.Add(new AdministratorViewModel { Id = admin.Id, Token = admin.Token, FirstName = admin.FirstName, LastName = admin.LastName, Email = admin.Email });
+                    }
+                }
+            }
+
+            return admins;
+        }
+
+        [HttpGet]
+        public ActionResult<List<TeacherViewModel>> GetTeacherNotInClassroomByClassroomName(string classroomName)
+        {
+            List<TeacherViewModel> teachers = new List<TeacherViewModel>();
+
+            List<Teacher> databaseTeacherInClassroom = _depotTeacher.GetTeachers().Where(teacher => teacher.Classes.Any(classroom => classroom.Name == classroomName)).ToList();
+            List<Teacher> databaseTeacher = _depotTeacher.GetTeachers();
+
+            if (databaseTeacherInClassroom.Count >= 1 || databaseTeacher.Count >= 1)
+            {
+                foreach (Teacher teacher in databaseTeacher)
+                {
+                    if (!databaseTeacherInClassroom.Any(t => t.Username == teacher.Username))
+                    {
+                        teachers.Add(new TeacherViewModel { Id = teacher.Id, FirstName = teacher.FirstName, LastName = teacher.LastName, Email = teacher.Email });
+                    }
+                }
+            }
+
+            return teachers;
+        }
+
+        [HttpGet]
+        public ActionResult<List<AdministratorViewModel>> GetAdminsInOrganisationByName(string orgName)
+        {
+            List<AdministratorViewModel> admins = new List<AdministratorViewModel>();
+            List<Administrator> databaseAdminInOrg = _depotOrganisation.GetAdministratorsByOrganisation(orgName);
+
+            if (databaseAdminInOrg.Count >= 1)
+                foreach (Administrator admin in databaseAdminInOrg)
+                {
+                    admins.Add(new AdministratorViewModel { Id = admin.Id, Token = admin.Token, FirstName = admin.FirstName, LastName = admin.LastName, Email = admin.Email });
+                }
+
+            return admins;
         }
 
         [HttpGet]

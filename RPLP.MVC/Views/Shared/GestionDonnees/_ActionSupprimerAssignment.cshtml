@@ -1,0 +1,196 @@
+﻿<form id="supprimerAssignmentForm">
+    <div class="titlePartial">
+    <h2 >Supprimer un travail</H2>
+    </div>
+
+    <div class="form-group">
+        <label for="deleteAssignmentOrgDropdown">Organisations</label>
+        <select id="deleteAssignmentOrgDropdown" class="form-control" onchange="supprimerAssignment.choisirOrg()">
+
+        </select>
+        <br />
+    </div>
+
+    <div class="form-group">
+        <label for="deleteAssignmentClassroomDropdown">Classes</label>
+        <select id="deleteAssignmentClassroomDropdown" class="form-control" onchange="supprimerAssignment.choisirClassroom()" disabled>
+
+        </select>
+        <br />
+    </div>
+
+    <div class="form-group">
+        <label for="deleteAssignmentAssignmentDropdown">Travaux</label>
+        <select id="deleteAssignmentAssignmentDropdown" class="form-control" disabled>
+
+        </select>
+        <br />
+    </div>
+
+    <input type="button" class="btn-lg btn-danger titlePartial" value="Supprimer">
+    <input type="button" class="btn-lg btn-primary titlePartial" onclick="supprimerAssignment.refreshForm()" value=" Rafraîchir le formulaire">
+</form>
+
+<script src="/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        var option = document.createElement("option");
+        option.text = "Faites un choix";
+        option.value = -1;
+        var select = document.getElementById("deleteAssignmentOrgDropdown");
+        select.appendChild(option);
+
+        @foreach (var d in Model.Organisations)
+        {
+            @:var option = document.createElement("option");
+            @:option.text = "@d.Name";
+            @:option.value = "@d.Name";
+            @:var select = document.getElementById("deleteAssignmentOrgDropdown");
+            @:select.appendChild(option);
+        }
+    });
+
+    var supprimerAssignment = {};
+    var classrooms = [];
+    var assignments = [];
+
+    supprimerAssignment.refreshForm = function ()
+    {
+       document.getElementById("supprimerAssignmentForm").reset();
+       document.getElementById("deleteAssignmentOrgDropdown").value = -1;
+
+       const classes = document.getElementById("deleteAssignmentClassroomDropdown");
+       classes.innerHTML = '';
+       document.getElementById("deleteAssignmentClassroomDropdown").disabled = true;
+
+       const assignments = document.getElementById("deleteAssignmentAssignmentDropdown");
+       assignments.innerHTML = '';
+       document.getElementById("deleteAssignmentAssignmentDropdown").disabled = true;
+    }
+
+    supprimerAssignment.choisirOrg = function ()
+    {
+       if(document.getElementById("deleteAssignmentOrgDropdown").value == -1)
+       {
+           const classes = document.getElementById("deleteAssignmentClassroomDropdown");
+            classes.innerHTML = '';
+            document.getElementById("deleteAssignmentClassroomDropdown").disabled = true;
+
+            const assignments = document.getElementById("deleteAssignmentAssignmentDropdown");
+            assignments.innerHTML = '';
+            document.getElementById("deleteAssignmentAssignmentDropdown").disabled = true;
+       
+       } else {
+            var orgName = document.getElementById("deleteAssignmentOrgDropdown").value;  
+            supprimerAssignment.GetClassroomsOfOrganisationByName(orgName);
+
+            document.getElementById("deleteAssignmentClassroomDropdown").disabled = false;
+
+            const assignments = document.getElementById("deleteAssignmentAssignmentDropdown");
+            assignments.innerHTML = '';
+            document.getElementById("deleteAssignmentAssignmentDropdown").disabled = true;
+       }
+    }
+
+    supprimerAssignment.choisirClassroom = function ()
+    {
+       if(document.getElementById("deleteAssignmentClassroomDropdown").value == -1)
+       {
+            const assignments = document.getElementById("deleteAssignmentAssignmentDropdown");
+            assignments.innerHTML = '';
+            document.getElementById("deleteAssignmentAssignmentDropdown").disabled = true;
+
+       
+       } else {
+            var classroomName = document.getElementById("deleteAssignmentClassroomDropdown").value;  
+            supprimerAssignment.GetAssignmentOfClassroomByName(classroomName);
+
+            document.getElementById("deleteAssignmentAssignmentDropdown").disabled = false;
+
+       }
+    }
+
+     supprimerAssignment.GetClassroomsOfOrganisationByName = function (organisationName)
+     {
+       var ajaxURL = '/RPLP/GetClassroomsOfOrganisationByName';
+        $.ajax({
+            type: 'GET',
+            url: ajaxURL,
+            data: { orgName : organisationName},
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            beforeSend: function () {
+                console.log('firing ajax call');
+            },
+            success: function (data) {
+                classrooms = data;
+                supprimerAssignment.ShowClassrooms();
+            },
+            error: function (ex) {
+                console.log('Error');
+            }
+        });
+    }
+
+    supprimerAssignment.GetAssignmentOfClassroomByName = function (ClassroomName)
+     {
+       var ajaxURL = '/RPLP/GetAssignmentOfClassroomByName';
+        $.ajax({
+            type: 'GET',
+            url: ajaxURL,
+            data: { classroomName : ClassroomName},
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            beforeSend: function () {
+                console.log('firing ajax call');
+            },
+            success: function (data) {
+                assignments = data;
+                supprimerAssignment.ShowAssignments();
+            },
+            error: function (ex) {
+                console.log('Error');
+            }
+        });
+    }
+
+    supprimerAssignment.ShowClassrooms = function()
+    {
+        const classes = document.getElementById("deleteAssignmentClassroomDropdown");
+        classes.innerHTML = '';
+
+        var option = document.createElement("option");
+        option.text = "Faites un choix";
+        option.value = -1;
+        var select = document.getElementById("deleteAssignmentClassroomDropdown");
+        select.appendChild(option);
+
+        classrooms.forEach(classroom => {
+            var option = document.createElement("option");
+            option.text = classroom.name;
+            option.value = classroom.name;
+            var select = document.getElementById("deleteAssignmentClassroomDropdown");
+            select.appendChild(option);
+        });
+    }
+
+    supprimerAssignment.ShowAssignments = function()
+    {
+        const assignmentDropdown = document.getElementById("deleteAssignmentAssignmentDropdown");
+        assignmentDropdown.innerHTML = '';
+
+        var option = document.createElement("option");
+        option.text = "Faites un choix";
+        option.value = -1;
+        var select = document.getElementById("deleteAssignmentAssignmentDropdown");
+        select.appendChild(option);
+
+        assignments.forEach(assignment => {
+            var option = document.createElement("option");
+            option.text = assignment.name;
+            option.value = assignment.name;
+            var select = document.getElementById("deleteAssignmentAssignmentDropdown");
+            select.appendChild(option);
+        });
+    }
+</script>

@@ -1,0 +1,264 @@
+﻿<form id="modifierAssignmentForm">
+    <div class="titlePartial">
+    <h2 >Modifier un travail</H2>
+    </div>
+
+    <div class="form-group">
+        <label for="modifyAssignmentOrgDropdown">Organisations</label>
+        <select id="modifyAssignmentOrgDropdown" class="form-control" onchange="modifierAssignment.choisirOrg()">
+
+        </select>
+        <br />
+    </div>
+
+    <div class="form-group">
+        <label for="modifyAssignmentClassroomDropdown">Classes</label>
+        <select id="modifyAssignmentClassroomDropdown" class="form-control" onchange="modifierAssignment.choisirClassroom()" disabled>
+
+        </select>
+        <br />
+    </div>
+
+    <div class="form-group">
+        <label for="modifyAssignmentAssignmentDropdown">Travaux</label>
+        <select id="modifyAssignmentAssignmentDropdown" class="form-control" onchange="modifierAssignment.choisirAssignment()" disabled>
+
+        </select>
+        <br />
+    </div>
+
+    <div class="form-group">
+        <label for="InputAssignmentNameModifyAssignment">Nom de la classe</label>
+        <input type="text" class="form-control" name="InputAssignmentNameModifyAssignment" id="InputAssignmentNameModifyAssignment" disabled>
+    </div>
+
+    <div class="form-group">
+        <label for="InputAssignmentDeadlineModifyAssignment">Date de remise</label>
+        <input type="date" class="form-control" name="InputAssignmentDeadlineModifyAssignment" id="InputAssignmentDeadlineModifyAssignment" disabled>
+    </div>
+
+
+    <input type="button" class="btn-lg btn-warning titlePartial" onclick="modifierAssignment.verifyDataThenCreate()" value="Modifier">
+    <input type="button" class="btn-lg btn-primary titlePartial" onclick="modifierAssignment.refreshForm()" value=" Rafraîchir le formulaire">
+</form>
+
+<script src="/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        var option = document.createElement("option");
+        option.text = "Faites un choix";
+        option.value = -1;
+        var select = document.getElementById("modifyAssignmentOrgDropdown");
+        select.appendChild(option);
+
+        @foreach (var d in Model.Organisations)
+        {
+            @:var option = document.createElement("option");
+            @:option.text = "@d.Name";
+            @:option.value = "@d.Name";
+            @:var select = document.getElementById("modifyAssignmentOrgDropdown");
+            @:select.appendChild(option);
+        }
+    });
+
+    var modifierAssignment = {};
+    var classrooms = [];
+    var assignments = [];
+
+    modifierAssignment.refreshForm = function ()
+    {
+       document.getElementById("modifierAssignmentForm").reset();
+       document.getElementById("modifyAssignmentOrgDropdown").value = -1;
+
+       const classes = document.getElementById("modifyAssignmentClassroomDropdown");
+       classes.innerHTML = '';
+       document.getElementById("modifyAssignmentClassroomDropdown").disabled = true;
+
+       const assignments = document.getElementById("modifyAssignmentAssignmentDropdown");
+       assignments.innerHTML = '';
+       document.getElementById("modifyAssignmentAssignmentDropdown").disabled = true;
+       
+       document.getElementById("InputAssignmentDeadlineModifyAssignment").value = "";
+        $('input[name=InputAssignmentDeadlineModifyAssignment]').prop('disabled', true);
+
+       document.getElementById("InputAssignmentNameModifyAssignment").value = "";
+        $('input[name=InputAssignmentNameModifyAssignment]').prop('disabled', true);
+    }
+
+    modifierAssignment.choisirOrg = function ()
+    {
+       if(document.getElementById("modifyAssignmentOrgDropdown").value == -1)
+       {
+           const classes = document.getElementById("modifyAssignmentClassroomDropdown");
+            classes.innerHTML = '';
+            document.getElementById("modifyAssignmentClassroomDropdown").disabled = true;
+
+            const assignments = document.getElementById("modifyAssignmentAssignmentDropdown");
+            assignments.innerHTML = '';
+            document.getElementById("modifyAssignmentAssignmentDropdown").disabled = true;
+
+            document.getElementById("InputAssignmentDeadlineModifyAssignment").value = new Date();
+            $('input[name=InputAssignmentDeadlineModifyAssignment]').prop('disabled', true);
+
+            document.getElementById("InputAssignmentNameModifyAssignment").value = "";
+            $('input[name=InputAssignmentNameModifyAssignment]').prop('disabled', true);
+       
+       } else {
+            var orgName = document.getElementById("modifyAssignmentOrgDropdown").value;  
+            modifierAssignment.GetClassroomsOfOrganisationByName(orgName);
+
+            document.getElementById("modifyAssignmentClassroomDropdown").disabled = false;
+
+            const assignments = document.getElementById("modifyAssignmentAssignmentDropdown");
+            assignments.innerHTML = '';
+            document.getElementById("modifyAssignmentAssignmentDropdown").disabled = true;
+
+            document.getElementById("InputAssignmentDeadlineModifyAssignment").value = "";
+            $('input[name=InputAssignmentDeadlineModifyAssignment]').prop('disabled', true);
+
+            document.getElementById("InputAssignmentNameModifyAssignment").value = "";
+            $('input[name=InputAssignmentNameModifyAssignment]').prop('disabled', true);
+       }
+    }
+
+    modifierAssignment.choisirClassroom = function ()
+    {
+       if(document.getElementById("modifyAssignmentClassroomDropdown").value == -1)
+       {
+            const assignments = document.getElementById("modifyAssignmentAssignmentDropdown");
+            assignments.innerHTML = '';
+            document.getElementById("modifyAssignmentAssignmentDropdown").disabled = true;
+
+            document.getElementById("InputAssignmentDeadlineModifyAssignment").value = "";
+            $('input[name=InputAssignmentDeadlineModifyAssignment]').prop('disabled', true);
+
+            document.getElementById("InputAssignmentNameModifyAssignment").value = "";
+            $('input[name=InputAssignmentNameModifyAssignment]').prop('disabled', true);
+       
+       } else {
+            var classroomName = document.getElementById("modifyAssignmentClassroomDropdown").value;  
+            modifierAssignment.GetAssignmentOfClassroomByName(classroomName);
+
+            document.getElementById("modifyAssignmentAssignmentDropdown").disabled = false;
+
+            document.getElementById("InputAssignmentDeadlineModifyAssignment").value = "";
+            $('input[name=InputAssignmentDeadlineModifyAssignment]').prop('disabled', true);
+
+            document.getElementById("InputAssignmentNameModifyAssignment").value = "";
+            $('input[name=InputAssignmentNameModifyAssignment]').prop('disabled', true);
+       }
+    }
+
+    modifierAssignment.choisirAssignment = function ()
+    {
+       if(document.getElementById("modifyAssignmentAssignmentDropdown").value == -1)
+       {
+            document.getElementById("InputAssignmentDeadlineModifyAssignment").value = "";
+            $('input[name=InputAssignmentDeadlineModifyAssignment]').prop('disabled', true);
+
+            document.getElementById("InputAssignmentNameModifyAssignment").value = "";
+            $('input[name=InputAssignmentNameModifyAssignment]').prop('disabled', true);
+       
+       } else {
+
+            var assignmentName = document.getElementById("modifyAssignmentAssignmentDropdown").value;  
+            var modelAssignments = JSON.parse('@Html.Raw(Json.Serialize(Model.Assignments))');
+            var modelAssignment = modelAssignments.find(assignment => assignment.name == assignmentName);
+
+            if(modelAssignment.deadline == null)
+                document.getElementById("InputAssignmentDeadlineModifyAssignment").value = "";
+            else
+                document.getElementById("InputAssignmentDeadlineModifyAssignment").value = modelAssignment.deadline;
+            
+                
+            $('input[name=InputAssignmentDeadlineModifyAssignment]').prop('disabled', "");
+
+            document.getElementById("InputAssignmentNameModifyAssignment").value = modelAssignment.name;
+            $('input[name=InputAssignmentNameModifyAssignment]').prop('disabled', "");
+       }
+    }
+
+     modifierAssignment.GetClassroomsOfOrganisationByName = function (organisationName)
+     {
+       var ajaxURL = '/RPLP/GetClassroomsOfOrganisationByName';
+        $.ajax({
+            type: 'GET',
+            url: ajaxURL,
+            data: { orgName : organisationName},
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            beforeSend: function () {
+                console.log('firing ajax call');
+            },
+            success: function (data) {
+                classrooms = data;
+                modifierAssignment.ShowClassrooms();
+            },
+            error: function (ex) {
+                console.log('Error');
+            }
+        });
+    }
+
+    modifierAssignment.GetAssignmentOfClassroomByName = function (ClassroomName)
+     {
+       var ajaxURL = '/RPLP/GetAssignmentOfClassroomByName';
+        $.ajax({
+            type: 'GET',
+            url: ajaxURL,
+            data: { classroomName : ClassroomName},
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            beforeSend: function () {
+                console.log('firing ajax call');
+            },
+            success: function (data) {
+                assignments = data;
+                modifierAssignment.ShowAssignments();
+            },
+            error: function (ex) {
+                console.log('Error');
+            }
+        });
+    }
+
+    modifierAssignment.ShowClassrooms = function()
+    {
+        const classes = document.getElementById("modifyAssignmentClassroomDropdown");
+        classes.innerHTML = '';
+
+        var option = document.createElement("option");
+        option.text = "Faites un choix";
+        option.value = -1;
+        var select = document.getElementById("modifyAssignmentClassroomDropdown");
+        select.appendChild(option);
+
+        classrooms.forEach(classroom => {
+            var option = document.createElement("option");
+            option.text = classroom.name;
+            option.value = classroom.name;
+            var select = document.getElementById("modifyAssignmentClassroomDropdown");
+            select.appendChild(option);
+        });
+    }
+
+    modifierAssignment.ShowAssignments = function()
+    {
+        const assignmentDropdown = document.getElementById("modifyAssignmentAssignmentDropdown");
+        assignmentDropdown.innerHTML = '';
+
+        var option = document.createElement("option");
+        option.text = "Faites un choix";
+        option.value = -1;
+        var select = document.getElementById("modifyAssignmentAssignmentDropdown");
+        select.appendChild(option);
+
+        assignments.forEach(assignment => {
+            var option = document.createElement("option");
+            option.text = assignment.name;
+            option.value = assignment.name;
+            var select = document.getElementById("modifyAssignmentAssignmentDropdown");
+            select.appendChild(option);
+        });
+    }
+</script>

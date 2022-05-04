@@ -1,0 +1,117 @@
+﻿<form id="addAdminToOrgForm">
+    <div class="titlePartial">
+    <h2 >Ajouter un administrateur a un organisation</H2>
+    </div>
+
+    <div class="form-group">
+        <label for="ajouterAdminAOrgOrgDropdown">Organisation</label>
+        <select id="ajouterAdminAOrgOrgDropdown" class="form-control" onclick="ajouterAdminAOrg.choisirOrg()">
+
+        </select>
+        <br />
+    </div>
+
+    <div class="form-group">
+        <label for="ajouterAdminAOrgAdminDropdown">Administrateur</label>
+        <select id="ajouterAdminAOrgAdminDropdown" class="form-control" disabled>
+
+        </select>
+        <br />
+    </div>
+
+  <input type="button" class="btn-lg btn-success titlePartial" value="Ajouter">
+  <input type="button" class="btn-lg btn-primary titlePartial" onclick="ajouterAdminAOrg.refreshForm()" value=" Rafraîchir le formulaire">
+</form>
+
+<script src="/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+       
+        var option = document.createElement("option");
+        option.text = "Faites un choix";
+        option.value = -1;
+        var select = document.getElementById("ajouterAdminAOrgOrgDropdown");
+        select.appendChild(option);
+
+        @foreach (var d in Model.Organisations)
+        {
+            @:var option = document.createElement("option");
+            @:option.text = "@d.Name";
+            @:option.value = "@d.Name";
+            @:var select = document.getElementById("ajouterAdminAOrgOrgDropdown");
+            @:select.appendChild(option);
+        }
+        
+    });
+
+    var ajouterAdminAOrg = {};
+    var admins = [];
+
+    ajouterAdminAOrg.refreshForm = function ()
+    {
+       document.getElementById("addAdminToOrgForm").reset();
+       document.getElementById("ajouterAdminAOrgOrgDropdown").value = -1;
+
+       const classes = document.getElementById("ajouterAdminAOrgAdminDropdown");
+       classes.innerHTML = '';
+       document.getElementById("ajouterAdminAOrgAdminDropdown").disabled = true;
+    }
+
+    ajouterAdminAOrg.choisirOrg = function ()
+    {
+       if(document.getElementById("ajouterAdminAOrgOrgDropdown").value == -1)
+       {
+            const classes = document.getElementById("ajouterAdminAOrgAdminDropdown");
+            classes.innerHTML = '';
+            document.getElementById("ajouterAdminAOrgAdminDropdown").disabled = true;
+
+       } else {
+            var orgName = document.getElementById("ajouterAdminAOrgOrgDropdown").value;  
+            ajouterAdminAOrg.GetAdminsNotInOrganisationByName(orgName);
+
+            document.getElementById("ajouterAdminAOrgAdminDropdown").disabled = false;
+       }
+    }
+
+    ajouterAdminAOrg.GetAdminsNotInOrganisationByName = function ( organisationName )
+    {
+        var ajaxURL = '/RPLP/GetAdminsNotInOrganisationByName';
+        $.ajax({
+            type: 'GET',
+            url: ajaxURL,
+            data: { orgName : organisationName},
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            beforeSend: function () {
+                console.log('firing ajax call');
+            },
+            success: function (data) {
+                admins = data;
+                ajouterAdminAOrg.ShowAdmins();
+            },
+            error: function (ex) {
+                console.log('Error');
+            }
+        });
+    }
+
+    ajouterAdminAOrg.ShowAdmins = function ()
+    {
+        const classes = document.getElementById("ajouterAdminAOrgAdminDropdown");
+        classes.innerHTML = '';
+
+        var option = document.createElement("option");
+        option.text = "Faites un choix";
+        option.value = -1;
+        var select = document.getElementById("ajouterAdminAOrgAdminDropdown");
+        select.appendChild(option);
+
+        admins.forEach(admin => {
+            var option = document.createElement("option");
+            option.text = admin.firstName + " " + admin.lastName;
+            option.value = admin.email;
+            var select = document.getElementById("ajouterAdminAOrgAdminDropdown");
+            select.appendChild(option);
+        });
+    }
+</script>
