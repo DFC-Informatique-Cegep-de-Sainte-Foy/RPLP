@@ -1,0 +1,198 @@
+﻿@model RPLP.MVC.Models.GestionDonneeViewModel
+
+<form id="removeTeacherFromClassroomForm">
+    <div class="titlePartial">
+    <h2 >Retirer un enseignant a une classe</H2>
+    </div>
+
+    <div class="form-group">
+        <label for="removeAssignmentFromClassroomOrgDropdown">Organisation</label>
+        <select id="removeAssignmentFromClassroomOrgDropdown" class="form-control" onchange="retirerAssignmentdeClassroom.choisirOrg()">
+
+        </select>
+        <br />
+    </div>
+
+    <div class="form-group">
+        <label for="removeAssignmentFromClassroomClassroomDropdown">Classe</label>
+        <select id="removeAssignmentFromClassroomClassroomDropdown" class="form-control" onchange="retirerAssignmentdeClassroom.choisirClassroom()" disabled>
+
+        </select>
+        <br />
+    </div>
+
+    <div class="form-group">
+        <label for="removeAssignmentFromClassroomAssignmentDropdown">Travail</label>
+        <select id="removeAssignmentFromClassroomAssignmentDropdown" class="form-control" disabled>
+
+        </select>
+        <br />
+    </div>
+
+  <input type="button" class="btn-lg btn-danger titlePartial" value="Retirer">
+  <input type="button" class="btn-lg btn-primary titlePartial" onclick="retirerAssignmentdeClassroom.refreshForm()" value=" Rafraîchir le formulaire">
+</form>
+
+<script src="/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        var option = document.createElement("option");
+        option.text = "Faites un choix";
+        option.value = -1;
+        var select = document.getElementById("removeAssignmentFromClassroomOrgDropdown");
+        select.appendChild(option);
+
+        @foreach (var d in Model.Organisations)
+        {
+            @:var option = document.createElement("option");
+            @:option.text = "@d.Name";
+            @:option.value = "@d.Name";
+            @:var select = document.getElementById("removeAssignmentFromClassroomOrgDropdown");
+            @:select.appendChild(option);
+        }
+    });
+
+    var retirerAssignmentdeClassroom  = {};
+    var classrooms = [];
+    var assignments = [];
+
+    retirerAssignmentdeClassroom.refreshForm = function ()
+    {
+       document.getElementById("removeTeacherFromClassroomForm").reset();
+       document.getElementById("removeAssignmentFromClassroomOrgDropdown").value = -1;
+
+       const classes = document.getElementById("removeAssignmentFromClassroomClassroomDropdown");
+       classes.innerHTML = '';
+       document.getElementById("removeAssignmentFromClassroomClassroomDropdown").disabled = true;
+
+       const classes2 = document.getElementById("removeAssignmentFromClassroomAssignmentDropdown");
+       classes2.innerHTML = '';
+       document.getElementById("removeAssignmentFromClassroomAssignmentDropdown").disabled = true;
+    }
+
+    retirerAssignmentdeClassroom.choisirOrg = function ()
+    {
+       if(document.getElementById("removeAssignmentFromClassroomOrgDropdown").value == -1)
+       {
+            const classes = document.getElementById("removeAssignmentFromClassroomClassroomDropdown");
+            classes.innerHTML = '';
+            document.getElementById("removeAssignmentFromClassroomClassroomDropdown").disabled = true;
+
+             const classes2 = document.getElementById("removeAssignmentFromClassroomAssignmentDropdown");
+             classes.innerHTML = '';
+            document.getElementById("removeAssignmentFromClassroomAssignmentDropdown").disabled = true;
+      
+       } else {
+            var orgName = document.getElementById("removeAssignmentFromClassroomOrgDropdown").value;  
+            retirerAssignmentdeClassroom.GetClassroomsOfOrganisationByName(orgName);
+
+            document.getElementById("removeAssignmentFromClassroomClassroomDropdown").disabled = false;
+
+             const classes = document.getElementById("removeAssignmentFromClassroomAssignmentDropdown");
+            classes.innerHTML = '';
+            document.getElementById("removeAssignmentFromClassroomAssignmentDropdown").disabled = true;
+       }
+    }
+
+    retirerAssignmentdeClassroom.choisirClassroom = function ()
+    {
+       if(document.getElementById("removeAssignmentFromClassroomClassroomDropdown").value == -1)
+       {
+            const classes = document.getElementById("removeAssignmentFromClassroomAssignmentDropdown");
+            classes.innerHTML = '';
+            document.getElementById("removeAssignmentFromClassroomAssignmentDropdown").disabled = true;
+
+      
+       } else {
+            var classroomName = document.getElementById("removeAssignmentFromClassroomClassroomDropdown").value;  
+            retirerAssignmentdeClassroom.GetAssignmentInClassroomByClassroomName(classroomName);
+
+            document.getElementById("removeAssignmentFromClassroomAssignmentDropdown").disabled = false;
+       }
+    }
+
+
+     retirerAssignmentdeClassroom.GetClassroomsOfOrganisationByName = function (organisationName)
+     {
+       var ajaxURL = '/RPLP/GetClassroomsOfOrganisationByName';
+        $.ajax({
+            type: 'GET',
+            url: ajaxURL,
+            data: { orgName : organisationName},
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            beforeSend: function () {
+                console.log('firing ajax call');
+            },
+            success: function (data) {
+                classrooms = data;
+                retirerAssignmentdeClassroom.ShowClassrooms();
+            },
+            error: function (ex) {
+                console.log('Error');
+            }
+        });
+    }
+
+    retirerAssignmentdeClassroom.GetAssignmentInClassroomByClassroomName = function (classroomName)
+     {
+       var ajaxURL = '/RPLP/GetAssignmentInClassroomByClassroomName';
+        $.ajax({
+            type: 'GET',
+            url: ajaxURL,
+            data: { classroomName : classroomName},
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            beforeSend: function () {
+                console.log('firing ajax call');
+            },
+            success: function (data) {
+                assignments = data;
+                retirerAssignmentdeClassroom.ShowAssignments();
+            },
+            error: function (ex) {
+                console.log('Error');
+            }
+        });
+    }
+
+    retirerAssignmentdeClassroom.ShowClassrooms = function()
+    {
+        const classes = document.getElementById("removeAssignmentFromClassroomClassroomDropdown");
+        classes.innerHTML = '';
+
+        var option = document.createElement("option");
+        option.text = "Faites un choix";
+        option.value = -1;
+        var select = document.getElementById("removeAssignmentFromClassroomClassroomDropdown");
+        select.appendChild(option);
+
+        classrooms.forEach(classroom => {
+            var option = document.createElement("option");
+            option.text = classroom.name;
+            option.value = classroom.name;
+            var select = document.getElementById("removeAssignmentFromClassroomClassroomDropdown");
+            select.appendChild(option);
+        });
+    }
+
+    retirerAssignmentdeClassroom.ShowAssignments = function()
+    {
+        const classes = document.getElementById("removeAssignmentFromClassroomAssignmentDropdown");
+        classes.innerHTML = '';
+
+        var option = document.createElement("option");
+        option.text = "Faites un choix";
+        option.value = -1;
+        var select = document.getElementById("removeAssignmentFromClassroomAssignmentDropdown");
+        select.appendChild(option);
+
+        assignments.forEach(assignment => {
+            var option = document.createElement("option");
+            option.text = assignment.name;
+            option.value = assignment.name;
+            var select = document.getElementById("removeAssignmentFromClassroomAssignmentDropdown");
+            select.appendChild(option);
+        });
+    }
+</script>

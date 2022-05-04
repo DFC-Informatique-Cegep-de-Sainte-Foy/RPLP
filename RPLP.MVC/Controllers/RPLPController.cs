@@ -269,6 +269,38 @@ namespace RPLP.MVC.Controllers
         }
 
         [HttpGet]
+        public ActionResult<List<TeacherViewModel>> GetTeacherInClassroomByClassroomName(string classroomName)
+        {
+            List<TeacherViewModel> teachers = new List<TeacherViewModel>();
+
+            List<Teacher> databaseTeacherInClassroom = _depotTeacher.GetTeachers().Where(teacher => teacher.Classes.Any(classroom => classroom.Name == classroomName)).ToList();
+
+            if (databaseTeacherInClassroom.Count >= 1)
+                foreach (Teacher teacher in databaseTeacherInClassroom)
+                {
+                    teachers.Add(new TeacherViewModel { Id = teacher.Id, FirstName = teacher.FirstName, LastName = teacher.LastName, Email = teacher.Email });
+                }
+
+            return teachers;
+        }
+
+        [HttpGet]
+        public ActionResult<List<AssignmentViewModel>> GetAssignmentInClassroomByClassroomName(string classroomName)
+        {
+            List<AssignmentViewModel> assignments = new List<AssignmentViewModel>();
+
+            List<Assignment> databaseAssignmentInClassroom = _depotClassroom.GetAssignmentsByClassroomName(classroomName);
+
+            if (databaseAssignmentInClassroom.Count >= 1)
+                foreach (Assignment assignment in databaseAssignmentInClassroom)
+                {
+                    assignments.Add(new AssignmentViewModel { Name = assignment.Name, Deadline = assignment.DeliveryDeadline });
+                }
+
+            return assignments;
+        }
+
+        [HttpGet]
         public ActionResult<List<AdministratorViewModel>> GetAdminsInOrganisationByName(string orgName)
         {
             List<AdministratorViewModel> admins = new List<AdministratorViewModel>();
