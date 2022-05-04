@@ -18,8 +18,11 @@ namespace RPLP.SERVICES.Github.GithubReviewCommentFetcher
         private readonly IDepotClassroom _depotClassroom;
         private readonly IDepotRepository _depotRepository;
 
-        public GithubPRCommentFetcher(string p_token)
+        public GithubPRCommentFetcher(string p_token, IDepotClassroom p_depotClassroom, IDepotRepository p_depotRepository)
         {
+            this._depotClassroom = p_depotClassroom;
+            this._depotRepository = p_depotRepository;
+
             this._client = new HttpClient();
             this._client.BaseAddress = new Uri("https://api.github.com");
             this._client.DefaultRequestHeaders.Accept
@@ -237,7 +240,7 @@ namespace RPLP.SERVICES.Github.GithubReviewCommentFetcher
 
         private List<Repository> GetRepositoriesForAssignment(string p_organisationName, string p_classroomName, string p_assignmentName)
         {
-            List<Assignment> assignmentsResult = _depotClassroom.GetAssignmentsByClassroomName(p_classroomName);
+            List<Assignment> assignmentsResult = this._depotClassroom.GetAssignmentsByClassroomName(p_classroomName);
             List<Student> studentsResult = this._depotClassroom.GetStudentsByClassroomName(p_organisationName);
 
             if (assignmentsResult.Count < 1)
