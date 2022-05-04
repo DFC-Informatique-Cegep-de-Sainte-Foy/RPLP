@@ -16,6 +16,7 @@ namespace RPLP.SERVICES.Github.GithubReviewCommentFetcher
     {
         private HttpClient _client;
         private readonly IDepotClassroom _depotClassroom;
+        private readonly IDepotRepository _depotRepository;
 
         public GithubPRCommentFetcher(string p_token)
         {
@@ -171,6 +172,31 @@ namespace RPLP.SERVICES.Github.GithubReviewCommentFetcher
             return pulls;
         }
 
+        public async Task<List<Pull>> GetPullRequestsFromRepositoriesAsync(string p_owner, string p_classroom, string p_assignment)
+        {
+            List<Pull> pulls = new List<Pull>();
+
+            var jsons = GetPullRequestsJSONFromRepositoriesAsync(p_owner, p_classroom, p_assignment).Result;
+            var jsonPulls = jsons.Select(j => JArray.Parse(j));
+
+            foreach (var pull in jsonPulls)
+            {
+                int prNumber = Convert.ToInt32(pull["number"].ToString());
+
+                pulls.Add(new Pull(p_owner, p_assignment)
+                {
+                    Username = pull["user"]["login"].ToString(),
+                    HTML_Url = pull["html_url"].ToString(),
+                    Number = prNumber,
+                    Issues = this.GetPullRequestIssueAsync(p_owner, p_assignment).Result,
+                    Reviews = this.GetPullRequestReviewCommentsAsync(p_owner, p_assignment, prNumber).Result,
+                    Comments = this.GetPullRequestCommentsAsync(p_owner, p_assignment).Result
+                });
+            }
+
+            return pulls;
+        }
+
         public async Task<string> GetRepositoryIssueCommentsJSONStringAsync(string p_owner, string p_repository)
         {
             return await this._client.GetAsync($"/repos/{p_owner}/{p_repository}/issues/comments")
@@ -193,6 +219,56 @@ namespace RPLP.SERVICES.Github.GithubReviewCommentFetcher
         {
             return await this._client.GetAsync($"/repos/{p_owner}/{p_repository}/pulls")
                 .Result.Content.ReadAsStringAsync();
+        }
+
+        public async Task<List<string>> GetPullRequestsJSONFromRepositoriesAsync(string p_organisation, string p_classroomName, string p_assignment)
+        {
+            List<string> jsons = new List<string>();
+            List<Repository> repositories = this.GetRepositoriesForAssignment(p_organisation, p_classroomName, p_assignment);
+
+            foreach (Repository repository in repositories)
+            {
+                jsons.Add(await this._client.GetAsync($"/repos/{p_organisation}/{repository.Name}/pulls")
+                .Result.Content.ReadAsStringAsync());
+            }
+
+            return jsons;
+        }
+
+        private List<Repository> GetRepositoriesForAssignment(string p_organisationName, string p_classroomName, string p_assignmentName)
+        {
+            List<Assignment> assignmentsResult = _depotClassroom.GetAssignmentsByClassroomName(p_classroomName);
+            List<Student> studentsResult = this._depotClassroom.GetStudentsByClassroomName(p_organisationName);
+
+            if (assignmentsResult.Count < 1)
+                throw new ArgumentException($"No assignment in {p_classroomName}");
+
+            Assignment assignment = assignmentsResult.SingleOrDefault(assignment => assignment.Name == p_assignmentName);
+
+            if (assignment == null)
+                throw new ArgumentException($"no assignment with name {p_assignmentName}");
+
+            List<Repository> repositories = new List<Repository>();
+            List<Repository> repositoriesResult = this._depotRepository.GetRepositoriesFromOrganisationName(p_organisationName);
+
+            foreach (Repository repository in repositoriesResult)
+            {
+                string[] splitRepository = repository.Name.Split('-');
+
+                if (splitRepository[0] == assignment.Name)
+                {
+                    foreach (Student student in studentsResult)
+                    {
+                        if (splitRepository[1] == student.Username)
+                        {
+                            repositories.Add(repository);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            return repositories;
         }
     }
 }

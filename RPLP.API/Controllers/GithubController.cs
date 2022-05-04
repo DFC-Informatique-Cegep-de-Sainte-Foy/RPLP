@@ -131,13 +131,24 @@ namespace RPLP.API.Controllers
             return Ok(this._githubPRCommentFetcher.GetUserCommentsReviewsAndIssues(pulls, studentName).Result);
         }
 
-        [HttpGet("{teacherUsername}/{repositoryName}/PullRequests/Comments/File")]
-        public FileStreamResult GetFileWithCommentsOfPullRequestByAssignment(string teacherUsername, string repositoryName)
-        {
-            List<Pull>? pull = this._githubPRCommentFetcher.GetPullRequestsFromRepositoryAsync(teacherUsername, repositoryName).Result;
+        [HttpGet("{organisationName}/{repositoryName}/PullRequests/Comments/File")]
+        public FileStreamResult GetFileWithCommentsOfPullRequestByAssignmentForSingleRepository(string organisationName, string repositoryName)
+        { 
+            List<Pull>? pull = this._githubPRCommentFetcher.GetPullRequestsFromRepositoryAsync(organisationName, repositoryName).Result;
             var stream = new MemoryStream(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(pull)));
             FileStreamResult fileStreamResult = new FileStreamResult(stream, "application/octet-stream");
             fileStreamResult.FileDownloadName = $"Comments_{repositoryName}_{DateTime.Now}.json";
+
+            return fileStreamResult;
+        }
+
+        [HttpGet("{organisationName}/{classroomName}/{assignmentName}/PullRequests/Comments/File")]
+        public FileStreamResult GetFileWithCommentsOfPullRequestByAssignmentForAllRepositories(string organisationName, string classroomName, string assignmentName)
+        {
+            List<Pull>? pulls = this._githubPRCommentFetcher.GetPullRequestsFromRepositoriesAsync(organisationName, classroomName, assignmentName).Result;
+            var stream = new MemoryStream(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(pulls)));
+            FileStreamResult fileStreamResult = new FileStreamResult(stream, "application/octet-stream");
+            fileStreamResult.FileDownloadName = $"Comments_{assignmentName}_{DateTime.Now}.json";
 
             return fileStreamResult;
         }

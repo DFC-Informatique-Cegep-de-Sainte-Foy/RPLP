@@ -168,20 +168,20 @@ namespace RPLP.MVC.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> DownloadCommentsOfPullRequestByAssignment(string organisationName, string assignmentName)
+        public async Task<IActionResult> DownloadCommentsOfPullRequestByAssignment(string organisationName, string classroomName, string assignmentName)
         {
             Stream stream;
             FileStreamResult fileStreamResult;
 
             try
             {
-                stream = await this._httpClient.GetStreamAsync($"Github/{organisationName}/{assignmentName}/PullRequests/Comments/File");
+                stream = await this._httpClient.GetStreamAsync($"Github/{organisationName}/{classroomName}/{assignmentName}/PullRequests/Comments/File");
                 fileStreamResult = new FileStreamResult(stream, "application/octet-stream");
                 fileStreamResult.FileDownloadName = $"Comments_{assignmentName}_{DateTime.Now}.json";
             }
             catch (Exception)
             {
-                return NotFound("Ce dépôt n'a pas pu être trouvé. Il est peut-être privé et inaccessible à l'utilisateur.");
+                return NotFound("Un ou plusieurs dépôts n'ont pas pu être trouvés. Il est peut-être privé et inaccessible à l'utilisateur.");
             }
 
             return fileStreamResult;
