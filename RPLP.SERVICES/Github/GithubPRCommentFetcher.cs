@@ -179,24 +179,29 @@ namespace RPLP.SERVICES.Github.GithubReviewCommentFetcher
         {
             List<Pull> pulls = new List<Pull>();
 
-            var jsons = GetPullRequestsJSONFromRepositoriesAsync(p_owner, p_classroom, p_assignment).Result;
-            var jsonPulls = jsons.Select(j => JArray.Parse(j));
+            List<string> jsons = GetPullRequestsJSONFromRepositoriesAsync(p_owner, p_classroom, p_assignment).ToList();
 
-            foreach (var pull in jsonPulls)
+            foreach (var json in jsons)
             {
-                int prNumber = Convert.ToInt32(pull["number"].ToString());
+                var jArray = JArray.Parse(json);
 
-                pulls.Add(new Pull(p_owner, p_assignment)
+                foreach (var pull in jArray)
                 {
-                    Username = pull["user"]["login"].ToString(),
-                    HTML_Url = pull["html_url"].ToString(),
-                    Number = prNumber,
-                    Issues = this.GetPullRequestIssueAsync(p_owner, p_assignment).Result,
-                    Reviews = this.GetPullRequestReviewCommentsAsync(p_owner, p_assignment, prNumber).Result,
-                    Comments = this.GetPullRequestCommentsAsync(p_owner, p_assignment).Result
-                });
-            }
+                    int prNumber = Convert.ToInt32(pull["number"].ToString());
+                    string repository = pull["head"]["repo"]["name"].ToString();
 
+                    pulls.Add(new Pull(p_owner, p_assignment)
+                    {
+                        Username = pull["user"]["login"].ToString(),
+                        HTML_Url = pull["html_url"].ToString(),
+                        Number = prNumber,
+                        Issues = this.GetPullRequestIssueAsync(p_owner, repository).Result,
+                        Reviews = this.GetPullRequestReviewCommentsAsync(p_owner, repository, prNumber).Result,
+                        Comments = this.GetPullRequestCommentsAsync(p_owner, repository).Result
+                    });
+                }
+                
+            }
             return pulls;
         }
 
@@ -224,16 +229,17 @@ namespace RPLP.SERVICES.Github.GithubReviewCommentFetcher
                 .Result.Content.ReadAsStringAsync();
         }
 
-        public async Task<List<string>> GetPullRequestsJSONFromRepositoriesAsync(string p_organisation, string p_classroomName, string p_assignment)
+        public IEnumerable<string> GetPullRequestsJSONFromRepositoriesAsync(string p_organisation, string p_classroomName, string p_assignment)
         {
-            List<string> jsons = new List<string>();
             List<Repository> repositories = this.GetRepositoriesForAssignment(p_organisation, p_classroomName, p_assignment);
 
-            foreach (Repository repository in repositories)
-            {
-                jsons.Add(await this._client.GetAsync($"/repos/{p_organisation}/{repository.Name}/pulls")
-                .Result.Content.ReadAsStringAsync());
-            }
+            List<string> jsons = repositories
+                .Select(r =>
+                {
+                    Task<string> a = this._client.GetStringAsync($"/repos/{r.OrganisationName}/{r.Name}/pulls");
+                    a.Wait();
+                    return a.Result;
+                }).ToList();
 
             return jsons;
         }
@@ -241,7 +247,7 @@ namespace RPLP.SERVICES.Github.GithubReviewCommentFetcher
         private List<Repository> GetRepositoriesForAssignment(string p_organisationName, string p_classroomName, string p_assignmentName)
         {
             List<Assignment> assignmentsResult = this._depotClassroom.GetAssignmentsByClassroomName(p_classroomName);
-            List<Student> studentsResult = this._depotClassroom.GetStudentsByClassroomName(p_organisationName);
+            List<Student> studentsResult = this._depotClassroom.GetStudentsByClassroomName(p_classroomName);
 
             if (assignmentsResult.Count < 1)
                 throw new ArgumentException($"No assignment in {p_classroomName}");
