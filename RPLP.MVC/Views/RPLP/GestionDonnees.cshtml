@@ -181,6 +181,12 @@
                     }
                 </div>
 
+                <div id="addStudentToClassroom" hidden>
+                    @{
+                        Html.RenderPartial(@"../Shared/GestionDonnees/_ActionAjouterStudentAClassroom.cshtml", Model);
+                    }
+                </div>
+
                 <div id="removeTeacherFromClassroom" hidden>
                     @{
                         Html.RenderPartial(@"../Shared/GestionDonnees/_ActionRetirerTeacherDeClassroom.cshtml", Model);
@@ -190,6 +196,12 @@
                 <div id="removeAssignmentFromClassroom" hidden>
                     @{
                         Html.RenderPartial(@"../Shared/GestionDonnees/_ActionRetirerAssignmentDeClassroom.cshtml", Model);
+                    }
+                </div>
+
+                <div id="removeStudentFromClassroom" hidden>
+                    @{
+                        Html.RenderPartial(@"../Shared/GestionDonnees/_ActionRetirerStudentDeClassroom.cshtml", Model);
                     }
                 </div>
 
@@ -266,7 +278,7 @@
         var forms = ["createAdmin", "modifyAdmin", "deleteAdmin","addAdminToOrg", "removeAdminFromOrg",
                      "createOrganisation", "modifyOrganisation", "deleteOrganisation",
                      "createTeacher", "modifyTeacher", "deleteTeacher",
-                     "createClassroom", "modifyClassroom","deleteClassroom", "addTeacherToClassroom", "removeTeacherFromClassroom", "removeAssignmentFromClassroom",
+                     "createClassroom", "modifyClassroom","deleteClassroom", "addTeacherToClassroom", "removeTeacherFromClassroom", "removeAssignmentFromClassroom", "removeStudentFromClassroom", "addStudentToClassroom",
                      "createAssignment", "modifyAssignment", "deleteAssignment",
                      "createStudent", "modifyStudent", "deleteStudent"];
 

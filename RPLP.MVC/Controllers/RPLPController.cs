@@ -316,6 +316,42 @@ namespace RPLP.MVC.Controllers
         }
 
         [HttpGet]
+        public ActionResult<List<StudentViewModel>> GetStudentsInClassroomByClassroomName(string classroomName)
+        {
+            List<StudentViewModel> students = new List<StudentViewModel>();
+            List<Student> databaseStudents = _depotClassroom.GetStudentsByClassroomName(classroomName);
+
+            if (databaseStudents.Count >= 1)
+                foreach (Student student in databaseStudents)
+                {
+                    students.Add(new StudentViewModel { Email = student.Email, FirstName = student.FirstName, LastName = student.LastName, Username = student.Username });
+                }
+
+            return students;
+        }
+
+        [HttpGet]
+        public ActionResult<List<StudentViewModel>> GetStudentsNotInClassroomByClassroomName(string classroomName)
+        {
+            List<StudentViewModel> students = new List<StudentViewModel>();
+            List<Student> databaseStudentsInClassroom = _depotClassroom.GetStudentsByClassroomName(classroomName);
+            List<Student> databaseStudents = _depotStudent.GetStudents();
+
+            if (databaseStudentsInClassroom.Count >= 1 || databaseStudents.Count >= 1)
+            {
+                foreach (Student student in databaseStudents)
+                {
+                    if (!databaseStudentsInClassroom.Any(a => a.Username == student.Username))
+                    {
+                        students.Add(new StudentViewModel { Email = student.Email, FirstName = student.FirstName, LastName = student.LastName, Username = student.Username });
+                    }
+                }
+            }
+
+            return students;
+        }
+
+        [HttpGet]
         public ActionResult StartStudentAssignationScript(string organisationName, string classroomName, string assignmentName, int numberOfReviews)
         {
             try
