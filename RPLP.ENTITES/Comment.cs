@@ -13,11 +13,13 @@ namespace RPLP.ENTITES
         public string RepositoryName { get; set; }
         public string? Diff_Hunk { get; set; }
         public string? Path { get; set; }
+        public int Position { get; set; }
         public int? Original_Position { get; set; }
         public string Body { get; set; }
         public int? In_Reply_To_Id { get; set; }
         public DateTime Created_at { get; set; }
         public DateTime Updated_at { get; set; }
+        public string PullRequestURL { get; set; }
 
         public Comment()
         {
@@ -48,5 +50,16 @@ namespace RPLP.ENTITES
             this.Updated_at = p_updated_by;
         }
 
+        public override string ToString()
+        {
+            return $"{{\n" +
+                $"  \"WrittenBy\" : \"{this.WrittenBy}\"\n" +
+                $"  \"Body\" : \"{this.Body}\"\n" +
+                $"  \"Diff_Hunk\" : \"{this.Diff_Hunk}\"\n" +
+                $"  \"Path\" : \"{this.Path}\"\n" +
+                $"  \"Position\" : {this.Position}\n" +
+                $"  \"PullRequestURL\" : \"{this.PullRequestURL}\"\n" +
+                $"}}";
+        }
     }
 }
