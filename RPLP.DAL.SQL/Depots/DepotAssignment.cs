@@ -54,6 +54,16 @@ namespace RPLP.DAL.SQL.Depots
             return assignment;
         }
 
+        public List<Assignment> GetAssignmentsByClassroomName(string p_classroomName)
+        {
+            List<Assignment> assignments = this._context.Assignments
+                .Where(assignment => assignment.ClassroomName == p_classroomName && assignment.Active)
+                .Select(s => s.ToEntity())
+                .ToList();
+
+            return assignments;
+        }
+
         public void UpsertAssignment(Assignment p_assignment)
         {
             Assignment_SQLDTO assignmentResult = this._context.Assignments.Where(assignment => assignment.Active)

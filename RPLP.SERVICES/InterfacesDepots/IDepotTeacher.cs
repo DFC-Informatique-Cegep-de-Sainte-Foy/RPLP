@@ -15,6 +15,7 @@ namespace RPLP.SERVICES.InterfacesDepots
         public Teacher GetTeacherByUsername(string p_teacherUsername);
         public List<Organisation> GetTeacherOrganisations(string p_teacherUsername);
         public List<Classroom> GetTeacherClassesInOrganisation(string p_teacherUsername, string p_organisationName);
+        public List<Classroom> GetTeacherClassesInOrganisationByEmail(string p_teacherEmail, string p_organisationName);
         public List<Classroom> GetTeacherClasses(string p_teacherUsername);
         public void UpsertTeacher(Teacher p_teacher);
         public void DeleteTeacher(string p_teacherUsername);
