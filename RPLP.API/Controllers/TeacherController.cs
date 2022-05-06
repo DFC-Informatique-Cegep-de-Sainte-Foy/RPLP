@@ -33,11 +33,36 @@ namespace RPLP.API.Controllers
             return Ok(this._depot.GetTeacherByUsername(teacherUsername));
         }
 
+        [HttpGet("Email/{email}")]
+        public ActionResult<Teacher> GetTeacherByEmail(string email)
+        {
+            return Ok(this._depot.GetTeacherByEmail(email));
+        }
+
         [HttpGet("Username/{teacherUsername}/Classrooms")]
         public ActionResult<List<Classroom>> GetTeacherClasses(string teacherUsername)
         {
             return Ok(this._depot.GetTeacherClasses(teacherUsername));
-        }       
+        }
+
+        [HttpGet("Email/{email}/Organisations")]
+        public ActionResult<List<Organisation>> GetTeacherOrganisationsByEmail(string email)
+        {
+            string? username = this._depot.GetTeacherByEmail(email)?.Username;
+
+            if (string.IsNullOrWhiteSpace(username))
+            {
+                return BadRequest();
+            }
+
+            return Ok(this._depot.GetTeacherOrganisations(username));
+        }
+
+        [HttpGet("Email/{email}/Organisation/{organisationName}/Classrooms")]
+        public ActionResult<List<Classroom>> GetClassroomsOfTeacherInOrganisationByEmail(string email, string organisationName)
+        {
+            return Ok(this._depot.GetTeacherClassesInOrganisationByEmail(email, organisationName));
+        }
 
         [HttpPost]
         public ActionResult UpsertTeacher([FromBody] Teacher p_teacher)

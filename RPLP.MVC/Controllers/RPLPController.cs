@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using RPLP.DAL.DTO.Json;
 using RPLP.DAL.SQL.Depots;
 using RPLP.ENTITES;
 using RPLP.MVC.Models;
@@ -7,11 +9,14 @@ using RPLP.SERVICES.Github;
 using RPLP.SERVICES.InterfacesDepots;
 using System.Collections.Generic;
 using System.Security.Claims;
+using System.Text;
+using System.Net.Http;
 
 namespace RPLP.MVC.Controllers
 {
     public class RPLPController : Controller
     {
+        private readonly HttpClient _httpClient;
         private readonly IDepotOrganisation _depotOrganisation = new DepotOrganisation();
         private readonly IDepotClassroom _depotClassroom = new DepotClassroom();
         private readonly IDepotTeacher _depotTeacher = new DepotTeacher();
@@ -19,32 +24,51 @@ namespace RPLP.MVC.Controllers
         private readonly IDepotAssignment _depotAssignment = new DepotAssignment();
         private readonly IDepotStudent _depotStudent = new DepotStudent();
         private readonly ScriptGithubRPLP _scriptGithub;
-        private readonly VerificatorForDepot verificator = new VerificatorForDepot();
+        private HttpClient _httpClient;
 
         public RPLPController()
         {
+            this._httpClient = new HttpClient();
+            this._httpClient.BaseAddress = new Uri("http://rplp.api/api/");
+            this._httpClient.DefaultRequestHeaders.Accept
+                .Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+
             string token = "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";
             GithubApiAction _githubAction = new GithubApiAction(token);
             _scriptGithub = new ScriptGithubRPLP(new DepotClassroom(), new DepotRepository(), token);
+
+            this._httpClient = new HttpClient();
+            this._httpClient.BaseAddress = new Uri("http://rplp.api/api/");
+            this._httpClient.DefaultRequestHeaders.Accept
+                .Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+            this._httpClient.DefaultRequestHeaders.Accept
+               .Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/octet-stream"));
         }
 
+        [Authorize]
         public IActionResult Index()
         {
             PeerReviewViewModel model = new PeerReviewViewModel();
-            List<Organisation> organisations = new List<Organisation>();
+            List<Organisation>? organisations = new List<Organisation>();
 
-            string email = User.FindFirst(u => u.Type == ClaimTypes.Email)?.Value;
-            Type userType = this.verificator.GetUserTypeByEmail(email);
 
-            if (userType == typeof(Administrator))
+            string? email = User.FindFirst(u => u.Type == ClaimTypes.Email)?.Value;
+            string? userType = this._httpClient
+                .GetFromJsonAsync<string>($"Verificator/UserType/{email}")
+                .Result;
+
+            if (userType == typeof(Administrator).ToString())
             {
-                Administrator administrator = this._depotAdministrator.GetAdministratorByEmail(email);
-                organisations = this._depotAdministrator.GetAdminOrganisations(administrator.Username);
+                organisations = this._httpClient
+                    .GetFromJsonAsync<List<Organisation>>($"Administrator/Email/{email}/Organisations")
+                    .Result;
             }
-            else if (userType == typeof(Teacher))
+
+            else if (userType == typeof(Teacher).ToString())
             {
-                Teacher teacher = this._depotTeacher.GetTeacherByEmail(email);
-                organisations = _depotTeacher.GetTeacherOrganisations(teacher.Username);
+                organisations = this._httpClient
+                    .GetFromJsonAsync<List<Organisation>>($"Teacher/Email/{email}/Organisations")
+                    .Result;
             }
 
             organisations.ForEach(o => model.Organisations.Add(new OrganisationViewModel { Name = o.Name }));
@@ -131,43 +155,45 @@ namespace RPLP.MVC.Controllers
         private List<OrganisationViewModel> GetOrganisations()
         {
             List<OrganisationViewModel> organisations = new List<OrganisationViewModel>();
-            List<Organisation> databaseOrganisations = _depotOrganisation.GetOrganisations();
+            List<Organisation>? databaseOrganisations = this._httpClient
+                .GetFromJsonAsync<List<Organisation>>("Organisation")
+                .Result;
 
-            if (databaseOrganisations.Count >= 1)
+            foreach (Organisation org in databaseOrganisations)
             {
-                foreach (Organisation org in databaseOrganisations)
-                {
-                    organisations.Add(new OrganisationViewModel { Name = org.Name });
-                }
+                organisations.Add(new OrganisationViewModel(org.Name));
             }
 
             return organisations;
         }
 
         [HttpGet]
-        public ActionResult<List<ClassroomViewModel>> GetClassroomsOfOrganisationByName(string orgName)
+        public ActionResult<List<ClassroomViewModel>> GetClassroomsOfOrganisationByName(string organisationName)
         {
             List<ClassroomViewModel> classes = new List<ClassroomViewModel>();
             string email = User.FindFirst(u => u.Type == ClaimTypes.Email)?.Value;
-            Type userType = this.verificator.GetUserTypeByEmail(email);
+            string? userType = this._httpClient
+                .GetFromJsonAsync<string>($"Verificator/UserType/{email}")
+                .Result;
 
-            if (userType == typeof(Administrator))
+            if (userType == typeof(Administrator).ToString())
             {
-                List<Classroom> databaseClasses = _depotClassroom.GetClassroomsByOrganisationName(orgName);
-
-                if (databaseClasses.Count >= 1)
+                List<Classroom>? databaseClasses = this._httpClient
+                    .GetFromJsonAsync<List<Classroom>>($"Classroom/Organisation/{organisationName}")
+                    .Result;
+                foreach (Classroom classroom in databaseClasses)
                 {
-                    foreach (Classroom classroom in databaseClasses)
-                    {
-                        classes.Add(new ClassroomViewModel(classroom.Name));
-                    }
+                    classes.Add(new ClassroomViewModel(classroom.Name));
                 }
             }
 
-            else if (userType == typeof(Teacher))
+            else if (userType == typeof(Teacher).ToString())
             {
-                Teacher teacher = this._depotTeacher.GetTeacherByEmail(email);
-                classes = GetClassroomsOfTeacherInOrganisation(teacher.Username, orgName);
+                Teacher? teacher = this._httpClient
+                    .GetFromJsonAsync<Teacher>($"Teacher/Email/{email}")
+                    .Result;
+
+                classes = GetClassroomsOfTeacherInOrganisation(teacher.Username, organisationName);
             }
 
             return classes;
@@ -193,9 +219,11 @@ namespace RPLP.MVC.Controllers
         public List<ClassroomViewModel> GetClassroomsOfTeacherInOrganisation(string p_teacherUsername, string p_organisationName)
         {
             var classes = new List<ClassroomViewModel>();
-            List<Classroom> databaseClasses = _depotClassroom.GetClassrooms()
-                .Where(c => c.Teachers.FirstOrDefault(t => t.Username == p_teacherUsername) != null && c.OrganisationName == p_organisationName)
-                .ToList();
+            string? teacherEmail = User.FindFirst(c => c.Type == ClaimTypes.Email)?.Value;
+
+            List<Classroom>? databaseClasses = this._httpClient
+                .GetFromJsonAsync<List<Classroom>>($"Teacher/Email/{teacherEmail}/Organisation/{p_organisationName}/Classrooms")
+                .Result;
 
             foreach (Classroom classroom in databaseClasses)
             {
@@ -211,8 +239,14 @@ namespace RPLP.MVC.Controllers
         public ActionResult<List<AssignmentViewModel>> GetAssignmentsOfClassroomByName(string classroomName)
         {
             List<AssignmentViewModel> assignments = new List<AssignmentViewModel>();
-            List<Assignment> databaseAssignments = _depotClassroom.GetAssignmentsByClassroomName(classroomName);
+            List<Assignment>? databaseAssignments = this._httpClient
+                .GetFromJsonAsync<List<Assignment>>($"Assignment/Classroom/{classroomName}/Assignments")
+                .Result;
 
+            foreach (Assignment assignment in databaseAssignments)
+            {
+                assignments.Add(new AssignmentViewModel(assignment.Name));
+            }
             if (databaseAssignments.Count >= 1)
             {
                 foreach (Assignment assignment in databaseAssignments)
@@ -378,7 +412,26 @@ namespace RPLP.MVC.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
 
+        [HttpGet]
+        public async Task<IActionResult> DownloadCommentsOfPullRequestByAssignment(string organisationName, string classroomName, string assignmentName)
+        {
+            Stream stream;
+            FileStreamResult fileStreamResult;
+
+            try
+            {
+                stream = await this._httpClient.GetStreamAsync($"Github/{organisationName}/{classroomName}/{assignmentName}/PullRequests/Comments/File");
+                fileStreamResult = new FileStreamResult(stream, "application/octet-stream");
+                fileStreamResult.FileDownloadName = $"Comments_{assignmentName}_{DateTime.Now}.json";
+            }
+            catch (Exception)
+            {
+                return NotFound("Un ou plusieurs dépôts n'ont pas pu être trouvés. Il est peut-être privé et inaccessible à l'utilisateur.");
+            }
+
+            return fileStreamResult;
         }
     }
 

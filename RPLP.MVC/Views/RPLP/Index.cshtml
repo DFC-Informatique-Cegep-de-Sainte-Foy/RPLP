@@ -3,6 +3,7 @@
 
 <div class="container mt-3">
     <div class="wrapper">
+
         <div id="orgsCollapsible" class="collapsible">
             <input type="checkbox" id="collapsible-orgs" name="checkboxOrg" />
             <label for="collapsible-orgs">Organisations</label>
@@ -38,6 +39,7 @@
         <input class="p-2 buttons" type="number" id="numberOfReview" min="0" max="10" value="3" />
         <button class="btn-lg btn-primary p-2 buttons" onclick="StartStudentAssignationScript()">Lancer le script de revue des pairs</button>
         <button class="btn-lg btn-primary p-2 buttons" onclick="StartTeacherAssignationScript()">Lancer le script de revue du Prof</button>
+        <button class="btn-lg btn-primary p-2 buttons" onclick="DownloadComments()">Télécharger les commentaires</button>
     </div>
 </div>
 
@@ -75,6 +77,8 @@
                 }
             });
         }
+
+        return organisationName;
     }
 
     function SetClassroomName (classroomName){
@@ -124,7 +128,7 @@
         $.ajax({
             type: 'GET',
             url: ajaxURL,
-            data: { orgName : organisationName},
+            data: { organisationName : organisationName},
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             beforeSend: function () {
@@ -239,7 +243,12 @@
                 console.log(ex);
             }
         });
+    }
 
+    function DownloadComments ()
+    {
+        var url = `https://localhost/RPLP/DownloadCommentsOfPullRequestByAssignment?organisationName=${SelectedOrganisationName}&classroomName=${SelectedClassroomName}&assignmentName=${SelectedAssignmentName}`;
+        window.open(url);
     }
 
 </script>
