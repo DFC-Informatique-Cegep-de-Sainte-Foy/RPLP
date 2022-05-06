@@ -33,6 +33,12 @@ namespace RPLP.API.Controllers
             return Ok(this._depot.GetAssignmentByName(assignmentName));
         }
 
+        [HttpGet("Classroom/{classroomName}/Assignments")]
+        public ActionResult<List<Assignment>> GetAssignmentsByClassroomName(string classroomName)
+        {
+            return Ok(this._depot.GetAssignmentsByClassroomName(classroomName));
+        }
+
         [HttpPost]
         public ActionResult Post([FromBody] Assignment p_assignment)
         {

@@ -33,9 +33,28 @@ namespace RPLP.API.Controllers
             return Ok(this._depot.GetAdministratorByUsername(username));
         }
 
+        [HttpGet("Email/{email}")]
+        public ActionResult<Administrator> GetAdministratorByEmail(string email)
+        {
+            return Ok(this._depot.GetAdministratorByEmail(email));
+        }
+
         [HttpGet("Username/{username}/Organisations")]
         public ActionResult<List<Organisation>> GetAdminOrganisations(string username)
         {
+            return Ok(this._depot.GetAdminOrganisations(username));
+        }
+
+        [HttpGet("Email/{email}/Organisations")]
+        public ActionResult<List<Organisation>> GetAdminOrganisationsByEmail(string email)
+        {
+            string? username = this._depot.GetAdministratorByEmail(email)?.Username;
+
+            if (string.IsNullOrWhiteSpace(username))
+            {
+                return BadRequest();
+            }
+
             return Ok(this._depot.GetAdminOrganisations(username));
         }
 

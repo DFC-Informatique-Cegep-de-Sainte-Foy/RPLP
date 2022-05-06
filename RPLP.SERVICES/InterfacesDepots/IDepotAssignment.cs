@@ -12,6 +12,7 @@ namespace RPLP.SERVICES.InterfacesDepots
         public List<Assignment> GetAssignments();
         public Assignment GetAssignmentById(int p_id);
         public Assignment GetAssignmentByName(string p_assignmentName);
+        public List<Assignment> GetAssignmentsByClassroomName(string p_classroomName);
         public void UpsertAssignment(Assignment p_assignment);
         public void DeleteAssignment(string p_assignmentName);
     }
