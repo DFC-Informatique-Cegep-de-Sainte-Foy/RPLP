@@ -58,6 +58,17 @@ namespace RPLP.API.Controllers
             return Ok(this._depot.GetTeacherOrganisations(username));
         }
 
+        [HttpGet("Username/{username}/Organisations")]
+        public ActionResult<List<Organisation>> GetTeacherOrganisationsByUsername(string username)
+        {
+            if (string.IsNullOrWhiteSpace(username))
+            {
+                return BadRequest();
+            }
+
+            return Ok(this._depot.GetTeacherOrganisations(username));
+        }
+
         [HttpGet("Email/{email}/Organisation/{organisationName}/Classrooms")]
         public ActionResult<List<Classroom>> GetClassroomsOfTeacherInOrganisationByEmail(string email, string organisationName)
         {
@@ -78,7 +89,7 @@ namespace RPLP.API.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);  
+                return BadRequest(ex.Message);
             }
 
             return Created(nameof(this.UpsertTeacher), p_teacher);
