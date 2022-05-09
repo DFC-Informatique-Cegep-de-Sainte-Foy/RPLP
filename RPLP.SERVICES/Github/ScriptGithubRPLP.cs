@@ -1,4 +1,5 @@
-﻿using RPLP.DAL.DTO.Json;
+﻿using Newtonsoft.Json;
+using RPLP.DAL.DTO.Json;
 using RPLP.DAL.DTO.Sql;
 using RPLP.ENTITES;
 using RPLP.SERVICES.InterfacesDepots;
@@ -212,7 +213,7 @@ namespace RPLP.SERVICES.Github
                 throw new ArgumentException($"PullRequest not created in {p_repositoryName}");
         }
 
-        public string ScriptDownloadAllRepositoriesForAssignment(string p_organisationName, string p_classRoomName, string p_assignmentName)
+        public FileStream ScriptDownloadAllRepositoriesForAssignment(string p_organisationName, string p_classRoomName, string p_assignmentName)
         {
             if (string.IsNullOrWhiteSpace(p_organisationName) || string.IsNullOrWhiteSpace(p_classRoomName) || string.IsNullOrWhiteSpace(p_assignmentName))
                 throw new ArgumentException("One of the provided value is incorrect or null");
@@ -258,48 +259,46 @@ namespace RPLP.SERVICES.Github
 
             //Faire l'action                        
 
-            string sourceFolderPath = @".\Downloads\";
-            string assignmentFolderPath = Path.Combine(sourceFolderPath, assignment.Name);
-            string zippedAssignmentFolderPath = Path.Combine(sourceFolderPath, assignment.Name, ".zip");
+            string sourceFolderPath = @"Downloads";
+            DateTime date = DateTime.Now;
 
-            DirectoryInfo repositoriesDirectory = Directory.CreateDirectory(assignmentFolderPath);
+            string assignmentFolderPath = Path.Combine(sourceFolderPath, assignment.Name, date.ToLongTimeString()); //Download/TP3/20220506/
+
+            string zippedAssignmentfileName = $"{p_assignmentName}{date}.zip";
+
+            DirectoryInfo repositoriesDirectory = Directory.CreateDirectory(assignmentFolderPath); //Directory qui va recevoir les dépôts et à être zippé
 
             foreach (Repository repository in repositories)
             {
                 string repositoryName = repository.Name;
-                string repositoryFolderPath = Path.Combine(assignmentFolderPath, "_", repositoryName);
-
-
-                HttpResponseMessage response = this._githubApiAction.GetLinkToDownloadRepository(p_organisationName, repositoryName);
-
+                string repositoryFolderPath = Path.Combine(assignmentFolderPath, repositoryName); //Download/TP3/20220506/TP3-ThPaquet
 
                 DirectoryInfo repositoryDirectory = System.IO.Directory.CreateDirectory(repositoryFolderPath);
 
-               /* foreach (var file in repositoryDirectory.GetFiles(responseFolderPath))
-                {
-                    File.Move(responseFolderPath, Path.Combine(repositoryFolderPath, file.Name));
-                }
-               */
+
+                HttpResponseMessage response = this._githubApiAction.GetLinkToDownloadRepository(p_organisationName, repositoryName);
+                List<string> repositoryDownloadLinks = JsonConvert.DeserializeObject<List<string>>(response.Content.ReadAsStringAsync().Result);
+                
+
+                string zippedResponseFileName = response.Content.Headers.GetValues("Content-Disposition").FirstOrDefault().Substring(19);
+
+                ZipFile.ExtractToDirectory(zippedResponseFileName, assignmentFolderPath);                             
             }
 
-            ZipFile.CreateFromDirectory(assignmentFolderPath, zippedAssignmentFolderPath, CompressionLevel.Fastest, true);
+            ZipFile.CreateFromDirectory(assignmentFolderPath,zippedAssignmentfileName, CompressionLevel.Fastest, true);
 
+            FileStream zippedFileToReturn = File.OpenRead($"{assignmentFolderPath}{zippedAssignmentfileName}");
 
             Directory.Delete(assignmentFolderPath);
 
-            return zippedAssignmentFolderPath;
+
+            return zippedFileToReturn;
 
         }
 
-
-
-        //une autre méthode
-        //Supprimer tout le dossier ./Downloads/ spécifique à mon assignment
-
-
-        public void ScriptDownloadOneRepositoryForAssignment(string p_organisationName, string p_classRoomName, string p_assignmentName, string p_repositoryName)
+        public FileStream ScriptDownloadOneRepositoryForAssignment(string p_organisationName, string p_classRoomName, string p_assignmentName, string p_repositoryName)
         {
-            if (string.IsNullOrWhiteSpace(p_organisationName) || string.IsNullOrWhiteSpace(p_classRoomName) || string.IsNullOrWhiteSpace(p_assignmentName) || string.IsNullOrWhiteSpace(p_repositoryName))
+            if (string.IsNullOrWhiteSpace(p_organisationName) || string.IsNullOrWhiteSpace(p_classRoomName) || string.IsNullOrWhiteSpace(p_assignmentName))
                 throw new ArgumentException("One of the provided value is incorrect or null");
 
 
@@ -319,39 +318,44 @@ namespace RPLP.SERVICES.Github
             if (assignment == null)
                 throw new ArgumentException($"No assignment with name {p_assignmentName}");
 
-
-
             Repository repository = _depotRepository.GetRepositoryByName(p_repositoryName);
 
 
 
             //Faire l'action                        
 
-            string sourceFolderPath = @"~\Downloads\"; //Anglais vs Français - un enjeu?
-            string assignmentFolderPath = Path.Combine(sourceFolderPath, assignment.Name);
-            string zippedAssignmentFolderPath = Path.Combine(sourceFolderPath, assignment.Name, ".zip");
+            string sourceFolderPath = @"Downloads";
+            DateTime date = DateTime.Now;
+
+            string assignmentFolderPath = Path.Combine(sourceFolderPath, assignment.Name, date.ToLongTimeString());
+
+            string zippedAssignmentfileName = $"{p_assignmentName}{date}.zip";
 
             DirectoryInfo repositoriesDirectory = Directory.CreateDirectory(assignmentFolderPath);
 
             string repositoryName = repository.Name;
-            string repositoryFolderPath = Path.Combine(assignmentFolderPath, "_", repositoryName);
-
-
-            HttpResponseMessage response = this._githubApiAction.GetLinkToDownloadRepository(p_organisationName, repositoryName);
-
+            string repositoryFolderPath = Path.Combine(assignmentFolderPath, repositoryName);
 
             DirectoryInfo repositoryDirectory = System.IO.Directory.CreateDirectory(repositoryFolderPath);
 
-            /*
-            foreach (var file in repositoryDirectory.GetFiles(responseFolderPath))
-            {
-                File.Move(responseFolderPath, Path.Combine(repositoryFolderPath, file.Name));
-            }
-            */
 
-            ZipFile.CreateFromDirectory(assignmentFolderPath, zippedAssignmentFolderPath, CompressionLevel.Fastest, true);
+            HttpResponseMessage response = this._githubApiAction.GetLinkToDownloadRepository(p_organisationName, repositoryName);
+            List<string> repositoryDownloadLinks = JsonConvert.DeserializeObject<List<string>>(response.Content.ReadAsStringAsync().Result);
+
+
+            string zippedResponseFileName = response.Content.Headers.GetValues("Content-Disposition").FirstOrDefault().Substring(19);
+
+            ZipFile.ExtractToDirectory(zippedResponseFileName, assignmentFolderPath);
+
+
+            ZipFile.CreateFromDirectory(assignmentFolderPath, zippedAssignmentfileName, CompressionLevel.Fastest, true);
+
+            FileStream zippedFileToReturn = File.OpenRead($"{assignmentFolderPath}{zippedAssignmentfileName}");
+
             Directory.Delete(assignmentFolderPath);
 
+
+            return zippedFileToReturn;
 
         }
     }
