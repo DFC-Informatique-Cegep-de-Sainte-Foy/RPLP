@@ -9,6 +9,8 @@ services:
       dockerfile: RPLP.API/Dockerfile
     ports: 
       - "47001:80"
+    depends_on: 
+      - rplp.db
 
   rplp.mvc:
     container_name: rplp.mvc
@@ -22,6 +24,14 @@ services:
       - "80:80"
       - "443:443"
 
+  rplp.coherencechecker:
+    container_name: rplp.coherencechecker
+    image: revueparlespairs/rplp-coherencechecker
+    build:
+      context: .
+      dockerfile: RPLP.COHERENCECHECKER/Dockerfile
+    depends_on: 
+      - rplp.db
 
   rplp.db:
     container_name: rplp.db
