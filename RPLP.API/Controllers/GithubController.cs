@@ -3,6 +3,8 @@ using RPLP.DAL.DTO.Json;
 using RPLP.DAL.DTO.Sql;
 using RPLP.DAL.SQL.Depots;
 using RPLP.SERVICES.Github;
+using System.IO.Compression;
+using System.Text;
 
 namespace RPLP.API.Controllers
 {
@@ -34,24 +36,28 @@ namespace RPLP.API.Controllers
             }
 
         }
-        
+        /*
         [HttpGet("/telechargement/{organisationName}/{classroomName}/{assignmentName}")]
-        public ActionResult StartScriptTelechargement(string organisationName, string classroomName, string assignmentName)
+        public FileStreamResult StartScriptDownloadAllRepositoriesForAssignment (string organisationName, string classroomName, string assignmentName)
         {
             try
             {
-                this._scriptGithub.ScriptDownloadAllRepositoriesForAssignment(organisationName, classroomName, assignmentName);
-                return Ok("Assigned successfully");
+                FileStream streamfile = _scriptGithub.ScriptDownloadAllRepositoriesForAssignment(organisationName, classroomName, assignmentName);
+                ZipFile zipFile = streamfile.;
+                var stream = new MemoryStream(Encoding.ASCII.GetBytes(streamfile));
+                FileStreamResult fileStreamResult = new FileStreamResult(stream, "application/octet-stream");
+                fileStreamResult.FileDownloadName = $"{assignmentName}_{DateTime.Now}";
+                return fileStreamResult;
+
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return null;
             }
 
-
         }
-
-        /*
+        
+        
         [HttpGet("/teachers/{organisationName}/{classroomName}/{assignmentName}/{numberOfReviews}")]
         public ActionResult StartScriptAssignTeachers(string organisationName, string classroomName, string assignmentName, int numberOfReviews)
         {
