@@ -175,7 +175,7 @@ namespace RPLP.DAL.SQL.Depots
                 .AsNoTracking()
                 .FirstOrDefault(admin => admin.Id == p_administrator.Id);
 
-            if ((adminResult != null && adminResult.Username != p_administrator.Username && 
+            if ((adminResult != null && adminResult.Username != p_administrator.Username &&
                 verificator.CheckUsernameTaken(p_administrator.Username)) ||
                 adminResult == null && verificator.CheckUsernameTaken(p_administrator.Username))
             {

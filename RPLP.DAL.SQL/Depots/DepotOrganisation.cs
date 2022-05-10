@@ -84,8 +84,8 @@ namespace RPLP.DAL.SQL.Depots
             Organisation_SQLDTO organisationResult = this._context.Organisations
                 .Include(organisation => organisation.Administrators.Where(a => a.Active))
                 .FirstOrDefault(organisation => organisation.Name == p_organisationName && organisation.Active);
-                                                                                
-                                                                                
+
+
 
             if (organisationResult != null && organisationResult.Administrators.Count >= 1)
                 return organisationResult.Administrators.Select(administrator => administrator.ToEntityWithoutList()).ToList();
