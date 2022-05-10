@@ -17,7 +17,7 @@
         <input type="text" class="form-control" name="InputOrgNameModifyOrg" id="InputOrgNameModifyOrg" disabled>
     </div>
 
-  <input type="button" class="btn-lg btn-warning titlePartial" value="Modifier">
+  <input type="button" class="btn-lg btn-warning titlePartial" onclick="modifyOrg.verifyDataThenCreate()" value="Modifier">
   <input type="button" class="btn-lg btn-primary titlePartial" onclick="modifyOrg.refreshForm()" value=" Rafraîchir le formulaire">
 </form>
 
@@ -41,6 +41,7 @@
     });
 
     var modifyOrg = {};
+    var org;
 
     modifyOrg.refreshForm = function ()
     {
@@ -60,9 +61,34 @@
 
             var name = document.getElementById("modifyOrgDropdown").value;  
             var orgs = JSON.parse('@Html.Raw(Json.Serialize(Model.Organisations))');
-            var org = orgs.find(org => org.name == name);
+            org = orgs.find(org => org.name == name);
 
             document.getElementById("InputOrgNameModifyOrg").value = org.name;
        }
+    }
+
+    modifyOrg.verifyDataThenCreate = function()
+    {
+        var orgName = document.getElementById("InputOrgNameModifyOrg").value ;
+
+        if(orgName == "" )
+        {
+            alert("Veulliez remplir le champ vide");
+        } else {
+            modifyOrg.modifyOrg(org.id, orgName);
+        }
+    }
+
+    modifyOrg.modifyOrg = function(id, orgName)
+    {
+        var ajaxURL = '/RPLP/POSTUpsertOrg';
+
+        $.post(ajaxURL,{
+           Id: id,
+           OrgName: orgName
+        },
+        function(data, status){
+            alert("Data: " + data + "\nStatus: " + status);
+        });
     }
 </script>

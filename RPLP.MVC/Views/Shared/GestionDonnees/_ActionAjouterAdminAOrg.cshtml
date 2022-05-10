@@ -19,7 +19,7 @@
         <br />
     </div>
 
-  <input type="button" class="btn-lg btn-success titlePartial" value="Ajouter">
+  <input type="button" class="btn-lg btn-success titlePartial" onclick="ajouterAdminAOrg.AddAdminToOrg()" value="Ajouter">
   <input type="button" class="btn-lg btn-primary titlePartial" onclick="ajouterAdminAOrg.refreshForm()" value=" Rafraîchir le formulaire">
 </form>
 
@@ -33,7 +33,7 @@
         var select = document.getElementById("ajouterAdminAOrgOrgDropdown");
         select.appendChild(option);
 
-        @foreach (var d in Model.Organisations)
+        @foreach (var d in Model.AllOrgs)
         {
             @:var option = document.createElement("option");
             @:option.text = "@d.Name";
@@ -109,9 +109,28 @@
         admins.forEach(admin => {
             var option = document.createElement("option");
             option.text = admin.firstName + " " + admin.lastName;
-            option.value = admin.email;
+            option.value = admin.username;
             var select = document.getElementById("ajouterAdminAOrgAdminDropdown");
             select.appendChild(option);
+        });
+    }
+
+    ajouterAdminAOrg.AddAdminToOrg = function ()
+    {
+        var orgName = document.getElementById("ajouterAdminAOrgOrgDropdown").value;
+        var adminUsername = document.getElementById("ajouterAdminAOrgAdminDropdown").value;
+
+        console.log(orgName);
+        console.log(adminUsername);
+
+        var ajaxURL = '/RPLP/POSTAddAdminToOrg';
+
+        $.post(ajaxURL,{
+           OrgName : orgName,
+           AdminUsername: adminUsername
+        },
+        function(data, status){
+            alert("Data: " + data + "\nStatus: " + status);
         });
     }
 </script>

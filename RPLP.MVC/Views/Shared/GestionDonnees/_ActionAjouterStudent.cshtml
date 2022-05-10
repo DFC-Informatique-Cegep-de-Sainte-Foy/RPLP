@@ -23,7 +23,7 @@
         <input type="email" class="form-control" id="inputEmailAjouterStudent">
     </div>
 
-  <input type="button" class="btn-lg btn-success titlePartial" value="Créer">
+  <input type="button" class="btn-lg btn-success titlePartial" onclick="ajouterStudent.verifyDataThenCreate()" value="Créer">
   <input type="button" class="btn-lg btn-primary titlePartial" onclick="ajouterStudent.refreshForm()" value=" Rafraîchir le formulaire">
 </form>
 
@@ -48,7 +48,23 @@
         {
             alert("Veulliez remplir les champs vide");
         } else {
-           // ajouterStudent.createNewStudent(username, prenom, nom, email);
+           ajouterStudent.createNewStudent(username, prenom, nom, email);
         }
+    }
+
+    ajouterStudent.createNewStudent = function(username, firstName, lastName, email)
+    {
+        var ajaxURL = '/RPLP/POSTUpsertStudent';
+
+        $.post(ajaxURL,{
+           Id : 0,
+           Username : username,
+           FirstName : firstName,
+           LastName : lastName,
+           Email : email
+        },
+        function(data, status){
+            alert("Data: " + data + "\nStatus: " + status);
+        });
     }
 </script>

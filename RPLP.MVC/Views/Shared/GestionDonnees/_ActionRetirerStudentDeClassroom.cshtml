@@ -29,7 +29,7 @@
         <br />
     </div>
 
-  <input type="button" class="btn-lg btn-danger titlePartial" value="Retirer">
+  <input type="button" class="btn-lg btn-danger titlePartial" onclick="retirerStudentDeClassroom.RemoveStudentFromClassroom()" value="Retirer">
   <input type="button" class="btn-lg btn-primary titlePartial" onclick="retirerStudentDeClassroom.refreshForm()" value=" Rafraîchir le formulaire">
 </form>
 
@@ -111,6 +111,24 @@
        }
     }
 
+    retirerStudentDeClassroom.RemoveStudentFromClassroom = function ()
+    {
+        var classroomName = document.getElementById("removeStudentFromClassroomClassroomDropdown").value;
+        var studentUsername = document.getElementById("removeStudentFromClassroomStudentDropdown").value;
+
+        console.log(classroomName);
+        console.log(studentUsername);
+
+        var ajaxURL = '/RPLP/POSTRemoveStudentFromClassroom';
+
+        $.post(ajaxURL,{
+           ClassroomName : classroomName,
+           StudentUsername : studentUsername
+        },
+        function(data, status){
+            alert("Data: " + data + "\nStatus: " + status);
+        });
+    }
 
      retirerStudentDeClassroom.GetClassroomsOfOrganisationByName = function (organisationName)
      {
@@ -140,7 +158,7 @@
         $.ajax({
             type: 'GET',
             url: ajaxURL,
-            data: { classroomName : classroomName},
+            data: { ClassroomName : classroomName},
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             beforeSend: function () {
@@ -187,10 +205,10 @@
         var select = document.getElementById("removeStudentFromClassroomStudentDropdown");
         select.appendChild(option);
 
-        students.forEach(teacher => {
+        students.forEach(student => {
             var option = document.createElement("option");
-            option.text = teacher.firstName + " " + teacher.lastName;
-            option.value = teacher.email;
+            option.text = student.firstName + " " + student.lastName;
+            option.value = student.username;
             var select = document.getElementById("removeStudentFromClassroomStudentDropdown");
             select.appendChild(option);
         });

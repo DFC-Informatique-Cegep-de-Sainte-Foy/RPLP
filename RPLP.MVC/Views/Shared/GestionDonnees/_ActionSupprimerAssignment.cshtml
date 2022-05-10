@@ -27,7 +27,7 @@
         <br />
     </div>
 
-    <input type="button" class="btn-lg btn-danger titlePartial" value="Supprimer">
+    <input type="button" class="btn-lg btn-danger titlePartial" onclick="supprimerAssignment.deleteAssignment()" value="Supprimer">
     <input type="button" class="btn-lg btn-primary titlePartial" onclick="supprimerAssignment.refreshForm()" value=" Rafraîchir le formulaire">
 </form>
 
@@ -108,6 +108,20 @@
             document.getElementById("deleteAssignmentAssignmentDropdown").disabled = false;
 
        }
+    }
+
+    supprimerAssignment.deleteAssignment = function ()
+    {
+        var assignmentName = document.getElementById("deleteAssignmentAssignmentDropdown").value;
+
+        var ajaxURL = '/RPLP/POSTDeleteAssignment';
+
+        $.post(ajaxURL,{
+           AssignmentName : assignmentName,
+        },
+        function(data, status){
+            alert("Data: " + data + "\nStatus: " + status);
+        });
     }
 
      supprimerAssignment.GetClassroomsOfOrganisationByName = function (organisationName)

@@ -32,7 +32,7 @@
         <input type="email" class="form-control" name="InputEmailModifyTeacher" id="InputEmailModifyTeacher" disabled>
     </div>
 
-  <input type="button" class="btn-lg btn-warning titlePartial" value="Modifier">
+  <input type="button" class="btn-lg btn-warning titlePartial" onclick="modifierTeacher.verifyDataThenCreate()" value="Modifier">
   <input type="button" class="btn-lg btn-primary titlePartial" onclick="modifierTeacher.refreshForm()" value=" Rafraîchir le formulaire">
 </form>
 
@@ -56,6 +56,7 @@
     });
 
     var modifierTeacher = {};
+    var teacher;
 
     modifierTeacher.refreshForm = function ()
     {
@@ -88,14 +89,43 @@
 
             var email = document.getElementById("modifyTeacherDropdown").value;  
             var teachers = JSON.parse('@Html.Raw(Json.Serialize(Model.Teachers))');
-            var teacher = teachers.find(teacher => teacher.email == email);
-
-            console.log(teacher);
+            teacher = teachers.find(teacher => teacher.email == email);
 
             document.getElementById("InputGithubUsernameModifyTeacher").value = teacher.username;
             document.getElementById("InputPrenomModifyTeacher").value = teacher.firstName;
             document.getElementById("InputNomModifyTeacher").value = teacher.lastName;
             document.getElementById("InputEmailModifyTeacher").value = teacher.email;
        }
+    }
+
+    modifierTeacher.verifyDataThenCreate = function()
+    {
+        var username = document.getElementById("InputGithubUsernameModifyTeacher").value ;
+        var prenom = document.getElementById("InputPrenomModifyTeacher").value ;
+        var nom = document.getElementById("InputNomModifyTeacher").value ;
+        var email = document.getElementById("InputEmailModifyTeacher").value ;
+
+        if(username == "" || prenom == "" || nom == "" || email == "" )
+        {
+            alert("Veulliez remplir les champs vide");
+        } else {
+             modifierTeacher.modifyTeacher(teacher.id, username, prenom, nom, email);
+        }
+    }
+
+    modifierTeacher.modifyTeacher = function(id, username, firstName, lastName, email)
+    {
+        var ajaxURL = '/RPLP/POSTUpsertTeacher';
+
+        $.post(ajaxURL,{
+           Id : id,
+           Username : username,
+           FirstName : firstName,
+           LastName : lastName,
+           Email : email
+        },
+        function(data, status){
+            alert("Data: " + data + "\nStatus: " + status);
+        });
     }
 </script>

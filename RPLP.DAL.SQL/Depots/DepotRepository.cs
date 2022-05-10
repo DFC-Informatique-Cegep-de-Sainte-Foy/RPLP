@@ -46,7 +46,7 @@ namespace RPLP.DAL.SQL.Depots
 
         public void UpsertRepository(Repository p_repository)
         {
-            Repository_SQLDTO repositoryResult = this._context.Repositories.SingleOrDefault(repository => repository.Id == p_repository.Id && 
+            Repository_SQLDTO repositoryResult = this._context.Repositories.SingleOrDefault(repository => repository.Id == p_repository.Id &&
                                                                                             repository.Active);
             if (repositoryResult != null)
             {

@@ -24,19 +24,28 @@
 
     ajouterOrg.verifyDataThenCreate = function()
     {
-        var username = document.getElementById("InputOrgNameAjouterOrg").value ;
+        var orgName = document.getElementById("InputOrgNameAjouterOrg").value ;
 
         if(orgName == "" )
         {
             alert("Veulliez remplir le champ vide");
         } else {
-            ajouterOrg.createNewOrg();
+            ajouterOrg.createNewOrg(orgName);
         }
     }
 
     ajouterOrg.createNewOrg = function(orgName)
     {
+        var ajaxURL = '/RPLP/POSTUpsertOrg';
 
+        $.post(ajaxURL,{
+           Id: 0,
+           OrgName: orgName
+        },
+        function(data, status){
+            alert("Data: " + data + "\nStatus: " + status);
+        });
     }
+
 </script>
 

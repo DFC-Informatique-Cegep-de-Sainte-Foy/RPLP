@@ -29,7 +29,7 @@
         <br />
     </div>
 
-  <input type="button" class="btn-lg btn-success titlePartial" value="Ajouter">
+  <input type="button" class="btn-lg btn-success titlePartial" onclick="ajouterTeacherAClassroom.AddTeacherToClassroom()" value="Ajouter">
   <input type="button" class="btn-lg btn-primary titlePartial" onclick="ajouterTeacherAClassroom.refreshForm()" value=" Rafraîchir le formulaire">
 </form>
 
@@ -111,6 +111,21 @@
        }
     }
 
+    ajouterTeacherAClassroom.AddTeacherToClassroom = function ()
+    {
+        var classroomName = document.getElementById("addTeacherToClassroomClassroomDropdown").value;
+        var teacherUsername = document.getElementById("addTeacherToClassroomTeacherDropdown").value;
+
+        var ajaxURL = '/RPLP/POSTAddTeacherToClassroom';
+
+        $.post(ajaxURL,{
+           ClassroomName : classroomName,
+           TeacherUsername: teacherUsername
+        },
+        function(data, status){
+            alert("Data: " + data + "\nStatus: " + status);
+        });
+    }
 
      ajouterTeacherAClassroom.GetClassroomsOfOrganisationByName = function (organisationName)
      {
@@ -190,7 +205,7 @@
         teachers.forEach(teacher => {
             var option = document.createElement("option");
             option.text = teacher.firstName + " " + teacher.lastName;
-            option.value = teacher.email;
+            option.value = teacher.username;
             var select = document.getElementById("addTeacherToClassroomTeacherDropdown");
             select.appendChild(option);
         });

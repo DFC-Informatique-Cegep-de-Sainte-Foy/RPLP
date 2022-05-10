@@ -10,7 +10,7 @@
             <div class="collapsible-content">
                 @foreach (var org in Model.Organisations)
                 {
-                    <Button class="btn-lg btn-outline-primary p-2 buttons" onclick="SetOrganisationName('@org.Name')" id='@org.Name'>@org.Name</Button>
+                            <Button class="btn-lg btn-outline-primary p-2 buttons" onclick="SetOrganisationName('@org.Name')" id='@org.Name'>@org.Name</Button>
                 }
             </div>
         </div>
@@ -128,7 +128,7 @@
         $.ajax({
             type: 'GET',
             url: ajaxURL,
-            data: { organisationName : organisationName},
+            data: { orgName : organisationName},
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             beforeSend: function () {
@@ -158,6 +158,7 @@
             },
             success: function (data) {
                 assignments = data;
+
                 ShowAssignments();
             },
             error: function (ex) {
@@ -187,6 +188,7 @@
     function ShowAssignments() {
         var myDiv = document.getElementById("assignmentContent");
         myDiv.replaceChildren();
+
 
         assignments.forEach(assignment => {
             var button = document.createElement("BUTTON");

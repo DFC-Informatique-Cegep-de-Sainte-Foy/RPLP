@@ -124,8 +124,8 @@ namespace RPLP.DAL.SQL.Depots
         public List<Classroom> GetTeacherClassesInOrganisation(string p_teacherUsername, string p_organisationName)
         {
             List<Classroom> databaseClasses = this._context.Classrooms
-                .Where(c => 
-                c.Teachers.FirstOrDefault(t =>  t.Username == p_teacherUsername) != null && 
+                .Where(c =>
+                c.Teachers.FirstOrDefault(t => t.Username == p_teacherUsername) != null &&
                 c.OrganisationName == p_organisationName &&
                 c.Active)
                 .Select(c => c.ToEntityWithoutList())
@@ -164,7 +164,7 @@ namespace RPLP.DAL.SQL.Depots
             foreach (string organisationName in organisationNames)
             {
                 Organisation_SQLDTO? organisationToAdd = this._context.Organisations.FirstOrDefault(o => o.Name == organisationName);
-                
+
                 if (organisationToAdd != null)
                 {
                     organisations.Add(organisationToAdd.ToEntity());
@@ -229,22 +229,8 @@ namespace RPLP.DAL.SQL.Depots
                 .AsNoTracking()
                 .SingleOrDefault(teacher => teacher.Id == p_teacher.Id && teacher.Active);
 
-            if ((teacherResult != null && teacherResult.Username != p_teacher.Username &&
-                verificator.CheckUsernameTaken(p_teacher.Username)) ||
-                teacherResult == null && verificator.CheckUsernameTaken(p_teacher.Username))
-            {
-                throw new ArgumentException("Username already taken.");
-            }
-
-            if ((teacherResult != null && teacherResult.Email != p_teacher.Email && verificator.CheckEmailTaken(p_teacher.Email)) ||
-                teacherResult == null && verificator.CheckEmailTaken(p_teacher.Email))
-            {
-                throw new ArgumentException("Email already in use.");
-            }
-
             if (teacherResult != null)
             {
-
                 if (!teacherResult.Active)
                 {
                     throw new ArgumentException("Deleted accounts cannot be updated.");
@@ -254,13 +240,25 @@ namespace RPLP.DAL.SQL.Depots
                 teacherResult.FirstName = p_teacher.FirstName;
                 teacherResult.LastName = p_teacher.LastName;
                 teacherResult.Email = p_teacher.Email;
-                teacherResult.Classes = classes;
 
                 this._context.Update(teacherResult);
                 this._context.SaveChanges();
             }
             else
             {
+                if ((teacherResult != null && teacherResult.Username != p_teacher.Username &&
+                verificator.CheckUsernameTaken(p_teacher.Username)) ||
+                teacherResult == null && verificator.CheckUsernameTaken(p_teacher.Username))
+                {
+                    throw new ArgumentException("Username already taken.");
+                }
+
+                if ((teacherResult != null && teacherResult.Email != p_teacher.Email && verificator.CheckEmailTaken(p_teacher.Email)) ||
+                    teacherResult == null && verificator.CheckEmailTaken(p_teacher.Email))
+                {
+                    throw new ArgumentException("Email already in use.");
+                }
+
                 Teacher_SQLDTO teacher = new Teacher_SQLDTO();
                 teacher.Username = p_teacher.Username;
                 teacher.FirstName = p_teacher.FirstName;

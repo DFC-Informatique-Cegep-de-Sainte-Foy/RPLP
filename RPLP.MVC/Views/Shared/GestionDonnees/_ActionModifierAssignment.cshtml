@@ -28,13 +28,18 @@
     </div>
 
     <div class="form-group">
-        <label for="InputAssignmentNameModifyAssignment">Nom de la classe</label>
+        <label for="InputAssignmentNameModifyAssignment">Nom du travail</label>
         <input type="text" class="form-control" name="InputAssignmentNameModifyAssignment" id="InputAssignmentNameModifyAssignment" disabled>
     </div>
 
     <div class="form-group">
         <label for="InputAssignmentDeadlineModifyAssignment">Date de remise</label>
         <input type="date" class="form-control" name="InputAssignmentDeadlineModifyAssignment" id="InputAssignmentDeadlineModifyAssignment" disabled>
+    </div>
+
+    <div class="form-group">
+        <label for="InputAssignmentDescriptionModifyAssignment">Description</label>
+        <input type="text" class="form-control" name="InputAssignmentDescriptionModifyAssignment" id="InputAssignmentDescriptionModifyAssignment" disabled>
     </div>
 
 
@@ -64,6 +69,21 @@
     var modifierAssignment = {};
     var classrooms = [];
     var assignments = [];
+    var modelAssignment;
+
+    modifierAssignment.formatDate = function(date) {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2) 
+        month = '0' + month;
+    if (day.length < 2) 
+        day = '0' + day;
+
+    return [year, month, day].join('-');
+    }
 
     modifierAssignment.refreshForm = function ()
     {
@@ -83,6 +103,9 @@
 
        document.getElementById("InputAssignmentNameModifyAssignment").value = "";
         $('input[name=InputAssignmentNameModifyAssignment]').prop('disabled', true);
+
+        document.getElementById("InputAssignmentDescriptionModifyAssignment").value = "";
+        $('input[name=InputAssignmentDescriptionModifyAssignment]').prop('disabled', true);
     }
 
     modifierAssignment.choisirOrg = function ()
@@ -102,6 +125,9 @@
 
             document.getElementById("InputAssignmentNameModifyAssignment").value = "";
             $('input[name=InputAssignmentNameModifyAssignment]').prop('disabled', true);
+
+            document.getElementById("InputAssignmentDescriptionModifyAssignment").value = "";
+            $('input[name=InputAssignmentDescriptionModifyAssignment]').prop('disabled', true);
        
        } else {
             var orgName = document.getElementById("modifyAssignmentOrgDropdown").value;  
@@ -118,6 +144,9 @@
 
             document.getElementById("InputAssignmentNameModifyAssignment").value = "";
             $('input[name=InputAssignmentNameModifyAssignment]').prop('disabled', true);
+
+            document.getElementById("InputAssignmentDescriptionModifyAssignment").value = "";
+            $('input[name=InputAssignmentDescriptionModifyAssignment]').prop('disabled', true);
        }
     }
 
@@ -134,6 +163,9 @@
 
             document.getElementById("InputAssignmentNameModifyAssignment").value = "";
             $('input[name=InputAssignmentNameModifyAssignment]').prop('disabled', true);
+
+            document.getElementById("InputAssignmentDescriptionModifyAssignment").value = "";
+            $('input[name=InputAssignmentDescriptionModifyAssignment]').prop('disabled', true);
        
        } else {
             var classroomName = document.getElementById("modifyAssignmentClassroomDropdown").value;  
@@ -146,6 +178,9 @@
 
             document.getElementById("InputAssignmentNameModifyAssignment").value = "";
             $('input[name=InputAssignmentNameModifyAssignment]').prop('disabled', true);
+
+            document.getElementById("InputAssignmentDescriptionModifyAssignment").value = "";
+            $('input[name=InputAssignmentDescriptionModifyAssignment]').prop('disabled', true);
        }
     }
 
@@ -158,28 +193,70 @@
 
             document.getElementById("InputAssignmentNameModifyAssignment").value = "";
             $('input[name=InputAssignmentNameModifyAssignment]').prop('disabled', true);
+
+            document.getElementById("InputAssignmentDescriptionModifyAssignment").value = "";
+            $('input[name=InputAssignmentDescriptionModifyAssignment]').prop('disabled', true);
        
        } else {
 
             var assignmentName = document.getElementById("modifyAssignmentAssignmentDropdown").value;  
             var modelAssignments = JSON.parse('@Html.Raw(Json.Serialize(Model.Assignments))');
-            var modelAssignment = modelAssignments.find(assignment => assignment.name == assignmentName);
+            modelAssignment = modelAssignments.find(assignment => assignment.name == assignmentName);
 
             if(modelAssignment.deadline == null)
                 document.getElementById("InputAssignmentDeadlineModifyAssignment").value = "";
             else
-                document.getElementById("InputAssignmentDeadlineModifyAssignment").value = modelAssignment.deadline;
+                var deadline = modifierAssignment.formatDate(modelAssignment.deadline);
+                document.getElementById("InputAssignmentDeadlineModifyAssignment").value = deadline;
             
                 
             $('input[name=InputAssignmentDeadlineModifyAssignment]').prop('disabled', "");
 
             document.getElementById("InputAssignmentNameModifyAssignment").value = modelAssignment.name;
             $('input[name=InputAssignmentNameModifyAssignment]').prop('disabled', "");
+
+            document.getElementById("InputAssignmentDescriptionModifyAssignment").value = modelAssignment.description;
+            $('input[name=InputAssignmentDescriptionModifyAssignment]').prop('disabled', "");
        }
     }
 
-     modifierAssignment.GetClassroomsOfOrganisationByName = function (organisationName)
-     {
+    modifierAssignment.verifyDataThenCreate = function()
+    {
+        var id = modelAssignment.id
+        var name = document.getElementById("InputAssignmentNameModifyAssignment").value;
+        var description = document.getElementById("InputAssignmentDescriptionModifyAssignment").value;
+        var deadline = document.getElementById("InputAssignmentDeadlineModifyAssignment").value;
+
+        if(name == "")
+        {
+            alert("Veulliez remplir le nom du travail");
+        } else {
+            modifierAssignment.modifyAssignment(id, name, description, deadline);
+        }
+    }
+
+    modifierAssignment.modifyAssignment = function(id, name, description ,deadline)
+    {
+        console.log(id);
+        console.log(name);
+        console.log(description);
+        console.log(deadline);
+
+        var ajaxURL = '/RPLP/POSTModifyAssignment';
+
+        $.post(ajaxURL,{
+            Id: id,
+            Name: name,
+            Description: description,
+            DeliveryDeadline: deadline
+        },
+        function(data, status){
+            alert("Data: " + data + "\nStatus: " + status);
+        });
+    }
+
+    modifierAssignment.GetClassroomsOfOrganisationByName = function (organisationName)
+    {
        var ajaxURL = '/RPLP/GetClassroomsOfOrganisationByName';
         $.ajax({
             type: 'GET',

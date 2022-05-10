@@ -19,7 +19,7 @@
         <br />
     </div>
 
-  <input type="button" class="btn-lg btn-danger titlePartial" value="Supprimer">
+  <input type="button" class="btn-lg btn-danger titlePartial" onclick="supprimerClassroom.deleteClassroom()" value="Supprimer">
   <input type="button" class="btn-lg btn-primary titlePartial" onclick="supprimerClassroom.refreshForm()" value=" Rafraîchir le formulaire">
 </form>
 
@@ -111,6 +111,20 @@
             option.value = classroom.name;
             var select = document.getElementById("deleteClassroomDropdown");
             select.appendChild(option);
+        });
+    }
+
+    supprimerClassroom.deleteClassroom = function ()
+    {
+        var classroomName = document.getElementById("deleteClassroomDropdown").value;
+
+        var ajaxURL = '/RPLP/POSTDeleteClassroom';
+
+        $.post(ajaxURL,{
+           ClassroomName : classroomName,
+        },
+        function(data, status){
+            alert("Data: " + data + "\nStatus: " + status);
         });
     }
 </script>

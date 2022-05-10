@@ -48,12 +48,24 @@
         {
             alert("Veulliez remplir les champs vide");
         } else {
-            ajouterTeacher.createNewAdmin(username, prenom, nom, email);
+             ajouterTeacher.createNewTeacher(username, prenom, nom, email);
         }
     }
 
-    ajouterTeacher.createNewAdmin = function(username, token, firstName, lastName, email)
+    ajouterTeacher.createNewTeacher = function(username, firstName, lastName, email)
     {
-        //script ajax
+
+        var ajaxURL = '/RPLP/POSTUpsertTeacher';
+
+        $.post(ajaxURL,{
+           Id : 0,
+           Username : username,
+           FirstName : firstName,
+           LastName : lastName,
+           Email : email
+        },
+        function(data, status){
+            alert("Data: " + data + "\nStatus: " + status);
+        });
     }
 </script>

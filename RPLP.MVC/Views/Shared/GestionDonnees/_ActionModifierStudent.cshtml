@@ -33,7 +33,7 @@
         <input type="email" class="form-control" name="InputEmailModifyStudent" id="InputEmailModifyStudent" disabled>
     </div>
 
-  <input type="button" class="btn-lg btn-warning titlePartial" value="Modifier">
+  <input type="button" class="btn-lg btn-warning titlePartial" onclick="modifierStudent.verifyDataThenCreate()" value="Modifier">
   <input type="button" class="btn-lg btn-primary titlePartial" onclick="modifierStudent.refreshForm()" value=" Rafraîchir le formulaire">
 </form>
 
@@ -50,13 +50,14 @@
         {
             @:var option = document.createElement("option");
             @:option.text = "@d.FirstName @d.LastName";
-            @:option.value = "@d.Email";
+            @:option.value = "@d.Username";
             @:var select = document.getElementById("modifyStudentDropdown");
             @:select.appendChild(option);
         }
     });
 
     var modifierStudent = {};
+    var student;
 
     modifierStudent.refreshForm = function ()
     {
@@ -87,14 +88,45 @@
             $('input[name=InputNomModifyStudent]').prop('disabled', '');
             $('input[name=InputEmailModifyStudent]').prop('disabled', '');
 
-            var email = document.getElementById("modifyStudentDropdown").value;  
+            var Username = document.getElementById("modifyStudentDropdown").value;  
             var students = JSON.parse('@Html.Raw(Json.Serialize(Model.Students))');
-            var student = students.find(student => student.email == email);
+            student = students.find(student => student.username == Username);
 
             document.getElementById("InputGithubUsernameModifyStudent").value = student.username;
             document.getElementById("InputPrenomModifyStudent").value = student.firstName;
             document.getElementById("InputNomModifyStudent").value = student.lastName;
             document.getElementById("InputEmailModifyStudent").value = student.email;
        }
+    }
+
+    modifierStudent.verifyDataThenCreate = function()
+    {
+        var username = document.getElementById("InputGithubUsernameModifyStudent").value ;
+        var prenom = document.getElementById("InputPrenomModifyStudent").value ;
+        var nom = document.getElementById("InputNomModifyStudent").value ;
+        var email = document.getElementById("InputEmailModifyStudent").value ;
+
+        if(username == "" || prenom == "" || nom == "" || email == "" )
+        {
+            alert("Veulliez remplir les champs vide");
+        } else {
+           modifierStudent.modifyStudent(student.id, username, prenom, nom, email);
+        }
+    }
+
+    modifierStudent.modifyStudent = function(id, username, firstName, lastName, email)
+    {
+        var ajaxURL = '/RPLP/POSTUpsertStudent';
+
+        $.post(ajaxURL,{
+           Id : id,
+           Username : username,
+           FirstName : firstName,
+           LastName : lastName,
+           Email : email
+        },
+        function(data, status){
+            alert("Data: " + data + "\nStatus: " + status);
+        });
     }
 </script>

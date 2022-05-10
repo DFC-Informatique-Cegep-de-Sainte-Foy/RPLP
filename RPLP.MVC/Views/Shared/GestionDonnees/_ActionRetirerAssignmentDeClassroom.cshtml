@@ -29,7 +29,7 @@
         <br />
     </div>
 
-  <input type="button" class="btn-lg btn-danger titlePartial" value="Retirer">
+  <input type="button" class="btn-lg btn-danger titlePartial" onclick="retirerAssignmentdeClassroom.RemoveAssignmentFromClassroom()" value="Retirer">
   <input type="button" class="btn-lg btn-primary titlePartial" onclick="retirerAssignmentdeClassroom.refreshForm()" value=" Rafraîchir le formulaire">
 </form>
 
@@ -109,6 +109,25 @@
 
             document.getElementById("removeAssignmentFromClassroomAssignmentDropdown").disabled = false;
        }
+    }
+
+    retirerAssignmentdeClassroom.RemoveAssignmentFromClassroom = function ()
+    {
+        var classroomName = document.getElementById("removeAssignmentFromClassroomClassroomDropdown").value;
+        var assignmentName = document.getElementById("removeAssignmentFromClassroomAssignmentDropdown").value;
+
+        console.log(classroomName);
+        console.log(assignmentName);
+
+        var ajaxURL = '/RPLP/POSTRemoveAssignmentFromClassroom';
+
+        $.post(ajaxURL,{
+           ClassroomName : classroomName,
+           AssignmentName : assignmentName
+        },
+        function(data, status){
+            alert("Data: " + data + "\nStatus: " + status);
+        });
     }
 
 

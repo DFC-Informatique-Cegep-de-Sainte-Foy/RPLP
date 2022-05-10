@@ -33,8 +33,8 @@ namespace RPLP.API.Controllers
             return Ok(this._depot.GetOrganisationByName(organisationName));
         }
 
-        [HttpGet("Organisations/{organisationName}/Administrators")]
-        public ActionResult<Administrator> GetAdministratorsByOrganisation(string organisationName)
+        [HttpGet("Name/{organisationName}/Administrators")]
+        public ActionResult<List<Administrator>> GetAdministratorsByOrganisation(string organisationName)
         {
             return Ok(this._depot.GetAdministratorsByOrganisation(organisationName));
         }

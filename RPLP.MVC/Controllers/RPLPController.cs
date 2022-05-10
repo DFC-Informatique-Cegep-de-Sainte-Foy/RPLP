@@ -18,6 +18,7 @@ namespace RPLP.MVC.Controllers
     {
         private readonly HttpClient _httpClient;
         private readonly ScriptGithubRPLP _scriptGithub;
+        private object classroomName;
 
         public RPLPController()
         {
@@ -32,6 +33,8 @@ namespace RPLP.MVC.Controllers
             this._httpClient.DefaultRequestHeaders.Accept
                .Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/octet-stream"));
         }
+
+        #region Views
 
         [Authorize]
         public IActionResult Index()
@@ -71,7 +74,11 @@ namespace RPLP.MVC.Controllers
             return View("GestionDonnees", model);
         }
 
-        public GestionDonneeViewModel getGestionDonneeModel()
+        #endregion
+
+        #region Methodes prive
+
+        private GestionDonneeViewModel getGestionDonneeModel()
         {
             string email = User.FindFirst(u => u.Type == ClaimTypes.Email)?.Value;
             string? userType = this._httpClient
@@ -103,6 +110,7 @@ namespace RPLP.MVC.Controllers
                 });
 
             List<Organisation> organisationsResult = new List<Organisation>();
+            List<Classroom> classroomsResult = new List<Classroom>();
 
             if (userType == typeof(Administrator).ToString())
             {
@@ -113,6 +121,16 @@ namespace RPLP.MVC.Controllers
                 organisationsResult = this._httpClient
                     .GetFromJsonAsync<List<Organisation>>($"Administrator/Email/{email}/Organisations")
                     .Result;
+
+                List<Organisation> allOrgs = this._httpClient
+                    .GetFromJsonAsync<List<Organisation>>($"Organisation")
+                    .Result;
+
+                classroomsResult = this._httpClient
+                    .GetFromJsonAsync<List<Classroom>>($"Classroom")
+                      .Result;
+
+                allOrgs.ForEach(organisation => model.AllOrgs.Add(new OrganisationViewModel { Id = organisation.Id, Name = organisation.Name }));
             }
             else if (userType == typeof(Teacher).ToString())
             {
@@ -123,12 +141,22 @@ namespace RPLP.MVC.Controllers
                 organisationsResult = this._httpClient
                     .GetFromJsonAsync<List<Organisation>>($"Teacher/Username/{teacher.Username}/Organisations")
                     .Result;
+
+                classroomsResult = this._httpClient
+                    .GetFromJsonAsync<List<Classroom>>($"Teacher/Username/{teacher.Username}/Classrooms")
+                      .Result;
             }
 
             if (organisationsResult.Count >= 1)
                 organisationsResult.ForEach(organisation =>
                 {
                     model.Organisations.Add(new OrganisationViewModel { Id = organisation.Id, Name = organisation.Name });
+                });
+
+            if (classroomsResult.Count >= 1)
+                classroomsResult.ForEach(classroom =>
+                {
+                    model.Classes.Add(new ClassroomViewModel { Id = classroom.Id, Name = classroom.Name });
                 });
 
 
@@ -147,7 +175,7 @@ namespace RPLP.MVC.Controllers
             if (assignmentsResult.Count >= 1)
                 assignmentsResult.ForEach(assignment =>
                 {
-                    model.Assignments.Add(new AssignmentViewModel { Name = assignment.Name, Deadline = assignment.DeliveryDeadline });
+                    model.Assignments.Add(new AssignmentViewModel { Id = assignment.Id, Name = assignment.Name, Deadline = assignment.DeliveryDeadline, Description = assignment.Description });
                 });
 
             List<Student> studentsResult = this._httpClient
@@ -156,7 +184,7 @@ namespace RPLP.MVC.Controllers
             if (studentsResult.Count >= 1)
                 studentsResult.ForEach(student =>
                 {
-                    model.Students.Add(new StudentViewModel { Username = student.Username, Email = student.Email, FirstName = student.FirstName, LastName = student.LastName });
+                    model.Students.Add(new StudentViewModel { Id = student.Id, Username = student.Username, Email = student.Email, FirstName = student.FirstName, LastName = student.LastName });
                 });
 
             return model;
@@ -177,6 +205,10 @@ namespace RPLP.MVC.Controllers
             return organisations;
         }
 
+        #endregion
+
+        #region ActionGet
+
         [HttpGet]
         public ActionResult<List<ClassroomViewModel>> GetClassroomsOfOrganisationByName(string orgName)
         {
@@ -194,10 +226,9 @@ namespace RPLP.MVC.Controllers
 
                 foreach (Classroom classroom in databaseClasses)
                 {
-                    classes.Add(new ClassroomViewModel(classroom.Name));
+                    classes.Add(new ClassroomViewModel { Id = classroom.Id, Name = classroom.Name, OrganisationName = classroom.OrganisationName });
                 }
             }
-
             else if (userType == typeof(Teacher).ToString())
             {
                 Teacher? teacher = this._httpClient
@@ -222,13 +253,14 @@ namespace RPLP.MVC.Controllers
             {
                 foreach (Assignment assignment in databaseAssignments)
                 {
-                    assignments.Add(new AssignmentViewModel { Name = assignment.Name, Deadline = assignment.DeliveryDeadline });
+                    assignments.Add(new AssignmentViewModel { Id = assignment.Id, Name = assignment.Name, Deadline = assignment.DeliveryDeadline });
                 }
             }
 
             return assignments;
         }
 
+        [HttpGet]
         public List<ClassroomViewModel> GetClassroomsOfTeacherInOrganisation(string p_teacherUsername, string p_organisationName)
         {
             var classes = new List<ClassroomViewModel>();
@@ -240,13 +272,11 @@ namespace RPLP.MVC.Controllers
 
             foreach (Classroom classroom in databaseClasses)
             {
-                classes.Add(new ClassroomViewModel(classroom.Name));
+                classes.Add(new ClassroomViewModel { Id = classroom.Id, Name = classroom.Name, OrganisationName = classroom.OrganisationName });
             }
 
             return classes;
         }
-
-        //DANS LA METHODE POUR AJOUTER UN ASSIGNEMENT, FAIRE QUE SA CREE L'ASSIGNMENT ET QUE SA L'ASSIGNE A LA CLASSE PAR LA SUITE
 
         [HttpGet]
         public ActionResult<List<AssignmentViewModel>> GetAssignmentsOfClassroomByName(string classroomName)
@@ -256,15 +286,12 @@ namespace RPLP.MVC.Controllers
                 .GetFromJsonAsync<List<Assignment>>($"Assignment/Classroom/{classroomName}/Assignments")
                 .Result;
 
-            foreach (Assignment assignment in databaseAssignments)
-            {
-                assignments.Add(new AssignmentViewModel { Name = assignment.Name });
-            }
+
             if (databaseAssignments.Count >= 1)
             {
                 foreach (Assignment assignment in databaseAssignments)
                 {
-                    assignments.Add(new AssignmentViewModel { Name = assignment.Name });
+                    assignments.Add(new AssignmentViewModel { Id = assignment.Id, Name = assignment.Name });
                 }
             }
 
@@ -277,21 +304,37 @@ namespace RPLP.MVC.Controllers
             List<AdministratorViewModel> admins = new List<AdministratorViewModel>();
 
             List<Administrator> databaseAdminInOrg = this._httpClient
-                .GetFromJsonAsync<List<Administrator>>($"Administrator/Organisations/{orgName}/Administrators")
+                .GetFromJsonAsync<List<Administrator>>($"Organisation/Name/{orgName}/Administrators")
                 .Result;
+
             List<Administrator> databaseAdmin = this._httpClient
                 .GetFromJsonAsync<List<Administrator>>($"Administrator")
                 .Result;
 
-            if (databaseAdminInOrg.Count >= 1 || databaseAdmin.Count >= 1)
+
+            foreach (Administrator admin in databaseAdmin)
             {
-                foreach (Administrator admin in databaseAdmin)
+                if (!databaseAdminInOrg.Any(a => a.Username == admin.Username))
                 {
-                    if (!databaseAdminInOrg.Any(a => a.Username == admin.Username))
-                    {
-                        admins.Add(new AdministratorViewModel { Id = admin.Id, Token = admin.Token, FirstName = admin.FirstName, LastName = admin.LastName, Email = admin.Email });
-                    }
+                    admins.Add(new AdministratorViewModel { Id = admin.Id, Username = admin.Username, Token = admin.Token, FirstName = admin.FirstName, LastName = admin.LastName, Email = admin.Email });
                 }
+            }
+
+            return admins;
+        }
+
+        [HttpGet]
+        public ActionResult<List<AdministratorViewModel>> GetAdminsInOrganisationByName(string orgName)
+        {
+            List<AdministratorViewModel> admins = new List<AdministratorViewModel>();
+
+            List<Administrator> databaseAdminInOrg = this._httpClient
+                .GetFromJsonAsync<List<Administrator>>($"Organisation/Name/{orgName}/Administrators")
+                .Result;
+
+            foreach (Administrator admin in databaseAdminInOrg)
+            {
+                admins.Add(new AdministratorViewModel { Id = admin.Id, Token = admin.Token, Username = admin.Username, FirstName = admin.FirstName, LastName = admin.LastName, Email = admin.Email });
             }
 
             return admins;
@@ -316,7 +359,7 @@ namespace RPLP.MVC.Controllers
                 {
                     if (!databaseTeacherInClassroom.Any(t => t.Username == teacher.Username))
                     {
-                        teachers.Add(new TeacherViewModel { Id = teacher.Id, FirstName = teacher.FirstName, LastName = teacher.LastName, Email = teacher.Email });
+                        teachers.Add(new TeacherViewModel { Id = teacher.Id, Username = teacher.Username, FirstName = teacher.FirstName, LastName = teacher.LastName, Email = teacher.Email });
                     }
                 }
             }
@@ -336,7 +379,7 @@ namespace RPLP.MVC.Controllers
             if (databaseTeacherInClassroom.Count >= 1)
                 foreach (Teacher teacher in databaseTeacherInClassroom)
                 {
-                    teachers.Add(new TeacherViewModel { Id = teacher.Id, FirstName = teacher.FirstName, LastName = teacher.LastName, Email = teacher.Email });
+                    teachers.Add(new TeacherViewModel { Id = teacher.Id, Username = teacher.Username, FirstName = teacher.FirstName, LastName = teacher.LastName, Email = teacher.Email });
                 }
 
             return teachers;
@@ -348,59 +391,41 @@ namespace RPLP.MVC.Controllers
             List<AssignmentViewModel> assignments = new List<AssignmentViewModel>();
 
             List<Assignment> databaseAssignmentInClassroom = this._httpClient
-                .GetFromJsonAsync<List<Assignment>>($"Assignments/{classroomName}")
+                .GetFromJsonAsync<List<Assignment>>($"Classroom/Name/{classroomName}/Assignments")
                 .Result; ;
 
             if (databaseAssignmentInClassroom.Count >= 1)
                 foreach (Assignment assignment in databaseAssignmentInClassroom)
                 {
-                    assignments.Add(new AssignmentViewModel { Name = assignment.Name, Deadline = assignment.DeliveryDeadline });
+                    assignments.Add(new AssignmentViewModel { Id = assignment.Id, Name = assignment.Name, Deadline = assignment.DeliveryDeadline });
                 }
 
             return assignments;
         }
 
         [HttpGet]
-        public ActionResult<List<AdministratorViewModel>> GetAdminsInOrganisationByName(string orgName)
-        {
-            List<AdministratorViewModel> admins = new List<AdministratorViewModel>();
-            List<Administrator> databaseAdminInOrg = this._httpClient
-                .GetFromJsonAsync<List<Administrator>>($"Administrator/{orgName}")
-                .Result;
-
-
-            if (databaseAdminInOrg.Count >= 1)
-                foreach (Administrator admin in databaseAdminInOrg)
-                {
-                    admins.Add(new AdministratorViewModel { Id = admin.Id, Token = admin.Token, FirstName = admin.FirstName, LastName = admin.LastName, Email = admin.Email });
-                }
-
-            return admins;
-        }
-
-        [HttpGet]
-        public ActionResult<List<StudentViewModel>> GetStudentsInClassroomByClassroomName(string classroomName)
+        public ActionResult<List<StudentViewModel>> GetStudentsInClassroomByClassroomName(string ClassroomName)
         {
             List<StudentViewModel> students = new List<StudentViewModel>();
             List<Student> databaseStudents = this._httpClient
-                .GetFromJsonAsync<List<Student>>($"Student/{classroomName}")
+                .GetFromJsonAsync<List<Student>>($"Classroom/Name/{ClassroomName}/Students")
                 .Result;
 
             if (databaseStudents.Count >= 1)
                 foreach (Student student in databaseStudents)
                 {
-                    students.Add(new StudentViewModel { Email = student.Email, FirstName = student.FirstName, LastName = student.LastName, Username = student.Username });
+                    students.Add(new StudentViewModel { Id = student.Id, Email = student.Email, FirstName = student.FirstName, LastName = student.LastName, Username = student.Username });
                 }
 
             return students;
         }
 
         [HttpGet]
-        public ActionResult<List<StudentViewModel>> GetStudentsNotInClassroomByClassroomName(string classroomName)
+        public ActionResult<List<StudentViewModel>> GetStudentsNotInClassroomByClassroomName(string ClassroomName)
         {
             List<StudentViewModel> students = new List<StudentViewModel>();
             List<Student> databaseStudentsInClassroom = this._httpClient
-                .GetFromJsonAsync<List<Student>>($"Student/{classroomName}")
+                .GetFromJsonAsync<List<Student>>($"Classroom/Name/{ClassroomName}/Students")
                 .Result;
 
             List<Student> databaseStudents = this._httpClient
@@ -413,7 +438,7 @@ namespace RPLP.MVC.Controllers
                 {
                     if (!databaseStudentsInClassroom.Any(a => a.Username == student.Username))
                     {
-                        students.Add(new StudentViewModel { Email = student.Email, FirstName = student.FirstName, LastName = student.LastName, Username = student.Username });
+                        students.Add(new StudentViewModel { Id = student.Id, Email = student.Email, FirstName = student.FirstName, LastName = student.LastName, Username = student.Username });
                     }
                 }
             }
@@ -469,6 +494,235 @@ namespace RPLP.MVC.Controllers
 
             return fileStreamResult;
         }
-    }
 
+        #endregion
+
+        #region ActionPOST
+
+        [HttpPost]
+        public ActionResult<string> POSTUpsertAdmin(int Id, string Username, string Token, string FirstName, string LastName, string Email)
+        {
+            Administrator admin = new Administrator { Id = Id, Username = Username, FirstName = FirstName, LastName = LastName, Email = Email, Token = Token };
+
+            Task<HttpResponseMessage> response = this._httpClient
+                                                 .PostAsJsonAsync<Administrator>($"Administrator", admin);
+            response.Wait();
+
+            return response.Result.StatusCode.ToString();
+        }
+
+        [HttpPost]
+        public ActionResult<string> POSTUpsertOrg(int Id, string OrgName)
+        {
+            Organisation org = new Organisation { Id = Id, Name = OrgName };
+
+            Task<HttpResponseMessage> response = this._httpClient
+                                                 .PostAsJsonAsync<Organisation>($"Organisation", org);
+            response.Wait();
+
+            return response.Result.StatusCode.ToString();
+        }
+
+        [HttpPost]
+        public ActionResult<string> POSTUpsertClassroom(int Id, string ClassroomName, string OrganisationName)
+        {
+            Classroom classroom = new Classroom { Id = Id, Name = ClassroomName, OrganisationName = OrganisationName, Assignments = new List<Assignment>(), Students = new List<Student>(), Teachers = new List<Teacher>() };
+
+            Task<HttpResponseMessage> response = this._httpClient
+                                                 .PostAsJsonAsync<Classroom>($"Classroom", classroom);
+            response.Wait();
+
+            return response.Result.StatusCode.ToString();
+        }
+
+        [HttpPost]
+        public ActionResult<string> POSTUpsertStudent(int Id, string Email, string FirstName, string LastName, string Username)
+        {
+            Student student = new Student { Id = Id, Email = Email, FirstName = FirstName, LastName = LastName, Username = Username, Classes = new List<Classroom>() };
+
+            Task<HttpResponseMessage> response = this._httpClient
+                                                 .PostAsJsonAsync<Student>($"Student", student);
+            response.Wait();
+
+            return response.Result.StatusCode.ToString();
+        }
+
+        [HttpPost]
+        public ActionResult<string> POSTUpsertTeacher(int Id, string Email, string FirstName, string LastName, string Username)
+        {
+            Teacher teacher = new Teacher { Id = Id, Email = Email, FirstName = FirstName, LastName = LastName, Username = Username, Classes = new List<Classroom>() };
+
+            Task<HttpResponseMessage> response = this._httpClient
+                                                 .PostAsJsonAsync<Teacher>($"Teacher", teacher);
+            response.Wait();
+
+            return response.Result.StatusCode.ToString();
+        }
+
+        [HttpPost]
+        public ActionResult<string> POSTNewAssignment(string Name, string ClassroomName, string Description, DateTime? DeliveryDeadline)
+        {
+            Assignment newAssignment = new Assignment { Id = 0, Name = Name, ClassroomName = ClassroomName, Description = Description, DeliveryDeadline = DeliveryDeadline, DistributionDate = DateTime.Now };
+
+            Task<HttpResponseMessage> response = this._httpClient
+                                                 .PostAsJsonAsync<Assignment>($"Assignment", newAssignment);
+            response.Wait();
+
+            if (!response.IsCompleted)
+            {
+                return response.Result.StatusCode.ToString();
+            }
+
+            response = this._httpClient
+                           .PostAsJsonAsync($"Classroom/Name/{ClassroomName}/Assignments/Add/{Name}", "");
+
+            response.Wait();
+
+            return response.Result.StatusCode.ToString();
+        }
+
+        [HttpPost]
+        public ActionResult<string> POSTModifyAssignment(int Id, string Name, string Description, DateTime? DeliveryDeadline)
+        {
+            Assignment Assignment = new Assignment { Id = Id, Name = Name, Description = Description, DeliveryDeadline = DeliveryDeadline, ClassroomName = "", DistributionDate = DateTime.Now };
+
+            Task<HttpResponseMessage> response = this._httpClient
+                                                 .PostAsJsonAsync<Assignment>($"Assignment", Assignment);
+            response.Wait();
+
+            return response.Result.StatusCode.ToString();
+        }
+
+        [HttpPost]
+        public ActionResult<string> POSTAddAdminToOrg(string OrgName, string AdminUsername)
+        {
+            Task<HttpResponseMessage> response = this._httpClient
+                                                 .PostAsJsonAsync($"Administrator/Username/{AdminUsername}/Orgs/Add/{OrgName}", "");
+            response.Wait();
+
+            return response.Result.StatusCode.ToString();
+        }
+
+        [HttpPost]
+        public ActionResult<string> POSTAddStudentToClassroom(string ClassroomName, string StudentUsername)
+        {
+            Task<HttpResponseMessage> response = this._httpClient
+                                                 .PostAsJsonAsync($"Classroom/Name/{ClassroomName}/Students/Add/{StudentUsername}", "");
+            response.Wait();
+
+            return response.Result.StatusCode.ToString();
+        }
+
+        [HttpPost]
+        public ActionResult<string> POSTAddTeacherToClassroom(string ClassroomName, string TeacherUsername)
+        {
+            Task<HttpResponseMessage> response = this._httpClient
+                                                 .PostAsJsonAsync($"Classroom/Name/{ClassroomName}/Teachers/Add/{TeacherUsername}", "");
+            response.Wait();
+
+            return response.Result.StatusCode.ToString();
+        }
+
+        [HttpPost]
+        public ActionResult<string> POSTRemoveTeacherFromClassroom(string ClassroomName, string TeacherUsername)
+        {
+            Task<HttpResponseMessage> response = this._httpClient
+                                                 .PostAsJsonAsync($"Classroom/Name/{ClassroomName}/Teachers/Remove/{TeacherUsername}", "");
+            response.Wait();
+
+            return response.Result.StatusCode.ToString();
+        }
+
+        [HttpPost]
+        public ActionResult<string> POSTRemoveAssignmentFromClassroom(string ClassroomName, string AssignmentName)
+        {
+            Task<HttpResponseMessage> response = this._httpClient
+                                                 .PostAsJsonAsync($"Classroom/Name/{ClassroomName}/Assignments/Remove/{AssignmentName}", "");
+            response.Wait();
+
+            return response.Result.StatusCode.ToString();
+        }
+
+        [HttpPost]
+        public ActionResult<string> POSTRemoveStudentFromClassroom(string ClassroomName, string StudentUsername)
+        {
+            Task<HttpResponseMessage> response = this._httpClient
+                                                 .PostAsJsonAsync($"Classroom/Name/{ClassroomName}/Students/Remove/{StudentUsername}", "");
+            response.Wait();
+
+            return response.Result.StatusCode.ToString();
+        }
+
+        [HttpPost]
+        public ActionResult<string> POSTRemoveAdminFromOrg(string OrgName, string AdminUsername)
+        {
+            Task<HttpResponseMessage> response = this._httpClient
+                                                 .PostAsJsonAsync($"Administrator/Username/{AdminUsername}/Orgs/Remove/{OrgName}", "");
+            response.Wait();
+
+            return response.Result.StatusCode.ToString();
+        }
+
+        [HttpPost]
+        public ActionResult<string> POSTDeleteAdmin(string Username)
+        {
+            Task<HttpResponseMessage> response = this._httpClient
+                                                 .DeleteAsync($"Administrator/Username/{Username}");
+            response.Wait();
+
+            return response.Result.StatusCode.ToString();
+        }
+
+        [HttpPost]
+        public ActionResult<string> POSTDeleteAssignment(string AssignmentName)
+        {
+            Task<HttpResponseMessage> response = this._httpClient
+                                                 .DeleteAsync($"Assignment/Name/{AssignmentName}");
+            response.Wait();
+
+            return response.Result.StatusCode.ToString();
+        }
+
+        [HttpPost]
+        public ActionResult<string> POSTDeleteOrg(string OrgName)
+        {
+            Task<HttpResponseMessage> response = this._httpClient
+                                                 .DeleteAsync($"Organisation/Name/{OrgName}");
+            response.Wait();
+
+            return response.Result.StatusCode.ToString();
+        }
+
+        [HttpPost]
+        public ActionResult<string> POSTDeleteClassroom(string ClassroomName)
+        {
+            Task<HttpResponseMessage> response = this._httpClient
+                                                 .DeleteAsync($"Classroom/Name/{ClassroomName}");
+            response.Wait();
+
+            return response.Result.StatusCode.ToString();
+        }
+
+        [HttpPost]
+        public ActionResult<string> POSTDeleteStudent(string StudentUsername)
+        {
+            Task<HttpResponseMessage> response = this._httpClient
+                                                 .DeleteAsync($"Student/Username/{StudentUsername}");
+            response.Wait();
+
+            return response.Result.StatusCode.ToString();
+        }
+
+        [HttpPost]
+        public ActionResult<string> POSTDeleteTeacher(string TeacherUsername)
+        {
+            Task<HttpResponseMessage> response = this._httpClient
+                                                 .DeleteAsync($"Teacher/Username/{TeacherUsername}");
+            response.Wait();
+
+            return response.Result.StatusCode.ToString();
+        }
+
+        #endregion
+    }
 }

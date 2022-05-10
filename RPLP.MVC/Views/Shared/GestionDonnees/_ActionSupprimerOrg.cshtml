@@ -6,13 +6,13 @@
     </div>
 
     <div class="form-group">
-        <select id="supprimerOrgDropdown" class="form-control" onchange="supprimerOrg.choisirOrg()">
+        <select id="supprimerOrgDropdown" class="form-control">
 
         </select>
         <br />
     </div>
 
-  <input type="button" class="btn-lg btn-danger titlePartial" value="Supprimer">
+  <input type="button" class="btn-lg btn-danger titlePartial " onclick="supprimerOrg.deleteOrg()4" value="Supprimer">
   <input type="button" class="btn-lg btn-primary titlePartial" onclick="supprimerOrg.refreshForm()" value=" Rafraîchir le formulaire">
 </form>
 
@@ -43,8 +43,19 @@
        document.getElementById("supprimerOrgDropdown").value = -1;
     }
 
-    supprimerOrg.choisirOrg = function ()
-    {
 
+    supprimerOrg.deleteOrg = function ()
+    {
+        var orgName = document.getElementById("supprimerOrgDropdown").value;
+
+        var ajaxURL = '/RPLP/POSTDeleteOrg';
+
+        $.post(ajaxURL,{
+           OrgName : orgName,
+        },
+        function(data, status){
+            alert("Data: " + data + "\nStatus: " + status);
+        });
     }
+
 </script>

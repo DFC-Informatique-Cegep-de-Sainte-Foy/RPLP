@@ -29,7 +29,7 @@
         <br />
     </div>
 
-  <input type="button" class="btn-lg btn-danger titlePartial" value="Retirer">
+  <input type="button" class="btn-lg btn-danger titlePartial" onclick=" retirerTeacherdeClassroom.RemoveTeacherFromClassroom()" value="Retirer">
   <input type="button" class="btn-lg btn-primary titlePartial" onclick="retirerTeacherdeClassroom.refreshForm()" value=" Rafraîchir le formulaire">
 </form>
 
@@ -111,6 +111,22 @@
        }
     }
 
+    retirerTeacherdeClassroom.RemoveTeacherFromClassroom = function ()
+    {
+        var classroomName = document.getElementById("removeTeacherFromClassroomClassroomDropdown").value;
+        var teacherUsername = document.getElementById("removeTeacherFromClassroomTeacherDropdown").value;
+
+        var ajaxURL = '/RPLP/POSTRemoveTeacherFromClassroom';
+
+        $.post(ajaxURL,{
+           ClassroomName : classroomName,
+           TeacherUsername : teacherUsername
+        },
+        function(data, status){
+            alert("Data: " + data + "\nStatus: " + status);
+        });
+    }
+
 
      retirerTeacherdeClassroom.GetClassroomsOfOrganisationByName = function (organisationName)
      {
@@ -190,7 +206,7 @@
         teachers.forEach(teacher => {
             var option = document.createElement("option");
             option.text = teacher.firstName + " " + teacher.lastName;
-            option.value = teacher.email;
+            option.value = teacher.username;
             var select = document.getElementById("removeTeacherFromClassroomTeacherDropdown");
             select.appendChild(option);
         });

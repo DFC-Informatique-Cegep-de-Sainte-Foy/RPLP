@@ -29,6 +29,11 @@
         <input type="date" class="form-control" name="InputAssignmentDeadlineCreateAssignment" id="InputAssignmentDeadlineCreateAssignment" >
     </div>
 
+    <div class="form-group">
+        <label for="InputAssignmentDescriptionCreateAssignment">Description</label>
+        <input type="text" class="form-control" name="InputAssignmentDescriptionCreateAssignment" id="InputAssignmentDescriptionCreateAssignment" >
+    </div>
+
     <input type="button" class="btn-lg btn-success titlePartial" onclick="ajouterAssignment.verifyDataThenCreate()" value="Créer">
     <input type="button" class="btn-lg btn-primary titlePartial" onclick="ajouterAssignment.refreshForm()" value=" Rafraîchir le formulaire">
 </form>
@@ -66,6 +71,7 @@
        
        document.getElementById("InputAssignmentDeadlineCreateAssignment").value = "";
        document.getElementById("InputAssignmentNameCreateAssignment").value = "";
+       document.getElementById("InputAssignmentDescriptionCreateAssignment").value = "";
     }
 
     ajouterAssignment.choisirOrg = function ()
@@ -84,8 +90,38 @@
        }
     }
 
-     ajouterAssignment.GetClassroomsOfOrganisationByName = function (organisationName)
-     {
+    ajouterAssignment.verifyDataThenCreate = function()
+    {
+        var name = document.getElementById("InputAssignmentNameCreateAssignment").value;
+        var description = document.getElementById("InputAssignmentDescriptionCreateAssignment").value;
+        var deadline = document.getElementById("InputAssignmentDeadlineCreateAssignment").value;
+        var classroomName = document.getElementById("createAssignmentClassroomDropdown").value;
+
+        if(name == "")
+        {
+            alert("Veulliez remplir le nom du travail");
+        } else {
+            ajouterAssignment.createNewAssignment(name, description, classroomName, deadline);
+        }
+    }
+
+    ajouterAssignment.createNewAssignment = function(name, description, classroomName ,deadline)
+    {
+        var ajaxURL = '/RPLP/POSTNewAssignment';
+
+        $.post(ajaxURL,{
+            Name: name,
+            ClassroomName: classroomName,
+            Description: description,
+            DeliveryDeadline: deadline
+        },
+        function(data, status){
+            alert("Data: " + data + "\nStatus: " + status);
+        });
+    }
+
+    ajouterAssignment.GetClassroomsOfOrganisationByName = function (organisationName)
+    {
        var ajaxURL = '/RPLP/GetClassroomsOfOrganisationByName';
         $.ajax({
             type: 'GET',

@@ -78,7 +78,7 @@ namespace RPLP.API.Controllers
         [HttpPost]
         public ActionResult UpsertTeacher([FromBody] Teacher p_teacher)
         {
-            if (p_teacher == null || !ModelState.IsValid)
+            if (p_teacher.Id == null || !ModelState.IsValid)
             {
                 return BadRequest();
             }

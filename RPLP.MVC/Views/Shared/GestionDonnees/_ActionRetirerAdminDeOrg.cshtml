@@ -19,7 +19,7 @@
         <br />
     </div>
 
-  <input type="button" class="btn-lg btn-danger titlePartial" value="Retirer">
+  <input type="button" class="btn-lg btn-danger titlePartial" onclick="retirerAdmindeOrg.RemoveAdminFromOrg()" value="Retirer">
   <input type="button" class="btn-lg btn-primary titlePartial" onclick="retirerAdmindeOrg.refreshForm()" value=" Rafraîchir le formulaire">
 </form>
 
@@ -109,9 +109,28 @@
         admins.forEach(admin => {
             var option = document.createElement("option");
             option.text = admin.firstName + " " + admin.lastName;
-            option.value = admin.email;
+            option.value = admin.username;
             var select = document.getElementById("retirerAdmindeOrgAdminDropdown");
             select.appendChild(option);
+        });
+    }
+
+        retirerAdmindeOrg.RemoveAdminFromOrg = function ()
+    {
+        var orgName = document.getElementById("retirerAdmindeOrgOrgDropdown").value;
+        var adminUsername = document.getElementById("retirerAdmindeOrgAdminDropdown").value;
+
+        console.log(orgName);
+        console.log(adminUsername);
+
+        var ajaxURL = '/RPLP/POSTRemoveAdminFromOrg';
+
+        $.post(ajaxURL,{
+           OrgName : orgName,
+           AdminUsername: adminUsername
+        },
+        function(data, status){
+            alert("Data: " + data + "\nStatus: " + status);
         });
     }
 </script>

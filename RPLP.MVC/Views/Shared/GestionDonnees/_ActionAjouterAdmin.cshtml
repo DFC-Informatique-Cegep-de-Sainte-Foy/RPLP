@@ -60,23 +60,18 @@
 
     ajouterAdmin.createNewAdmin = function(username, token, firstName, lastName, email)
     {
-        $.ajax({
-            type: 'POST',
-            url: "https://rplp.api/api/Administrator",
-            data: '{ "id": 0, "username":'+ username +',"token":'+ token +',"firstName":'+ firstName +',"lastName":'+ lastName +',"email":'+ email +',"organisations": [] }',
-            contentType: "application/json; charset=utf-8",
-            dataType: 'jsonp',
-            crossDomain: true,
-            beforeSend: function () {
-                console.log('firing ajax call');
-            },
-            success: function (data) {
-                alert("Success");
-            },
-            error: function (ex) {
-                 alert('Error' + ex);
-                 console.log(ex);
-            }
+        var ajaxURL = '/RPLP/POSTUpsertAdmin';
+
+        $.post(ajaxURL,{
+           Id : 0,
+           Username : username,
+           Token : token,
+           FirstName : firstName,
+           LastName : lastName,
+           Email : email
+        },
+        function(data, status){
+            alert("Data: " + data + "\nStatus: " + status);
         });
     }
 </script>
