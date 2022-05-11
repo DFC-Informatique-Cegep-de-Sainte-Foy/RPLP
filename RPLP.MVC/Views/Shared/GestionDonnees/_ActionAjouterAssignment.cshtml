@@ -1,0 +1,164 @@
+﻿<form id="ajouterAssignmentForm">
+    <div class="titlePartial">
+    <h2 >Ajouter un travail</H2>
+    </div>
+
+    <div class="form-group">
+        <label for="createAssignmentOrgDropdown">Organisations</label>
+        <select id="createAssignmentOrgDropdown" class="form-control" onchange="ajouterAssignment.choisirOrg()">
+
+        </select>
+        <br />
+    </div>
+
+    <div class="form-group">
+        <label for="createAssignmentClassroomDropdown">Classes</label>
+        <select id="createAssignmentClassroomDropdown" class="form-control" disabled>
+
+        </select>
+        <br />
+    </div>
+
+    <div class="form-group">
+        <label for="InputAssignmentNameCreateAssignment">Nom du travail</label>
+        <input type="text" class="form-control" name="InputAssignmentNameCreateAssignment" id="InputAssignmentNameCreateAssignment" >
+    </div>
+
+    <div class="form-group">
+        <label for="InputAssignmentDeadlineCreateAssignment">Date de remise</label>
+        <input type="date" class="form-control" name="InputAssignmentDeadlineCreateAssignment" id="InputAssignmentDeadlineCreateAssignment" >
+    </div>
+
+    <div class="form-group">
+        <label for="InputAssignmentDescriptionCreateAssignment">Description</label>
+        <input type="text" class="form-control" name="InputAssignmentDescriptionCreateAssignment" id="InputAssignmentDescriptionCreateAssignment" >
+    </div>
+
+    <input type="button" class="btn-lg btn-success titlePartial" onclick="ajouterAssignment.verifyDataThenCreate()" value="Créer">
+    <input type="button" class="btn-lg btn-primary titlePartial" onclick="ajouterAssignment.refreshForm()" value=" Rafraîchir le formulaire">
+</form>
+
+<script src="/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        var option = document.createElement("option");
+        option.text = "Faites un choix";
+        option.value = -1;
+        var select = document.getElementById("createAssignmentOrgDropdown");
+        select.appendChild(option);
+
+        @foreach (var d in Model.Organisations)
+        {
+            @:var option = document.createElement("option");
+            @:option.text = "@d.Name";
+            @:option.value = "@d.Name";
+            @:var select = document.getElementById("createAssignmentOrgDropdown");
+            @:select.appendChild(option);
+        }
+    });
+
+    var ajouterAssignment = {};
+    var classrooms = [];
+
+    ajouterAssignment.refreshForm = function ()
+    {
+       document.getElementById("ajouterAssignmentForm").reset();
+       document.getElementById("createAssignmentOrgDropdown").value = -1;
+
+       const classes = document.getElementById("createAssignmentClassroomDropdown");
+       classes.innerHTML = '';
+       document.getElementById("createAssignmentClassroomDropdown").disabled = true;
+       
+       document.getElementById("InputAssignmentDeadlineCreateAssignment").value = "";
+       document.getElementById("InputAssignmentNameCreateAssignment").value = "";
+       document.getElementById("InputAssignmentDescriptionCreateAssignment").value = "";
+    }
+
+    ajouterAssignment.choisirOrg = function ()
+    {
+       if(document.getElementById("createAssignmentOrgDropdown").value == -1)
+       {
+            const classes = document.getElementById("createAssignmentClassroomDropdown");
+            classes.innerHTML = '';
+            document.getElementById("createAssignmentClassroomDropdown").disabled = true;
+       
+       } else {
+            var orgName = document.getElementById("createAssignmentOrgDropdown").value;  
+            ajouterAssignment.GetClassroomsOfOrganisationByName(orgName);
+
+            document.getElementById("createAssignmentClassroomDropdown").disabled = false;
+       }
+    }
+
+    ajouterAssignment.verifyDataThenCreate = function()
+    {
+        var name = document.getElementById("InputAssignmentNameCreateAssignment").value;
+        var description = document.getElementById("InputAssignmentDescriptionCreateAssignment").value;
+        var deadline = document.getElementById("InputAssignmentDeadlineCreateAssignment").value;
+        var classroomName = document.getElementById("createAssignmentClassroomDropdown").value;
+
+        if(name == "")
+        {
+            alert("Veulliez remplir le nom du travail");
+        } else {
+            ajouterAssignment.createNewAssignment(name, description, classroomName, deadline);
+        }
+    }
+
+    ajouterAssignment.createNewAssignment = function(name, description, classroomName ,deadline)
+    {
+        var ajaxURL = '/RPLP/POSTNewAssignment';
+
+        $.post(ajaxURL,{
+            Name: name,
+            ClassroomName: classroomName,
+            Description: description,
+            DeliveryDeadline: deadline
+        },
+        function(data, status){
+            alert("Data: " + data + "\nStatus: " + status);
+        });
+    }
+
+    ajouterAssignment.GetClassroomsOfOrganisationByName = function (organisationName)
+    {
+       var ajaxURL = '/RPLP/GetClassroomsOfOrganisationByName';
+        $.ajax({
+            type: 'GET',
+            url: ajaxURL,
+            data: { orgName : organisationName},
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            beforeSend: function () {
+                console.log('firing ajax call');
+            },
+            success: function (data) {
+                classrooms = data;
+                ajouterAssignment.ShowClassrooms();
+            },
+            error: function (ex) {
+                console.log('Error');
+            }
+        });
+    }
+
+    ajouterAssignment.ShowClassrooms = function()
+    {
+        const classes = document.getElementById("createAssignmentClassroomDropdown");
+        classes.innerHTML = '';
+
+        var option = document.createElement("option");
+        option.text = "Faites un choix";
+        option.value = -1;
+        var select = document.getElementById("createAssignmentClassroomDropdown");
+        select.appendChild(option);
+
+        classrooms.forEach(classroom => {
+            var option = document.createElement("option");
+            option.text = classroom.name;
+            option.value = classroom.name;
+            var select = document.getElementById("createAssignmentClassroomDropdown");
+            select.appendChild(option);
+        });
+    }
+</script>

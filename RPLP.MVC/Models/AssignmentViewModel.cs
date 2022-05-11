@@ -2,11 +2,9 @@
 {
     public class AssignmentViewModel
     {
+        public int Id { get; set; }
         public string Name { get; set; }
-
-        public AssignmentViewModel(string p_name)
-        {
-            Name = p_name.Trim();
-        }
+        public string Description { get; set; }
+        public DateTime? Deadline { get; set; }
     }
 }

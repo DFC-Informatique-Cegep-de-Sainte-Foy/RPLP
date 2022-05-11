@@ -2,11 +2,9 @@
 {
     public class ClassroomViewModel
     {
+        public int Id { get; set; }
         public string Name { get; set; }
+        public string OrganisationName { get; set; }
 
-        public ClassroomViewModel(string p_name)
-        {
-            Name = p_name.Trim();
-        }
     }
 }

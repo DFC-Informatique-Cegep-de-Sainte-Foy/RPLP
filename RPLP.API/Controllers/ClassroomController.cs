@@ -34,7 +34,7 @@ namespace RPLP.API.Controllers
             return Ok(this._depot.GetClassroomByName(classroomName));
         }
 
-        [HttpGet("Organisation/{organisationName}")]
+        [HttpGet("Organisation/{organisationName}/Classroom")]
         public ActionResult<Classroom> GetClassroomsByOrganisationName(string organisationName)
         {
             return Ok(this._depot.GetClassroomsByOrganisationName(organisationName));
@@ -113,7 +113,7 @@ namespace RPLP.API.Controllers
 
             this._depot.RemoveTeacherFromClassroom(classroomName, teacherUsername);
 
-            return  NoContent(); 
+            return NoContent();
         }
 
         [HttpPost("Name/{classroomName}/Students/Remove/{studentUsername}")]
@@ -126,7 +126,7 @@ namespace RPLP.API.Controllers
 
             this._depot.RemoveStudentFromClassroom(classroomName, studentUsername);
 
-            return  NoContent(); 
+            return NoContent();
         }
 
         [HttpPost("Name/{classroomName}/Assignments/Remove/{assignmentName}")]
@@ -139,7 +139,7 @@ namespace RPLP.API.Controllers
 
             this._depot.RemoveAssignmentFromClassroom(classroomName, assignmentName);
 
-            return  NoContent(); 
+            return NoContent();
         }
 
         [HttpPost]
