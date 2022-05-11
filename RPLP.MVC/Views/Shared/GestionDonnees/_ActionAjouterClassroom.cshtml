@@ -1,0 +1,81 @@
+﻿@model RPLP.MVC.Models.GestionDonneeViewModel
+
+<form id="ajouterClassroomForm">
+    <div class="titlePartial">
+    <h2 >Créer une classe</H2>
+    </div>
+
+    <div class="form-group">
+        <label for="AjouterClassroomOrgNameDropdown">Nom de l'organisation</label>
+        <select id="AjouterClassroomOrgNameDropdown" class="form-control">
+
+        </select>
+        <br />
+    </div>
+
+    <div class="form-group">
+        <label for="InputOrgNameAjouterClassroom">Nom de la classe</label>
+        <input type="text" class="form-control" id="InputOrgNameAjouterClassroom">
+    </div>
+
+  <input type="button" class="btn-lg btn-success titlePartial" onclick="ajouterClassroom.verifyDataThenCreate()" value="Créer">
+  <input type="button" class="btn-lg btn-primary titlePartial" onclick="ajouterClassroom.refreshForm()" value=" Rafraîchir le formulaire">
+</form>
+
+
+<script src="/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        var option = document.createElement("option");
+        option.text = "Faites un choix";
+        option.value = -1;
+        var select = document.getElementById("AjouterClassroomOrgNameDropdown");
+        select.appendChild(option);
+
+        @foreach (var d in Model.Organisations)
+        {
+            @:var option = document.createElement("option");
+            @:option.text = "@d.Name";
+            @:option.value = "@d.Name";
+            @:var select = document.getElementById("AjouterClassroomOrgNameDropdown");
+            @:select.appendChild(option);
+        }
+    });
+
+    var ajouterClassroom = {}
+
+    ajouterClassroom.refreshForm = function ()
+    {
+       document.getElementById("ajouterClassroomForm").reset();
+       $('input[name=InputOrgNameAjouterClassroom]').prop('disabled', true);
+       document.getElementById("AjouterClassroomOrgNameDropdown").value = -1;
+    }
+
+    ajouterClassroom.verifyDataThenCreate = function()
+    {
+        var className = document.getElementById("InputOrgNameAjouterClassroom").value;
+        var orgName = document.getElementById("AjouterClassroomOrgNameDropdown").value;
+
+        if(className == "" | orgName == "" )
+        {
+            alert("Veulliez remplir les champ vide");
+        } else {
+            ajouterClassroom.createNewClassroom(orgName, className);
+        }
+    }
+
+    ajouterClassroom.createNewClassroom = function(organisationName, classroomName)
+    {
+        var ajaxURL = '/RPLP/POSTUpsertClassroom';
+
+        $.post(ajaxURL,{
+           Id : 0,
+           ClassroomName: classroomName,
+           OrganisationName: organisationName
+        },
+        function(data, status){
+            alert("Data: " + data + "\nStatus: " + status);
+        });
+    }
+</script>
+

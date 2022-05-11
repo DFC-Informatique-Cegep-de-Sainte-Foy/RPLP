@@ -24,17 +24,17 @@ namespace RPLP.DAL.SQL.Depots
 
         public Type GetUserTypeByEmail(string p_email)
         {
-            if (this._context.Administrators.FirstOrDefault(a => a.Email == p_email) != null)
+            if (this._context.Administrators.Any(a => a.Email == p_email))
             {
                 return typeof(Administrator); 
             }
 
-            else if (this._context.Students.FirstOrDefault(s => s.Email == p_email) != null)
+            else if (this._context.Students.Any(s => s.Email == p_email))
             {
                 return typeof(Student);
             }
                 
-            else if (this._context.Teachers.FirstOrDefault(t => t.Email == p_email) != null)
+            else if (this._context.Teachers.Any(t => t.Email == p_email))
             {
                 return typeof(Teacher);
             }
@@ -46,17 +46,17 @@ namespace RPLP.DAL.SQL.Depots
         public bool CheckUsernameTaken(string p_username)
         {
             return
-                this._context.Administrators.FirstOrDefault(a => a.Username == p_username) != null ||
-                this._context.Students.FirstOrDefault(s => s.Username == p_username) != null ||
-                this._context.Teachers.FirstOrDefault(t => t.Username == p_username) != null;
+                this._context.Administrators.Any(a => a.Username == p_username) ||
+                this._context.Students.Any(s => s.Username == p_username) ||
+                this._context.Teachers.Any(t => t.Username == p_username);
         }
 
         public bool CheckEmailTaken(string p_email)
         {
             return
-                this._context.Administrators.FirstOrDefault(a => a.Email == p_email) != null ||
-                this._context.Students.FirstOrDefault(s => s.Email == p_email) != null ||
-                this._context.Teachers.FirstOrDefault(t => t.Email == p_email) != null;
+                this._context.Administrators.Any(a => a.Email == p_email) ||
+                this._context.Students.Any(s => s.Email == p_email)  ||
+                this._context.Teachers.Any(t => t.Email == p_email);
         }
     }
 }

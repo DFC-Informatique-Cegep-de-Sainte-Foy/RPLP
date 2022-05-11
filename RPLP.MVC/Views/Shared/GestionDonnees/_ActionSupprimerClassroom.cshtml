@@ -1,0 +1,130 @@
+﻿@model RPLP.MVC.Models.GestionDonneeViewModel
+
+<form id="deleteClassroomForm">
+    <div class="titlePartial">
+    <h2 >Supprimer une classe</H2>
+    </div>
+
+    <div class="form-group">
+        <select id="deleteClassroomOrgDropdown" class="form-control" onchange="supprimerClassroom.choisirOrg()">
+
+        </select>
+        <br />
+    </div>
+
+    <div class="form-group">
+        <select id="deleteClassroomDropdown" class="form-control" disabled>
+
+        </select>
+        <br />
+    </div>
+
+  <input type="button" class="btn-lg btn-danger titlePartial" onclick="supprimerClassroom.deleteClassroom()" value="Supprimer">
+  <input type="button" class="btn-lg btn-primary titlePartial" onclick="supprimerClassroom.refreshForm()" value=" Rafraîchir le formulaire">
+</form>
+
+<script src="/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        var option = document.createElement("option");
+        option.text = "Faites un choix";
+        option.value = -1;
+        var select = document.getElementById("deleteClassroomOrgDropdown");
+        select.appendChild(option);
+
+        @foreach (var d in Model.Organisations)
+        {
+            @:var option = document.createElement("option");
+            @:option.text = "@d.Name";
+            @:option.value = "@d.Name";
+            @:var select = document.getElementById("deleteClassroomOrgDropdown");
+            @:select.appendChild(option);
+        }
+    });
+
+    var supprimerClassroom  = {};
+    var classrooms = [];
+
+    supprimerClassroom.refreshForm = function ()
+    {
+       document.getElementById("deleteOrgForm").reset();
+       document.getElementById("deleteClassroomOrgDropdown").value = -1;
+
+       const classes = document.getElementById("deleteClassroomDropdown");
+       classes.innerHTML = '';
+       document.getElementById("deleteClassroomDropdown").disabled = true;
+    }
+
+    supprimerClassroom.choisirOrg = function ()
+    {
+       if(document.getElementById("deleteClassroomOrgDropdown").value == -1)
+       {
+            const classes = document.getElementById("deleteClassroomDropdown");
+            classes.innerHTML = '';
+            document.getElementById("deleteClassroomDropdown").disabled = true;
+      
+       } else {
+            var orgName = document.getElementById("deleteClassroomOrgDropdown").value;  
+            supprimerClassroom.GetClassroomsOfOrganisationByName(orgName);
+
+            document.getElementById("deleteClassroomDropdown").disabled = false;
+       }
+    }
+
+
+     supprimerClassroom.GetClassroomsOfOrganisationByName = function (organisationName)
+     {
+       var ajaxURL = '/RPLP/GetClassroomsOfOrganisationByName';
+        $.ajax({
+            type: 'GET',
+            url: ajaxURL,
+            data: { orgName : organisationName},
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            beforeSend: function () {
+                console.log('firing ajax call');
+            },
+            success: function (data) {
+                classrooms = data;
+                supprimerClassroom.ShowClassrooms();
+            },
+            error: function (ex) {
+                console.log('Error');
+            }
+        });
+    }
+
+    supprimerClassroom.ShowClassrooms = function()
+    {
+        const classes = document.getElementById("deleteClassroomDropdown");
+        classes.innerHTML = '';
+
+        var option = document.createElement("option");
+        option.text = "Faites un choix";
+        option.value = -1;
+        var select = document.getElementById("deleteClassroomDropdown");
+        select.appendChild(option);
+
+        classrooms.forEach(classroom => {
+            var option = document.createElement("option");
+            option.text = classroom.name;
+            option.value = classroom.name;
+            var select = document.getElementById("deleteClassroomDropdown");
+            select.appendChild(option);
+        });
+    }
+
+    supprimerClassroom.deleteClassroom = function ()
+    {
+        var classroomName = document.getElementById("deleteClassroomDropdown").value;
+
+        var ajaxURL = '/RPLP/POSTDeleteClassroom';
+
+        $.post(ajaxURL,{
+           ClassroomName : classroomName,
+        },
+        function(data, status){
+            alert("Data: " + data + "\nStatus: " + status);
+        });
+    }
+</script>

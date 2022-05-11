@@ -17,6 +17,7 @@ namespace RPLP.DAL.SQL.Depots
         public DepotAssignment()
         {
             this._context = new RPLPDbContext(new DbContextOptionsBuilder<RPLPDbContext>().UseSqlServer("Server=rplp.db; Database=RPLP; User Id=sa; password=Cad3pend86!").Options);
+            //this._context = new RPLPDbContext(new DbContextOptionsBuilder<RPLPDbContext>().UseSqlServer("Server=localhost,1433; Database=RPLP; User Id=sa; password=Cad3pend86!").Options);
         }
 
         public DepotAssignment(RPLPDbContext p_context)
@@ -34,7 +35,7 @@ namespace RPLP.DAL.SQL.Depots
         {
             Assignment assignment = this._context.Assignments.FirstOrDefault(assignment => assignment.Id == p_id && assignment.Active)
                                                              .ToEntity();
-                                                             
+
             if (assignment == null)
                 return new Assignment();
 
@@ -46,11 +47,21 @@ namespace RPLP.DAL.SQL.Depots
             Assignment assignment = this._context.Assignments
                                                 .FirstOrDefault(assignment => assignment.Name == p_assignmentName && assignment.Active)
                                                 .ToEntity();
-                                                             
+
             if (assignment == null)
                 return new Assignment();
 
             return assignment;
+        }
+
+        public List<Assignment> GetAssignmentsByClassroomName(string p_classroomName)
+        {
+            List<Assignment> assignments = this._context.Assignments
+                .Where(assignment => assignment.ClassroomName == p_classroomName && assignment.Active)
+                .Select(s => s.ToEntity())
+                .ToList();
+
+            return assignments;
         }
 
         public void UpsertAssignment(Assignment p_assignment)
@@ -61,8 +72,6 @@ namespace RPLP.DAL.SQL.Depots
             {
                 assignmentResult.Name = p_assignment.Name;
                 assignmentResult.Description = p_assignment.Description;
-                assignmentResult.ClassroomName = p_assignment.ClassroomName;
-                assignmentResult.DistributionDate = p_assignment.DistributionDate;
                 assignmentResult.DeliveryDeadline = p_assignment.DeliveryDeadline;
 
                 this._context.Update(assignmentResult);

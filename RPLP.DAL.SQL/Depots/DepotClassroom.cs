@@ -17,6 +17,7 @@ namespace RPLP.DAL.SQL.Depots
         public DepotClassroom()
         {
             this._context = new RPLPDbContext(new DbContextOptionsBuilder<RPLPDbContext>().UseSqlServer("Server=rplp.db; Database=RPLP; User Id=sa; password=Cad3pend86!").Options);
+            //this._context = new RPLPDbContext(new DbContextOptionsBuilder<RPLPDbContext>().UseSqlServer("Server=localhost,1433; Database=RPLP; User Id=sa; password=Cad3pend86!").Options);
         }
 
         public DepotClassroom(RPLPDbContext context)
@@ -175,7 +176,8 @@ namespace RPLP.DAL.SQL.Depots
             if (classroomResult != null)
             {
                 Assignment_SQLDTO assignmentResult = this._context.Assignments.Where(assignment => assignment.Active)
-                                                                              .SingleOrDefault(assignment => assignment.Name == p_assignmentName);
+                                                                              .SingleOrDefault(assignment => assignment.Name == p_assignmentName &&
+                                                                              assignment.ClassroomName == p_classroomName);
 
                 if (assignmentResult != null && !classroomResult.Assignments.Contains(assignmentResult))
                 {
@@ -226,22 +228,24 @@ namespace RPLP.DAL.SQL.Depots
             }
         }
 
-        public void RemoveAssignmentFromClassroom(string p_classroomName, string p_assignment)
+        public void RemoveAssignmentFromClassroom(string p_classroomName, string p_assignmentName)
         {
-            Classroom_SQLDTO? classroomResult = this._context.Classrooms.Include(classroom => classroom.Assignments.Where(assignment => assignment.Active))
-                                                                       .FirstOrDefault(classroom => classroom.Name == p_classroomName && classroom.Active);
-
-            Assignment_SQLDTO? assignmentResult = this._context.Assignments
-                .SingleOrDefault(assignment => assignment.Name == p_assignment && assignment.Active);
-
-            if (classroomResult.Assignments.SingleOrDefault(a => a.Id == assignmentResult.Id) != null)
+            Classroom_SQLDTO classroomResult = this._context.Classrooms.Where(classroom => classroom.Active)
+                                                                       .Include(classroom => classroom.Assignments.Where(assignment => assignment.Active))
+                                                                       .FirstOrDefault(classroom => classroom.Name == p_classroomName);
+            if (classroomResult != null)
             {
-                classroomResult.Assignments.Remove(assignmentResult);
+                Assignment_SQLDTO assignmentResult = this._context.Assignments.Where(assignment => assignment.Active)
+                                                                              .SingleOrDefault(assignment => assignment.Name == p_assignmentName &&
+                                                                              assignment.ClassroomName == p_classroomName);
 
+                if (assignmentResult != null && classroomResult.Assignments.Contains(assignmentResult))
+                {
+                    classroomResult.Assignments.Remove(assignmentResult);
 
-
-                this._context.Update(classroomResult);
-                this._context.SaveChanges();
+                    this._context.Update(classroomResult);
+                    this._context.SaveChanges();
+                }
             }
         }
 
@@ -316,9 +320,6 @@ namespace RPLP.DAL.SQL.Depots
             {
                 classroomResult.Name = p_classroom.Name;
                 classroomResult.OrganisationName = p_classroom.OrganisationName;
-                classroomResult.Students = students;
-                classroomResult.Teachers = teachers;
-                classroomResult.Assignments = assignments;
 
                 this._context.Update(classroomResult);
                 this._context.SaveChanges();
@@ -354,7 +355,7 @@ namespace RPLP.DAL.SQL.Depots
         public List<Classroom> GetClassroomsByOrganisationName(string p_organisationName)
         {
             List<Classroom_SQLDTO> classesResult = this._context.Classrooms.Where(classroom => classroom.Active && classroom.OrganisationName == p_organisationName).ToList();
-            
+
             if (classesResult.Count <= 0)
                 return new List<Classroom>();
             else
