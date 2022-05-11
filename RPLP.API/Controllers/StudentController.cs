@@ -43,7 +43,7 @@ namespace RPLP.API.Controllers
         [HttpPost]
         public ActionResult Post([FromBody] Student p_student)
         {
-            if (p_student.Id == null || !ModelState.IsValid)
+            if (p_student == null || p_student.Id == null || !ModelState.IsValid)
             {
                 return BadRequest();
             }

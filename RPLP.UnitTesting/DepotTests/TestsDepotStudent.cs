@@ -340,19 +340,32 @@ namespace RPLP.UnitTesting.DepotTests
             this.DeleteStudentsAndRelatedTablesContent();
             this.InsertPremadeStudents();
 
+            string username = "BACenComm";
+
+            using (var context = new RPLPDbContext(options))
+            {
+                Student_SQLDTO? studentInDB = context.Students.FirstOrDefault(s => s.Username == username);
+                Assert.NotNull(studentInDB);
+                Assert.False(studentInDB.Active);
+            }
+
             using (var context = new RPLPDbContext(options))
             {
                 DepotStudent depot = new DepotStudent(context);
 
-                Student_SQLDTO? student = context.Students.SingleOrDefault(a => a.Username == "ikeameatbol");
-                Assert.NotNull(student);
-
-                student.Username = "BACenComm";
+                Student student = new Student()
+                {
+                    Id = 244,
+                    Email = "Testeron@hotmail.com",
+                    FirstName = "Testy",
+                    LastName = "McTesterton",
+                    Username = username
+                };
 
                 Assert.Throws<ArgumentException>(
                     () =>
                     {
-                        depot.UpsertStudent(student.ToEntityWithoutList());
+                        depot.UpsertStudent(student);
                     });
             }
 
@@ -395,21 +408,32 @@ namespace RPLP.UnitTesting.DepotTests
             this.DeleteStudentsAndRelatedTablesContent();
             this.InsertPremadeStudents();
 
+            string email = "BACenComm@hotmail.com";
+
             using (var context = new RPLPDbContext(options))
             {
+                Student_SQLDTO? studentInDB = context.Students.FirstOrDefault(s => s.Email == email);
+                Assert.NotNull(studentInDB);
+                Assert.False(studentInDB.Active);
+            }
 
+            using (var context = new RPLPDbContext(options))
+            {
                 DepotStudent depot = new DepotStudent(context);
 
-                Student_SQLDTO? student = context.Students.SingleOrDefault(a => a.Email == "ikeameatbol@hotmail.com");
-                Assert.NotNull(student);
-
-
-                student.Email = "BACenComm@hotmail.com";
+                Student student = new Student()
+                {
+                    Id = 244,
+                    Email = email,
+                    FirstName = "Testy",
+                    LastName = "McTesterton",
+                    Username = "Tester"
+                };
 
                 Assert.Throws<ArgumentException>(
                     () =>
                     {
-                        depot.UpsertStudent(student.ToEntityWithoutList());
+                        depot.UpsertStudent(student);
                     });
             }
 
