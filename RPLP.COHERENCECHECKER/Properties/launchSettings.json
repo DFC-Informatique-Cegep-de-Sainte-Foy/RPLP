@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "RPLP.COHERENCECHECKER": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}
