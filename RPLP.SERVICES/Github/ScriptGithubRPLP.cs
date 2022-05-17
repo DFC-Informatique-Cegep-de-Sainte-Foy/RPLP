@@ -249,18 +249,24 @@ namespace RPLP.SERVICES.Github
                     {
                         if (splitRepository[1] == student.Username)
                         {
-                            repositories.Add(repository);
+                            Repository rep = repositories.FirstOrDefault(r => r.Name == repository.Name);
+                            if (rep == null)
+                                repositories.Add(repository);
                         }
                     }
                 }
             }
 
+            //Faire l'action 
+            if (File.Exists("ZippedRepos.zip"))
+                File.Delete("ZippedRepos.zip");
 
-            //Faire l'action                        
+            if (File.Exists("repo.zip"))
+                File.Delete("repo.zip");
+
             if (Directory.Exists("ZippedRepos"))
-            {
                 Directory.Delete("ZippedRepos", true);
-            }
+
 
             Directory.CreateDirectory("ZippedRepos");
 
@@ -276,7 +282,9 @@ namespace RPLP.SERVICES.Github
 
                 ZipFile.ExtractToDirectory("repo.zip", $"ZippedRepos/{repository.Name}");
 
-                File.Delete("repo.zip");
+                if (File.Exists("repo.zip"))
+                    File.Delete("repo.zip");
+
             }
 
             File.Delete("ZippedRepos.zip");

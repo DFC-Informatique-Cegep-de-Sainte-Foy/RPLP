@@ -16,8 +16,8 @@ namespace RPLP.DAL.SQL.Depots
 
         public DepotOrganisation()
         {
-            //this._context = new RPLPDbContext(new DbContextOptionsBuilder<RPLPDbContext>().UseSqlServer("Server=rplp.db; Database=RPLP; User Id=sa; password=Cad3pend86!").Options);
-            this._context = new RPLPDbContext(new DbContextOptionsBuilder<RPLPDbContext>().UseSqlServer("Server=localhost,1433; Database=RPLP; User Id=sa; password=Cad3pend86!").Options);
+            this._context = new RPLPDbContext(new DbContextOptionsBuilder<RPLPDbContext>().UseSqlServer("Server=rplp.db; Database=RPLP; User Id=sa; password=Cad3pend86!").Options);
+            //this._context = new RPLPDbContext(new DbContextOptionsBuilder<RPLPDbContext>().UseSqlServer("Server=localhost,1433; Database=RPLP; User Id=sa; password=Cad3pend86!").Options);
         }
 
         public DepotOrganisation(RPLPDbContext p_context)
@@ -84,8 +84,8 @@ namespace RPLP.DAL.SQL.Depots
             Organisation_SQLDTO organisationResult = this._context.Organisations
                 .Include(organisation => organisation.Administrators.Where(a => a.Active))
                 .FirstOrDefault(organisation => organisation.Name == p_organisationName && organisation.Active);
-                                                                                
-                                                                                
+
+
 
             if (organisationResult != null && organisationResult.Administrators.Count >= 1)
                 return organisationResult.Administrators.Select(administrator => administrator.ToEntityWithoutList()).ToList();
