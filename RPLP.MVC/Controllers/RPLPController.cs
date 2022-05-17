@@ -548,6 +548,32 @@ namespace RPLP.MVC.Controllers
         }
 
         [HttpPost]
+        public ActionResult<string> POSTUpsertBatchStudent(string StudentString)
+        {
+            string[] SplitStudents = StudentString.Split("\n");
+            HttpResponseMessage result = new HttpResponseMessage();
+
+            foreach (string rawStudent in SplitStudents)
+            {
+                string[] student = rawStudent.Split("=");
+
+                string studentUsername = JsonConvert.DeserializeObject<string>(student[1].Replace(";", ""));
+                string studentLastName = JsonConvert.DeserializeObject<string>(student[2].Replace(";", ""));
+                string studentFirstName = JsonConvert.DeserializeObject<string>(student[3].Replace(";", ""));
+                string studentEmail = studentUsername + "@csfoy.ca";
+
+                Student studentObj = new Student { Id = 0, Email = studentEmail, FirstName = studentFirstName, LastName = studentLastName, Username = studentUsername, Classes = new List<Classroom>() };
+
+                Task<HttpResponseMessage> response = this._httpClient
+                                                        .PostAsJsonAsync<Student>($"Student", studentObj);
+
+                result = response.Result;
+            }
+
+            return result.ToString();
+        }
+
+        [HttpPost]
         public ActionResult<string> POSTUpsertTeacher(int Id, string Email, string FirstName, string LastName, string Username)
         {
             Teacher teacher = new Teacher { Id = Id, Email = Email, FirstName = FirstName, LastName = LastName, Username = Username, Classes = new List<Classroom>() };
@@ -611,6 +637,27 @@ namespace RPLP.MVC.Controllers
             response.Wait();
 
             return response.Result.StatusCode.ToString();
+        }
+
+        [HttpPost]
+        public ActionResult<string> POSTAddStudentToClassroomBatch(string ClassroomName, string StudentString)
+        {
+            string[] SplitStudents = StudentString.Split("\n");
+            HttpResponseMessage result = new HttpResponseMessage();
+
+            foreach (string rawStudent in SplitStudents)
+            {
+                string[] student = rawStudent.Split("=");
+
+                string studentUsername = JsonConvert.DeserializeObject<string>(student[1].Replace(";", ""));
+
+                Task<HttpResponseMessage> response = this._httpClient
+                                                 .PostAsJsonAsync($"Classroom/Name/{ClassroomName}/Students/Add/{studentUsername}", "");
+
+                result = response.Result;
+            }
+
+            return result.ToString();
         }
 
         [HttpPost]

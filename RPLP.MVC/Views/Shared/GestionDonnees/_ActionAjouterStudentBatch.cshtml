@@ -1,0 +1,36 @@
+﻿<form id="ajouterStudentForm">
+    <div class="titlePartial">
+    <h2 >Créer des comptes étudiants</H2>
+    </div>
+
+    <div class="form-group">
+        <label for="InputAjouterStudentBAtch">Students</label>
+         <textarea class="form-control rounded-0" id="InputAjouterStudentBAtch" rows="10" placeholder='="matricule";="nom";="prenom";
+...'></textarea>
+    </div>
+
+  <input type="button" class="btn-lg btn-success titlePartial" onclick="ajouterStudentBatch.createNewStudent()" value="Créer">
+</form>
+
+
+<script type="text/javascript">
+    var ajouterStudentBatch = {}
+
+    ajouterStudentBatch.createNewStudent = function()
+    {
+        var ajaxURL = '/RPLP/POSTUpsertBatchStudent';
+        var studentString = document.getElementById("InputAjouterStudentBAtch").value;
+
+        if(studentString != null || studentString != "")
+        {
+            $.post(ajaxURL,{
+                StudentString: studentString
+            },
+            function(data, status){
+                alert("Data: " + data + "\nStatus: " + status);
+            });
+        } else {
+            alert("Veuillez remplir le champ")
+        }
+    }
+</script>
