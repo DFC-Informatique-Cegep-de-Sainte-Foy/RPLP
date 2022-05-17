@@ -250,7 +250,6 @@ namespace RPLP.SERVICES.Github
                         if (splitRepository[1] == student.Username)
                         {
                             repositories.Add(repository);
-                            break;
                         }
                     }
                 }

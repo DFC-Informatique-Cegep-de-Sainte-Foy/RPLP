@@ -21,6 +21,7 @@ namespace RPLP.DAL.SQL
             if (!optionsBuilder.IsConfigured)
             {
                 optionsBuilder.UseSqlServer("Server=rplp.db; Database=RPLP; User Id=sa; password=Cad3pend86!");
+                //optionsBuilder.UseSqlServer("Server=localhost,1433; Database=RPLP; User Id=sa; password=Cad3pend86!");
             }
         }
 
