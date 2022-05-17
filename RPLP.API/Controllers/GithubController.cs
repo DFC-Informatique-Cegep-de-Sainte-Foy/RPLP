@@ -36,27 +36,33 @@ namespace RPLP.API.Controllers
             }
 
         }
+
         [HttpGet("/telechargement/{organisationName}/{classroomName}/{assignmentName}")]
         public FileStreamResult StartScriptDownloadAllRepositoriesForAssignment (string organisationName, string classroomName, string assignmentName)
         {
-            //try
-            //{
             string path = _scriptGithub.ScriptDownloadAllRepositoriesForAssignment(organisationName, classroomName, assignmentName);
+            
             FileStream file = System.IO.File.OpenRead(path);
-            //var stream = new MemoryStream(Encoding.ASCII.GetBytes());
             FileStreamResult fileStreamResult = new FileStreamResult(file, "application/octet-stream");
             fileStreamResult.FileDownloadName = $"{assignmentName}_{DateTime.Now}.zip";
+            
             return fileStreamResult;
-
-            //}
-            //catch (Exception ex)
-            //{
-            //    return new F;
-            //}
-
         }
-        
-        
+
+        [HttpGet("/telechargement/{organisationName}/{classroomName}/{assignmentName}/{studentUsername}")]
+        public FileStreamResult StartScriptDownloadOneRepositoriesForAssignment(string organisationName, string classroomName, string assignmentName, string studentUsername)
+        {
+            string repositoryName = $"{assignmentName}-{studentUsername}";
+            string path = _scriptGithub.ScriptDownloadOneRepositoryForAssignment(organisationName, classroomName, assignmentName, repositoryName);
+            
+            FileStream file = System.IO.File.OpenRead(path);
+            FileStreamResult fileStreamResult = new FileStreamResult(file, "application/octet-stream");
+            fileStreamResult.FileDownloadName = $"{assignmentName}_{DateTime.Now}.zip";
+            
+            return fileStreamResult;
+        }
+
+
         //[HttpGet("/teachers/{organisationName}/{classroomName}/{assignmentName}/{numberOfReviews}")]
         //public ActionResult StartScriptAssignTeachers(string organisationName, string classroomName, string assignmentName, int numberOfReviews)
         //{
