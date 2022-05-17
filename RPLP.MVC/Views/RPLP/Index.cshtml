@@ -42,7 +42,11 @@
         <input class="p-2 buttons" type="number" id="numberOfReview" min="0" max="10" value="3" />
         <button class="btn-lg btn-primary p-2 buttons" onclick="StartStudentAssignationScript()">Lancer le script de revue des pairs</button>
         <button class="btn-lg btn-primary p-2 buttons" onclick="StartTeacherAssignationScript()">Lancer le script de revue du Prof</button>
+        <button class="btn-lg btn-primary p-2 buttons" onclick="DownloadAllRepositoriesForAssignment()">Télécharger les dépôts de devoir de la classe</button>
+        <select id="selectStudent"></select>
     </div>
+
+
 </div>
 
 <style>
@@ -66,6 +70,7 @@
     var organisations = @Html.Raw(Json.Serialize(Model.Organisations));
     var classrooms = [];
     var assignments = [];
+    var students = [];
 
     function SetOrganisationName (organisationName){
         if(organisationName != "")
@@ -91,6 +96,7 @@
         {
             SelectedClassroomName = classroomName;
             GetAssignmentsOfClassroomByName(SelectedClassroomName);
+            GetStudentsOfClassroomByName(SelectedClassroomName);
 
             classrooms.forEach(classroom => {
                 if(classroom.name == classroomName)
@@ -164,6 +170,31 @@
             success: function (data) {
                 assignments = data;
                 ShowAssignments();
+            },
+            error: function (ex) {
+                console.log('Error');
+            }
+        });
+    }
+
+    function GetStudentsOfClassroomByName (classroomName){
+        var ajaxURL = '/RPLP/GetStudentsOfClassroomByName';
+
+        $.ajax({
+            type: 'GET',
+            url: ajaxURL,
+            data: { classroomName : classroomName},
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            beforeSend: function () {
+                console.log('firing ajax call');
+            },
+            success: function (data) {
+                students = data;
+                $('selectStudent').empty();
+                students.forEach(student => {
+                    $('selectStudent').append($("<option />").val(student.Name).text(student.Name));
+                });
             },
             error: function (ex) {
                 console.log('Error');
@@ -248,7 +279,19 @@
                 console.log(ex);
             }
         });
+    }
 
+    function DownloadSingleRepository()
+    {
+        var selectedStudent = $('#selectStudent').find(":selected").text();
+        var url = `https://localhost/RPLP/DownloadSingleRepository?organisationName=${SelectedOrganisationName}&classroomName=${SelectedClassroomName}&assignmentName=${SelectedAssignmentName}&studentUsername=${selectedStudent}`;
+        window.open(url);
+    }
+
+    function DownloadAllRepositoriesForAssignment()
+    {
+        var url = `https://localhost/RPLP/DownloadAllRepositoriesForAssignment?organisationName=${SelectedOrganisationName}&classroomName=${SelectedClassroomName}&assignmentName=${SelectedAssignmentName}`;
+        window.open(url);
     }
 
 </script>

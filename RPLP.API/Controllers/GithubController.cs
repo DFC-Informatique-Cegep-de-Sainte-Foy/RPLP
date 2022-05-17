@@ -37,7 +37,7 @@ namespace RPLP.API.Controllers
 
         }
 
-        [HttpGet("/telechargement/{organisationName}/{classroomName}/{assignmentName}")]
+        [HttpGet("Telechargement/{organisationName}/{classroomName}/{assignmentName}")]
         public FileStreamResult StartScriptDownloadAllRepositoriesForAssignment (string organisationName, string classroomName, string assignmentName)
         {
             string path = _scriptGithub.ScriptDownloadAllRepositoriesForAssignment(organisationName, classroomName, assignmentName);
@@ -49,7 +49,7 @@ namespace RPLP.API.Controllers
             return fileStreamResult;
         }
 
-        [HttpGet("/telechargement/{organisationName}/{classroomName}/{assignmentName}/{studentUsername}")]
+        [HttpGet("Telechargement/{organisationName}/{classroomName}/{assignmentName}/{studentUsername}")]
         public FileStreamResult StartScriptDownloadOneRepositoriesForAssignment(string organisationName, string classroomName, string assignmentName, string studentUsername)
         {
             string repositoryName = $"{assignmentName}-{studentUsername}";

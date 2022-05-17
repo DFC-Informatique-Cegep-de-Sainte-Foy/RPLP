@@ -18,12 +18,20 @@ namespace RPLP.MVC.Controllers
         private readonly IDepotAdministrator _depotAdministrator = new DepotAdministrator();
         private readonly ScriptGithubRPLP _scriptGithub;
         private readonly VerificatorForDepot verificator = new VerificatorForDepot();
+        private readonly HttpClient _httpClient;
 
         public RPLPController()
         {
             string token = "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";
             GithubApiAction _githubAction = new GithubApiAction(token);
             _scriptGithub = new ScriptGithubRPLP(new DepotClassroom(), new DepotRepository(), token);
+
+            this._httpClient = new HttpClient();
+            this._httpClient.BaseAddress = new Uri("http://rplp.api/api/");
+            this._httpClient.DefaultRequestHeaders.Accept
+                .Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+            this._httpClient.DefaultRequestHeaders.Accept
+               .Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/octet-stream"));
         }
 
         public IActionResult Index()
@@ -129,6 +137,20 @@ namespace RPLP.MVC.Controllers
         }
 
         [HttpGet]
+        public ActionResult<List<StudentViewModel>> GetStudentsOfClassroomByName(string classroomName)
+        {
+            List<StudentViewModel> students = new List<StudentViewModel>();
+            List<Student> databaseStudents = this._depotClassroom.GetStudentsByClassroomName(classroomName);
+
+            foreach (Student student in databaseStudents)
+            {
+                students.Add(new StudentViewModel(student.Username));
+            }
+
+            return students;
+        }
+
+        [HttpGet]
         public ActionResult StartStudentAssignationScript(string organisationName, string classroomName, string assignmentName, int numberOfReviews)
         {
             try
@@ -156,6 +178,46 @@ namespace RPLP.MVC.Controllers
                 return BadRequest(ex.Message);
             }
 
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DownloadSingleRepository(string organisationName, string classroomName, string assignmentName, string studentName)
+        {
+            Stream stream;
+            FileStreamResult fileStreamResult;
+
+            try
+            {
+                stream = await this._httpClient.GetStreamAsync($"Github/Telechargement/{organisationName}/{classroomName}/{assignmentName}/{studentName}");
+                fileStreamResult = new FileStreamResult(stream, "application/octet-stream");
+                fileStreamResult.FileDownloadName = $"{assignmentName}-{studentName}.zip";
+            }
+            catch (Exception)
+            {
+                return NotFound("Le dépôt na pas pu être trouvé. Il est peut-être privé et inaccessible à l'utilisateur.");
+            }
+
+            return fileStreamResult;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DownloadAllRepositoriesForAssignment(string organisationName, string classroomName, string assignmentName)
+        {
+            Stream stream;
+            FileStreamResult fileStreamResult;
+
+            try
+            {
+                stream = await this._httpClient.GetStreamAsync($"Github/Telechargement/{organisationName}/{classroomName}/{assignmentName}");
+                fileStreamResult = new FileStreamResult(stream, "application/octet-stream");
+                fileStreamResult.FileDownloadName = $"{assignmentName}-{classroomName}.zip";
+            }
+            catch (Exception)
+            {
+                return NotFound("Un ou plusieurs dépôts n'ont pas pu être trouvé. Ils sont peut-être privés et inaccessibles à l'utilisateur.");
+            }
+
+            return fileStreamResult;
         }
     }
 
