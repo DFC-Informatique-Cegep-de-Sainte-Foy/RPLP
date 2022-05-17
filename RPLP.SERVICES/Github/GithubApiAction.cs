@@ -23,7 +23,7 @@ namespace RPLP.SERVICES.Github
         private string _addCollaboratorToRepositoryGithub = "/repos/{organisationName}/{repositoryName}/collaborators/{studentUsername}";
         private string _addFileToContentsGithub = "/repos/{organisationName}/{repositoryName}/contents/{newFileName}";
         private string _assignStudentToPullRequestGithub = "/repos/{organisationName}/{repositoryName}/pulls/{branchId}/requested_reviewers?";
-        private string _getLinkToDownloadRepository= "/repos/{organisationName}/{repositoryName}/zipball";
+        private string _downloadRepository= "/repos/{organisationName}/{repositoryName}/zipball";
 
 
         private const string organisationName = "{organisationName}";
@@ -271,16 +271,16 @@ namespace RPLP.SERVICES.Github
             return response.StatusCode.ToString();
         }
 
-        public HttpResponseMessage GetLinkToDownloadRepository(string p_organisationName, string p_repositoryName)
+        public HttpResponseMessage DownloadRepository(string p_organisationName, string p_repositoryName)
         {
-            string fullPath = _getLinkToDownloadRepository.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName);
-            Task<HttpResponseMessage> statusCode = getLinkToDownloadRepository(fullPath);
-            statusCode.Wait();
+            string fullPath = _downloadRepository.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName);
+            Task<HttpResponseMessage> task = GetRepositoryDownloadTask(fullPath);
+            task.Wait();
 
-            return statusCode.Result;
+            return task.Result;
         }
 
-        private Task<HttpResponseMessage> getLinkToDownloadRepository(string p_githubLink)
+        private Task<HttpResponseMessage> GetRepositoryDownloadTask(string p_githubLink)
         {
             Task<HttpResponseMessage> response = _httpClient.GetAsync(p_githubLink);
 

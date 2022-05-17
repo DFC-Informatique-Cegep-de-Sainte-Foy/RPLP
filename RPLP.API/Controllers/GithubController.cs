@@ -36,43 +36,41 @@ namespace RPLP.API.Controllers
             }
 
         }
-        /*
         [HttpGet("/telechargement/{organisationName}/{classroomName}/{assignmentName}")]
         public FileStreamResult StartScriptDownloadAllRepositoriesForAssignment (string organisationName, string classroomName, string assignmentName)
         {
-            try
-            {
-                FileStream streamfile = _scriptGithub.ScriptDownloadAllRepositoriesForAssignment(organisationName, classroomName, assignmentName);
-                ZipFile zipFile = streamfile.;
-                var stream = new MemoryStream(Encoding.ASCII.GetBytes(streamfile));
-                FileStreamResult fileStreamResult = new FileStreamResult(stream, "application/octet-stream");
-                fileStreamResult.FileDownloadName = $"{assignmentName}_{DateTime.Now}";
-                return fileStreamResult;
+            //try
+            //{
+            string path = _scriptGithub.ScriptDownloadAllRepositoriesForAssignment(organisationName, classroomName, assignmentName);
+            FileStream file = System.IO.File.OpenRead(path);
+            //var stream = new MemoryStream(Encoding.ASCII.GetBytes());
+            FileStreamResult fileStreamResult = new FileStreamResult(file, "application/octet-stream");
+            fileStreamResult.FileDownloadName = $"{assignmentName}_{DateTime.Now}.zip";
+            return fileStreamResult;
 
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    return new F;
+            //}
 
         }
         
         
-        [HttpGet("/teachers/{organisationName}/{classroomName}/{assignmentName}/{numberOfReviews}")]
-        public ActionResult StartScriptAssignTeachers(string organisationName, string classroomName, string assignmentName, int numberOfReviews)
-        {
-            try
-            {
-                this._scriptGithub.ScriptAssignTeacherToAssignmentReview(organisationName, classroomName, assignmentName, numberOfReviews);
-                return Ok("Assigned successfully");
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+        //[HttpGet("/teachers/{organisationName}/{classroomName}/{assignmentName}/{numberOfReviews}")]
+        //public ActionResult StartScriptAssignTeachers(string organisationName, string classroomName, string assignmentName, int numberOfReviews)
+        //{
+        //    try
+        //    {
+        //        this._scriptGithub.ScriptAssignTeacherToAssignmentReview(organisationName, classroomName, assignmentName, numberOfReviews);
+        //        return Ok("Assigned successfully");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
 
-        }
-        */
+        //}
 
         [HttpGet("/test/{organisationName}/{classroomName}/{assignmentName}")]
         public ActionResult StartScriptProf(string organisationName, string classroomName, string assignmentName)
