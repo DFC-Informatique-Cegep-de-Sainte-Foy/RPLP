@@ -568,8 +568,9 @@ namespace RPLP.MVC.Controllers
                                                         .PostAsJsonAsync<Student>($"Student", studentObj);
 
                 result = response.Result;
-            }
 
+            }
+            return result.ToString();
         }
 
         [HttpGet]
@@ -610,7 +611,7 @@ namespace RPLP.MVC.Controllers
             }
 
             return fileStreamResult;
-            return result.ToString();
+
         }
 
         [HttpPost]

@@ -19,7 +19,7 @@ namespace RPLP.SERVICES.Github
         private readonly IDepotOrganisation _depotOrganisation;
         private readonly GithubApiAction _githubApiAction;
 
-        public ScriptGithubRPLP(IDepotClassroom p_depotClassroom, IDepotRepository p_depotRepository, 
+        public ScriptGithubRPLP(IDepotClassroom p_depotClassroom, IDepotRepository p_depotRepository,
             IDepotOrganisation p_depotOrganisation, string p_token)
         {
             this._depotClassroom = p_depotClassroom;
@@ -339,6 +339,10 @@ namespace RPLP.SERVICES.Github
                 stream.CopyTo(fileStream);
                 string path = Path.GetFullPath("repo.zip");
 
+                return path;
+            }
+        }
+
         #region coherence
 
         public void EnsureOrganisationRepositoriesAreInDB()
@@ -371,7 +375,5 @@ namespace RPLP.SERVICES.Github
         }
 
         #endregion
-
-
     }
 }
