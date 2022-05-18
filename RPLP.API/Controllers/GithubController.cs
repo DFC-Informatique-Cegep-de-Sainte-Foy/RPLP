@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using RPLP.DAL.DTO.Json;
 using RPLP.DAL.DTO.Sql;
 using RPLP.DAL.SQL.Depots;
 using RPLP.SERVICES.Github;
-using System.IO.Compression;
+using RPLP.SERVICES.Github.GithubReviewCommentFetcher;
 using System.Text;
 
 namespace RPLP.API.Controllers
@@ -13,13 +14,15 @@ namespace RPLP.API.Controllers
     public class GithubController : ControllerBase
     {
         private GithubApiAction _githubAction;
+        private GithubPRCommentFetcher _githubPRCommentFetcher;
         private ScriptGithubRPLP _scriptGithub;
 
         public GithubController()
         {
             string token = "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";
             _githubAction = new GithubApiAction(token);
-            _scriptGithub = new ScriptGithubRPLP(new DepotClassroom(), new DepotRepository(), token);
+            _githubPRCommentFetcher = new GithubPRCommentFetcher(token, new DepotClassroom(), new DepotRepository());
+            _scriptGithub = new ScriptGithubRPLP(new DepotClassroom(), new DepotRepository(), new DepotOrganisation(), token);
         }
 
         [HttpGet("/test/{organisationName}/{classroomName}/{assignmentName}/{numberOfReviews}")]
@@ -142,5 +145,54 @@ namespace RPLP.API.Controllers
         {
             return Ok(this._githubAction.AddStudentAsCollaboratorToPeerRepositoryGithub(organisationName, repositoryName, studentUsername));
         }
+
+        #region CommentFetcher
+
+        [HttpGet("{teacherUsername}/{repositoryName}/PullRequests")]
+        public ActionResult<List<Pull>> GetPullRequestsFromRepository(string teacherUsername, string repositoryName)
+        {
+            return Ok(this._githubPRCommentFetcher.GetPullRequestsFromRepositoryAsync(teacherUsername, repositoryName).Result);
+        }
+
+        [HttpPost("{teacherUsername}/{repositoryName}/PullRequests/Comments/Students")]
+        public ActionResult<CommentAggregate> GetIssuesReviewsAndCommentsByStudentOnAssignment(
+            string teacherUsername, string repositoryName, [FromBody] List<string> studentNames)
+        {
+            List<Pull> pulls = this._githubPRCommentFetcher.GetPullRequestsFromRepositoryAsync(teacherUsername, repositoryName).Result;
+
+            return Ok(this._githubPRCommentFetcher.GetMultipleUsersCommentsReviewsAndIssues(pulls, studentNames).Result);
+        }
+
+        [HttpGet("{teacherUsername}/{repositoryName}/PullRequests/Comments/{studentName}")]
+        public ActionResult<CommentAggregate> GetIssuesReviewsAndCommentsByStudentOnAssignment(
+            string teacherUsername, string repositoryName, string studentName)
+        {
+            List<Pull> pulls =  this._githubPRCommentFetcher.GetPullRequestsFromRepositoryAsync(teacherUsername, repositoryName).Result;
+
+            return Ok(this._githubPRCommentFetcher.GetUserCommentsReviewsAndIssues(pulls, studentName).Result);
+        }
+
+        [HttpGet("{organisationName}/{repositoryName}/PullRequests/Comments/File")]
+        public FileStreamResult GetFileWithCommentsOfPullRequestByAssignmentForSingleRepository(string organisationName, string repositoryName)
+        { 
+            List<Pull>? pull = this._githubPRCommentFetcher.GetPullRequestsFromRepositoryAsync(organisationName, repositoryName).Result;
+            var stream = new MemoryStream(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(pull)));
+            FileStreamResult fileStreamResult = new FileStreamResult(stream, "application/octet-stream");
+            fileStreamResult.FileDownloadName = $"Comments_{repositoryName}_{DateTime.Now}.json";
+
+            return fileStreamResult;
+        }
+
+        [HttpGet("{organisationName}/{classroomName}/{assignmentName}/PullRequests/Comments/File")]
+        public FileStreamResult GetFileWithCommentsOfPullRequestByAssignmentForAllRepositories(string organisationName, string classroomName, string assignmentName)
+        {
+            List<Pull>? pulls = this._githubPRCommentFetcher.GetPullRequestsFromRepositoriesAsync(organisationName, classroomName, assignmentName).Result;
+            var stream = new MemoryStream(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(pulls)));
+            FileStreamResult fileStreamResult = new FileStreamResult(stream, "application/octet-stream");
+            fileStreamResult.FileDownloadName = $"Comments_{assignmentName}_{DateTime.Now}.json";
+
+            return fileStreamResult;
+        }
     }
 }
+        #endregion

@@ -232,7 +232,6 @@ namespace RPLP.SERVICES.Github
             }
 
             return "No Branches";
-
         }
 
         private async Task<string> AssignReviewerToPullRequestGitHubApiRequest(string p_githubLink, string p_studentUsername)

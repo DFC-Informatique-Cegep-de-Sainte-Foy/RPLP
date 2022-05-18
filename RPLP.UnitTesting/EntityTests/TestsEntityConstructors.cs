@@ -57,6 +57,7 @@ namespace RPLP.UnitTesting.EntityTests
             int id = 2;
             string name = "NewAssignment";
             string classroomName = "ProjetSynthese";
+            string repositoryName = "PiFou86";
             string description = "RPLP";
             DateTime distributionDate = DateTime.Now;
 
@@ -75,6 +76,7 @@ namespace RPLP.UnitTesting.EntityTests
             int id = 2;
             string name = "NewAssignment";
             string classroomName = "ProjetSynthese";
+            string repositoryName = "PiFou86";
             string description = "RPLP";
             DateTime distributionDate = DateTime.Now;
             DateTime deadline = DateTime.Now.AddDays(1);

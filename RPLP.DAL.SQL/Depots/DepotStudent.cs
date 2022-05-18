@@ -120,20 +120,9 @@ namespace RPLP.DAL.SQL.Depots
 
             Student_SQLDTO? studentResult = this._context.Students
                 .AsNoTracking()
-                .SingleOrDefault(student => student.Id == p_student.Id && student.Active);
+                .SingleOrDefault(student => student.Id == p_student.Id);
 
-            if ((studentResult != null && studentResult.Username != p_student.Username &&
-                verificator.CheckUsernameTaken(p_student.Username)) ||
-                studentResult == null && verificator.CheckUsernameTaken(p_student.Username))
-            {
-                throw new ArgumentException("Username already taken.");
-            }
 
-            if ((studentResult != null && studentResult.Email != p_student.Email && verificator.CheckEmailTaken(p_student.Email)) ||
-                studentResult == null && verificator.CheckEmailTaken(p_student.Email))
-            {
-                throw new ArgumentException("Email already in use.");
-            }
 
             if (studentResult != null)
             {
@@ -146,19 +135,32 @@ namespace RPLP.DAL.SQL.Depots
                 studentResult.FirstName = p_student.FirstName;
                 studentResult.LastName = p_student.LastName;
                 studentResult.Email = p_student.Email;
-                studentResult.Classes = classes;
 
                 this._context.Update(studentResult);
                 this._context.SaveChanges();
             }
             else
             {
+                if ((studentResult != null && studentResult.Username != p_student.Username &&
+                verificator.CheckUsernameTaken(p_student.Username)) ||
+                studentResult == null && verificator.CheckUsernameTaken(p_student.Username))
+                {
+                    throw new ArgumentException("Username already taken.");
+                }
+
+                if ((studentResult != null && studentResult.Email != p_student.Email && verificator.CheckEmailTaken(p_student.Email)) ||
+                    studentResult == null && verificator.CheckEmailTaken(p_student.Email))
+                {
+                    throw new ArgumentException("Email already in use.");
+                }
+
                 Student_SQLDTO student = new Student_SQLDTO();
                 student.Username = p_student.Username;
                 student.FirstName = p_student.FirstName;
                 student.LastName = p_student.LastName;
                 student.Email = p_student.Email;
                 student.Classes = classes;
+                student.Active = true;
 
                 this._context.Students.Add(student);
                 this._context.SaveChanges();

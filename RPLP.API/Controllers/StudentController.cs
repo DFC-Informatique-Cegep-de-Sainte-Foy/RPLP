@@ -37,13 +37,13 @@ namespace RPLP.API.Controllers
         public ActionResult<List<Classroom>> GetStudentClasses(string studentUsername)
         {
             return Ok(this._depot.GetStudentClasses(studentUsername));
-        }              
-               
+        }
+
 
         [HttpPost]
         public ActionResult Post([FromBody] Student p_student)
         {
-            if (p_student == null || !ModelState.IsValid)
+            if (p_student == null || p_student.Id == null || !ModelState.IsValid)
             {
                 return BadRequest();
             }
@@ -61,7 +61,7 @@ namespace RPLP.API.Controllers
             return Created(nameof(this.Post), p_student);
         }
 
-        [HttpDelete("Username/{username}")]
+        [HttpDelete("Username/{studentUsername}")]
         public ActionResult DeleteStudent(string studentUsername)
         {
             this._depot.DeleteStudent(studentUsername);

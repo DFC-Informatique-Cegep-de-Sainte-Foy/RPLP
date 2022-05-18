@@ -16,12 +16,15 @@ namespace RPLP.SERVICES.Github
     {
         private readonly IDepotClassroom _depotClassroom;
         private readonly IDepotRepository _depotRepository;
+        private readonly IDepotOrganisation _depotOrganisation;
         private readonly GithubApiAction _githubApiAction;
 
-        public ScriptGithubRPLP(IDepotClassroom p_depotClassroom, IDepotRepository p_depotRepository, string p_token)
+        public ScriptGithubRPLP(IDepotClassroom p_depotClassroom, IDepotRepository p_depotRepository, 
+            IDepotOrganisation p_depotOrganisation, string p_token)
         {
             this._depotClassroom = p_depotClassroom;
             this._depotRepository = p_depotRepository;
+            this._depotOrganisation = p_depotOrganisation;
             this._githubApiAction = new GithubApiAction(p_token);
         }
 
@@ -336,8 +339,39 @@ namespace RPLP.SERVICES.Github
                 stream.CopyTo(fileStream);
                 string path = Path.GetFullPath("repo.zip");
 
-                return path;
-            }
+        #region coherence
+
+        public void EnsureOrganisationRepositoriesAreInDB()
+        {
+            List<Repository> repositories = this.ReturnMissingRepositories();
+            repositories.ForEach(r => this._depotRepository.UpsertRepository(r));
         }
+
+        private List<Repository> ReturnMissingRepositories()
+        {
+            List<Repository> repositoriesToAdd = new List<Repository>();
+            List<Organisation> organisations = this._depotOrganisation.GetOrganisations();
+
+            foreach (Organisation organisation in organisations)
+            {
+                List<Repository> repositoriesInDB = this._depotRepository.GetRepositoriesFromOrganisationName(organisation.Name);
+                List<Repository_JSONDTO> repositoriesOnGithub = this._githubApiAction.GetOrganisationRepositoriesGithub(organisation.Name);
+
+                repositoriesToAdd.AddRange(repositoriesOnGithub
+                    .Where(ghRepo => repositoriesInDB.FirstOrDefault(dbRepo => dbRepo.FullName == ghRepo.full_name) == null)
+                    .Select(r => new Repository()
+                    {
+                        FullName = r.full_name,
+                        Name = r.name,
+                        OrganisationName = r.full_name.Split('/')[0]
+                    }));
+            }
+
+            return repositoriesToAdd;
+        }
+
+        #endregion
+
+
     }
 }

@@ -1,0 +1,220 @@
+﻿@model RPLP.MVC.Models.GestionDonneeViewModel
+
+<form id="addStudentToClassroomForm">
+    <div class="titlePartial">
+    <h2 >Ajouter un étudiant a une classe</H2>
+    </div>
+
+    <div class="form-group">
+        <label for="addStudentToClassroomOrgDropdown">Organisation</label>
+        <select id="addStudentToClassroomOrgDropdown" class="form-control" onchange="ajouterStudentAClassroom.choisirOrg()">
+
+        </select>
+        <br />
+    </div>
+
+    <div class="form-group">
+        <label for="addStudentToClassroomClassroomDropdown">Classe</label>
+        <select id="addStudentToClassroomClassroomDropdown" class="form-control" onchange="ajouterStudentAClassroom.choisirClassroom()" disabled>
+
+        </select>
+        <br />
+    </div>
+
+    <div class="form-group">
+        <label for="addStudentToClassroomStudentDropdown">Étudiant</label>
+        <select id="addStudentToClassroomStudentDropdown" class="form-control" disabled>
+
+        </select>
+        <br />
+    </div>
+
+  <input type="button" class="btn-lg btn-success titlePartial" onclick="ajouterStudentAClassroom.AddStudentToClassroom()" value="Ajouter">
+  <input type="button" class="btn-lg btn-primary titlePartial" onclick="ajouterStudentAClassroom.refreshForm()" value=" Rafraîchir le formulaire">
+</form>
+
+<script src="/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        var option = document.createElement("option");
+        option.text = "Faites un choix";
+        option.value = -1;
+        var select = document.getElementById("addStudentToClassroomOrgDropdown");
+        select.appendChild(option);
+
+        @foreach (var d in Model.Organisations)
+        {
+            @:var option = document.createElement("option");
+            @:option.text = "@d.Name";
+            @:option.value = "@d.Name";
+            @:var select = document.getElementById("addStudentToClassroomOrgDropdown");
+            @:select.appendChild(option);
+        }
+    });
+
+    var ajouterStudentAClassroom  = {};
+    var classrooms = [];
+    var students = [];
+
+    ajouterStudentAClassroom.refreshForm = function ()
+    {
+       document.getElementById("addStudentToClassroomForm").reset();
+       document.getElementById("addStudentToClassroomOrgDropdown").value = -1;
+
+       const classes = document.getElementById("addStudentToClassroomClassroomDropdown");
+       classes.innerHTML = '';
+       document.getElementById("addStudentToClassroomClassroomDropdown").disabled = true;
+
+       const classes2 = document.getElementById("addStudentToClassroomStudentDropdown");
+       classes2.innerHTML = '';
+       document.getElementById("addStudentToClassroomStudentDropdown").disabled = true;
+    }
+
+    ajouterStudentAClassroom.choisirOrg = function ()
+    {
+       if(document.getElementById("addStudentToClassroomOrgDropdown").value == -1)
+       {
+            const classes = document.getElementById("addStudentToClassroomClassroomDropdown");
+            classes.innerHTML = '';
+            document.getElementById("addStudentToClassroomClassroomDropdown").disabled = true;
+
+             const classes2 = document.getElementById("addStudentToClassroomStudentDropdown");
+             classes.innerHTML = '';
+            document.getElementById("addStudentToClassroomStudentDropdown").disabled = true;
+      
+       } else {
+            var orgName = document.getElementById("addStudentToClassroomOrgDropdown").value;  
+            ajouterStudentAClassroom.GetClassroomsOfOrganisationByName(orgName);
+
+            document.getElementById("addStudentToClassroomClassroomDropdown").disabled = false;
+
+             const classes = document.getElementById("addStudentToClassroomStudentDropdown");
+            classes.innerHTML = '';
+            document.getElementById("addStudentToClassroomStudentDropdown").disabled = true;
+       }
+    }
+
+    ajouterStudentAClassroom.choisirClassroom = function ()
+    {
+       if(document.getElementById("addStudentToClassroomClassroomDropdown").value == -1)
+       {
+            const classes = document.getElementById("addStudentToClassroomStudentDropdown");
+            classes.innerHTML = '';
+            document.getElementById("addStudentToClassroomStudentDropdown").disabled = true;
+
+      
+       } else {
+            var classroomName = document.getElementById("addStudentToClassroomClassroomDropdown").value;  
+            ajouterStudentAClassroom.GetStudentsNotInClassroomByClassroomName(classroomName);
+
+            document.getElementById("addStudentToClassroomStudentDropdown").disabled = false;
+       }
+    }
+
+    ajouterStudentAClassroom.AddStudentToClassroom = function ()
+    {
+        var classroomName = document.getElementById("addStudentToClassroomClassroomDropdown").value;
+        var studentUsername = document.getElementById("addStudentToClassroomStudentDropdown").value;
+
+        console.log(classroomName);
+        console.log(studentUsername);
+
+        var ajaxURL = '/RPLP/POSTAddStudentToClassroom';
+
+        $.post(ajaxURL,{
+           ClassroomName : classroomName,
+           StudentUsername: studentUsername
+        },
+        function(data, status){
+            alert("Data: " + data + "\nStatus: " + status);
+        });
+    }
+
+
+     ajouterStudentAClassroom.GetClassroomsOfOrganisationByName = function (organisationName)
+     {
+       var ajaxURL = '/RPLP/GetClassroomsOfOrganisationByName';
+        $.ajax({
+            type: 'GET',
+            url: ajaxURL,
+            data: { orgName : organisationName},
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            beforeSend: function () {
+                console.log('firing ajax call');
+            },
+            success: function (data) {
+                classrooms = data;
+                ajouterStudentAClassroom.ShowClassrooms();
+            },
+            error: function (ex) {
+                console.log('Error');
+            }
+        });
+    }
+
+    ajouterStudentAClassroom.GetStudentsNotInClassroomByClassroomName = function (classroomName)
+     {
+
+    console.log(classroomName);
+
+       var ajaxURL = '/RPLP/GetStudentsNotInClassroomByClassroomName';
+        $.ajax({
+            type: 'GET',
+            url: ajaxURL,
+            data: { ClassroomName : classroomName },
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            beforeSend: function () {
+                console.log('firing ajax call');
+            },
+            success: function (data) {
+                students = data;
+                ajouterStudentAClassroom.ShowStudents();
+            },
+            error: function (ex) {
+                console.log('Error');
+            }
+        });
+    }
+
+    ajouterStudentAClassroom.ShowClassrooms = function()
+    {
+        const classes = document.getElementById("addStudentToClassroomClassroomDropdown");
+        classes.innerHTML = '';
+
+        var option = document.createElement("option");
+        option.text = "Faites un choix";
+        option.value = -1;
+        var select = document.getElementById("addStudentToClassroomClassroomDropdown");
+        select.appendChild(option);
+
+        classrooms.forEach(classroom => {
+            var option = document.createElement("option");
+            option.text = classroom.name;
+            option.value = classroom.name;
+            var select = document.getElementById("addStudentToClassroomClassroomDropdown");
+            select.appendChild(option);
+        });
+    }
+
+    ajouterStudentAClassroom.ShowStudents = function()
+    {
+        const classes = document.getElementById("addStudentToClassroomStudentDropdown");
+        classes.innerHTML = '';
+
+        var option = document.createElement("option");
+        option.text = "Faites un choix";
+        option.value = -1;
+        var select = document.getElementById("addStudentToClassroomStudentDropdown");
+        select.appendChild(option);
+
+        students.forEach(student => {
+            var option = document.createElement("option");
+            option.text = student.firstName + " " + student.lastName;
+            option.value = student.username;
+            var select = document.getElementById("addStudentToClassroomStudentDropdown");
+            select.appendChild(option);
+        });
+    }
+</script>
