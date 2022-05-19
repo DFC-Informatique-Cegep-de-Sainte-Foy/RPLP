@@ -17,9 +17,9 @@ namespace RPLP.API.Controllers
         private GithubPRCommentFetcher _githubPRCommentFetcher;
         private ScriptGithubRPLP _scriptGithub;
 
-        public GithubController()
+        public GithubController(IConfiguration configuration)
         {
-            string token = "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";
+            string token = configuration.GetValue<string>("Token");
             _githubAction = new GithubApiAction(token);
             _githubPRCommentFetcher = new GithubPRCommentFetcher(token, new DepotClassroom(), new DepotRepository());
             _scriptGithub = new ScriptGithubRPLP(new DepotClassroom(), new DepotRepository(), new DepotOrganisation(), token);
