@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Envelopes\" />
+    <Folder Include="Downloads\" />
   </ItemGroup>
 
 </Project>

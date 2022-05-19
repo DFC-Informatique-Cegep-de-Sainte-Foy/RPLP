@@ -40,6 +40,47 @@ namespace RPLP.API.Controllers
 
         }
 
+        [HttpGet("Telechargement/{organisationName}/{classroomName}/{assignmentName}")]
+        public FileStreamResult StartScriptDownloadAllRepositoriesForAssignment (string organisationName, string classroomName, string assignmentName)
+        {
+            string path = _scriptGithub.ScriptDownloadAllRepositoriesForAssignment(organisationName, classroomName, assignmentName);
+            
+            FileStream file = System.IO.File.OpenRead(path);
+            FileStreamResult fileStreamResult = new FileStreamResult(file, "application/octet-stream");
+            fileStreamResult.FileDownloadName = $"{assignmentName}_{DateTime.Now}.zip";
+            
+            return fileStreamResult;
+        }
+
+        [HttpGet("Telechargement/{organisationName}/{classroomName}/{assignmentName}/{studentUsername}")]
+        public FileStreamResult StartScriptDownloadOneRepositoriesForAssignment(string organisationName, string classroomName, string assignmentName, string studentUsername)
+        {
+            string repositoryName = $"{assignmentName}-{studentUsername}";
+            string path = _scriptGithub.ScriptDownloadOneRepositoryForAssignment(organisationName, classroomName, assignmentName, repositoryName);
+            
+            FileStream file = System.IO.File.OpenRead(path);
+            FileStreamResult fileStreamResult = new FileStreamResult(file, "application/octet-stream");
+            fileStreamResult.FileDownloadName = $"{assignmentName}_{DateTime.Now}.zip";
+            
+            return fileStreamResult;
+        }
+
+
+        //[HttpGet("/teachers/{organisationName}/{classroomName}/{assignmentName}/{numberOfReviews}")]
+        //public ActionResult StartScriptAssignTeachers(string organisationName, string classroomName, string assignmentName, int numberOfReviews)
+        //{
+        //    try
+        //    {
+        //        this._scriptGithub.ScriptAssignTeacherToAssignmentReview(organisationName, classroomName, assignmentName, numberOfReviews);
+        //        return Ok("Assigned successfully");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
+
+        //}
+
         [HttpGet("/test/{organisationName}/{classroomName}/{assignmentName}")]
         public ActionResult StartScriptProf(string organisationName, string classroomName, string assignmentName)
         {
@@ -74,8 +115,8 @@ namespace RPLP.API.Controllers
             return Ok(this._githubAction.GetRepositoryCommitsGithub(organisationName, repositoryName));
         }
 
-        [HttpGet("{organisationName}/{repositoryName}/BRanches/")]
-        public ActionResult<IEnumerable<Repository_JSONDTO>> GetRepositoryBranches(string organisationName, string repositoryName)
+        [HttpGet("{organisationName}/{repositoryName}/Branches/")]
+        public ActionResult<IEnumerable<Repository_JSONDTO>> GetRepositoryBranches(string organisationName, string repositoryName) 
         {
             return Ok(this._githubAction.GetRepositoryBranchesGithub(organisationName, repositoryName));
         }

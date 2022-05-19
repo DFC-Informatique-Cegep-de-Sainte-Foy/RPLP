@@ -568,9 +568,50 @@ namespace RPLP.MVC.Controllers
                                                         .PostAsJsonAsync<Student>($"Student", studentObj);
 
                 result = response.Result;
+
+            }
+            return result.ToString();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DownloadSingleRepository(string organisationName, string classroomName, string assignmentName, string studentUsername)
+        {
+            Stream stream;
+            FileStreamResult fileStreamResult;
+
+            try
+            {
+                stream = await this._httpClient.GetStreamAsync($"Github/Telechargement/{organisationName}/{classroomName}/{assignmentName}/{studentUsername}");
+                fileStreamResult = new FileStreamResult(stream, "application/octet-stream");
+                fileStreamResult.FileDownloadName = $"{assignmentName}-{studentUsername}.zip";
+            }
+            catch (Exception)
+            {
+                return NotFound("Le dépôt na pas pu être trouvé. Il est peut-être privé et inaccessible à l'utilisateur.");
             }
 
-            return result.ToString();
+            return fileStreamResult;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DownloadAllRepositoriesForAssignment(string organisationName, string classroomName, string assignmentName)
+        {
+            Stream stream;
+            FileStreamResult fileStreamResult;
+
+            try
+            {
+                stream = await this._httpClient.GetStreamAsync($"Github/Telechargement/{organisationName}/{classroomName}/{assignmentName}");
+                fileStreamResult = new FileStreamResult(stream, "application/octet-stream");
+                fileStreamResult.FileDownloadName = $"{assignmentName}-{classroomName}.zip";
+            }
+            catch (Exception)
+            {
+                return NotFound("Un ou plusieurs dépôts n'ont pas pu être trouvé. Ils sont peut-être privés et inaccessibles à l'utilisateur.");
+            }
+
+            return fileStreamResult;
+
         }
 
         [HttpPost]
