@@ -574,16 +574,16 @@ namespace RPLP.MVC.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> DownloadSingleRepository(string organisationName, string classroomName, string assignmentName, string studentName)
+        public async Task<IActionResult> DownloadSingleRepository(string organisationName, string classroomName, string assignmentName, string studentUsername)
         {
             Stream stream;
             FileStreamResult fileStreamResult;
 
             try
             {
-                stream = await this._httpClient.GetStreamAsync($"Github/Telechargement/{organisationName}/{classroomName}/{assignmentName}/{studentName}");
+                stream = await this._httpClient.GetStreamAsync($"Github/Telechargement/{organisationName}/{classroomName}/{assignmentName}/{studentUsername}");
                 fileStreamResult = new FileStreamResult(stream, "application/octet-stream");
-                fileStreamResult.FileDownloadName = $"{assignmentName}-{studentName}.zip";
+                fileStreamResult.FileDownloadName = $"{assignmentName}-{studentUsername}.zip";
             }
             catch (Exception)
             {
