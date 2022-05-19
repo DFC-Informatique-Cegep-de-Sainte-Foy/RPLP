@@ -528,6 +528,22 @@ namespace RPLP.MVC.Controllers
         {
             Classroom classroom = new Classroom { Id = Id, Name = ClassroomName, OrganisationName = OrganisationName, Assignments = new List<Assignment>(), Students = new List<Student>(), Teachers = new List<Teacher>() };
 
+            if (Id != 0)
+            {
+                Classroom databaseClassroom = this._httpClient
+                    .GetFromJsonAsync<Classroom>($"Classroom/Id/{Id}").Result;
+
+                List<Assignment> databaseAssignments = this._httpClient
+                    .GetFromJsonAsync<List<Assignment>>($"Classroom/Assignments/{databaseClassroom.Name}")
+                    .Result;
+
+                if (databaseAssignments.Count >= 1)
+                    foreach (Assignment assignment in databaseAssignments)
+                    {
+                        POSTModifyAssignment(assignment.Id, assignment.Name, ClassroomName, assignment.Description, assignment.DeliveryDeadline);
+                    }
+            }
+
             Task<HttpResponseMessage> response = this._httpClient
                                                  .PostAsJsonAsync<Classroom>($"Classroom", classroom);
             response.Wait();
@@ -649,9 +665,9 @@ namespace RPLP.MVC.Controllers
         }
 
         [HttpPost]
-        public ActionResult<string> POSTModifyAssignment(int Id, string Name, string Description, DateTime? DeliveryDeadline)
+        public ActionResult<string> POSTModifyAssignment(int Id, string Name, string ClassroomName, string Description, DateTime? DeliveryDeadline)
         {
-            Assignment Assignment = new Assignment { Id = Id, Name = Name, Description = Description, DeliveryDeadline = DeliveryDeadline, ClassroomName = "", DistributionDate = DateTime.Now };
+            Assignment Assignment = new Assignment { Id = Id, Name = Name, Description = Description, DeliveryDeadline = DeliveryDeadline, ClassroomName = ClassroomName, DistributionDate = DateTime.Now };
 
             Task<HttpResponseMessage> response = this._httpClient
                                                  .PostAsJsonAsync<Assignment>($"Assignment", Assignment);

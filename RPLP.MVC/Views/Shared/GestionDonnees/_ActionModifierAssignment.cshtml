@@ -226,27 +226,25 @@
         var name = document.getElementById("InputAssignmentNameModifyAssignment").value;
         var description = document.getElementById("InputAssignmentDescriptionModifyAssignment").value;
         var deadline = document.getElementById("InputAssignmentDeadlineModifyAssignment").value;
+        var classroomName = document.getElementById("modifyAssignmentClassroomDropdown").value;
 
         if(name == "")
         {
             alert("Veulliez remplir le nom du travail");
         } else {
-            modifierAssignment.modifyAssignment(id, name, description, deadline);
+            modifierAssignment.modifyAssignment(id, name,classroomName, description, deadline);
         }
     }
 
-    modifierAssignment.modifyAssignment = function(id, name, description ,deadline)
+    modifierAssignment.modifyAssignment = function(id, name, classroomName ,description ,deadline)
     {
-        console.log(id);
-        console.log(name);
-        console.log(description);
-        console.log(deadline);
 
         var ajaxURL = '/RPLP/POSTModifyAssignment';
 
         $.post(ajaxURL,{
             Id: id,
             Name: name,
+            ClassroomName: classroomName,
             Description: description,
             DeliveryDeadline: deadline
         },
