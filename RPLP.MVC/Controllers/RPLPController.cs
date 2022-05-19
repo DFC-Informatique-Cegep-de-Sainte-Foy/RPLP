@@ -20,9 +20,9 @@ namespace RPLP.MVC.Controllers
         private readonly ScriptGithubRPLP _scriptGithub;
         private object classroomName;
 
-        public RPLPController()
+        public RPLPController(IConfiguration configuration)
         {
-            string token = "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";
+            string token = configuration.GetValue<string>("Token");
             GithubApiAction _githubAction = new GithubApiAction(token);
             _scriptGithub = new ScriptGithubRPLP(new DepotClassroom(), new DepotRepository(), new DepotOrganisation(), token);
 
