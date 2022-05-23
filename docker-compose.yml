@@ -11,6 +11,7 @@ services:
       - "47001:80"
     depends_on: 
       - rplp.db
+    restart: always
 
   rplp.mvc:
     container_name: rplp.mvc
@@ -23,6 +24,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    restart: always
 
   rplp.coherencechecker:
     container_name: rplp.coherencechecker
@@ -32,6 +34,7 @@ services:
       dockerfile: RPLP.COHERENCECHECKER/Dockerfile
     depends_on: 
       - rplp.db
+    restart: always
 
   rplp.db:
     container_name: rplp.db
@@ -44,6 +47,7 @@ services:
       ACCEPT_EULA: "Y"
     volumes:
         - rplpvolume:/var/opt/mssql/data
+    restart: always
 
   rplp.db.test:
     container_name: rplp.db.test

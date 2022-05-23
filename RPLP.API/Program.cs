@@ -26,6 +26,7 @@ builder.Services.AddScoped<IDepotOrganisation, DepotOrganisation>();
 builder.Services.AddScoped<IDepotRepository, DepotRepository>();
 builder.Services.AddScoped<IDepotStudent, DepotStudent>();
 builder.Services.AddScoped<IDepotTeacher, DepotTeacher>();
+builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 
 var app = builder.Build();
 

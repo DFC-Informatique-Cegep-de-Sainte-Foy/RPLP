@@ -17,9 +17,9 @@ namespace RPLP.API.Controllers
         private GithubPRCommentFetcher _githubPRCommentFetcher;
         private ScriptGithubRPLP _scriptGithub;
 
-        public GithubController()
+        public GithubController(IConfiguration configuration)
         {
-            string token = "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";
+            string token = configuration.GetValue<string>("Token");
             _githubAction = new GithubApiAction(token);
             _githubPRCommentFetcher = new GithubPRCommentFetcher(token, new DepotClassroom(), new DepotRepository());
             _scriptGithub = new ScriptGithubRPLP(new DepotClassroom(), new DepotRepository(), new DepotOrganisation(), token);
@@ -186,8 +186,8 @@ namespace RPLP.API.Controllers
         [HttpGet("{organisationName}/{classroomName}/{assignmentName}/PullRequests/Comments/File")]
         public FileStreamResult GetFileWithCommentsOfPullRequestByAssignmentForAllRepositories(string organisationName, string classroomName, string assignmentName)
         {
-            List<Pull>? pulls = this._githubPRCommentFetcher.GetPullRequestsFromRepositoriesAsync(organisationName, classroomName, assignmentName).Result;
-            var stream = new MemoryStream(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(pulls)));
+            List<ReviewerUser>? reviewerUsers = this._githubPRCommentFetcher.GetCommentsReviewsAndIssuesByReviewersAsync(organisationName, classroomName, assignmentName).Result;
+            var stream = new MemoryStream(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(reviewerUsers)));
             FileStreamResult fileStreamResult = new FileStreamResult(stream, "application/octet-stream");
             fileStreamResult.FileDownloadName = $"Comments_{assignmentName}_{DateTime.Now}.json";
 
