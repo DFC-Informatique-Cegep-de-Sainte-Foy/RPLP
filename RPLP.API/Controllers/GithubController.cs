@@ -186,8 +186,8 @@ namespace RPLP.API.Controllers
         [HttpGet("{organisationName}/{classroomName}/{assignmentName}/PullRequests/Comments/File")]
         public FileStreamResult GetFileWithCommentsOfPullRequestByAssignmentForAllRepositories(string organisationName, string classroomName, string assignmentName)
         {
-            List<Pull>? pulls = this._githubPRCommentFetcher.GetPullRequestsFromRepositoriesAsync(organisationName, classroomName, assignmentName).Result;
-            var stream = new MemoryStream(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(pulls)));
+            List<ReviewerUser>? reviewerUsers = this._githubPRCommentFetcher.GetCommentsReviewsAndIssuesByReviewersAsync(organisationName, classroomName, assignmentName).Result;
+            var stream = new MemoryStream(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(reviewerUsers)));
             FileStreamResult fileStreamResult = new FileStreamResult(stream, "application/octet-stream");
             fileStreamResult.FileDownloadName = $"Comments_{assignmentName}_{DateTime.Now}.json";
 
