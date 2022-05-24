@@ -4,6 +4,7 @@
 </head>
 
 <div class="container mt-3">
+    <button class="btn-primary btn" onclick="StartScriptCoherence()">Démarrer le script de cohérence</button>
     <div class="wrapper">
         <div class="col-6" id="ActionButtons">
             @if (Model.RoleType == "Administrator")
@@ -276,33 +277,54 @@
     }
 
 
-        var forms = ["createAdmin", "modifyAdmin", "deleteAdmin","addAdminToOrg", "removeAdminFromOrg",
-                     "createOrganisation", "modifyOrganisation", "deleteOrganisation",
-                     "createTeacher", "modifyTeacher", "deleteTeacher",
-                     "createClassroom", "modifyClassroom","deleteClassroom", "addTeacherToClassroom", "removeTeacherFromClassroom", "removeAssignmentFromClassroom", "removeStudentFromClassroom", "addStudentToClassroom","addStudentToClassroomBatch",
-                     "createAssignment", "modifyAssignment", "deleteAssignment",
-                     "createStudent",'createStudentBatch', "modifyStudent", "deleteStudent"];
+    var forms = ["createAdmin", "modifyAdmin", "deleteAdmin","addAdminToOrg", "removeAdminFromOrg",
+                    "createOrganisation", "modifyOrganisation", "deleteOrganisation",
+                    "createTeacher", "modifyTeacher", "deleteTeacher",
+                    "createClassroom", "modifyClassroom","deleteClassroom", "addTeacherToClassroom", "removeTeacherFromClassroom", "removeAssignmentFromClassroom", "removeStudentFromClassroom", "addStudentToClassroom","addStudentToClassroomBatch",
+                    "createAssignment", "modifyAssignment", "deleteAssignment",
+                    "createStudent",'createStudentBatch', "modifyStudent", "deleteStudent"];
 
 
-        function FormUnlock(formName, ButtonName)
+    function StartScriptCoherence()
     {
-            buttons.forEach(button => {
-                document.getElementById(button).classList.add("btn-outline-primary");
-                document.getElementById(button).classList.remove("btn-primary");
+        var ajaxURL = '/RPLP/StartScriptCoherence';
 
-                if(button == ButtonName)
-                {
-                    document.getElementById(button).classList.remove("btn-outline-primary");
-                    document.getElementById(button).classList.add("btn-primary");
-                }
-            });
+        $.ajax({
+            type: 'GET',
+            url: ajaxURL,
+            contentType: "application/json; charset=utf-8",
+            beforeSend: function () {
+                console.log('firing ajax call');
+            },
+            success: function () {
+                console.log("works!");
+            },
+            error: function (ex) {
+                console.log(ex);
+            }
+        });
+    }
 
-            forms.forEach(form => {
-                document.getElementById(form).hidden = true;
+    function FormUnlock(formName, ButtonName)
+    {
+        buttons.forEach(button => {
+            document.getElementById(button).classList.add("btn-outline-primary");
+            document.getElementById(button).classList.remove("btn-primary");
 
-                if(form == formName)
-                    document.getElementById(form).hidden = false;
-            });
-        }
+            if(button == ButtonName)
+            {
+                document.getElementById(button).classList.remove("btn-outline-primary");
+                document.getElementById(button).classList.add("btn-primary");
+            }
+        });
+
+        forms.forEach(form => {
+            document.getElementById(form).hidden = true;
+
+            if(form == formName)
+                document.getElementById(form).hidden = false;
+        });
+    }
+
 </script>
 

@@ -828,5 +828,15 @@ namespace RPLP.MVC.Controllers
         }
 
         #endregion
+
+        #region Coherence
+
+        [HttpGet]
+        public void StartScriptCoherence()
+        {
+            this._scriptGithub.EnsureOrganisationRepositoriesAreInDB();
+        }
+
+        #endregion
     }
 }
