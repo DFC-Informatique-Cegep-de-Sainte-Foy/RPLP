@@ -1,6 +1,10 @@
 ﻿@model RPLP.MVC.Models.GestionDonneeViewModel
+<head>
+    <meta charset="UTF-8">
+</head>
 
 <div class="container mt-3">
+    <button class="btn-primary btn" onclick="StartScriptCoherence()">Démarrer le script de cohérence</button>
     <div class="wrapper">
         <div class="col-6" id="ActionButtons">
             @if (Model.RoleType == "Administrator")
@@ -59,6 +63,7 @@
                             <button id="btnRemoveTeacherFromClassroom" class="btn-lg btn-outline-primary buttons" onclick="FormUnlock('removeTeacherFromClassroom', 'btnRemoveTeacherFromClassroom')">Retirer Professeur</button>
                             <br>
                             <button id="btnAddStudentToClassroom" class="btn-lg btn-outline-primary buttons" onclick="FormUnlock('addStudentToClassroom', 'btnAddStudentToClassroom')">Ajouter Étudiant</button>
+                            <button id="btnAddStudentToClassroomBatch" class="btn-lg btn-outline-primary buttons" onclick="FormUnlock('addStudentToClassroomBatch', 'btnAddStudentToClassroomBatch')">Ajouter Étudiant en lot</button>
                             <button id="btnRemoveStudentFromClassroom" class="btn-lg btn-outline-primary buttons" onclick="FormUnlock('removeStudentFromClassroom', 'btnRemoveStudentFromClassroom')">Retirer Étudiant</button>
                             <br>
                             <button id="btnRemoveAssignmentFromClassroom" class="btn-lg btn-outline-primary buttons" onclick="FormUnlock('removeAssignmentFromClassroom', 'btnRemoveAssignmentFromClassroom')">Retirer Travail</button>
@@ -84,6 +89,7 @@
                         <label class="col-10" for="collapsible-student">Étudiants</label>
                         <div class="collapsible-content">
                             <button id="btnCreateStudent" class="btn-lg btn-outline-primary buttons" onclick="FormUnlock('createStudent', 'btnCreateStudent')">Créer</button>
+                            <button id="btnCreateStudentBatch" class="btn-lg btn-outline-primary buttons" onclick="FormUnlock('createStudentBatch', 'btnCreateStudentBatch')">Créer en lot</button>
                             <button id="btnModifyStudent" class="btn-lg btn-outline-primary buttons" onclick="FormUnlock('modifyStudent', 'btnModifyStudent')">Modifier</button>
                             <button id="btnDeleteStudent" class="btn-lg btn-outline-primary buttons" onclick="FormUnlock('deleteStudent', 'btnDeleteStudent')">Supprimer</button>
                         </div>
@@ -171,6 +177,12 @@
                 }
             </div>
 
+            <div id="addStudentToClassroomBatch" hidden>
+                @{
+                    Html.RenderPartial(@"../Shared/GestionDonnees/_ActionAjouterStudentAClassroomBatch.cshtml", Model);
+                }
+            </div>
+
             <div id="removeTeacherFromClassroom" hidden>
                 @{
                     Html.RenderPartial(@"../Shared/GestionDonnees/_ActionRetirerTeacherDeClassroom.cshtml", Model);
@@ -231,6 +243,12 @@
                 }
             </div>
 
+            <div id="createStudentBatch" hidden>
+                @{
+                    Html.RenderPartial(@"../Shared/GestionDonnees/_ActionAjouterStudentBatch.cshtml");
+                }
+            </div>
+
             <div id="modifyStudent" hidden>
                 @{
                     Html.RenderPartial(@"../Shared/GestionDonnees/_ActionModifierStudent.cshtml", Model);
@@ -251,41 +269,62 @@
 <script type="text/javascript">
     @if (Model.RoleType == "Administrator")
     {
-        @Html.Raw("var buttons = ['btnCreateAdmin', 'btnModifyAdmin', 'btnDeleteAdmin','btnCreateOrganisation', 'btnModifyOrganisation', 'btnDeleteOrganisation','btnAddAdminToOrg', 'btnRemoveAdminFromOrg','btnCreateTeacher', 'btnModifyTeacher', 'btnDeleteTeacher','btnCreateClassroom', 'btnModifyClassroom', 'btnDeleteClassroom', 'btnAddTeacherToClassroom', 'btnRemoveTeacherFromClassroom', 'btnAddStudentToClassroom', 'btnRemoveStudentFromClassroom', 'btnRemoveAssignmentFromClassroom','btnCreateAssignment', 'btnModifyAssignment', 'btnDeleteAssignment','btnCreateStudent', 'btnModifyStudent', 'btnDeleteStudent'];")
+        @Html.Raw("var buttons = ['btnCreateAdmin', 'btnModifyAdmin', 'btnDeleteAdmin','btnCreateOrganisation', 'btnModifyOrganisation', 'btnDeleteOrganisation','btnAddAdminToOrg', 'btnRemoveAdminFromOrg','btnCreateTeacher', 'btnModifyTeacher', 'btnDeleteTeacher','btnCreateClassroom', 'btnModifyClassroom', 'btnDeleteClassroom', 'btnAddTeacherToClassroom', 'btnRemoveTeacherFromClassroom', 'btnAddStudentToClassroom', 'btnAddStudentToClassroomBatch', 'btnRemoveStudentFromClassroom', 'btnRemoveAssignmentFromClassroom','btnCreateAssignment', 'btnModifyAssignment', 'btnDeleteAssignment','btnCreateStudent','btnCreateStudentBatch', 'btnModifyStudent', 'btnDeleteStudent'];")
     }
     else if (Model.RoleType == "Teacher")
     {
-        @Html.Raw("var buttons = ['btnCreateClassroom', 'btnModifyClassroom', 'btnDeleteClassroom', 'btnAddTeacherToClassroom', 'btnRemoveTeacherFromClassroom', 'btnAddStudentToClassroom', 'btnRemoveStudentFromClassroom', 'btnRemoveAssignmentFromClassroom','btnCreateAssignment', 'btnModifyAssignment', 'btnDeleteAssignment','btnCreateStudent', 'btnModifyStudent', 'btnDeleteStudent'];")
+        @Html.Raw("var buttons = ['btnCreateClassroom', 'btnModifyClassroom', 'btnDeleteClassroom', 'btnAddTeacherToClassroom', 'btnRemoveTeacherFromClassroom', 'btnAddStudentToClassroom','btnAddStudentToClassroomBatch', 'btnRemoveStudentFromClassroom', 'btnRemoveAssignmentFromClassroom','btnCreateAssignment', 'btnModifyAssignment', 'btnDeleteAssignment','btnCreateStudent','btnCreateStudentBatch', 'btnModifyStudent', 'btnDeleteStudent'];")
     }
 
 
-        var forms = ["createAdmin", "modifyAdmin", "deleteAdmin","addAdminToOrg", "removeAdminFromOrg",
-                     "createOrganisation", "modifyOrganisation", "deleteOrganisation",
-                     "createTeacher", "modifyTeacher", "deleteTeacher",
-                     "createClassroom", "modifyClassroom","deleteClassroom", "addTeacherToClassroom", "removeTeacherFromClassroom", "removeAssignmentFromClassroom", "removeStudentFromClassroom", "addStudentToClassroom",
-                     "createAssignment", "modifyAssignment", "deleteAssignment",
-                     "createStudent", "modifyStudent", "deleteStudent"];
+    var forms = ["createAdmin", "modifyAdmin", "deleteAdmin","addAdminToOrg", "removeAdminFromOrg",
+                    "createOrganisation", "modifyOrganisation", "deleteOrganisation",
+                    "createTeacher", "modifyTeacher", "deleteTeacher",
+                    "createClassroom", "modifyClassroom","deleteClassroom", "addTeacherToClassroom", "removeTeacherFromClassroom", "removeAssignmentFromClassroom", "removeStudentFromClassroom", "addStudentToClassroom","addStudentToClassroomBatch",
+                    "createAssignment", "modifyAssignment", "deleteAssignment",
+                    "createStudent",'createStudentBatch', "modifyStudent", "deleteStudent"];
 
 
-        function FormUnlock(formName, ButtonName)
+    function StartScriptCoherence()
     {
-            buttons.forEach(button => {
-                document.getElementById(button).classList.add("btn-outline-primary");
-                document.getElementById(button).classList.remove("btn-primary");
+        var ajaxURL = '/RPLP/StartScriptCoherence';
 
-                if(button == ButtonName)
-                {
-                    document.getElementById(button).classList.remove("btn-outline-primary");
-                    document.getElementById(button).classList.add("btn-primary");
-                }
-            });
+        $.ajax({
+            type: 'GET',
+            url: ajaxURL,
+            contentType: "application/json; charset=utf-8",
+            beforeSend: function () {
+                console.log('firing ajax call');
+            },
+            success: function () {
+                console.log("works!");
+            },
+            error: function (ex) {
+                console.log(ex);
+            }
+        });
+    }
 
-            forms.forEach(form => {
-                document.getElementById(form).hidden = true;
+    function FormUnlock(formName, ButtonName)
+    {
+        buttons.forEach(button => {
+            document.getElementById(button).classList.add("btn-outline-primary");
+            document.getElementById(button).classList.remove("btn-primary");
 
-                if(form == formName)
-                    document.getElementById(form).hidden = false;
-            });
-        }
+            if(button == ButtonName)
+            {
+                document.getElementById(button).classList.remove("btn-outline-primary");
+                document.getElementById(button).classList.add("btn-primary");
+            }
+        });
+
+        forms.forEach(form => {
+            document.getElementById(form).hidden = true;
+
+            if(form == formName)
+                document.getElementById(form).hidden = false;
+        });
+    }
+
 </script>
 

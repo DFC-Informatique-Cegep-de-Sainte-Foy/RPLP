@@ -190,7 +190,7 @@ namespace RPLP.SERVICES.Github.GithubReviewCommentFetcher
                     int prNumber = Convert.ToInt32(pull["number"].ToString());
                     string repository = pull["head"]["repo"]["name"].ToString();
 
-                    pulls.Add(new Pull(p_owner, p_assignment)
+                    pulls.Add(new Pull(p_owner, repository)
                     {
                         Username = pull["user"]["login"].ToString(),
                         HTML_Url = pull["html_url"].ToString(),
@@ -203,6 +203,70 @@ namespace RPLP.SERVICES.Github.GithubReviewCommentFetcher
                 
             }
             return pulls;
+        }
+
+        public async Task<List<ReviewerUser>> GetCommentsReviewsAndIssuesByReviewersAsync(string p_owner, string p_classroom, string p_assignment)
+        {
+            List<ReviewerUser> reviewerUsers = new List<ReviewerUser>();
+            List<Pull>? pulls = await this.GetPullRequestsFromRepositoriesAsync(p_owner, p_classroom, p_assignment);
+            HashSet<string> reviewerUsernames = await this.GetAllUniqueCommenterUsernamesFromPullListAsync(pulls);
+
+            foreach (string reviewer in reviewerUsernames)
+            {
+                ReviewerUser reviewerUser = new ReviewerUser() { Username = reviewer };
+
+                List<Pull> pullsCommentedByReviewer = new List<Pull>();
+
+                pullsCommentedByReviewer.AddRange(pulls
+                    .Where(p => 
+                        p.Comments.Any(c => c.Username == reviewer) ||
+                        p.Reviews.Any(r => r.Username == reviewer) ||
+                        p.Issues.Any(r => r.Username == reviewer)));
+
+                pullsCommentedByReviewer.ForEach(p =>
+                {
+                    if (reviewerUser.Repositories.Any(r => r.RepositoryName == p.Repository) == false)
+                    {
+                        reviewerUser.Repositories.Add(new RepositoryReview(p.Repository));
+                    }
+                });
+
+                reviewerUser.Repositories.ForEach(r =>
+                {
+                    pullsCommentedByReviewer
+                        .Where(p => p.Repository == r.RepositoryName)
+                        .Select(p => p.Comments
+                            .Where(c => c.Username == reviewer))
+                        .ToList()
+                        .ForEach(l => r.Comments.AddRange(l));
+
+                    pullsCommentedByReviewer
+                        .Where(p => p.Repository == r.RepositoryName)
+                        .Select(p => p.Reviews
+                            .Where(rev => rev.Username == reviewer))
+                        .ToList()
+                        .ForEach(l => r.Reviews.AddRange(l));
+
+                    pullsCommentedByReviewer
+                        .Where(p => p.Repository == r.RepositoryName)
+                        .Select(p => p.Issues
+                            .Where(i => i.Username == reviewer))
+                        .ToList()
+                        .ForEach(l => r.Issues.AddRange(l));
+
+                });
+
+                reviewerUser.Repositories.ForEach(r =>
+                {
+                    r.Comments = r.Comments.GroupBy(c => c.Position).Select(g => g.First()).ToList();
+                    r.Reviews = r.Reviews.GroupBy(r => r.HTML_Url).Select(g => g.First()).ToList();
+                    r.Issues = r.Issues.GroupBy(i => i.HTML_Url).Select(g => g.First()).ToList();
+                });
+
+                reviewerUsers.Add(reviewerUser);
+            }
+
+            return reviewerUsers;
         }
 
         public async Task<string> GetRepositoryIssueCommentsJSONStringAsync(string p_owner, string p_repository)
@@ -278,6 +342,20 @@ namespace RPLP.SERVICES.Github.GithubReviewCommentFetcher
             }
 
             return repositories;
+        }
+
+        private async Task<HashSet<string>> GetAllUniqueCommenterUsernamesFromPullListAsync(List<Pull> pulls)
+        {
+            HashSet<string> reviewerUsernames = new HashSet<string>();
+
+            pulls.ForEach(p =>
+            {
+                p.Comments.ForEach(c => reviewerUsernames.Add(c.Username));
+                p.Issues.ForEach(c => reviewerUsernames.Add(c.Username));
+                p.Reviews.ForEach(c => reviewerUsernames.Add(c.Username));
+            });
+
+            return reviewerUsernames;
         }
     }
 }

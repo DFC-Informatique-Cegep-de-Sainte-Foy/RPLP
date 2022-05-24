@@ -280,31 +280,24 @@ namespace RPLP.UnitTesting.DepotTests
 
             using (var context = new RPLPDbContext(options))
             {
+                Assignment_SQLDTO? assignment = context.Assignments
+                    .AsNoTracking()
+                    .FirstOrDefault(a => a.Name == "UnitTests");
+                Assert.NotNull(assignment);
+
                 Classroom_SQLDTO? classroom = context.Classrooms
-                                                    .Include(c => c.Assignments)
-                                                    .FirstOrDefault(c => c.Name == "ProjetSynthese");
-                Assignment_SQLDTO? assignment = classroom.Assignments.FirstOrDefault(a => a.Name == "Test");
+                    .AsNoTracking()
+                    .FirstOrDefault(c => c.Name == "ProjetSynthese");
+                Assignment_SQLDTO assignmentInClassroom = classroom.Assignments.FirstOrDefault(a => a.Name == "UnitTests");
 
-                Assert.Null(assignment);
-
-                context.Assignments.Add(new Assignment_SQLDTO()
-                {
-                    Name = "Test",
-                    ClassroomName = "RPLP",
-                    DistributionDate = System.DateTime.Now,
-                    Description = "Test",
-                    DeliveryDeadline = System.DateTime.Now.AddDays(1),
-                    Active = true
-                });
-
-                context.SaveChanges();
+                Assert.Null(assignmentInClassroom);
 
             }
 
             using (var context = new RPLPDbContext(options))
             {
                 DepotClassroom depot = new DepotClassroom(context);
-                depot.AddAssignmentToClassroom("ProjetSynthese", "Test");
+                depot.AddAssignmentToClassroom("ProjetSynthese", "UnitTests");
             }
 
             using (var context = new RPLPDbContext(options))
@@ -312,7 +305,7 @@ namespace RPLP.UnitTesting.DepotTests
                 Classroom_SQLDTO? classroom = context.Classrooms
                                                     .Include(c => c.Assignments)
                                                     .FirstOrDefault(c => c.Name == "ProjetSynthese");
-                Assignment_SQLDTO? assignment = classroom.Assignments.FirstOrDefault(a => a.Name == "Test");
+                Assignment_SQLDTO? assignment = classroom.Assignments.FirstOrDefault(a => a.Name == "UnitTests");
 
                 Assert.NotNull(assignment);
             }

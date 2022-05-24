@@ -120,7 +120,7 @@ namespace RPLP.DAL.SQL.Depots
 
             Student_SQLDTO? studentResult = this._context.Students
                 .AsNoTracking()
-                .SingleOrDefault(student => student.Id == p_student.Id && student.Active);
+                .SingleOrDefault(student => student.Id == p_student.Id);
 
 
 

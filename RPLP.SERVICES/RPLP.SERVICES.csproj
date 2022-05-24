@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Downloads\**" />
+    <EmbeddedResource Remove="Downloads\**" />
+    <None Remove="Downloads\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -19,10 +25,6 @@
   <ItemGroup>
     <ProjectReference Include="..\RPLP.DAL.DTO\RPLP.DAL.DTO.csproj" />
     <ProjectReference Include="..\RPLP.ENTITES\RPLP.ENTITES.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Envelopes\" />
   </ItemGroup>
 
 </Project>

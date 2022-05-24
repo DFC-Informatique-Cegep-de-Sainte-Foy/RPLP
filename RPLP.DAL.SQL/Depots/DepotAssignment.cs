@@ -71,6 +71,7 @@ namespace RPLP.DAL.SQL.Depots
             if (assignmentResult != null)
             {
                 assignmentResult.Name = p_assignment.Name;
+                assignmentResult.ClassroomName = p_assignment.ClassroomName;
                 assignmentResult.Description = p_assignment.Description;
                 assignmentResult.DeliveryDeadline = p_assignment.DeliveryDeadline;
 

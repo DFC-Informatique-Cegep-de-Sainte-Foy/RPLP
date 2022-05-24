@@ -20,9 +20,9 @@ namespace RPLP.MVC.Controllers
         private readonly ScriptGithubRPLP _scriptGithub;
         private object classroomName;
 
-        public RPLPController()
+        public RPLPController(IConfiguration configuration)
         {
-            string token = "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";
+            string token = configuration.GetValue<string>("Token");
             GithubApiAction _githubAction = new GithubApiAction(token);
             _scriptGithub = new ScriptGithubRPLP(new DepotClassroom(), new DepotRepository(), new DepotOrganisation(), token);
 
@@ -528,6 +528,22 @@ namespace RPLP.MVC.Controllers
         {
             Classroom classroom = new Classroom { Id = Id, Name = ClassroomName, OrganisationName = OrganisationName, Assignments = new List<Assignment>(), Students = new List<Student>(), Teachers = new List<Teacher>() };
 
+            if (Id != 0)
+            {
+                Classroom databaseClassroom = this._httpClient
+                    .GetFromJsonAsync<Classroom>($"Classroom/Id/{Id}").Result;
+
+                List<Assignment> databaseAssignments = this._httpClient
+                    .GetFromJsonAsync<List<Assignment>>($"Classroom/Assignments/{databaseClassroom.Name}")
+                    .Result;
+
+                if (databaseAssignments.Count >= 1)
+                    foreach (Assignment assignment in databaseAssignments)
+                    {
+                        POSTModifyAssignment(assignment.Id, assignment.Name, ClassroomName, assignment.Description, assignment.DeliveryDeadline);
+                    }
+            }
+
             Task<HttpResponseMessage> response = this._httpClient
                                                  .PostAsJsonAsync<Classroom>($"Classroom", classroom);
             response.Wait();
@@ -545,6 +561,73 @@ namespace RPLP.MVC.Controllers
             response.Wait();
 
             return response.Result.StatusCode.ToString();
+        }
+
+        [HttpPost]
+        public ActionResult<string> POSTUpsertBatchStudent(string StudentString)
+        {
+            string[] SplitStudents = StudentString.Split("\n");
+            HttpResponseMessage result = new HttpResponseMessage();
+
+            foreach (string rawStudent in SplitStudents)
+            {
+                string[] student = rawStudent.Split("=");
+
+                string studentUsername = JsonConvert.DeserializeObject<string>(student[1].Replace(";", ""));
+                string studentLastName = JsonConvert.DeserializeObject<string>(student[2].Replace(";", ""));
+                string studentFirstName = JsonConvert.DeserializeObject<string>(student[3].Replace(";", ""));
+                string studentEmail = studentUsername + "@csfoy.ca";
+
+                Student studentObj = new Student { Id = 0, Email = studentEmail, FirstName = studentFirstName, LastName = studentLastName, Username = studentUsername, Classes = new List<Classroom>() };
+
+                Task<HttpResponseMessage> response = this._httpClient
+                                                        .PostAsJsonAsync<Student>($"Student", studentObj);
+
+                result = response.Result;
+
+            }
+            return result.ToString();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DownloadSingleRepository(string organisationName, string classroomName, string assignmentName, string studentUsername)
+        {
+            Stream stream;
+            FileStreamResult fileStreamResult;
+
+            try
+            {
+                stream = await this._httpClient.GetStreamAsync($"Github/Telechargement/{organisationName}/{classroomName}/{assignmentName}/{studentUsername}");
+                fileStreamResult = new FileStreamResult(stream, "application/octet-stream");
+                fileStreamResult.FileDownloadName = $"{assignmentName}-{studentUsername}.zip";
+            }
+            catch (Exception)
+            {
+                return NotFound("Le dépôt na pas pu être trouvé. Il est peut-être privé et inaccessible à l'utilisateur.");
+            }
+
+            return fileStreamResult;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DownloadAllRepositoriesForAssignment(string organisationName, string classroomName, string assignmentName)
+        {
+            Stream stream;
+            FileStreamResult fileStreamResult;
+
+            try
+            {
+                stream = await this._httpClient.GetStreamAsync($"Github/Telechargement/{organisationName}/{classroomName}/{assignmentName}");
+                fileStreamResult = new FileStreamResult(stream, "application/octet-stream");
+                fileStreamResult.FileDownloadName = $"{assignmentName}-{classroomName}.zip";
+            }
+            catch (Exception)
+            {
+                return NotFound("Un ou plusieurs dépôts n'ont pas pu être trouvé. Ils sont peut-être privés et inaccessibles à l'utilisateur.");
+            }
+
+            return fileStreamResult;
+
         }
 
         [HttpPost]
@@ -582,9 +665,9 @@ namespace RPLP.MVC.Controllers
         }
 
         [HttpPost]
-        public ActionResult<string> POSTModifyAssignment(int Id, string Name, string Description, DateTime? DeliveryDeadline)
+        public ActionResult<string> POSTModifyAssignment(int Id, string Name, string ClassroomName, string Description, DateTime? DeliveryDeadline)
         {
-            Assignment Assignment = new Assignment { Id = Id, Name = Name, Description = Description, DeliveryDeadline = DeliveryDeadline, ClassroomName = "", DistributionDate = DateTime.Now };
+            Assignment Assignment = new Assignment { Id = Id, Name = Name, Description = Description, DeliveryDeadline = DeliveryDeadline, ClassroomName = ClassroomName, DistributionDate = DateTime.Now };
 
             Task<HttpResponseMessage> response = this._httpClient
                                                  .PostAsJsonAsync<Assignment>($"Assignment", Assignment);
@@ -611,6 +694,27 @@ namespace RPLP.MVC.Controllers
             response.Wait();
 
             return response.Result.StatusCode.ToString();
+        }
+
+        [HttpPost]
+        public ActionResult<string> POSTAddStudentToClassroomBatch(string ClassroomName, string StudentString)
+        {
+            string[] SplitStudents = StudentString.Split("\n");
+            HttpResponseMessage result = new HttpResponseMessage();
+
+            foreach (string rawStudent in SplitStudents)
+            {
+                string[] student = rawStudent.Split("=");
+
+                string studentUsername = JsonConvert.DeserializeObject<string>(student[1].Replace(";", ""));
+
+                Task<HttpResponseMessage> response = this._httpClient
+                                                 .PostAsJsonAsync($"Classroom/Name/{ClassroomName}/Students/Add/{studentUsername}", "");
+
+                result = response.Result;
+            }
+
+            return result.ToString();
         }
 
         [HttpPost]
@@ -721,6 +825,16 @@ namespace RPLP.MVC.Controllers
             response.Wait();
 
             return response.Result.StatusCode.ToString();
+        }
+
+        #endregion
+
+        #region Coherence
+
+        [HttpGet]
+        public void StartScriptCoherence()
+        {
+            this._scriptGithub.EnsureOrganisationRepositoriesAreInDB();
         }
 
         #endregion
