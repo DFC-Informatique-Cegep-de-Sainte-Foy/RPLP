@@ -1,4 +1,5 @@
-﻿using RPLP.DAL.DTO.Sql;
+﻿using Microsoft.EntityFrameworkCore;
+using RPLP.DAL.DTO.Sql;
 using RPLP.ENTITES;
 using RPLP.SERVICES.InterfacesDepots;
 using System;
@@ -15,28 +16,38 @@ namespace RPLP.DAL.SQL.Depots
 
         public DepotRepository()
         {
-            this._context = new RPLPDbContext();
+            this._context = new RPLPDbContext(new DbContextOptionsBuilder<RPLPDbContext>().UseSqlServer("Server=rplp.db; Database=RPLP; User Id=sa; password=Cad3pend86!").Options);
+            //this._context = new RPLPDbContext(new DbContextOptionsBuilder<RPLPDbContext>().UseSqlServer("Server=localhost,1433; Database=RPLP; User Id=sa; password=Cad3pend86!").Options);
         }
 
-        public List<Repository> GetRepositories()
+        public DepotRepository(RPLPDbContext p_context)
         {
-            return this._context.Repositories.Select(repository => repository.ToEntity()).ToList();
+            this._context = p_context;
         }
 
         public Repository GetRepositoryById(int id)
         {
-            Repository repository = this._context.Repositories.Where(repository => repository.Id == id).Select(repository => repository.ToEntity()).FirstOrDefault();
+            Repository_SQLDTO repository = this._context.Repositories.FirstOrDefault(repository => repository.Id == id && repository.Active);
+            if (repository == null)
+                return null;
+
+            return repository.ToEntity();
+        }
+
+        public Repository GetRepositoryByName(string p_repositoryName)
+        {
+            Repository_SQLDTO repository = this._context.Repositories.FirstOrDefault(repository => repository.Name == p_repositoryName && repository.Active);
 
             if (repository == null)
-                return new Repository();
+                return null;
 
-            return repository;
+            return repository.ToEntity();
         }
 
         public void UpsertRepository(Repository p_repository)
         {
-            Repository_SQLDTO repositoryResult = this._context.Repositories.Where(repository => repository.Id == p_repository.Id).SingleOrDefault();
-
+            Repository_SQLDTO repositoryResult = this._context.Repositories.SingleOrDefault(repository => repository.Id == p_repository.Id &&
+                                                                                            repository.Active);
             if (repositoryResult != null)
             {
                 repositoryResult.Name = p_repository.Name;
@@ -57,6 +68,32 @@ namespace RPLP.DAL.SQL.Depots
                 this._context.Repositories.Add(repository);
                 this._context.SaveChanges();
             }
+        }
+
+        public void DeleteRepository(string p_repositoryName)
+        {
+            Repository_SQLDTO repositoryResult = this._context.Repositories.Where(repository => repository.Active)
+                                                                           .FirstOrDefault(repository => repository.Name == p_repositoryName);
+            if (repositoryResult != null)
+            {
+                repositoryResult.Active = false;
+
+                this._context.Update(repositoryResult);
+                this._context.SaveChanges();
+            }
+        }
+
+        public List<Repository> GetRepositories()
+        {
+            return this._context.Repositories.Where(repository => repository.Active).Select(repository => repository.ToEntity()).ToList();
+        }
+
+        public List<Repository> GetRepositoriesFromOrganisationName(string p_organisationName)
+        {
+            return this._context.Repositories
+                .Where(repository => repository.Active && repository.OrganisationName == p_organisationName)
+                .Select(repository => repository.ToEntity())
+                .ToList();
         }
     }
 }

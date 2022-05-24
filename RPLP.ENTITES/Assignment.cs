@@ -29,7 +29,8 @@ namespace RPLP.ENTITES
             this.DistributionDate = p_distributionDate;
         }
 
-        public Assignment(int p_id, string p_name, string p_classroomName, string p_description, DateTime? p_deliveryDeadline, DateTime p_distributionDate)
+        public Assignment(int p_id, string p_name, string p_classroomName,
+            string p_description, DateTime? p_deliveryDeadline, DateTime p_distributionDate)
         {
             this.Id = p_id;
             this.Name = p_name;

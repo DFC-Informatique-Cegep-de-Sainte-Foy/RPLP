@@ -1,0 +1,341 @@
+﻿@using RPLP.MVC.Controllers
+@model RPLP.MVC.Models.PeerReviewViewModel
+
+<div class="container mt-3">
+    <div class="wrapper">
+
+        <div id="orgsCollapsible" class="collapsible">
+            <input type="checkbox" id="collapsible-orgs" name="checkboxOrg" />
+            <label for="collapsible-orgs">Organisations</label>
+            <div class="collapsible-content">
+                @foreach (var org in Model.Organisations)
+                {
+                    <Button class="btn-lg btn-outline-primary p-2 buttons" onclick="SetOrganisationName('@org.Name')" id='@org.Name'>@org.Name</Button>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="wrapper">
+        <div id="classroomCollapsible" class="collapsible" hidden>
+            <input type="checkbox" id="collapsible-class" name="checkboxClass" />
+            <label for="collapsible-class">Classes</label>
+            <div class="collapsible-content" id="classroomContent">
+            </div>
+        </div>
+    </div>
+
+    <div class="wrapper">
+        <div id="assignmentCollapsible" class="collapsible" hidden>
+            <input type="checkbox" id="collapsible-assignments" name="checkboxAssignment" />
+            <label for="collapsible-assignments">Travaux</label>
+            <div class="collapsible-content" id="assignmentContent">
+            </div>
+        </div>
+    </div>
+
+    <div class="wrapper" id="scriptStart" hidden>
+        <div>
+            <label for="numberOfReview">Nombre de revue par etudiants</label>
+            <input class="p-2 buttons" type="number" id="numberOfReview" min="0" max="10" value="3" />
+            <button class="btn-lg btn-primary p-2 buttons" onclick="StartStudentAssignationScript()">Lancer le script de revue des pairs</button>
+            <button class="btn-lg btn-primary p-2 buttons" onclick="StartTeacherAssignationScript()">Lancer le script de revue du Prof</button>
+        </div>
+
+        <div class="form-group">
+            <button class="btn-lg btn-primary p-2 buttons" onclick="DownloadComments()">Télécharger les commentaires</button>
+            <button class="btn-lg btn-primary p-2 buttons" onclick="DownloadAllRepositoriesForAssignment()">Télécharger les dépôts de devoir de la classe</button>
+            <button class="btn-lg btn-primary p-2 buttons" onclick="DownloadSingleRepository()">Télécharger le dépôt d'un étudiant</button>
+            <select class="form-control" id="selectStudent"></select>
+        </div>
+
+    </div>
+</div>
+
+
+<script src="/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript">
+
+    var SelectedOrganisationName = "";
+    var SelectedClassroomName = "";
+    var SelectedAssignmentName = "";
+
+    var organisations = @Html.Raw(Json.Serialize(Model.Organisations));
+    var classrooms = [];
+    var assignments = [];
+    var students = [];
+
+    function SetOrganisationName (organisationName){
+        if(organisationName != "")
+        {
+            SelectedOrganisationName = organisationName;
+            GetClassroomsOfOrganisationByName(SelectedOrganisationName);
+
+            organisations.forEach(organisation => {
+                if(organisation.name == organisationName)
+                {
+                    document.getElementById(organisation.name).classList.remove("btn-outline-primary");
+                    document.getElementById(organisation.name).classList.add("btn-primary");
+                } else {
+                    document.getElementById(organisation.name).classList.add("btn-outline-primary");
+                    document.getElementById(organisation.name).classList.remove("btn-primary");
+                }
+            });
+        }
+    }
+
+    function SetClassroomName (classroomName){
+        if(classroomName != "")
+        {
+            SelectedClassroomName = classroomName;
+            GetAssignmentsOfClassroomByName(SelectedClassroomName);
+            GetStudentsOfClassroomByName(SelectedClassroomName);
+
+            classrooms.forEach(classroom => {
+                if(classroom.name == classroomName)
+                {
+                    document.getElementById(classroom.name).classList.remove("btn-outline-primary");
+                    document.getElementById(classroom.name).classList.add("btn-primary");
+                } else {
+                    document.getElementById(classroom.name).classList.add("btn-outline-primary");
+                    document.getElementById(classroom.name).classList.remove("btn-primary");
+                }
+            });
+
+            GetStudentsInClassroomByClassroomName(classroomName);
+        }
+    }
+
+    function SetAssignmentName (assignmentName) {
+        if(assignmentName != "")
+        {
+            SelectedAssignmentName = assignmentName;
+
+            assignments.forEach(assignment => {
+                if(assignment.name == assignmentName)
+                {
+                    console.log("test")
+                    document.getElementById(assignment.name).classList.remove("btn-outline-primary");
+                    document.getElementById(assignment.name).classList.add("btn-primary");
+                } else {
+                    document.getElementById(assignment.name).classList.add("btn-outline-primary");
+                    document.getElementById(assignment.name).classList.remove("btn-primary");
+                }
+            });
+
+            $("#scriptStart").removeAttr("hidden");
+         }
+    }
+
+    ShowStudents = function()
+    {
+        const classes = document.getElementById("selectStudent");
+        classes.innerHTML = '';
+
+        var option = document.createElement("option");
+        option.text = "Faites un choix";
+        option.value = -1;
+        var select = document.getElementById("selectStudent");
+        select.appendChild(option);
+
+        students.forEach(student => {
+            var option = document.createElement("option");
+            option.text = student.firstName + " " + student.lastName;
+            option.value = student.username;
+            var select = document.getElementById("selectStudent");
+            select.appendChild(option);
+        });
+    }
+
+    GetStudentsInClassroomByClassroomName = function (classroomName)
+     {
+       var ajaxURL = '/RPLP/GetStudentsInClassroomByClassroomName';
+        $.ajax({
+            type: 'GET',
+            url: ajaxURL,
+            data: { ClassroomName : classroomName},
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            beforeSend: function () {
+                console.log('firing ajax call');
+            },
+            success: function (data) {
+                students = data;
+                ShowStudents();
+            },
+            error: function (ex) {
+                console.log('Error');
+            }
+        });
+    }
+
+    function GetClassroomsOfOrganisationByName(organisationName){
+       var ajaxURL = '/RPLP/GetClassroomsOfOrganisationByName';
+
+        $.ajax({
+            type: 'GET',
+            url: ajaxURL,
+            data: { orgName : organisationName},
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            beforeSend: function () {
+                console.log('firing ajax call');
+            },
+            success: function (data) {
+                classrooms = data;
+                ShowClassrooms();
+            },
+            error: function (ex) {
+                console.log('Error');
+            }
+        });
+    }
+
+    function GetAssignmentsOfClassroomByName (classroomName){
+        var ajaxURL = '/RPLP/GetAssignmentsOfClassroomByName';
+
+        $.ajax({
+            type: 'GET',
+            url: ajaxURL,
+            data: { classroomName : classroomName},
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            beforeSend: function () {
+                console.log('firing ajax call');
+            },
+            success: function (data) {
+                assignments = data;
+
+                ShowAssignments();
+            },
+            error: function (ex) {
+                console.log('Error');
+            }
+        });
+    }
+
+    function GetStudentsOfClassroomByName (classroomName){
+        var ajaxURL = '/RPLP/GetStudentsOfClassroomByName';
+
+        $.ajax({
+            type: 'GET',
+            url: ajaxURL,
+            data: { classroomName : classroomName},
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            beforeSend: function () {
+                console.log('firing ajax call');
+            },
+            success: function (data) {
+                students = data;
+                $('selectStudent').empty();
+                students.forEach(student => {
+                    $('selectStudent').append($("<option />").val(student.Name).text(student.Name));
+                });
+            },
+            error: function (ex) {
+                console.log('Error');
+            }
+        });
+    }
+
+    function ShowClassrooms() {
+        var myDiv = document.getElementById("classroomContent");
+        myDiv.replaceChildren();
+
+        classrooms.forEach(classroom => {
+            var button = document.createElement("BUTTON");
+            button.innerHTML = classroom.name;
+            button.classList.add("btn-lg", "btn-outline-primary", "p-2", "buttons");
+            button.setAttribute('id',classroom.name ) ;
+            button.onclick = function() { SetClassroomName(classroom.name); };
+            myDiv.appendChild(button);
+        });
+
+        $("#classroomCollapsible").removeAttr("hidden");
+        $("#assignmentCollapsible").attr("hidden", true);
+        $("#scriptStart").attr("hidden", true);
+    }
+
+    function ShowAssignments() {
+        var myDiv = document.getElementById("assignmentContent");
+        myDiv.replaceChildren();
+
+
+        assignments.forEach(assignment => {
+            var button = document.createElement("BUTTON");
+            button.innerHTML = assignment.name;
+            button.classList.add("btn-lg", "btn-outline-primary", "p-2", "buttons");
+            button.setAttribute('id',assignment.name ) ;
+            button.onclick = function() { SetAssignmentName(assignment.name); };
+            myDiv.appendChild(button);
+        });
+
+        $("#assignmentCollapsible").removeAttr("hidden");
+        $("#scriptStart").attr("hidden", true);
+    }
+
+    function StartStudentAssignationScript (){
+        var ajaxURL = '/RPLP/StartStudentAssignationScript';
+        var numberOfReviewsRequired = $("#numberOfReview").val();
+
+        $.ajax({
+            type: 'GET',
+            url: ajaxURL,
+            data: { organisationName: SelectedOrganisationName, classroomName: SelectedClassroomName, assignmentName: SelectedAssignmentName, numberOfReviews: numberOfReviewsRequired},
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            beforeSend: function () {
+                console.log('firing ajax call');
+            },
+            success: function (data) {
+                console.log("works!");
+            },
+            error: function (ex) {
+                console.log(ex);
+            }
+        });
+
+    }
+
+    function StartTeacherAssignationScript (){
+        var ajaxURL = '/RPLP/StartTeachertAssignationScript';
+
+        $.ajax({
+            type: 'GET',
+            url: ajaxURL,
+            data: { organisationName: SelectedOrganisationName, classroomName: SelectedClassroomName, assignmentName: SelectedAssignmentName},
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            beforeSend: function () {
+                console.log('firing ajax call');
+            },
+            success: function (data) {
+                console.log("works!");
+            },
+            error: function (ex) {
+                console.log(ex);
+            }
+        });
+    }
+
+    function DownloadComments ()
+    {
+        var url = `https://localhost/RPLP/DownloadCommentsOfPullRequestByAssignment?organisationName=${SelectedOrganisationName}&classroomName=${SelectedClassroomName}&assignmentName=${SelectedAssignmentName}`;
+        window.open(url);
+    }
+
+    function DownloadSingleRepository()
+    {
+        var selectedStudent = document.getElementById("selectStudent").value;
+        var url = `https://localhost/RPLP/DownloadSingleRepository?organisationName=${SelectedOrganisationName}&classroomName=${SelectedClassroomName}&assignmentName=${SelectedAssignmentName}&studentUsername=${selectedStudent}`;
+        window.open(url);
+    }
+
+    function DownloadAllRepositoriesForAssignment()
+    {
+        var url = `https://localhost/RPLP/DownloadAllRepositoriesForAssignment?organisationName=${SelectedOrganisationName}&classroomName=${SelectedClassroomName}&assignmentName=${SelectedAssignmentName}`;
+        window.open(url);
+    }
+
+</script>

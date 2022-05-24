@@ -14,6 +14,7 @@ namespace RPLP.DAL.DTO.Sql
         public string Token { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public string Email { get; set; }
         public List<Organisation_SQLDTO> Organisations { get; set; }
         public bool Active { get; set; }
 
@@ -31,6 +32,7 @@ namespace RPLP.DAL.DTO.Sql
             this.Token = p_admin.Token;
             this.FirstName = p_admin.FirstName;
             this.LastName = p_admin.LastName;
+            this.Email = p_admin.Email;
 
             if (p_admin.Organisations.Count >= 1)
             {
@@ -46,7 +48,12 @@ namespace RPLP.DAL.DTO.Sql
 
         public Administrator ToEntity()
         {
-            return new Administrator(this.Id, this.Username,this.Token, this.FirstName, this.LastName, this.Organisations.Select(organisation => organisation.ToEntity()).ToList());
+            return new Administrator(this.Id, this.Username, this.Token, this.FirstName, this.LastName, this.Email, this.Organisations.Select(organisation => organisation.ToEntity()).ToList());
+        }
+
+        public Administrator ToEntityWithoutList()
+        {
+            return new Administrator(this.Id, this.Username, this.Token, this.FirstName, this.LastName, this.Email, new List<Organisation>());
         }
     }
 }

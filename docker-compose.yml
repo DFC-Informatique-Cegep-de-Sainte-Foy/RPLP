@@ -2,20 +2,39 @@ version: '3.4'
 
 services:
   rplp.api:
-    image: revueparlespairs/rplpapi
+    container_name: rplp.api
+    image: revueparlespairs/rplpapi-dev
     build:
       context: .
       dockerfile: RPLP.API/Dockerfile
     ports: 
       - "47001:80"
+    depends_on: 
+      - rplp.db
+    restart: always
 
   rplp.mvc:
-    image: revueparlespairs/rplpmvc
+    container_name: rplp.mvc
+    image: revueparlespairs/rplpmvc-dev
     build:
       context: .
       dockerfile: RPLP.MVC/Dockerfile
-    ports: 
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
       - "80:80"
+      - "443:443"
+    restart: always
+
+  rplp.coherencechecker:
+    container_name: rplp.coherencechecker
+    image: revueparlespairs/rplp-coherencechecker
+    build:
+      context: .
+      dockerfile: RPLP.COHERENCECHECKER/Dockerfile
+    depends_on: 
+      - rplp.db
+    restart: always
 
   rplp.db:
     container_name: rplp.db
@@ -28,6 +47,17 @@ services:
       ACCEPT_EULA: "Y"
     volumes:
         - rplpvolume:/var/opt/mssql/data
+    restart: always
+
+  rplp.db.test:
+    container_name: rplp.db.test
+    user: root
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    ports:
+      - "1434:1433"
+    environment:
+      SA_PASSWORD: "Cad3pend86!"
+      ACCEPT_EULA: "Y"
 
 volumes: 
     rplpvolume:

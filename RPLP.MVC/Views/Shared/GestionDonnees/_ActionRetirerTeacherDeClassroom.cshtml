@@ -1,0 +1,214 @@
+﻿@model RPLP.MVC.Models.GestionDonneeViewModel
+
+<form id="removeTeacherFromClassroomForm">
+    <div class="titlePartial">
+    <h2 >Retirer un enseignant a une classe</H2>
+    </div>
+
+    <div class="form-group">
+        <label for="removeTeacherFromClassroomOrgDropdown">Organisation</label>
+        <select id="removeTeacherFromClassroomOrgDropdown" class="form-control" onchange="retirerTeacherdeClassroom.choisirOrg()">
+
+        </select>
+        <br />
+    </div>
+
+    <div class="form-group">
+        <label for="removeTeacherFromClassroomClassroomDropdown">Classe</label>
+        <select id="removeTeacherFromClassroomClassroomDropdown" class="form-control" onchange="retirerTeacherdeClassroom.choisirClassroom()" disabled>
+
+        </select>
+        <br />
+    </div>
+
+    <div class="form-group">
+        <label for="removeTeacherFromClassroomTeacherDropdown">Enseignant</label>
+        <select id="removeTeacherFromClassroomTeacherDropdown" class="form-control" disabled>
+
+        </select>
+        <br />
+    </div>
+
+  <input type="button" class="btn-lg btn-danger titlePartial" onclick=" retirerTeacherdeClassroom.RemoveTeacherFromClassroom()" value="Retirer">
+  <input type="button" class="btn-lg btn-primary titlePartial" onclick="retirerTeacherdeClassroom.refreshForm()" value=" Rafraîchir le formulaire">
+</form>
+
+<script src="/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        var option = document.createElement("option");
+        option.text = "Faites un choix";
+        option.value = -1;
+        var select = document.getElementById("removeTeacherFromClassroomOrgDropdown");
+        select.appendChild(option);
+
+        @foreach (var d in Model.Organisations)
+        {
+            @:var option = document.createElement("option");
+            @:option.text = "@d.Name";
+            @:option.value = "@d.Name";
+            @:var select = document.getElementById("removeTeacherFromClassroomOrgDropdown");
+            @:select.appendChild(option);
+        }
+    });
+
+    var retirerTeacherdeClassroom  = {};
+    var classrooms = [];
+    var teachers = [];
+
+    retirerTeacherdeClassroom.refreshForm = function ()
+    {
+       document.getElementById("removeTeacherFromClassroomForm").reset();
+       document.getElementById("removeTeacherFromClassroomOrgDropdown").value = -1;
+
+       const classes = document.getElementById("removeTeacherFromClassroomClassroomDropdown");
+       classes.innerHTML = '';
+       document.getElementById("removeTeacherFromClassroomClassroomDropdown").disabled = true;
+
+       const classes2 = document.getElementById("removeTeacherFromClassroomTeacherDropdown");
+       classes2.innerHTML = '';
+       document.getElementById("removeTeacherFromClassroomTeacherDropdown").disabled = true;
+    }
+
+    retirerTeacherdeClassroom.choisirOrg = function ()
+    {
+       if(document.getElementById("removeTeacherFromClassroomOrgDropdown").value == -1)
+       {
+            const classes = document.getElementById("removeTeacherFromClassroomClassroomDropdown");
+            classes.innerHTML = '';
+            document.getElementById("removeTeacherFromClassroomClassroomDropdown").disabled = true;
+
+             const classes2 = document.getElementById("removeTeacherFromClassroomTeacherDropdown");
+             classes.innerHTML = '';
+            document.getElementById("removeTeacherFromClassroomTeacherDropdown").disabled = true;
+      
+       } else {
+            var orgName = document.getElementById("removeTeacherFromClassroomOrgDropdown").value;  
+            retirerTeacherdeClassroom.GetClassroomsOfOrganisationByName(orgName);
+
+            document.getElementById("removeTeacherFromClassroomClassroomDropdown").disabled = false;
+
+             const classes = document.getElementById("removeTeacherFromClassroomTeacherDropdown");
+            classes.innerHTML = '';
+            document.getElementById("removeTeacherFromClassroomTeacherDropdown").disabled = true;
+       }
+    }
+
+    retirerTeacherdeClassroom.choisirClassroom = function ()
+    {
+       if(document.getElementById("removeTeacherFromClassroomClassroomDropdown").value == -1)
+       {
+            const classes = document.getElementById("removeTeacherFromClassroomTeacherDropdown");
+            classes.innerHTML = '';
+            document.getElementById("removeTeacherFromClassroomTeacherDropdown").disabled = true;
+
+      
+       } else {
+            var classroomName = document.getElementById("removeTeacherFromClassroomClassroomDropdown").value;  
+            retirerTeacherdeClassroom.GetTeacherNotInClassroomByClassroomName(classroomName);
+
+            document.getElementById("removeTeacherFromClassroomTeacherDropdown").disabled = false;
+       }
+    }
+
+    retirerTeacherdeClassroom.RemoveTeacherFromClassroom = function ()
+    {
+        var classroomName = document.getElementById("removeTeacherFromClassroomClassroomDropdown").value;
+        var teacherUsername = document.getElementById("removeTeacherFromClassroomTeacherDropdown").value;
+
+        var ajaxURL = '/RPLP/POSTRemoveTeacherFromClassroom';
+
+        $.post(ajaxURL,{
+           ClassroomName : classroomName,
+           TeacherUsername : teacherUsername
+        },
+        function(data, status){
+            alert("Data: " + data + "\nStatus: " + status);
+        });
+    }
+
+
+     retirerTeacherdeClassroom.GetClassroomsOfOrganisationByName = function (organisationName)
+     {
+       var ajaxURL = '/RPLP/GetClassroomsOfOrganisationByName';
+        $.ajax({
+            type: 'GET',
+            url: ajaxURL,
+            data: { orgName : organisationName},
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            beforeSend: function () {
+                console.log('firing ajax call');
+            },
+            success: function (data) {
+                classrooms = data;
+                retirerTeacherdeClassroom.ShowClassrooms();
+            },
+            error: function (ex) {
+                console.log('Error');
+            }
+        });
+    }
+
+    retirerTeacherdeClassroom.GetTeacherNotInClassroomByClassroomName = function (classroomName)
+     {
+       var ajaxURL = '/RPLP/GetTeacherInClassroomByClassroomName';
+        $.ajax({
+            type: 'GET',
+            url: ajaxURL,
+            data: { classroomName : classroomName},
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            beforeSend: function () {
+                console.log('firing ajax call');
+            },
+            success: function (data) {
+                teachers = data;
+                retirerTeacherdeClassroom.ShowTeachers();
+            },
+            error: function (ex) {
+                console.log('Error');
+            }
+        });
+    }
+
+    retirerTeacherdeClassroom.ShowClassrooms = function()
+    {
+        const classes = document.getElementById("removeTeacherFromClassroomClassroomDropdown");
+        classes.innerHTML = '';
+
+        var option = document.createElement("option");
+        option.text = "Faites un choix";
+        option.value = -1;
+        var select = document.getElementById("removeTeacherFromClassroomClassroomDropdown");
+        select.appendChild(option);
+
+        classrooms.forEach(classroom => {
+            var option = document.createElement("option");
+            option.text = classroom.name;
+            option.value = classroom.name;
+            var select = document.getElementById("removeTeacherFromClassroomClassroomDropdown");
+            select.appendChild(option);
+        });
+    }
+
+    retirerTeacherdeClassroom.ShowTeachers = function()
+    {
+        const classes = document.getElementById("removeTeacherFromClassroomTeacherDropdown");
+        classes.innerHTML = '';
+
+        var option = document.createElement("option");
+        option.text = "Faites un choix";
+        option.value = -1;
+        var select = document.getElementById("removeTeacherFromClassroomTeacherDropdown");
+        select.appendChild(option);
+
+        teachers.forEach(teacher => {
+            var option = document.createElement("option");
+            option.text = teacher.firstName + " " + teacher.lastName;
+            option.value = teacher.username;
+            var select = document.getElementById("removeTeacherFromClassroomTeacherDropdown");
+            select.appendChild(option);
+        });
+    }
+</script>
