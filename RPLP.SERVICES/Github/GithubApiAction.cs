@@ -18,12 +18,13 @@ namespace RPLP.SERVICES.Github
         private string _getRepositoryCommitsGithub = "/repos/{organisationName}/{repositoryName}/commits";
         private string _getBranchesFromRepositoryCommitGithub = "/repos/{organisationName}/{repositoryName}/git/refs/heads";
         private string _getPullRequestsFromRepositoryGithub = "/repos/{organisationName}/{repositoryName}/pulls?";
+        private string _getCollaboratorfromRepositoryGithub = "/repos/{organisationName}/{repositoryName}/collaborators";
         private string _createNewBranchInRepositoryGithub = "/repos/{organisationName}/{repositoryName}/git/refs";
         private string _createPullRequestOnRepositoryBranchGithub = "/repos/{organisationName}/{repositoryName}/pulls";
-        private string _addCollaboratorToRepositoryGithub = "/repos/{organisationName}/{repositoryName}/collaborators/{studentUsername}";
+        private string _addorRemoveCollaboratorToRepositoryGithub = "/repos/{organisationName}/{repositoryName}/collaborators/{studentUsername}";
         private string _addFileToContentsGithub = "/repos/{organisationName}/{repositoryName}/contents/{newFileName}";
         private string _assignStudentToPullRequestGithub = "/repos/{organisationName}/{repositoryName}/pulls/{branchId}/requested_reviewers?";
-        private string _downloadRepository= "/repos/{organisationName}/{repositoryName}/zipball";
+        private string _downloadRepository = "/repos/{organisationName}/{repositoryName}/zipball";
 
 
         private const string organisationName = "{organisationName}";
@@ -200,17 +201,56 @@ namespace RPLP.SERVICES.Github
 
         public string AddStudentAsCollaboratorToPeerRepositoryGithub(string p_organisationName, string p_repositoryName, string p_studentUsername)
         {
-            string fullPath = _addCollaboratorToRepositoryGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName).Replace(studentUsername, p_studentUsername);
+            string fullPath = _addorRemoveCollaboratorToRepositoryGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName).Replace(studentUsername, p_studentUsername);
             Task<string> statusCode = AddStudentAsCollaboratorToPeerRepositoryGithubApiRequest(fullPath);
             statusCode.Wait();
 
             return statusCode.Result;
         }
 
+        public List<Collaborator_JSONDTO> GetCollaboratorFromStudentRepositoryGithub(string p_organisationName, string p_repositoryName)
+        {
+            string fullPath = _getCollaboratorfromRepositoryGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName);
+            Task<List<Collaborator_JSONDTO>> collaboratorsResult = GetCollaboratorFromStudentRepositoryGithubGithubApiRequest(fullPath);
+            collaboratorsResult.Wait();
+
+            return collaboratorsResult.Result;
+        }
+
+        private async Task<List<Collaborator_JSONDTO>> GetCollaboratorFromStudentRepositoryGithubGithubApiRequest(string p_githubLink)
+        {
+            List<Collaborator_JSONDTO> collaborators = new List<Collaborator_JSONDTO>();
+            HttpResponseMessage response = await _httpClient.GetAsync(p_githubLink);
+
+            if (response.IsSuccessStatusCode)
+            {
+                string JSONContent = await response.Content.ReadAsStringAsync();
+                collaborators = JsonConvert.DeserializeObject<List<Collaborator_JSONDTO>>(JSONContent);
+            }
+
+            return collaborators;
+        }
+
         private async Task<string> AddStudentAsCollaboratorToPeerRepositoryGithubApiRequest(string p_githubLink)
         {
             string permission = "{\"permission\":\"Triage\"}";
             HttpResponseMessage response = _httpClient.PutAsync(p_githubLink, new StringContent(permission, Encoding.UTF8, "application/json")).Result;
+
+            return response.StatusCode.ToString();
+        }
+
+        public string RemoveStudentAsCollaboratorFromPeerRepositoryGithub(string p_organisationName, string p_repositoryName, string p_studentUsername)
+        {
+            string fullPath = _addorRemoveCollaboratorToRepositoryGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName).Replace(studentUsername, p_studentUsername);
+            Task<string> statusCode = RemoveStudentAsCollaboratorFromPeerRepositoryGithubApiRequest(fullPath);
+            statusCode.Wait();
+
+            return statusCode.Result;
+        }
+
+        private async Task<string> RemoveStudentAsCollaboratorFromPeerRepositoryGithubApiRequest(string p_githubLink)
+        {
+            HttpResponseMessage response = _httpClient.DeleteAsync(p_githubLink).Result;
 
             return response.StatusCode.ToString();
         }

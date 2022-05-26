@@ -61,6 +61,11 @@ namespace RPLP.SERVICES.Github
             }
         }
 
+        public void ScriptRemoveStudentCollaboratorsFromAssignment(string p_organisationName, string p_classRoomName, string p_assignmentName)
+        {
+            //_githubApiAction.RemoveStudentAsCollaboratorFromPeerRepositoryGithub();
+        }
+
         private void prepareRepositoryAndCreatePullRequest(string p_organisationName, string p_repositoryName, Dictionary<string, int> p_studentDictionary, int p_reviewsPerRepository)
         {
             string[] splitRepository = p_repositoryName.Split('-');
