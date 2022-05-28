@@ -462,11 +462,11 @@ namespace RPLP.MVC.Controllers
         }
 
         [HttpGet]
-        public ActionResult StartTeachertAssignationScript(string organisationName, string classroomName, string assignmentName)
+        public ActionResult StartTeachertAssignationScript(string organisationName, string classroomName, string assignmentName, string teacherUsername)
         {
             try
             {
-                _scriptGithub.ScriptAssignTeacherToAssignmentReview(organisationName, classroomName, assignmentName);
+                _scriptGithub.ScriptAssignTeacherToAssignmentReview(organisationName, classroomName, assignmentName, teacherUsername);
                 return Ok();
             }
             catch (Exception ex)

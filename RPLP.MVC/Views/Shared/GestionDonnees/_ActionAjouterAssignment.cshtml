@@ -25,7 +25,7 @@
     </div>
 
     <div class="form-group">
-        <label for="InputAssignmentDeadlineCreateAssignment">Date de remise</label>
+        <label for="InputAssignmentDeadlineCreateAssignment">Date de remise (optionnel)</label>
         <input type="date" class="form-control" name="InputAssignmentDeadlineCreateAssignment" id="InputAssignmentDeadlineCreateAssignment" >
     </div>
 
@@ -97,9 +97,9 @@
         var deadline = document.getElementById("InputAssignmentDeadlineCreateAssignment").value;
         var classroomName = document.getElementById("createAssignmentClassroomDropdown").value;
 
-        if(name == "")
+        if(name == "", description == "")
         {
-            alert("Veulliez remplir le nom du travail");
+            alert("Veulliez remplir le nom du travail ou la description");
         } else {
             ajouterAssignment.createNewAssignment(name, description, classroomName, deadline);
         }

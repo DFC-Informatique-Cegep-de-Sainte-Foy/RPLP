@@ -155,7 +155,7 @@ namespace RPLP.SERVICES.Github
             return repositories;
         }
 
-        public void ScriptAssignTeacherToAssignmentReview(string p_organisationName, string p_classRoomName, string p_assignmentName)
+        public void ScriptAssignTeacherToAssignmentReview(string p_organisationName, string p_classRoomName, string p_assignmentName, string teacherUsername)
         {
             if (string.IsNullOrWhiteSpace(p_organisationName) || string.IsNullOrWhiteSpace(p_classRoomName) || string.IsNullOrWhiteSpace(p_assignmentName))
                 throw new ArgumentException("One of the provided value is incorrect or null");
@@ -177,11 +177,11 @@ namespace RPLP.SERVICES.Github
             //Faire l'action
             foreach (Repository repository in repositoriesToAssign)
             {
-                createPullRequestForTeacher(p_organisationName, repository.Name, "FichierTexte.txt", "FeedbackTeacher", "RmljaGllciB0ZXh0ZSBwb3VyIGNyw6nDqSBQUg==");
+                createPullRequestForTeacher(p_organisationName, repository.Name, "FichierTexte.txt", "FeedbackTeacher", "RmljaGllciB0ZXh0ZSBwb3VyIGNyw6nDqSBQUg==", teacherUsername);
             }
         }
 
-        private void createPullRequestForTeacher(string p_organisationName, string p_repositoryName, string p_newFileName, string p_message, string p_content)
+        private void createPullRequestForTeacher(string p_organisationName, string p_repositoryName, string p_newFileName, string p_message, string p_content, string teacherUsername)
         {
             Branch_JSONDTO branchDTO = new Branch_JSONDTO();
 
@@ -201,13 +201,13 @@ namespace RPLP.SERVICES.Github
                 }
             }
 
-            createPullRequestAndAssignTeacher(p_organisationName, p_repositoryName, branchDTO.gitObject.sha, p_newFileName, p_message, p_content);
+            createPullRequestAndAssignTeacher(p_organisationName, p_repositoryName, branchDTO.gitObject.sha, p_newFileName, p_message, p_content, teacherUsername);
 
         }
 
-        private void createPullRequestAndAssignTeacher(string p_organisationName, string p_repositoryName, string p_sha, string p_newFileName, string p_message, string p_content)
+        private void createPullRequestAndAssignTeacher(string p_organisationName, string p_repositoryName, string p_sha, string p_newFileName, string p_message, string p_content, string teacherUsername)
         {
-            string newBranchName = "feedback";
+            string newBranchName = $"feedback-{teacherUsername}";
 
             //un return a été mis à chacun pour que si une erreur apparaît entre les actions, ça s'arrête.
             string resultCreateBranch = this._githubApiAction.CreateNewBranchForFeedbackGitHub(p_organisationName, p_repositoryName, p_sha, newBranchName);
