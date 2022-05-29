@@ -137,6 +137,25 @@ namespace RPLP.UnitTesting.DepotTests
         }
 
         [Fact]
+        public void Test_GetAssignmentsByClassroomName()
+        {
+            this.DeleteAssignmentAndRelatedTablesContent();
+            this.InsertReviewAssignment();
+
+            using (var context = new RPLPDbContext(options))
+            {
+                DepotAssignment depot = new DepotAssignment(context);
+
+                List<Assignment> assignments = depot.GetAssignmentsByClassroomName("RPLP");
+
+                Assert.True(assignments.Count == 1);
+
+            }
+
+            this.DeleteAssignmentAndRelatedTablesContent();
+        }
+
+        [Fact]
         public void Test_UpsertAssignment_Inserts()
         {
             this.DeleteAssignmentAndRelatedTablesContent();

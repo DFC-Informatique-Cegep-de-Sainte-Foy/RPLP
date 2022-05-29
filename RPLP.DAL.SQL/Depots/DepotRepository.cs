@@ -85,7 +85,9 @@ namespace RPLP.DAL.SQL.Depots
 
         public List<Repository> GetRepositories()
         {
-            return this._context.Repositories.Where(repository => repository.Active).Select(repository => repository.ToEntity()).ToList();
+            return this._context.Repositories.Where(repository => repository.Active)
+                .Select(repository => repository.ToEntity())
+                .ToList();
         }
 
         public List<Repository> GetRepositoriesFromOrganisationName(string p_organisationName)

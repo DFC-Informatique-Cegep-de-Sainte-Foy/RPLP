@@ -149,8 +149,6 @@ namespace RPLP.DAL.SQL.Depots
 
         public List<Organisation> GetTeacherOrganisations(string p_teacherUsername)
         {
-            // untested 
-
             List<Organisation> organisations = new List<Organisation>();
             List<Classroom_SQLDTO> classrooms = new List<Classroom_SQLDTO>();
 
