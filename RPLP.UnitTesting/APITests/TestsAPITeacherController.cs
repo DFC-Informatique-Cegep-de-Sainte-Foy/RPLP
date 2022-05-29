@@ -72,7 +72,7 @@ namespace RPLP.UnitTesting.APITests
         }
 
         [Fact]
-        public void Test_GetStudentByUsername()
+        public void Test_GetTeacherByUsername()
         {
             Mock<IDepotTeacher> depot = new Mock<IDepotTeacher>();
             TeacherController controller = new TeacherController(depot.Object);
@@ -91,6 +91,31 @@ namespace RPLP.UnitTesting.APITests
             Teacher teacher = result.Value as Teacher;
 
             depot.Verify(d => d.GetTeacherByUsername("ThPaquet"), Times.Once);
+            Assert.NotNull(result);
+            Assert.Equal("ThPaquet", teacher.Username);
+        }
+
+        [Fact]
+        public void Test_GetTeacherByEmail()
+        {
+            Mock<IDepotTeacher> depot = new Mock<IDepotTeacher>();
+            TeacherController controller = new TeacherController(depot.Object);
+
+            Teacher teacherInMockDepot = new Teacher()
+            {
+                Id = 1,
+                Username = "ThPaquet",
+                Email = "ThPaquet@hotmail.com"
+            };
+
+            depot.Setup(d => d.GetTeacherByEmail("ThPaquet@hotmail.com")).Returns(teacherInMockDepot);
+
+            var response = controller.GetTeacherByEmail("ThPaquet@hotmail.com");
+
+            var result = Assert.IsType<OkObjectResult>(response.Result);
+            Teacher teacher = result.Value as Teacher;
+
+            depot.Verify(d => d.GetTeacherByEmail("ThPaquet@hotmail.com"), Times.Once);
             Assert.NotNull(result);
             Assert.Equal("ThPaquet", teacher.Username);
         }
@@ -123,6 +148,115 @@ namespace RPLP.UnitTesting.APITests
             List<Classroom> classrooms = result.Value as List<Classroom>;
 
             depot.Verify(d => d.GetTeacherClasses("ThPaquet"), Times.Once);
+            Assert.NotNull(result);
+            Assert.Equal(2, classrooms.Count);
+            Assert.Contains(classrooms, c => c.Name == "ProjetSynthese");
+        }
+
+        [Fact]
+        public void Test_GetTeacherOrganisationsByUsername()
+        {
+            Mock<IDepotTeacher> depot = new Mock<IDepotTeacher>();
+            TeacherController controller = new TeacherController(depot.Object);
+
+            List<Organisation> mockOrganisations = new List<Organisation>()
+            {
+                new Organisation()
+                {
+                    Name = "CEGEP Ste-Foy"
+                },
+                new Organisation()
+                {
+                    Name = "RPLP"
+                }
+            };
+
+            depot.Setup(d => d.GetTeacherOrganisations("ThPaquet")).Returns(mockOrganisations);
+
+            var response = controller.GetTeacherOrganisationsByUsername("ThPaquet");
+
+            var result = Assert.IsType<OkObjectResult>(response.Result);
+            List<Organisation> organisations = result.Value as List<Organisation>;
+
+            depot.Verify(d => d.GetTeacherOrganisations("ThPaquet"), Times.Once);
+            Assert.NotNull(result);
+            Assert.Equal(2, organisations.Count);
+            Assert.Contains(organisations, c => c.Name == "CEGEP Ste-Foy");
+        }
+
+        [Fact]
+        public void Test_GetTeacherOrganisationsByEmail()
+        {
+            Mock<IDepotTeacher> depot = new Mock<IDepotTeacher>();
+            TeacherController controller = new TeacherController(depot.Object);
+
+            List<Organisation> mockOrganisations = new List<Organisation>()
+            {
+                new Organisation()
+                {
+                    Name = "CEGEP Ste-Foy"
+                },
+                new Organisation()
+                {
+                    Name = "RPLP"
+                }
+            };
+
+            Teacher teacher = new Teacher()
+            {
+                Username = "ThPaquet",
+                Email = "ThPaquet@hotmail.com"
+            };
+
+            depot.Setup(d => d.GetTeacherOrganisations("ThPaquet")).Returns(mockOrganisations);
+            depot.Setup(d => d.GetTeacherByEmail("ThPaquet@hotmail.com")).Returns(teacher);
+
+            var response = controller.GetTeacherOrganisationsByEmail("ThPaquet@hotmail.com");
+
+            var result = Assert.IsType<OkObjectResult>(response.Result);
+            List<Organisation> organisations = result.Value as List<Organisation>;
+
+            depot.Verify(d => d.GetTeacherOrganisations("ThPaquet"), Times.Once);
+            depot.Verify(d => d.GetTeacherByEmail("ThPaquet@hotmail.com"), Times.Once);
+            Assert.NotNull(result);
+            Assert.Equal(2, organisations.Count);
+            Assert.Contains(organisations, c => c.Name == "CEGEP Ste-Foy");
+        }
+
+        [Fact]
+        public void Test_GetClassroomsOfTeacherInOrganisationByEmail()
+        {
+            Mock<IDepotTeacher> depot = new Mock<IDepotTeacher>();
+            TeacherController controller = new TeacherController(depot.Object);
+
+            string username = "ThPaquet";
+            string email = "ThPaquet@hotmail.com";
+            string organisation = "CEGEP Ste-Foy";
+
+            List<Classroom> classroomsInMockDepot = new List<Classroom>()
+            {
+                new Classroom()
+                {
+                    Id = 1,
+                    Name = "ProjetSynthese",
+                    OrganisationName = "CEGEP Ste-Foy"
+                },
+                new Classroom()
+                {
+                    Id = 2,
+                    Name = "OOP",
+                    OrganisationName = "CEGEP Ste-Foy"
+                }
+            };
+
+            depot.Setup(d => d.GetTeacherClassesInOrganisationByEmail(email, "CEGEP Ste-Foy")).Returns(classroomsInMockDepot);
+
+            var response = controller.GetClassroomsOfTeacherInOrganisationByEmail(email, organisation);
+
+            var result = Assert.IsType<OkObjectResult>(response.Result);
+            List<Classroom> classrooms = result.Value as List<Classroom>;
+
+            depot.Verify(d => d.GetTeacherClassesInOrganisationByEmail(email, organisation), Times.Once);
             Assert.NotNull(result);
             Assert.Equal(2, classrooms.Count);
             Assert.Contains(classrooms, c => c.Name == "ProjetSynthese");
