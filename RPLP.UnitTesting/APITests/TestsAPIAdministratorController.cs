@@ -113,6 +113,35 @@ namespace RPLP.UnitTesting.APITests
         }
 
         [Fact]
+        public void Test_GetAdministratorByEmail()
+        {
+            var mockDepotAdministrator = new Mock<IDepotAdministrator>();
+            Administrator adminInMock = new Administrator
+            {
+                Id = 1,
+                Username = "ThPaquet",
+                FirstName = "Thierry",
+                LastName = "Paquet",
+                Email = "ThPaquet@hotmail.com",
+                Token = "token"
+            };
+
+            mockDepotAdministrator.Setup(m => m.GetAdministratorByEmail("ThPaquet@hotmail.com")).Returns(adminInMock);
+
+            AdministratorController controller = new AdministratorController(mockDepotAdministrator.Object);
+
+            var response = controller.GetAdministratorByEmail("ThPaquet@hotmail.com");
+
+            var result = Assert.IsType<OkObjectResult>(response.Result);
+
+            Administrator administrator = result.Value as Administrator;
+
+            mockDepotAdministrator.Verify(m => m.GetAdministratorByEmail("ThPaquet@hotmail.com"), Times.Once());
+            Assert.NotNull(result);
+            Assert.Equal("ThPaquet", administrator.Username);
+        }
+
+        [Fact]
         public void Test_GetAdminOrganisations()
         {
             var mockDepotAdministrator = new Mock<IDepotAdministrator>();
@@ -136,6 +165,43 @@ namespace RPLP.UnitTesting.APITests
             AdministratorController controller = new AdministratorController(mockDepotAdministrator.Object);
 
             var response = controller.GetAdminOrganisations("ThPaquet");
+
+            var result = Assert.IsType<OkObjectResult>(response.Result);
+
+            List<Organisation> organisations = result.Value as List<Organisation>;
+
+            mockDepotAdministrator.Verify(m => m.GetAdminOrganisations("ThPaquet"), Times.Once());
+            Assert.NotNull(result);
+            Assert.Equal(2, organisations.Count);
+        }
+
+        [Fact]
+        public void Test_GetAdminOrganisationsByEmail()
+        {
+            var mockDepotAdministrator = new Mock<IDepotAdministrator>();
+            List<Organisation> organisationsInMock = new List<Organisation>()
+            {
+                new Organisation()
+                {
+                    Id = 1,
+                    Name = "CEGEP Ste-Foy"
+                },
+
+                new Organisation
+                {
+                    Id = 2,
+                    Name = "RPLP"
+                }
+            };
+
+            Administrator administratorInMock = new Administrator() { Username = "ThPaquet", Email = "ThPaquet@hotmail.com" };
+
+            mockDepotAdministrator.Setup(m => m.GetAdministratorByEmail("ThPaquet@hotmail.com")).Returns(administratorInMock);
+            mockDepotAdministrator.Setup(m => m.GetAdminOrganisations("ThPaquet")).Returns(organisationsInMock);
+
+            AdministratorController controller = new AdministratorController(mockDepotAdministrator.Object);
+
+            var response = controller.GetAdminOrganisationsByEmail("ThPaquet@hotmail.com");
 
             var result = Assert.IsType<OkObjectResult>(response.Result);
 
