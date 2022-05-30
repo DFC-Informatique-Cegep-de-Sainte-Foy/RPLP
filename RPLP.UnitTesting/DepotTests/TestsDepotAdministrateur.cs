@@ -96,6 +96,26 @@ namespace RPLP.UnitTesting.DepotTests
         }
 
         [Fact]
+        public void Test_GetDeactivatedAdministrators()
+        {
+            this.DeleteAdministratorAndRelatedTablesContent();
+            this.InsertPremadeAdmins();
+
+
+            using (var context = new RPLPDbContext(options))
+            {
+                DepotAdministrator depot = new DepotAdministrator(context);
+                List<Administrator> administrators = depot.GetDeactivatedAdministrators();
+
+                Assert.NotNull(administrators);
+                Assert.Equal(1, administrators.Count);
+                Assert.Contains(administrators, a => a.Username == "BACenComm");
+            }
+
+            this.DeleteAdministratorAndRelatedTablesContent();
+        }
+
+        [Fact]
         public void Test_GetByName()
         {
             this.DeleteAdministratorAndRelatedTablesContent();
@@ -550,6 +570,29 @@ namespace RPLP.UnitTesting.DepotTests
             using (var context = new RPLPDbContext(options))
             {
                 Assert.True(context.Administrators.Any(a => a.Username == "ikeameatbol" && !a.Active));
+            }
+
+            this.DeleteAdministratorAndRelatedTablesContent();
+        }
+
+        [Fact]
+        public void Test_ReactivateAdministrator()
+        {
+            this.DeleteAdministratorAndRelatedTablesContent();
+            this.InsertPremadeAdmins();
+
+            using (var context = new RPLPDbContext(options))
+            {
+                Assert.True(context.Administrators.Any(a => a.Username == "BACenComm" && !a.Active));
+
+                DepotAdministrator depot = new DepotAdministrator(context);
+
+                depot.ReactivateAdministrator("BACenComm");
+            }
+
+            using (var context = new RPLPDbContext(options))
+            {
+                Assert.True(context.Administrators.Any(a => a.Username == "BACenComm" && a.Active));
             }
 
             this.DeleteAdministratorAndRelatedTablesContent();

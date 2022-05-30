@@ -107,6 +107,26 @@ namespace RPLP.UnitTesting.DepotTests
         }
 
         [Fact]
+        private void Test_GetDeactivatedTeachers()
+        {
+            this.DeleteTeachersAndRelatedTablesContent();
+            this.InsertPremadeTeachers();
+
+            using (var context = new RPLPDbContext(options))
+            {
+                DepotTeacher depot = new DepotTeacher(context);
+                List<Teacher> teachers = depot.GetDeactivatedTeachers();
+
+                Assert.NotNull(teachers);
+                Assert.Equal(1, teachers.Count);
+                Assert.DoesNotContain(teachers, t => t.Username == "ThPaquet");
+                Assert.Contains(teachers, t => t.Username == "BACenComm");
+            }
+
+            this.DeleteTeachersAndRelatedTablesContent();
+        }
+
+        [Fact]
         private void Test_GetTeacherById()
         {
             this.DeleteTeachersAndRelatedTablesContent();
@@ -647,6 +667,50 @@ namespace RPLP.UnitTesting.DepotTests
                     {
                         depot.UpsertTeacher(teacher.ToEntityWithoutList());
                     });
+            }
+
+            this.DeleteTeachersAndRelatedTablesContent();
+        }
+
+        [Fact]
+        public void Test_DeleteTeacher()
+        {
+            this.DeleteTeachersAndRelatedTablesContent();
+            this.InsertPremadeTeachers();
+
+            using (var context = new RPLPDbContext(options))
+            {
+                DepotTeacher depot = new DepotTeacher(context);
+
+                Teacher_SQLDTO teacherInDB = context.Teachers.FirstOrDefault(t => t.Username == "ThPaquet" && t.Active);
+                Assert.NotNull(teacherInDB);
+
+                depot.DeleteTeacher(teacherInDB.Username);
+
+                teacherInDB = context.Teachers.FirstOrDefault(t => t.Username == "ThPaquet" && t.Active);
+                Assert.Null(teacherInDB);
+            }
+
+            this.DeleteTeachersAndRelatedTablesContent();
+        }
+
+        [Fact]
+        public void Test_ReactivateTeacher()
+        {
+            this.DeleteTeachersAndRelatedTablesContent();
+            this.InsertPremadeTeachers();
+
+            using (var context = new RPLPDbContext(options))
+            {
+                DepotTeacher depot = new DepotTeacher(context);
+
+                Teacher_SQLDTO teacherInDB = context.Teachers.FirstOrDefault(t => t.Username == "BACenComm" && !t.Active);
+                Assert.NotNull(teacherInDB);
+
+                depot.ReactivateTeacher(teacherInDB.Username);
+
+                teacherInDB = context.Teachers.FirstOrDefault(t => t.Username == "BACenComm" && t.Active);
+                Assert.NotNull(teacherInDB);
             }
 
             this.DeleteTeachersAndRelatedTablesContent();
