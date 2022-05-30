@@ -40,6 +40,21 @@ namespace RPLP.DAL.SQL.Depots
             return administrators;
         }
 
+        public List<Administrator> GetDeactivatedAdministrators()
+        {
+            List<Administrator_SQLDTO> adminResult = this._context.Administrators.Where(admin => !admin.Active)
+                                                                                 .Include(admin => admin.Organisations.Where(organisation => organisation.Active)).ToList();
+            List<Administrator> administrators = adminResult.Select(admin => admin.ToEntityWithoutList()).ToList();
+
+            for (int i = 0; i < adminResult.Count; i++)
+            {
+                if (adminResult[i].Id == administrators[i].Id && adminResult[i].Organisations.Count >= 1)
+                    administrators[i].Organisations = adminResult[i].Organisations.Select(organisation => organisation.ToEntityWithoutList()).ToList();
+            }
+
+            return administrators;
+        }
+
         public Administrator GetAdministratorById(int p_id)
         {
             Administrator_SQLDTO adminResult = this._context.Administrators.Where(admin => admin.Active)
@@ -228,6 +243,19 @@ namespace RPLP.DAL.SQL.Depots
             if (adminResult != null)
             {
                 adminResult.Active = false;
+
+                this._context.Update(adminResult);
+                this._context.SaveChanges();
+            }
+        }
+
+        public void ReactivateAdministrator(string p_adminUsername)
+        {
+            Administrator_SQLDTO adminResult = this._context.Administrators.Where(admin => !admin.Active)
+                                                                           .FirstOrDefault(admin => admin.Username == p_adminUsername);
+            if (adminResult != null)
+            {
+                adminResult.Active = true;
 
                 this._context.Update(adminResult);
                 this._context.SaveChanges();

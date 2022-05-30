@@ -40,6 +40,22 @@ namespace RPLP.DAL.SQL.Depots
             return teachers;
         }
 
+        public List<Teacher> GetDeactivatedTeachers()
+        {
+            List<Teacher_SQLDTO> teachersResult = this._context.Teachers.Where(teacher => !teacher.Active)
+                                                                        .Include(teacher => teacher.Classes.Where(classroom => classroom.Active)).ToList();
+
+            List<Teacher> teachers = teachersResult.Select(teacher => teacher.ToEntityWithoutList()).ToList();
+
+            for (int i = 0; i < teachersResult.Count; i++)
+            {
+                if (teachersResult[i].Id == teachers[i].Id && teachersResult[i].Classes.Count >= 1)
+                    teachers[i].Classes = teachersResult[i].Classes.Select(classroom => classroom.ToEntityWithoutList()).ToList();
+            }
+
+            return teachers;
+        }
+
         public Teacher GetTeacherByEmail(string p_teacherEmail)
         {
             Teacher_SQLDTO teacherResult = this._context.Teachers
@@ -280,6 +296,20 @@ namespace RPLP.DAL.SQL.Depots
             if (teacherResult != null)
             {
                 teacherResult.Active = false;
+
+                this._context.Update(teacherResult);
+                this._context.SaveChanges();
+            }
+        }
+
+        public void ReactivateTeacher(string p_teacherUsername)
+        {
+            Teacher_SQLDTO teacherResult = this._context.Teachers
+               .FirstOrDefault(teacher => teacher.Username == p_teacherUsername && !teacher.Active);
+
+            if (teacherResult != null)
+            {
+                teacherResult.Active = true;
 
                 this._context.Update(teacherResult);
                 this._context.SaveChanges();

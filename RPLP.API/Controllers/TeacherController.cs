@@ -21,6 +21,12 @@ namespace RPLP.API.Controllers
             return Ok(this._depot.GetTeachers());
         }
 
+        [HttpGet("Deactivated")]
+        public ActionResult<IEnumerable<Teacher>> GetDeactivated()
+        {
+            return Ok(this._depot.GetDeactivatedTeachers());
+        }
+
         [HttpGet("Id/{id}")]
         public ActionResult<Teacher> GetTeacherById(int id)
         {
@@ -99,6 +105,13 @@ namespace RPLP.API.Controllers
         public ActionResult DeleteTeacher(string teacherUsername)
         {
             this._depot.DeleteTeacher(teacherUsername);
+            return NoContent();
+        }
+
+        [HttpGet("Username/{teacherUsername}")]
+        public ActionResult ReactivateTeacher(string username)
+        {
+            this._depot.ReactivateTeacher(username);
             return NoContent();
         }
     }
