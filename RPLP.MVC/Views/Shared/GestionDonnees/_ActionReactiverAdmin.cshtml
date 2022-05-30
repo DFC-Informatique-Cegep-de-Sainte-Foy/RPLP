@@ -1,0 +1,59 @@
+﻿@model RPLP.MVC.Models.GestionDonneeViewModel
+
+<form id="reactivateAdminForm">
+    <div class="titlePartial">
+    <h2 >Reactiver un compte administrateur</H2>
+    </div>
+
+    <div class="form-group">
+        <select id="reactiverAdminDropdown" class="form-control">
+
+        </select>
+        <br />
+    </div>
+
+  <input type="button" class="btn-lg btn-danger titlePartial" onclick="reactiverAdmin.reactivateAdmin()" value="Reactiver">
+  <input type="button" class="btn-lg btn-primary titlePartial" onclick="reactiverAdmin.refreshForm()" value=" Rafraîchir le formulaire">
+</form>
+
+<script src="/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        var option = document.createElement("option");
+        option.text = "Faites un choix";
+        option.value = -1;
+        var select = document.getElementById("reactiverAdminDropdown");
+        select.appendChild(option);
+
+        @foreach (var d in Model.DeactivatedAdministrators)
+        {
+            @:var option = document.createElement("option");
+            @:option.text = "@d.FirstName @d.LastName";
+            @:option.value = "@d.Username";
+            @:var select = document.getElementById("reactiverAdminDropdown");
+            @:select.appendChild(option);
+        }
+    });
+
+    var reactiverAdmin = {};
+
+    reactiverAdmin.refreshForm = function ()
+    {
+       document.getElementById("reactivateAdminForm").reset();
+       document.getElementById("reactiverAdminDropdown").value = -1;
+    }
+
+    reactiverAdmin.reactivateAdmin = function ()
+    {
+        var username = document.getElementById("reactiverAdminDropdown").value;
+
+        var ajaxURL = '/RPLP/POSTReactivateAdmin';
+
+        $.post(ajaxURL,{
+           username : username,
+        },
+        function(data, status){
+            alert("Data: " + data + "\nStatus: " + status);
+        });
+    }
+</script>

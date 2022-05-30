@@ -41,6 +41,22 @@ namespace RPLP.DAL.SQL.Depots
             return students;
         }
 
+        public List<Student> GetDeactivatedStudents()
+        {
+            List<Student_SQLDTO> studentsResult = this._context.Students.Where(student => !student.Active)
+                                                                        .Include(student => student.Classes.Where(classroom => classroom.Active)).ToList();
+
+            List<Student> students = studentsResult.Select(admin => admin.ToEntityWithoutList()).ToList();
+
+            for (int i = 0; i < studentsResult.Count; i++)
+            {
+                if (studentsResult[i].Id == students[i].Id && studentsResult[i].Classes.Count >= 1)
+                    students[i].Classes = studentsResult[i].Classes.Select(classroom => classroom.ToEntityWithoutList()).ToList();
+            }
+
+            return students;
+        }
+
         public Student GetStudentById(int p_id)
         {
             Student_SQLDTO studentResult = this._context.Students
@@ -174,6 +190,19 @@ namespace RPLP.DAL.SQL.Depots
             if (studentResult != null)
             {
                 studentResult.Active = false;
+
+                this._context.Update(studentResult);
+                this._context.SaveChanges();
+            }
+        }
+
+        public void ReactivateStudent(string p_studentUsername)
+        {
+            Student_SQLDTO studentResult = this._context.Students.Where(student => !student.Active)
+                                                                 .FirstOrDefault(student => student.Username == p_studentUsername);
+            if (studentResult != null)
+            {
+                studentResult.Active = true;
 
                 this._context.Update(studentResult);
                 this._context.SaveChanges();

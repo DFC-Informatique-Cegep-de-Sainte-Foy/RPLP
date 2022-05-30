@@ -1,0 +1,59 @@
+﻿@model RPLP.MVC.Models.GestionDonneeViewModel
+
+<form id="reactivateStudentForm">
+    <div class="titlePartial">
+    <h2 >Reactiver un compte étudiant</H2>
+    </div>
+
+    <div class="form-group">
+        <select id="reactiverStudentDropdown" class="form-control">
+
+        </select>
+        <br />
+    </div>
+
+  <input type="button" class="btn-lg btn-danger titlePartial" onclick="reactiverStudent.reactivateStudent()" value="Reactiver">
+  <input type="button" class="btn-lg btn-primary titlePartial" onclick="reactiverStudent.refreshForm()" value=" Rafraîchir le formulaire">
+</form>
+
+<script src="/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        var option = document.createElement("option");
+        option.text = "Faites un choix";
+        option.value = -1;
+        var select = document.getElementById("reactiverStudentDropdown");
+        select.appendChild(option);
+
+        @foreach (var d in Model.DeactivatedStudents)
+        {
+            @:var option = document.createElement("option");
+            @:option.text = "@d.FirstName @d.LastName";
+            @:option.value = "@d.Username";
+            @:var select = document.getElementById("reactiverStudentDropdown");
+            @:select.appendChild(option);
+        }
+    });
+
+    var reactiverStudent = {};
+
+    reactiverStudent.refreshForm = function ()
+    {
+       document.getElementById("reactivateStudentForm").reset();
+       document.getElementById("reactiverStudentDropdown").value = -1;
+    }
+
+    reactiverStudent.reactivateStudent = function ()
+    {
+        var username = document.getElementById("reactiverStudentDropdown").value;
+
+        var ajaxURL = '/RPLP/POSTReactivateStudent';
+
+        $.post(ajaxURL,{
+           username : username,
+        },
+        function(data, status){
+            alert("Data: " + data + "\nStatus: " + status);
+        });
+    }
+</script>
