@@ -12,7 +12,7 @@
         <br />
     </div>
 
-  <input type="button" class="btn-lg btn-danger titlePartial" onclick="reactiverAdmin.reactivateTeacher()" value="Reactiver">
+  <input type="button" class="btn-lg btn-danger titlePartial" onclick="reactiverTeacher.reactivateTeacher()" value="Reactiver">
   <input type="button" class="btn-lg btn-primary titlePartial" onclick="reactiverTeacher.refreshForm()" value=" Rafraîchir le formulaire">
 </form>
 
@@ -22,7 +22,7 @@
         var option = document.createElement("option");
         option.text = "Faites un choix";
         option.value = -1;
-        var select = document.getElementById("reactiveTeacherDropdown");
+        var select = document.getElementById("reactiverTeacherDropdown");
         select.appendChild(option);
 
         @foreach (var d in Model.DeactivatedTeachers)
