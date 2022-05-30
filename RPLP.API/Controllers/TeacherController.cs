@@ -108,7 +108,7 @@ namespace RPLP.API.Controllers
             return NoContent();
         }
 
-        [HttpGet("Username/{teacherUsername}")]
+        [HttpGet("Reactivate/{teacherUsername}")]
         public ActionResult ReactivateTeacher(string username)
         {
             this._depot.ReactivateTeacher(username);
