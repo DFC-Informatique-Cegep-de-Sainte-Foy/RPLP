@@ -211,6 +211,42 @@ namespace RPLP.UnitTesting.DepotTests
         }
 
         [Fact]
+        public void Test_GetClassroomsByOrganisationName()
+        {
+            this.DeleteClassroomAndRelatedTablesContent();
+            this.InsertMultiplePremadeClassrooms();
+
+            using (var context = new RPLPDbContext(options))
+            {
+                context.Classrooms.Add(new Classroom_SQLDTO()
+                {
+                    Name = "false",
+                    OrganisationName = "CEGEP Ste-Foy",
+                    Active = false,
+                    Assignments = new List<Assignment_SQLDTO>(),
+                    Students = new List<Student_SQLDTO>(),
+                    Teachers = new List<Teacher_SQLDTO>()
+                });
+
+                context.SaveChanges();
+
+                Assert.True(context.Classrooms.Count() == 3);
+                Assert.True(context.Classrooms.Any(c => c.Name == "false" && !c.Active));
+                Assert.True(context.Classrooms.Where(c => c.Active).Count() == 2);
+            }
+
+            using (var context = new RPLPDbContext(options))
+            {
+                DepotClassroom depot = new DepotClassroom(context);
+                List<Classroom> classrooms = depot.GetClassroomsByOrganisationName("CEGEP Ste-Foy");
+
+                Assert.True(classrooms.Count == 2);
+            }
+
+            this.DeleteClassroomAndRelatedTablesContent();
+        }
+
+        [Fact]
         public void Test_GetAssignmentsByClassroomName()
         {
             this.DeleteClassroomAndRelatedTablesContent();

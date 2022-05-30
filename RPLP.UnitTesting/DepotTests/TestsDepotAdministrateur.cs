@@ -532,6 +532,27 @@ namespace RPLP.UnitTesting.DepotTests
             this.DeleteAdministratorAndRelatedTablesContent();
         }
 
-        
+        [Fact]
+        public void Test_DeleteAdministrator()
+        {
+            this.DeleteAdministratorAndRelatedTablesContent();
+            this.InsertPremadeAdmins();
+
+            using (var context = new RPLPDbContext(options))
+            {
+                Assert.True(context.Administrators.Any(a => a.Username == "ikeameatbol" && a.Active));
+
+                DepotAdministrator depot = new DepotAdministrator(context);
+
+                depot.DeleteAdministrator("ikeameatbol");
+            }
+
+            using (var context = new RPLPDbContext(options))
+            {
+                Assert.True(context.Administrators.Any(a => a.Username == "ikeameatbol" && !a.Active));
+            }
+
+            this.DeleteAdministratorAndRelatedTablesContent();
+        }
     }
 }

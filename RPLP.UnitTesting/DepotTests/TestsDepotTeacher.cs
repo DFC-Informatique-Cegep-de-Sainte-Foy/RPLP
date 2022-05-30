@@ -246,6 +246,63 @@ namespace RPLP.UnitTesting.DepotTests
         }
 
         [Fact]
+        private void Test_GetTeacherClassesInOrganisationByEmail()
+        {
+            this.DeleteTeachersAndRelatedTablesContent();
+            this.InsertPremadeTeachers();
+
+            using (var context = new RPLPDbContext(options))
+            {
+                Teacher_SQLDTO thPaquetInContext = context.Teachers
+                    .Include(t => t.Classes)
+                    .FirstOrDefault(t => t.Email == "ThPaquet@hotmail.com");
+                Assert.NotNull(thPaquetInContext);
+                Assert.True(thPaquetInContext.Active);
+                Assert.Contains(thPaquetInContext.Classes, c => c.Name == "ProjetSynthese" && c.OrganisationName == "CEGEP Ste-Foy");
+                Assert.Contains(thPaquetInContext.Classes, c => c.Name == "RPLP" && c.OrganisationName == "CEGEP Ste-Foy");
+
+
+                DepotTeacher depot = new DepotTeacher(context);
+                List<Classroom> classes = depot.GetTeacherClassesInOrganisationByEmail("ThPaquet@hotmail.com", "CEGEP Ste-Foy");
+
+                Assert.Equal(2, classes.Count);
+            }
+
+            this.DeleteTeachersAndRelatedTablesContent();
+        }
+
+        [Fact]
+        private void Test_GetTeacherOrganisations()
+        {
+            this.DeleteTeachersAndRelatedTablesContent();
+            this.InsertPremadeTeachers();
+
+            using (var context = new RPLPDbContext(options))
+            {
+                context.Organisations.Add(new Organisation_SQLDTO()
+                {
+                    Active = true,
+                    Name = "CEGEP Ste-Foy"
+                });
+
+                context.SaveChanges();
+            }
+
+            using (var context = new RPLPDbContext(options))
+            {
+                DepotTeacher depot = new DepotTeacher(context);
+                List<Organisation> organisations = depot.GetTeacherOrganisations("ThPaquet");
+
+                Assert.NotNull(organisations);
+                Assert.Equal(1, organisations.Count);
+                Assert.Contains(organisations, o => o.Name == "CEGEP Ste-Foy");
+            }
+
+            this.DeleteTeachersAndRelatedTablesContent();
+        }
+
+
+        [Fact]
         private void Test_GetTeacherClasses()
         {
             this.DeleteTeachersAndRelatedTablesContent();
