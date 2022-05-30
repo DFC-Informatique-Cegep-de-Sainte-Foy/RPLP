@@ -41,14 +41,14 @@ namespace RPLP.API.Controllers
         }
 
         [HttpGet("Telechargement/{organisationName}/{classroomName}/{assignmentName}")]
-        public FileStreamResult StartScriptDownloadAllRepositoriesForAssignment (string organisationName, string classroomName, string assignmentName)
+        public FileStreamResult StartScriptDownloadAllRepositoriesForAssignment(string organisationName, string classroomName, string assignmentName)
         {
             string path = _scriptGithub.ScriptDownloadAllRepositoriesForAssignment(organisationName, classroomName, assignmentName);
-            
+
             FileStream file = System.IO.File.OpenRead(path);
             FileStreamResult fileStreamResult = new FileStreamResult(file, "application/octet-stream");
             fileStreamResult.FileDownloadName = $"{assignmentName}_{DateTime.Now}.zip";
-            
+
             return fileStreamResult;
         }
 
@@ -57,11 +57,11 @@ namespace RPLP.API.Controllers
         {
             string repositoryName = $"{assignmentName}-{studentUsername}";
             string path = _scriptGithub.ScriptDownloadOneRepositoryForAssignment(organisationName, classroomName, assignmentName, repositoryName);
-            
+
             FileStream file = System.IO.File.OpenRead(path);
             FileStreamResult fileStreamResult = new FileStreamResult(file, "application/octet-stream");
             fileStreamResult.FileDownloadName = $"{assignmentName}_{DateTime.Now}.zip";
-            
+
             return fileStreamResult;
         }
 
@@ -81,12 +81,12 @@ namespace RPLP.API.Controllers
 
         //}
 
-        [HttpGet("/test/{organisationName}/{classroomName}/{assignmentName}")]
-        public ActionResult StartScriptProf(string organisationName, string classroomName, string assignmentName)
+        [HttpGet("/test/{organisationName}/{classroomName}/{assignmentName}/{teacherUsername}")]
+        public ActionResult StartScriptProf(string organisationName, string classroomName, string assignmentName, string teacherUsername)
         {
             try
             {
-                this._scriptGithub.ScriptAssignTeacherToAssignmentReview(organisationName, classroomName, assignmentName);
+                this._scriptGithub.ScriptAssignTeacherToAssignmentReview(organisationName, classroomName, assignmentName, teacherUsername);
                 return Ok("Assigned successfully");
             }
             catch (Exception ex)
@@ -116,7 +116,7 @@ namespace RPLP.API.Controllers
         }
 
         [HttpGet("{organisationName}/{repositoryName}/Branches/")]
-        public ActionResult<IEnumerable<Repository_JSONDTO>> GetRepositoryBranches(string organisationName, string repositoryName) 
+        public ActionResult<IEnumerable<Repository_JSONDTO>> GetRepositoryBranches(string organisationName, string repositoryName)
         {
             return Ok(this._githubAction.GetRepositoryBranchesGithub(organisationName, repositoryName));
         }
@@ -167,14 +167,14 @@ namespace RPLP.API.Controllers
         public ActionResult<CommentAggregate> GetIssuesReviewsAndCommentsByStudentOnAssignment(
             string teacherUsername, string repositoryName, string studentName)
         {
-            List<Pull> pulls =  this._githubPRCommentFetcher.GetPullRequestsFromRepositoryAsync(teacherUsername, repositoryName).Result;
+            List<Pull> pulls = this._githubPRCommentFetcher.GetPullRequestsFromRepositoryAsync(teacherUsername, repositoryName).Result;
 
             return Ok(this._githubPRCommentFetcher.GetUserCommentsReviewsAndIssues(pulls, studentName).Result);
         }
 
         [HttpGet("{organisationName}/{repositoryName}/PullRequests/Comments/File")]
         public FileStreamResult GetFileWithCommentsOfPullRequestByAssignmentForSingleRepository(string organisationName, string repositoryName)
-        { 
+        {
             List<Pull>? pull = this._githubPRCommentFetcher.GetPullRequestsFromRepositoryAsync(organisationName, repositoryName).Result;
             var stream = new MemoryStream(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(pull)));
             FileStreamResult fileStreamResult = new FileStreamResult(stream, "application/octet-stream");
@@ -195,4 +195,4 @@ namespace RPLP.API.Controllers
         }
     }
 }
-        #endregion
+#endregion
