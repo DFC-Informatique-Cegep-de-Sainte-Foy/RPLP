@@ -184,7 +184,7 @@ namespace RPLP.MVC.Controllers
             if (studentsResult.Count >= 1)
                 studentsResult.ForEach(student =>
                 {
-                    model.Students.Add(new StudentViewModel { Id = student.Id, Username = student.Username, Email = student.Email, FirstName = student.FirstName, LastName = student.LastName });
+                    model.Students.Add(new StudentViewModel { Id = student.Id, Username = student.Username, Email = student.Email, FirstName = student.FirstName, LastName = student.LastName, Matricule = student.Matricule });
                 });
 
             return model;
@@ -414,7 +414,7 @@ namespace RPLP.MVC.Controllers
             if (databaseStudents.Count >= 1)
                 foreach (Student student in databaseStudents)
                 {
-                    students.Add(new StudentViewModel { Id = student.Id, Email = student.Email, FirstName = student.FirstName, LastName = student.LastName, Username = student.Username });
+                    students.Add(new StudentViewModel { Id = student.Id, Email = student.Email, FirstName = student.FirstName, LastName = student.LastName, Username = student.Username, Matricule = student.Matricule });
                 }
 
             return students;
@@ -438,7 +438,7 @@ namespace RPLP.MVC.Controllers
                 {
                     if (!databaseStudentsInClassroom.Any(a => a.Username == student.Username))
                     {
-                        students.Add(new StudentViewModel { Id = student.Id, Email = student.Email, FirstName = student.FirstName, LastName = student.LastName, Username = student.Username });
+                        students.Add(new StudentViewModel { Id = student.Id, Email = student.Email, FirstName = student.FirstName, LastName = student.LastName, Username = student.Username, Matricule = student.Matricule });
                     }
                 }
             }
@@ -552,9 +552,9 @@ namespace RPLP.MVC.Controllers
         }
 
         [HttpPost]
-        public ActionResult<string> POSTUpsertStudent(int Id, string Email, string FirstName, string LastName, string Username)
+        public ActionResult<string> POSTUpsertStudent(int Id, string Email, string FirstName, string LastName, string Username, string Matricule)
         {
-            Student student = new Student { Id = Id, Email = Email, FirstName = FirstName, LastName = LastName, Username = Username, Classes = new List<Classroom>() };
+            Student student = new Student { Id = Id, Email = Email, FirstName = FirstName, LastName = LastName, Username = Username, Classes = new List<Classroom>(), Matricule = Matricule };
 
             Task<HttpResponseMessage> response = this._httpClient
                                                  .PostAsJsonAsync<Student>($"Student", student);
@@ -572,13 +572,22 @@ namespace RPLP.MVC.Controllers
             foreach (string rawStudent in SplitStudents)
             {
                 string[] student = rawStudent.Split("=");
+                string studentUsername = "";
 
-                string studentUsername = JsonConvert.DeserializeObject<string>(student[1].Replace(";", ""));
+                if (student.Count() >= 5)
+                {
+                    studentUsername = JsonConvert.DeserializeObject<string>(student[4].Replace(";", ""));
+                }
+
+                string studentMatricule = JsonConvert.DeserializeObject<string>(student[1].Replace(";", ""));
                 string studentLastName = JsonConvert.DeserializeObject<string>(student[2].Replace(";", ""));
                 string studentFirstName = JsonConvert.DeserializeObject<string>(student[3].Replace(";", ""));
-                string studentEmail = studentUsername + "@csfoy.ca";
+                string studentEmail = studentMatricule + "@csfoy.ca";
 
-                Student studentObj = new Student { Id = 0, Email = studentEmail, FirstName = studentFirstName, LastName = studentLastName, Username = studentUsername, Classes = new List<Classroom>() };
+                if (studentUsername == "")
+                    studentUsername = studentMatricule;
+
+                Student studentObj = new Student { Id = 0, Email = studentEmail, FirstName = studentFirstName, LastName = studentLastName, Username = studentUsername, Classes = new List<Classroom>(), Matricule = studentMatricule };
 
                 Task<HttpResponseMessage> response = this._httpClient
                                                         .PostAsJsonAsync<Student>($"Student", studentObj);
