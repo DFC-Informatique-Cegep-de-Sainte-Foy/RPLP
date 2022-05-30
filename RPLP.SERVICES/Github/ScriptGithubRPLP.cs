@@ -63,7 +63,21 @@ namespace RPLP.SERVICES.Github
 
         public void ScriptRemoveStudentCollaboratorsFromAssignment(string p_organisationName, string p_classRoomName, string p_assignmentName)
         {
-            //_githubApiAction.RemoveStudentAsCollaboratorFromPeerRepositoryGithub();
+            if (string.IsNullOrWhiteSpace(p_organisationName) || string.IsNullOrWhiteSpace(p_classRoomName) || string.IsNullOrWhiteSpace(p_assignmentName))
+                throw new ArgumentException("One of the provided value is incorrect or null");
+
+            List<Student> students = _depotClassroom.GetStudentsByClassroomName(p_classRoomName);
+            List<Repository> repositoriesToAssign = getRepositoriesToAssign(p_organisationName, p_classRoomName, p_assignmentName, students);
+
+            foreach (Repository repository in repositoriesToAssign)
+            {
+                List<Collaborator_JSONDTO> collaborator = _githubApiAction.GetCollaboratorFromStudentRepositoryGithub(p_organisationName, repository.Name);
+                collaborator.ForEach(collaborator =>
+                {
+                    if (collaborator.role_name == "triage")
+                        _githubApiAction.RemoveStudentAsCollaboratorFromPeerRepositoryGithub(p_organisationName, repository.Name, collaborator.login);
+                });
+            }
         }
 
         private void prepareRepositoryAndCreatePullRequest(string p_organisationName, string p_repositoryName, Dictionary<string, int> p_studentDictionary, int p_reviewsPerRepository)

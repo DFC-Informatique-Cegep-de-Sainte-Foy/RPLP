@@ -639,6 +639,13 @@ namespace RPLP.MVC.Controllers
 
         }
 
+        [HttpGet]
+        public ActionResult RemoveCollaboratorsFromAssignmentRepositories(string organisationName, string classroomName, string assignmentName)
+        {
+            _scriptGithub.ScriptRemoveStudentCollaboratorsFromAssignment(organisationName, classroomName, assignmentName);
+            return Ok();
+        }
+
         [HttpPost]
         public ActionResult<string> POSTUpsertTeacher(int Id, string Email, string FirstName, string LastName, string Username)
         {
