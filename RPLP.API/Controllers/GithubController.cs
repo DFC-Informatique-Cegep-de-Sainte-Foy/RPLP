@@ -65,22 +65,6 @@ namespace RPLP.API.Controllers
             return fileStreamResult;
         }
 
-
-        //[HttpGet("/teachers/{organisationName}/{classroomName}/{assignmentName}/{numberOfReviews}")]
-        //public ActionResult StartScriptAssignTeachers(string organisationName, string classroomName, string assignmentName, int numberOfReviews)
-        //{
-        //    try
-        //    {
-        //        this._scriptGithub.ScriptAssignTeacherToAssignmentReview(organisationName, classroomName, assignmentName, numberOfReviews);
-        //        return Ok("Assigned successfully");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(ex.Message);
-        //    }
-
-        //}
-
         [HttpGet("/test/{organisationName}/{classroomName}/{assignmentName}")]
         public ActionResult StartScriptProf(string organisationName, string classroomName, string assignmentName)
         {
