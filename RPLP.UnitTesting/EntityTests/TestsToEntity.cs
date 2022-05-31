@@ -306,6 +306,7 @@ namespace RPLP.UnitTesting.EntityTests
                 FirstName = "Thierry",
                 LastName = "Paquet",
                 Email = "ThPaquet@hotmail.com",
+                Matricule = "1234567",
                 Classes = new List<Classroom_SQLDTO>()
                 {
                     new Classroom_SQLDTO()
@@ -324,6 +325,7 @@ namespace RPLP.UnitTesting.EntityTests
             Assert.Equal(student_SQLDTO.FirstName, student.FirstName);
             Assert.Equal(student_SQLDTO.LastName, student.LastName);
             Assert.Equal(student_SQLDTO.Email, student.Email);
+            Assert.Equal(student_SQLDTO.Matricule, student.Matricule);
             Assert.Equal(student_SQLDTO.Classes.First().Name, student.Classes.First().Name);
         }
 
@@ -338,6 +340,7 @@ namespace RPLP.UnitTesting.EntityTests
                 FirstName = "Thierry",
                 LastName = "Paquet",
                 Email = "ThPaquet@hotmail.com",
+                Matricule = "1234567",
                 Classes = new List<Classroom_SQLDTO>()
                 {
                     new Classroom_SQLDTO()
@@ -356,6 +359,7 @@ namespace RPLP.UnitTesting.EntityTests
             Assert.Equal(student_SQLDTO.FirstName, student.FirstName);
             Assert.Equal(student_SQLDTO.LastName, student.LastName);
             Assert.Equal(student_SQLDTO.Email, student.Email);
+            Assert.Equal(student_SQLDTO.Matricule, student.Matricule);
             Assert.NotNull(student.Classes);
             Assert.Empty(student.Classes);
         }
