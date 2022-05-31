@@ -107,6 +107,25 @@ namespace RPLP.UnitTesting.DepotTests
         }
 
         [Fact]
+        public void Test_GetDeactivatedStudents()
+        {
+            this.DeleteStudentsAndRelatedTablesContent();
+            this.InsertPremadeStudents();
+
+            using (var context = new RPLPDbContext(options))
+            {
+                DepotStudent depot = new DepotStudent(context);
+                List<Student> students = depot.GetDeactivatedStudents();
+
+                Assert.Contains(students, s => s.Username == "BACenComm");
+                Assert.DoesNotContain(students, s => s.Username == "ThPaquet");
+                Assert.DoesNotContain(students, s => s.Username == "ikeameatbol");
+            }
+
+            this.DeleteStudentsAndRelatedTablesContent();
+        }
+
+        [Fact]
         public void Test_GetStudentById()
         {
             this.DeleteStudentsAndRelatedTablesContent();
@@ -307,6 +326,31 @@ namespace RPLP.UnitTesting.DepotTests
             {
                 Student_SQLDTO? studentInContext = context.Students.SingleOrDefault(s => s.Username == "ThPaquet" && s.Active);
                 Assert.Null(studentInContext);
+            }
+
+            this.DeleteStudentsAndRelatedTablesContent();
+        }
+
+        [Fact]
+        public void Test_ReactivateStudent()
+        {
+            this.DeleteStudentsAndRelatedTablesContent();
+            this.InsertPremadeStudents();
+
+            using (var context = new RPLPDbContext(options))
+            {
+                DepotStudent depot = new DepotStudent(context);
+
+                Student_SQLDTO? studentInContext = context.Students.SingleOrDefault(s => s.Username == "BACenComm" && !s.Active);
+                Assert.NotNull(studentInContext);
+
+                depot.ReactivateStudent("BACenComm");
+            }
+
+            using (var context = new RPLPDbContext(options))
+            {
+                Student_SQLDTO? studentInContext = context.Students.SingleOrDefault(s => s.Username == "BACenComm" && s.Active);
+                Assert.NotNull(studentInContext);
             }
 
             this.DeleteStudentsAndRelatedTablesContent();

@@ -35,11 +35,13 @@
     </div>
 
     <div class="wrapper" id="scriptStart" hidden>
-        <div>
-            <label for="numberOfReview">Nombre de revue par etudiants</label>
+        <div id="level">
+            <label for="numberOfReview">Nombre de revue par étudiant</label>
             <input class="p-2 buttons" type="number" id="numberOfReview" min="0" max="10" value="3" />
             <button class="btn-lg btn-primary p-2 buttons" onclick="StartStudentAssignationScript()">Lancer le script de revue des pairs</button>
-            <button class="btn-lg btn-primary p-2 buttons" onclick="StartTeacherAssignationScript()">Lancer le script de revue du Prof</button>
+            <button class="btn-lg btn-primary p-2 buttons" onclick="StartTeacherAssignationScript()">Lancer le script de revue du prof</button>
+            <select class="form-control" id="selectTeacher"></select>
+            <button id="marg" class="btn-lg btn-primary p-2 buttons" onclick="RemoveCollaboratorFromAssignment()">Retirer les pairs du travail</button>
         </div>
 
         <div class="form-group">
@@ -52,6 +54,15 @@
     </div>
 </div>
 
+<style>
+    #level {
+        margin-top: 6px;
+    }
+
+    #marg {
+        margin-top: 10px;
+    }
+</style>
 
 <script src="/lib/jquery/dist/jquery.min.js"></script>
 <script type="text/javascript">
@@ -64,6 +75,7 @@
     var classrooms = [];
     var assignments = [];
     var students = [];
+    var teachers = [];
 
     function SetOrganisationName (organisationName){
         if(organisationName != "")
@@ -103,6 +115,7 @@
             });
 
             GetStudentsInClassroomByClassroomName(classroomName);
+            GetTeacherInClassroomByClassroomName(classroomName);
         }
     }
 
@@ -143,6 +156,26 @@
             option.text = student.firstName + " " + student.lastName;
             option.value = student.username;
             var select = document.getElementById("selectStudent");
+            select.appendChild(option);
+        });
+    }
+
+    ShowTeachers = function()
+    {
+        const classes = document.getElementById("selectTeacher");
+        classes.innerHTML = '';
+
+        var option = document.createElement("option");
+        option.text = "Faites un choix";
+        option.value = -1;
+        var select = document.getElementById("selectTeacher");
+        select.appendChild(option);
+
+        teachers.forEach(teacher => {
+            var option = document.createElement("option");
+            option.text = teacher.firstName + " " + teacher.lastName;
+            option.value = teacher.username;
+            var select = document.getElementById("selectTeacher");
             select.appendChild(option);
         });
     }
@@ -300,6 +333,28 @@
 
     function StartTeacherAssignationScript (){
         var ajaxURL = '/RPLP/StartTeachertAssignationScript';
+        var teacherUsername = document.getElementById("selectTeacher").value;
+
+        $.ajax({
+            type: 'GET',
+            url: ajaxURL,
+            data: { organisationName: SelectedOrganisationName, classroomName: SelectedClassroomName, assignmentName: SelectedAssignmentName, teacherUsername: teacherUsername},
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            beforeSend: function () {
+                console.log('firing ajax call');
+            },
+            success: function (data) {
+                console.log("works!");
+            },
+            error: function (ex) {
+                console.log(ex);
+            }
+        });
+    }
+
+    function RemoveCollaboratorFromAssignment (){
+        var ajaxURL = '/RPLP/RemoveCollaboratorsFromAssignmentRepositories';
 
         $.ajax({
             type: 'GET',
@@ -315,6 +370,28 @@
             },
             error: function (ex) {
                 console.log(ex);
+            }
+        });
+    }
+
+    function GetTeacherInClassroomByClassroomName (classroomName)
+     {
+       var ajaxURL = '/RPLP/GetTeacherInClassroomByClassroomName';
+        $.ajax({
+            type: 'GET',
+            url: ajaxURL,
+            data: { classroomName : classroomName},
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            beforeSend: function () {
+                console.log('firing ajax call');
+            },
+            success: function (data) {
+                teachers = data;
+                ShowTeachers();
+            },
+            error: function (ex) {
+                console.log('Error');
             }
         });
     }
