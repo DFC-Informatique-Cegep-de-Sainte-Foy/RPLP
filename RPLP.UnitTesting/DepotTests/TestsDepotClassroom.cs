@@ -85,6 +85,7 @@ namespace RPLP.UnitTesting.DepotTests
                 FirstName = "Thierry",
                 LastName = "Paquet",
                 Email = "ThPaquet@hotmail.com",
+                Matricule = "1141200",
                 Active = true
             });
 
@@ -122,6 +123,7 @@ namespace RPLP.UnitTesting.DepotTests
                 FirstName = "Jonathan",
                 LastName = "Blouin",
                 Email = "ikeameatbol@hotmail.com",
+                Matricule = "1122334",
                 Active = true
             });
 
@@ -371,6 +373,7 @@ namespace RPLP.UnitTesting.DepotTests
                     FirstName = "Tester",
                     LastName = "McTesty",
                     Email = "Test@hotmail.com",
+                    Matricule = "1324354",
                     Active = true
                 });
 
@@ -621,6 +624,7 @@ namespace RPLP.UnitTesting.DepotTests
                     FirstName = "Testy",
                     LastName = "McTestson",
                     Email = "Test@hotmail.com",
+                    Matricule = "1133221",
                     Active = true
                 });
 
