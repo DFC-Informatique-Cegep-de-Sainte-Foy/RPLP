@@ -38,6 +38,7 @@ namespace RPLP.UnitTesting.DepotTests
                     FirstName = "Thierry",
                     LastName = "Paquet",
                     Email = "ThPaquet@hotmail.com",
+                    Matricule = "1141200",
                     Classes =
                     {
                         new Classroom_SQLDTO()
@@ -67,6 +68,7 @@ namespace RPLP.UnitTesting.DepotTests
                     FirstName = "Jonathan",
                     LastName = "Blouin",
                     Email = "ikeameatbol@hotmail.com",
+                    Matricule = "1122334",
                     Active = true
                 },
                 new Student_SQLDTO()
@@ -75,6 +77,7 @@ namespace RPLP.UnitTesting.DepotTests
                     FirstName = "Melissa",
                     LastName = "Lachapelle",
                     Email = "BACenComm@hotmail.com",
+                    Matricule = "1324354",
                     Active = false
                 }
             };
@@ -245,7 +248,8 @@ namespace RPLP.UnitTesting.DepotTests
                     Username = "ThPaquet",
                     FirstName = "Thierry",
                     LastName = "Paquet",
-                    Email = "ThPaquet@hotmail.com"
+                    Email = "ThPaquet@hotmail.com",
+                    Matricule = "1141200"
                 };
 
                 depot.UpsertStudent(student);
