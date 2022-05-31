@@ -333,7 +333,7 @@
 
     function StartTeacherAssignationScript (){
         var ajaxURL = '/RPLP/StartTeachertAssignationScript';
-        var teacherUsername = document.getElementById("selectTeacher");
+        var teacherUsername = document.getElementById("selectTeacher").value;
 
         $.ajax({
             type: 'GET',
