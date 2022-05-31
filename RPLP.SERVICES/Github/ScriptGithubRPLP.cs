@@ -158,10 +158,10 @@ namespace RPLP.SERVICES.Github
 
             branchDTO = GetMainBranchFromBranchList(branchesResult);
 
-            CreatePullRequestAndAssignTeacher(p_organisationName, p_repositoryName, branchDTO.gitObject.sha, p_newFileName, p_message, p_content);
+            CreatePullRequestAndAssignTeacher(p_organisationName, p_repositoryName, branchDTO.gitObject.sha, p_newFileName, p_message, p_content, teacherUsername);
         }
 
-        private void CreatePullRequestAndAssignTeacher(string p_organisationName, string p_repositoryName, string p_sha, string p_newFileName, string p_message, string p_content)
+        private void CreatePullRequestAndAssignTeacher(string p_organisationName, string p_repositoryName, string p_sha, string p_newFileName, string p_message, string p_content, string teacherUsername)
         {
             string newBranchName = $"feedback-{teacherUsername}";
 

@@ -66,7 +66,7 @@ namespace RPLP.API.Controllers
         }
 
         [HttpGet("/test/{organisationName}/{classroomName}/{assignmentName}")]
-        public ActionResult StartScriptProf(string organisationName, string classroomName, string assignmentName)
+        public ActionResult StartScriptProf(string organisationName, string classroomName, string assignmentName, string teacherUsername)
         {
             try
             {
