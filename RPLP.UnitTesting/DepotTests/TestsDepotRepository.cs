@@ -238,5 +238,39 @@ namespace RPLP.UnitTesting.DepotTests
 
             this.DeleteRepositoryTableContent();
         }
+
+        [Fact]
+        public void Test_GetRepositories()
+        {
+            this.DeleteRepositoryTableContent();
+            this.InsertPremadeRepositories();
+
+            using (var context = new RPLPDbContext(options))
+            {
+                DepotRepository depot = new DepotRepository(context);
+                List<Repository> repositories = depot.GetRepositories();
+
+                Assert.Equal(2, repositories.Count);
+            }
+
+            this.DeleteRepositoryTableContent();
+        }
+
+        [Fact]
+        public void Test_GetRepositoriesByOrganisationName()
+        {
+            this.DeleteRepositoryTableContent();
+            this.InsertPremadeRepositories();
+
+            using (var context = new RPLPDbContext(options))
+            {
+                DepotRepository depot = new DepotRepository(context);
+                List<Repository> repositories = depot.GetRepositoriesFromOrganisationName("RPLP");
+
+                Assert.Equal(2, repositories.Count);
+            }
+
+            this.DeleteRepositoryTableContent();
+        }
     }
 }

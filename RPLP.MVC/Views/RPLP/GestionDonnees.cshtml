@@ -17,6 +17,7 @@
                             <button id="btnCreateAdmin" class="btn-lg btn-outline-primary buttons" onclick="FormUnlock('createAdmin', 'btnCreateAdmin')">Créer</button>
                             <button id="btnModifyAdmin" class="btn-lg btn-outline-primary buttons" onclick="FormUnlock('modifyAdmin', 'btnModifyAdmin')">Modifier</button>
                             <button id="btnDeleteAdmin" class="btn-lg btn-outline-primary buttons" onclick="FormUnlock('deleteAdmin', 'btnDeleteAdmin')">Supprimer</button>
+                            <button id="btnReactivateAdmin" class="btn-lg btn-outline-primary buttons" onclick="FormUnlock('reactivateAdminInOrg', 'btnReactivateAdmin')">Réactiver</button>
                         </div>
                     </div>
                 </div>
@@ -44,6 +45,7 @@
                             <button id="btnCreateTeacher" class="btn-lg btn-outline-primary buttons" onclick="FormUnlock('createTeacher', 'btnCreateTeacher')">Créer</button>
                             <button id="btnModifyTeacher" class="btn-lg btn-outline-primary buttons" onclick="FormUnlock('modifyTeacher', 'btnModifyTeacher')">Modifier</button>
                             <button id="btnDeleteTeacher" class="btn-lg btn-outline-primary buttons" onclick="FormUnlock('deleteTeacher', 'btnDeleteTeacher')">Supprimer</button>
+                            <button id="btnReactivateTeacher" class="btn-lg btn-outline-primary buttons" onclick="FormUnlock('reactivateTeacherInOrg', 'btnReactivateTeacher')">Réactiver</button>
                         </div>
                     </div>
                 </div>
@@ -92,6 +94,7 @@
                             <button id="btnCreateStudentBatch" class="btn-lg btn-outline-primary buttons" onclick="FormUnlock('createStudentBatch', 'btnCreateStudentBatch')">Créer en lot</button>
                             <button id="btnModifyStudent" class="btn-lg btn-outline-primary buttons" onclick="FormUnlock('modifyStudent', 'btnModifyStudent')">Modifier</button>
                             <button id="btnDeleteStudent" class="btn-lg btn-outline-primary buttons" onclick="FormUnlock('deleteStudent', 'btnDeleteStudent')">Supprimer</button>
+                            <button id="btnReactivateStudent" class="btn-lg btn-outline-primary buttons" onclick="FormUnlock('reactivateStudentInOrg', 'btnReactivateStudent')">Réactiver</button>
                         </div>
                     </div>
                 </div>
@@ -126,6 +129,12 @@
             <div id="removeAdminFromOrg" hidden>
                 @{
                     Html.RenderPartial(@"../Shared/GestionDonnees/_ActionRetirerAdminDeOrg.cshtml", Model);
+                }
+            </div>
+
+            <div id="reactivateAdminInOrg" hidden>
+                @{
+                    Html.RenderPartial(@"../Shared/GestionDonnees/_ActionReactiverAdmin.cshtml", Model);
                 }
             </div>
 
@@ -171,6 +180,12 @@
                 }
             </div>
 
+            <div id="reactivateTeacherInOrg" hidden>
+                @{
+                    Html.RenderPartial(@"../Shared/GestionDonnees/_ActionReactiverTeacher.cshtml", Model);
+                }
+            </div>
+
             <div id="addStudentToClassroom" hidden>
                 @{
                     Html.RenderPartial(@"../Shared/GestionDonnees/_ActionAjouterStudentAClassroom.cshtml", Model);
@@ -198,6 +213,12 @@
             <div id="removeStudentFromClassroom" hidden>
                 @{
                     Html.RenderPartial(@"../Shared/GestionDonnees/_ActionRetirerStudentDeClassroom.cshtml", Model);
+                }
+            </div>
+
+            <div id="reactivateStudentInOrg" hidden>
+                @{
+                    Html.RenderPartial(@"../Shared/GestionDonnees/_ActionReactiverStudent.cshtml", Model);
                 }
             </div>
 
@@ -269,20 +290,20 @@
 <script type="text/javascript">
     @if (Model.RoleType == "Administrator")
     {
-        @Html.Raw("var buttons = ['btnCreateAdmin', 'btnModifyAdmin', 'btnDeleteAdmin','btnCreateOrganisation', 'btnModifyOrganisation', 'btnDeleteOrganisation','btnAddAdminToOrg', 'btnRemoveAdminFromOrg','btnCreateTeacher', 'btnModifyTeacher', 'btnDeleteTeacher','btnCreateClassroom', 'btnModifyClassroom', 'btnDeleteClassroom', 'btnAddTeacherToClassroom', 'btnRemoveTeacherFromClassroom', 'btnAddStudentToClassroom', 'btnAddStudentToClassroomBatch', 'btnRemoveStudentFromClassroom', 'btnRemoveAssignmentFromClassroom','btnCreateAssignment', 'btnModifyAssignment', 'btnDeleteAssignment','btnCreateStudent','btnCreateStudentBatch', 'btnModifyStudent', 'btnDeleteStudent'];")
+        @Html.Raw("var buttons = ['btnCreateAdmin', 'btnModifyAdmin', 'btnDeleteAdmin','btnCreateOrganisation', 'btnModifyOrganisation', 'btnDeleteOrganisation','btnAddAdminToOrg', 'btnRemoveAdminFromOrg','btnCreateTeacher', 'btnModifyTeacher', 'btnDeleteTeacher','btnCreateClassroom', 'btnModifyClassroom', 'btnDeleteClassroom', 'btnAddTeacherToClassroom', 'btnRemoveTeacherFromClassroom', 'btnAddStudentToClassroom', 'btnAddStudentToClassroomBatch', 'btnRemoveStudentFromClassroom', 'btnRemoveAssignmentFromClassroom','btnCreateAssignment', 'btnModifyAssignment', 'btnDeleteAssignment','btnCreateStudent','btnCreateStudentBatch', 'btnModifyStudent', 'btnDeleteStudent', 'btnReactivateStudent', 'btnReactivateTeacher', 'btnReactivateAdmin'];")
     }
     else if (Model.RoleType == "Teacher")
     {
-        @Html.Raw("var buttons = ['btnCreateClassroom', 'btnModifyClassroom', 'btnDeleteClassroom', 'btnAddTeacherToClassroom', 'btnRemoveTeacherFromClassroom', 'btnAddStudentToClassroom','btnAddStudentToClassroomBatch', 'btnRemoveStudentFromClassroom', 'btnRemoveAssignmentFromClassroom','btnCreateAssignment', 'btnModifyAssignment', 'btnDeleteAssignment','btnCreateStudent','btnCreateStudentBatch', 'btnModifyStudent', 'btnDeleteStudent'];")
+        @Html.Raw("var buttons = ['btnCreateClassroom', 'btnModifyClassroom', 'btnDeleteClassroom', 'btnAddTeacherToClassroom', 'btnRemoveTeacherFromClassroom', 'btnAddStudentToClassroom','btnAddStudentToClassroomBatch', 'btnRemoveStudentFromClassroom', 'btnRemoveAssignmentFromClassroom','btnCreateAssignment', 'btnModifyAssignment', 'btnDeleteAssignment','btnCreateStudent','btnCreateStudentBatch', 'btnModifyStudent', 'btnDeleteStudent', 'btnReactivateStudent'];")
     }
 
 
-    var forms = ["createAdmin", "modifyAdmin", "deleteAdmin","addAdminToOrg", "removeAdminFromOrg",
+    var forms = ["createAdmin", "modifyAdmin", "deleteAdmin","addAdminToOrg", "removeAdminFromOrg", "reactivateAdminInOrg",
                     "createOrganisation", "modifyOrganisation", "deleteOrganisation",
-                    "createTeacher", "modifyTeacher", "deleteTeacher",
+                    "createTeacher", "modifyTeacher", "deleteTeacher","reactivateTeacherInOrg",
                     "createClassroom", "modifyClassroom","deleteClassroom", "addTeacherToClassroom", "removeTeacherFromClassroom", "removeAssignmentFromClassroom", "removeStudentFromClassroom", "addStudentToClassroom","addStudentToClassroomBatch",
                     "createAssignment", "modifyAssignment", "deleteAssignment",
-                    "createStudent",'createStudentBatch', "modifyStudent", "deleteStudent"];
+                    "createStudent",'createStudentBatch', "modifyStudent", "deleteStudent", "reactivateStudentInOrg"];
 
 
     function StartScriptCoherence()
@@ -293,11 +314,12 @@
             type: 'GET',
             url: ajaxURL,
             contentType: "application/json; charset=utf-8",
+            dataType: "json",
             beforeSend: function () {
                 console.log('firing ajax call');
             },
-            success: function () {
-                console.log("works!");
+            success: function (data) {
+                console.log(data);
             },
             error: function (ex) {
                 console.log(ex);

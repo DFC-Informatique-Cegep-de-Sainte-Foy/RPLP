@@ -131,6 +131,10 @@ namespace RPLP.MVC.Controllers
                       .Result;
 
                 allOrgs.ForEach(organisation => model.AllOrgs.Add(new OrganisationViewModel { Id = organisation.Id, Name = organisation.Name }));
+
+                model.DeactivatedAdministrators = GetDeactivatedAdministratorsList();
+                model.DeactivatedStudents = GetDeactivatedStudentsList();
+                model.DeactivatedTeachers = GetDeactivatedTeachersList();
             }
             else if (userType == typeof(Teacher).ToString())
             {
@@ -188,6 +192,45 @@ namespace RPLP.MVC.Controllers
                 });
 
             return model;
+        }
+
+        private List<AdministratorViewModel> GetDeactivatedAdministratorsList()
+        {
+            List<Administrator> deactivatedAdministrators = this._httpClient
+                .GetFromJsonAsync<List<Administrator>>("Administrator/Deactivated")
+                .Result;
+
+            List<AdministratorViewModel> administratorViewModels = deactivatedAdministrators
+                .Select(a => new AdministratorViewModel(a))
+                .ToList();
+
+            return administratorViewModels;
+        }
+
+        private List<StudentViewModel> GetDeactivatedStudentsList()
+        {
+            List<Student> deactivatedStudents = this._httpClient
+                .GetFromJsonAsync<List<Student>>("Student/Deactivated")
+                .Result;
+
+            List<StudentViewModel> studentViewModels = deactivatedStudents
+                .Select(s => new StudentViewModel(s))
+                .ToList();
+
+            return studentViewModels;
+        }
+
+        private List<TeacherViewModel> GetDeactivatedTeachersList()
+        {
+            List<Teacher> deactivatedTeachers = this._httpClient
+                .GetFromJsonAsync<List<Teacher>>("Teacher/Deactivated")
+                .Result;
+
+            List<TeacherViewModel> teacherViewModels = deactivatedTeachers
+                .Select(t => new TeacherViewModel(t))
+                .ToList();
+
+            return teacherViewModels;
         }
 
         private List<OrganisationViewModel> GetOrganisations()
@@ -843,14 +886,45 @@ namespace RPLP.MVC.Controllers
             return response.Result.StatusCode.ToString();
         }
 
+        [HttpPost]
+        public ActionResult<string> POSTReactivateAdmin(string username)
+        {
+            Task<HttpResponseMessage> response = this._httpClient
+                                                 .GetAsync($"Administrator/Reactivate/{username}");
+            response.Wait();
+
+            return response.Result.StatusCode.ToString();
+        }
+
+        [HttpPost]
+        public ActionResult<string> POSTReactivateStudent(string username)
+        {
+            Task<HttpResponseMessage> response = this._httpClient
+                                                 .GetAsync($"Student/Reactivate/{username}");
+            response.Wait();
+
+            return response.Result.StatusCode.ToString();
+        }
+
+        [HttpPost]
+        public ActionResult<string> POSTReactivateTeacher(string username)
+        {
+            Task<HttpResponseMessage> response = this._httpClient
+                                                 .GetAsync($"Teacher/Reactivate/{username}");
+            response.Wait();
+
+            return response.Result.StatusCode.ToString();
+        }
+
         #endregion
 
         #region Coherence
 
         [HttpGet]
-        public void StartScriptCoherence()
+        public ActionResult StartScriptCoherence()
         {
             this._scriptGithub.EnsureOrganisationRepositoriesAreInDB();
+            return Ok();
         }
 
         #endregion

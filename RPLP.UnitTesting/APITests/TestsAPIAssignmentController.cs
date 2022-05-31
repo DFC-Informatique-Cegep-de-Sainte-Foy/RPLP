@@ -100,9 +100,45 @@ namespace RPLP.UnitTesting.APITests
             depot.Verify(d => d.GetAssignmentByName("RPLP"), Times.Once);
             Assert.NotNull(result);
 
-            Assignment assignments = result.Value as Assignment;
+            assignment = result.Value as Assignment;
 
             Assert.Equal("RPLP", assignment.Name);
+        }
+
+        [Fact]
+        public void Test_GetAssignmentByClassroomName()
+        {
+            Mock<IDepotAssignment> depot = new Mock<IDepotAssignment>();
+            AssignmentController controller = new AssignmentController(depot.Object);
+
+            List<Assignment> assignments = new List<Assignment>()
+            {
+                new Assignment()
+                {
+                    Id = 1,
+                    Name = "RPLP",
+                    ClassroomName = "RPLP"
+                },
+                new Assignment()
+                {
+                    Id = 2,
+                    Name = "Scrum",
+                    ClassroomName = "RPLP"
+                }
+            };
+
+
+            depot.Setup(d => d.GetAssignmentsByClassroomName("RPLP")).Returns(assignments);
+
+            var response = controller.GetAssignmentsByClassroomName("RPLP");
+            var result = Assert.IsType<OkObjectResult>(response.Result);
+
+            depot.Verify(d => d.GetAssignmentsByClassroomName("RPLP"), Times.Once);
+            Assert.NotNull(result);
+
+            assignments = result.Value as List<Assignment>;
+
+            Assert.Contains(assignments, a => a.ClassroomName == "RPLP");
         }
 
         [Fact]

@@ -21,6 +21,12 @@ namespace RPLP.API.Controllers
             return Ok(this._depot.GetAdministrators());
         }
 
+        [HttpGet("Deactivated")]
+        public ActionResult<IEnumerable<Administrator>> GetDeactivated()
+        {
+            return Ok(this._depot.GetDeactivatedAdministrators());
+        }
+
         [HttpGet("Id/{id}")]
         public ActionResult<Administrator> GetAdministratorById(int id)
         {
@@ -110,6 +116,13 @@ namespace RPLP.API.Controllers
         public ActionResult DeleteAdmin(string username)
         {
             this._depot.DeleteAdministrator(username);
+            return NoContent();
+        }
+
+        [HttpGet("Reactivate/{username}")]
+        public ActionResult ReactivateAdmin(string username)
+        {
+            this._depot.ReactivateAdministrator(username);
             return NoContent();
         }
     }
