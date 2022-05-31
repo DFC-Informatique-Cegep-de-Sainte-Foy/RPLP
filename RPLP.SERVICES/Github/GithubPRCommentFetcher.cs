@@ -37,25 +37,7 @@ namespace RPLP.SERVICES.Github.GithubReviewCommentFetcher
 
             foreach (string username in p_usernames)
             {
-                List<CodeComment> codeComments = new List<CodeComment>();
-                List<Issue> issues = new List<Issue>();
-                List<Review> reviews = new List<Review>();
-
-                foreach (Pull pull in p_pulls)
-                {
-                    codeComments.AddRange(pull.Comments.Where(c => c.Username.ToLower() == username.ToLower()));
-                    issues.AddRange(pull.Issues.Where(i => i.Username.ToLower() == username.ToLower()));
-                    reviews.AddRange(pull.Reviews.Where(r => r.Username.ToLower() == username.ToLower()));
-                }
-
-                CommentAggregate commentAggregate = new CommentAggregate()
-                {
-                    Username = username,
-                    Comments = codeComments,
-                    Reviews = reviews,
-                    Issues = issues
-                };
-
+                CommentAggregate commentAggregate = GetCommentAggregateFromPulls(p_pulls, username);
                 comments.Add(commentAggregate);
             }  
 
@@ -93,14 +75,10 @@ namespace RPLP.SERVICES.Github.GithubReviewCommentFetcher
             var jsonIssues = JArray.Parse(
                 GetRepositoryIssueCommentsJSONStringAsync(p_owner, p_repository).Result);
 
-            foreach (var issue in jsonIssues)
+            foreach (var issueJToken in jsonIssues)
             {
-                issues.Add(new Issue
-                {
-                    Username = issue["user"]["login"].ToString(),
-                    Body = issue["body"].ToString(),
-                    HTML_Url = issue["html_url"].ToString(),
-                });
+                Issue issue = GetIssueFromJToken(issueJToken);
+                issues.Add(issue);
             }
 
             return issues;
@@ -113,15 +91,10 @@ namespace RPLP.SERVICES.Github.GithubReviewCommentFetcher
             var jsonReviews = JArray.Parse(
                 GetPullRequestReviewsJSONStringAsync(p_owner, p_repository, p_pullNumber).Result);
 
-            foreach (var review in jsonReviews)
+            foreach (var reviewJToken in jsonReviews)
             {
-                reviews.Add(new Review
-                {
-                    Username = review["user"]["login"].ToString(),
-                    Body = review["body"].ToString(),
-                    HTML_Url = review["html_url"].ToString(),
-                    Pull_Request_Url = review["pull_request_url"].ToString()
-                });
+                Review review = GetReviewFromJToken(reviewJToken);
+                reviews.Add(review);
             }
 
             return reviews;
@@ -134,17 +107,10 @@ namespace RPLP.SERVICES.Github.GithubReviewCommentFetcher
             var jsonComments = JArray.Parse(
                 GetPullRequestCommentsJSONStringAsync(p_owner, p_repository).Result);
 
-            foreach (var comment in jsonComments)
+            foreach (var commentJToken in jsonComments)
             {
-                comments.Add(new CodeComment
-                {
-                    Username = comment["user"]["login"].ToString(),
-                    Diff_Hunk = comment["diff_hunk"].ToString(),
-                    Position = Convert.ToInt32(comment["position"].ToString()),
-                    Body = comment["body"].ToString(),
-                    Path = comment["path"].ToString(),
-                    PullRequestURL = comment["url"].ToString()
-                });
+                CodeComment codeComment = GetCodeCommentFromJToken(commentJToken);
+                comments.Add(codeComment);
             }
 
             return comments;
@@ -157,19 +123,10 @@ namespace RPLP.SERVICES.Github.GithubReviewCommentFetcher
             var jsonPulls = JArray.Parse(
                 GetPullRequestsJSONFromRepositoryAsync(p_owner, p_repository).Result);
 
-            foreach (var pull in jsonPulls)
+            foreach (var pullJToken in jsonPulls)
             {
-                int prNumber = Convert.ToInt32(pull["number"].ToString());
-
-                pulls.Add(new Pull(p_owner, p_repository)
-                {
-                    Username = pull["user"]["login"].ToString(),
-                    HTML_Url = pull["html_url"].ToString(),
-                    Number = prNumber,
-                    Issues = this.GetPullRequestIssueAsync(p_owner, p_repository).Result,
-                    Reviews = this.GetPullRequestReviewCommentsAsync(p_owner, p_repository, prNumber).Result,
-                    Comments = this.GetPullRequestCommentsAsync(p_owner, p_repository).Result
-                });
+                Pull pull = GetPullFromJToken(pullJToken, p_owner, p_repository);
+                pulls.Add(pull);
             }
 
             return pulls;
@@ -185,20 +142,10 @@ namespace RPLP.SERVICES.Github.GithubReviewCommentFetcher
             {
                 var jArray = JArray.Parse(json);
 
-                foreach (var pull in jArray)
+                foreach (var pullJToken in jArray)
                 {
-                    int prNumber = Convert.ToInt32(pull["number"].ToString());
-                    string repository = pull["head"]["repo"]["name"].ToString();
-
-                    pulls.Add(new Pull(p_owner, repository)
-                    {
-                        Username = pull["user"]["login"].ToString(),
-                        HTML_Url = pull["html_url"].ToString(),
-                        Number = prNumber,
-                        Issues = this.GetPullRequestIssueAsync(p_owner, repository).Result,
-                        Reviews = this.GetPullRequestReviewCommentsAsync(p_owner, repository, prNumber).Result,
-                        Comments = this.GetPullRequestCommentsAsync(p_owner, repository).Result
-                    });
+                    Pull pull = GetPullFromJToken(pullJToken, p_owner);
+                    pulls.Add(pull);
                 }
                 
             }
@@ -214,54 +161,13 @@ namespace RPLP.SERVICES.Github.GithubReviewCommentFetcher
             foreach (string reviewer in reviewerUsernames)
             {
                 ReviewerUser reviewerUser = new ReviewerUser() { Username = reviewer };
-
                 List<Pull> pullsCommentedByReviewer = new List<Pull>();
 
-                pullsCommentedByReviewer.AddRange(pulls
-                    .Where(p => 
-                        p.Comments.Any(c => c.Username == reviewer) ||
-                        p.Reviews.Any(r => r.Username == reviewer) ||
-                        p.Issues.Any(r => r.Username == reviewer)));
+                pullsCommentedByReviewer = GetPullsCommentedByReviewer(pulls, reviewer);
 
-                pullsCommentedByReviewer.ForEach(p =>
-                {
-                    if (reviewerUser.Repositories.Any(r => r.RepositoryName == p.Repository) == false)
-                    {
-                        reviewerUser.Repositories.Add(new RepositoryReview(p.Repository));
-                    }
-                });
-
-                reviewerUser.Repositories.ForEach(r =>
-                {
-                    pullsCommentedByReviewer
-                        .Where(p => p.Repository == r.RepositoryName)
-                        .Select(p => p.Comments
-                            .Where(c => c.Username == reviewer))
-                        .ToList()
-                        .ForEach(l => r.Comments.AddRange(l));
-
-                    pullsCommentedByReviewer
-                        .Where(p => p.Repository == r.RepositoryName)
-                        .Select(p => p.Reviews
-                            .Where(rev => rev.Username == reviewer))
-                        .ToList()
-                        .ForEach(l => r.Reviews.AddRange(l));
-
-                    pullsCommentedByReviewer
-                        .Where(p => p.Repository == r.RepositoryName)
-                        .Select(p => p.Issues
-                            .Where(i => i.Username == reviewer))
-                        .ToList()
-                        .ForEach(l => r.Issues.AddRange(l));
-
-                });
-
-                reviewerUser.Repositories.ForEach(r =>
-                {
-                    r.Comments = r.Comments.GroupBy(c => c.Position).Select(g => g.First()).ToList();
-                    r.Reviews = r.Reviews.GroupBy(r => r.HTML_Url).Select(g => g.First()).ToList();
-                    r.Issues = r.Issues.GroupBy(i => i.HTML_Url).Select(g => g.First()).ToList();
-                });
+                reviewerUser = AddMissingRepositoriesFromPullList(reviewerUser, pullsCommentedByReviewer);
+                reviewerUser.Repositories = AddCommentsIssuesAndReviewsFromPullsIntoRepositories(reviewerUser.Repositories, pullsCommentedByReviewer, reviewer);
+                reviewerUser.Repositories = GetOnlyUniqueCommentsReviewsAndIssuesFromRepositories(reviewerUser.Repositories);
 
                 reviewerUsers.Add(reviewerUser);
             }
@@ -308,6 +214,8 @@ namespace RPLP.SERVICES.Github.GithubReviewCommentFetcher
             return jsons;
         }
 
+        #region Private Methods
+
         private List<Repository> GetRepositoriesForAssignment(string p_organisationName, string p_classroomName, string p_assignmentName)
         {
             List<Assignment> assignmentsResult = this._depotClassroom.GetAssignmentsByClassroomName(p_classroomName);
@@ -321,8 +229,8 @@ namespace RPLP.SERVICES.Github.GithubReviewCommentFetcher
             if (assignment == null)
                 throw new ArgumentException($"no assignment with name {p_assignmentName}");
 
-            List<Repository> repositories = new List<Repository>();
             List<Repository> repositoriesResult = this._depotRepository.GetRepositoriesFromOrganisationName(p_organisationName);
+            List<Repository> repositories = GetRepositoriesOfStudentsForAssignment(repositoriesResult, studentsResult, assignment.Name);
 
             foreach (Repository repository in repositoriesResult)
             {
@@ -357,5 +265,197 @@ namespace RPLP.SERVICES.Github.GithubReviewCommentFetcher
 
             return reviewerUsernames;
         }
+
+        private CommentAggregate GetCommentAggregateFromPulls(List<Pull> p_pulls, string p_username)
+        {
+            List<CodeComment> codeComments = new List<CodeComment>();
+            List<Issue> issues = new List<Issue>();
+            List<Review> reviews = new List<Review>();
+
+            foreach (Pull pull in p_pulls)
+            {
+                codeComments.AddRange(pull.Comments.Where(c => c.Username.ToLower() == p_username.ToLower()));
+                issues.AddRange(pull.Issues.Where(i => i.Username.ToLower() == p_username.ToLower()));
+                reviews.AddRange(pull.Reviews.Where(r => r.Username.ToLower() == p_username.ToLower()));
+            }
+
+            CommentAggregate commentAggregate = new CommentAggregate()
+            {
+                Username = p_username,
+                Comments = codeComments,
+                Reviews = reviews,
+                Issues = issues
+            };
+
+            return commentAggregate;
+        }
+
+        private Issue GetIssueFromJToken(JToken jsonIssue)
+        {
+            Issue issue = new Issue
+            {
+                Username = jsonIssue["user"]["login"].ToString(),
+                Body = jsonIssue["body"].ToString(),
+                HTML_Url = jsonIssue["html_url"].ToString(),
+            };
+
+            return issue;
+        }
+
+        private Review GetReviewFromJToken(JToken jsonReview)
+        {
+            Review review = new Review
+            {
+                Username = jsonReview["user"]["login"].ToString(),
+                Body = jsonReview["body"].ToString(),
+                HTML_Url = jsonReview["html_url"].ToString(),
+                Pull_Request_Url = jsonReview["pull_request_url"].ToString()
+            };
+
+            return review;
+        }
+
+        private CodeComment GetCodeCommentFromJToken(JToken jsonComment)
+        {
+            CodeComment codeComment = new CodeComment
+            {
+                Username = jsonComment["user"]["login"].ToString(),
+                Diff_Hunk = jsonComment["diff_hunk"].ToString(),
+                Position = Convert.ToInt32(jsonComment["position"].ToString()),
+                Body = jsonComment["body"].ToString(),
+                Path = jsonComment["path"].ToString(),
+                PullRequestURL = jsonComment["url"].ToString()
+            };
+
+            return codeComment;
+        }
+
+        private Pull GetPullFromJToken(JToken jsonPull, string p_owner)
+        {
+            int prNumber = Convert.ToInt32(jsonPull["number"].ToString());
+            string repository = jsonPull["head"]["repo"]["name"].ToString();
+
+            Pull pull = new Pull(p_owner, repository)
+            {
+                Username = jsonPull["user"]["login"].ToString(),
+                HTML_Url = jsonPull["html_url"].ToString(),
+                Number = prNumber,
+                Issues = this.GetPullRequestIssueAsync(p_owner, repository).Result,
+                Reviews = this.GetPullRequestReviewCommentsAsync(p_owner, repository, prNumber).Result,
+                Comments = this.GetPullRequestCommentsAsync(p_owner, repository).Result
+            };
+
+            return pull;
+        }
+
+        private Pull GetPullFromJToken(JToken jsonPull, string p_owner, string p_repository)
+        {
+            int prNumber = Convert.ToInt32(jsonPull["number"].ToString());
+
+            Pull pull = new Pull(p_owner, p_repository)
+            {
+                Username = jsonPull["user"]["login"].ToString(),
+                HTML_Url = jsonPull["html_url"].ToString(),
+                Number = prNumber,
+                Issues = this.GetPullRequestIssueAsync(p_owner, p_repository).Result,
+                Reviews = this.GetPullRequestReviewCommentsAsync(p_owner, p_repository, prNumber).Result,
+                Comments = this.GetPullRequestCommentsAsync(p_owner, p_repository).Result
+            };
+
+            return pull;
+        }
+
+        private List<Pull> GetPullsCommentedByReviewer(List<Pull> p_pulls, string p_reviewer)
+        {
+            List<Pull> pullsCommentedByReviewer = new List<Pull>();
+
+            pullsCommentedByReviewer.AddRange(p_pulls
+                   .Where(p =>
+                       p.Comments.Any(c => c.Username == p_reviewer) ||
+                       p.Reviews.Any(r => r.Username == p_reviewer) ||
+                       p.Issues.Any(r => r.Username == p_reviewer)));
+
+            return pullsCommentedByReviewer;
+        }
+
+        private ReviewerUser AddMissingRepositoriesFromPullList(ReviewerUser p_reviewerUser, List<Pull> p_pulls)
+        {
+            p_pulls.ForEach(p =>
+            {
+                if (p_reviewerUser.Repositories.Any(r => r.RepositoryName == p.Repository) == false)
+                {
+                    p_reviewerUser.Repositories.Add(new RepositoryReview(p.Repository));
+                }
+            });
+
+            return p_reviewerUser;
+        }
+
+        private List<RepositoryReview> GetOnlyUniqueCommentsReviewsAndIssuesFromRepositories(List<RepositoryReview> p_repositories)
+        {
+            p_repositories.ForEach(r =>
+            {
+                r.Comments = r.Comments.GroupBy(c => c.Position).Select(g => g.First()).ToList();
+                r.Reviews = r.Reviews.GroupBy(r => r.HTML_Url).Select(g => g.First()).ToList();
+                r.Issues = r.Issues.GroupBy(i => i.HTML_Url).Select(g => g.First()).ToList();
+            });
+
+            return p_repositories;
+        }
+
+        public List<RepositoryReview> AddCommentsIssuesAndReviewsFromPullsIntoRepositories(List<RepositoryReview> p_repositories, List<Pull> p_pulls, string p_reviewer)
+        {
+            p_repositories.ForEach(r =>
+            {
+                p_pulls
+                    .Where(p => p.Repository == r.RepositoryName)
+                    .Select(p => p.Comments
+                        .Where(c => c.Username == p_reviewer))
+                    .ToList()
+                    .ForEach(l => r.Comments.AddRange(l));
+
+                p_pulls
+                    .Where(p => p.Repository == r.RepositoryName)
+                    .Select(p => p.Reviews
+                        .Where(rev => rev.Username == p_reviewer))
+                    .ToList()
+                    .ForEach(l => r.Reviews.AddRange(l));
+
+                p_pulls
+                    .Where(p => p.Repository == r.RepositoryName)
+                    .Select(p => p.Issues
+                        .Where(i => i.Username == p_reviewer))
+                    .ToList()
+                    .ForEach(l => r.Issues.AddRange(l));
+            });
+
+            return p_repositories;
+        }
+
+        public List<Repository> GetRepositoriesOfStudentsForAssignment(List<Repository> p_repositories, List<Student> students, string assignmentName)
+        {
+            List<Repository> repositories = new List<Repository>();
+
+            foreach (Repository repository in p_repositories)
+            {
+                string[] splitRepository = repository.Name.Split('-');
+
+                if (splitRepository[0] == assignmentName)
+                {
+                    foreach (Student student in students)
+                    {
+                        if (splitRepository[1] == student.Username)
+                        {
+                            repositories.Add(repository);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            return repositories;
+        }
+
+        #endregion
     }
 }

@@ -94,6 +94,39 @@ namespace RPLP.UnitTesting.APITests
         }
 
         [Fact]
+        public void Test_GetClassroomByClassroomName()
+        {
+            Mock<IDepotClassroom> depot = new Mock<IDepotClassroom>();
+            ClassroomController controller = new ClassroomController(depot.Object);
+            List<Classroom> classroomsInMockDepot = new List<Classroom>()
+            {
+                new Classroom()
+                {
+                    Id = 1,
+                    Name = "RPLP",
+                    OrganisationName = "CEGEP Ste-Foy"
+                },
+                new Classroom()
+                {
+                    Id = 2,
+                    Name = "OOP",
+                    OrganisationName = "CEGEP Ste-Foy"
+                }
+            };
+
+            depot.Setup(d => d.GetClassroomsByOrganisationName("CEGEP Ste-Foy")).Returns(classroomsInMockDepot);
+
+            var response = controller.GetClassroomsByOrganisationName("CEGEP Ste-Foy");
+            var result = Assert.IsType<OkObjectResult>(response.Result);
+            List<Classroom> classrooms = result.Value as List<Classroom>;
+
+            depot.Verify(d => d.GetClassroomsByOrganisationName("CEGEP Ste-Foy"), Times.Once);
+            Assert.NotNull(result);
+            Assert.Equal(2, classrooms.Count);
+            Assert.All(classrooms, c => c.OrganisationName.Equals("CEGEP Ste-Foy"));
+        }
+
+        [Fact]
         public void Test_GetTeachers()
         {
             Mock<IDepotClassroom> depot = new Mock<IDepotClassroom>();
@@ -177,6 +210,37 @@ namespace RPLP.UnitTesting.APITests
             depot.Setup(d => d.GetAssignmentsByClassroomName("ProjetSynthese")).Returns(assignmentsInMockDepot);
 
             var response = controller.GetAssignments("ProjetSynthese");
+            var result = Assert.IsType<OkObjectResult>(response.Result);
+            List<Assignment> assignments = result.Value as List<Assignment>;
+
+            depot.Verify(d => d.GetAssignmentsByClassroomName("ProjetSynthese"), Times.Once);
+            Assert.NotNull(result);
+            Assert.Equal(2, assignments.Count);
+            Assert.Contains(assignments, a => a.Name == "RPLP");
+        }
+
+        [Fact]
+        public void Test_GetAssignmentsByClassroomName()
+        {
+            Mock<IDepotClassroom> depot = new Mock<IDepotClassroom>();
+            ClassroomController controller = new ClassroomController(depot.Object);
+            List<Assignment> assignmentsInMockDepot = new List<Assignment>()
+            {
+                new Assignment()
+                {
+                    Id = 1,
+                    Name = "RPLP"
+                },
+                new Assignment()
+                {
+                    Id = 2,
+                    Name = "Dar Si Hmad"
+                }
+            };
+
+            depot.Setup(d => d.GetAssignmentsByClassroomName("ProjetSynthese")).Returns(assignmentsInMockDepot);
+
+            var response = controller.GetAssignmentsByClassroomName("ProjetSynthese");
             var result = Assert.IsType<OkObjectResult>(response.Result);
             List<Assignment> assignments = result.Value as List<Assignment>;
 

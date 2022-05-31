@@ -40,6 +40,21 @@ namespace RPLP.DAL.SQL.Depots
             return administrators;
         }
 
+        public List<Administrator> GetDeactivatedAdministrators()
+        {
+            List<Administrator_SQLDTO> adminResult = this._context.Administrators.Where(admin => !admin.Active)
+                                                                                 .Include(admin => admin.Organisations.Where(organisation => organisation.Active)).ToList();
+            List<Administrator> administrators = adminResult.Select(admin => admin.ToEntityWithoutList()).ToList();
+
+            for (int i = 0; i < adminResult.Count; i++)
+            {
+                if (adminResult[i].Id == administrators[i].Id && adminResult[i].Organisations.Count >= 1)
+                    administrators[i].Organisations = adminResult[i].Organisations.Select(organisation => organisation.ToEntityWithoutList()).ToList();
+            }
+
+            return administrators;
+        }
+
         public Administrator GetAdministratorById(int p_id)
         {
             Administrator_SQLDTO adminResult = this._context.Administrators.Where(admin => admin.Active)
@@ -163,27 +178,21 @@ namespace RPLP.DAL.SQL.Depots
             VerificatorForDepot verificator = new VerificatorForDepot(this._context);
             List<Organisation_SQLDTO> organisations = new List<Organisation_SQLDTO>();
 
-            if (p_administrator.Organisations.Count >= 1)
+            foreach (Organisation organisation in p_administrator.Organisations)
             {
-                foreach (Organisation organisation in p_administrator.Organisations)
-                {
-                    organisations.Add(new Organisation_SQLDTO(organisation));
-                }
+                organisations.Add(new Organisation_SQLDTO(organisation));
             }
 
             Administrator_SQLDTO? adminResult = this._context.Administrators
                 .AsNoTracking()
                 .FirstOrDefault(admin => admin.Id == p_administrator.Id);
 
-            if ((adminResult != null && adminResult.Username != p_administrator.Username &&
-                verificator.CheckUsernameTaken(p_administrator.Username)) ||
-                adminResult == null && verificator.CheckUsernameTaken(p_administrator.Username))
+            if (CheckIfUsernameTakenForUpsert(adminResult, p_administrator))
             {
                 throw new ArgumentException("Username already taken.");
             }
 
-            if ((adminResult != null && adminResult.Email != p_administrator.Email && verificator.CheckEmailTaken(p_administrator.Email)) ||
-                adminResult == null && verificator.CheckEmailTaken(p_administrator.Email))
+            if (CheckIfEmailTakenForUpsert(adminResult, p_administrator))
             {
                 throw new ArgumentException("Email already in use.");
             }
@@ -195,29 +204,11 @@ namespace RPLP.DAL.SQL.Depots
                     throw new ArgumentException("Deleted accounts cannot be updated.");
                 }
 
-                adminResult.Id = p_administrator.Id;
-                adminResult.Username = p_administrator.Username;
-                adminResult.Token = p_administrator.Token;
-                adminResult.FirstName = p_administrator.FirstName;
-                adminResult.LastName = p_administrator.LastName;
-                adminResult.Email = p_administrator.Email;
-
-                this._context.Update(adminResult);
-                this._context.SaveChanges();
+                this.UpdateAdmin(adminResult, p_administrator);
             }
             else
             {
-
-                Administrator_SQLDTO adminDTO = new Administrator_SQLDTO();
-                adminDTO.Username = p_administrator.Username;
-                adminDTO.Token = p_administrator.Token;
-                adminDTO.FirstName = p_administrator.FirstName;
-                adminDTO.LastName = p_administrator.LastName;
-                adminDTO.Email = p_administrator.Email;
-                adminDTO.Active = true;
-
-                this._context.Administrators.Add(adminDTO);
-                this._context.SaveChanges();
+                InsertAdminDTO(p_administrator);
             }
         }
 
@@ -232,6 +223,63 @@ namespace RPLP.DAL.SQL.Depots
                 this._context.Update(adminResult);
                 this._context.SaveChanges();
             }
+        }
+
+        public void ReactivateAdministrator(string p_adminUsername)
+        {
+            Administrator_SQLDTO adminResult = this._context.Administrators.Where(admin => !admin.Active)
+                                                                           .FirstOrDefault(admin => admin.Username == p_adminUsername);
+            if (adminResult != null)
+            {
+                adminResult.Active = true;
+
+                this._context.Update(adminResult);
+                this._context.SaveChanges();
+            }
+        }
+
+        private bool CheckIfUsernameTakenForUpsert(Administrator_SQLDTO p_adminResult, Administrator p_admin)
+        {
+            VerificatorForDepot verificator = new VerificatorForDepot(this._context);
+
+            return ((p_adminResult != null && p_adminResult.Username != p_admin.Username &&
+                verificator.CheckUsernameTaken(p_admin.Username)) ||
+                p_adminResult == null && verificator.CheckUsernameTaken(p_admin.Username));
+        }
+
+        private bool CheckIfEmailTakenForUpsert(Administrator_SQLDTO p_adminResult, Administrator p_admin)
+        {
+            VerificatorForDepot verificator = new VerificatorForDepot(this._context);
+
+            return (p_adminResult != null && p_adminResult.Email != p_admin.Email && verificator.CheckEmailTaken(p_admin.Email)) ||
+                p_adminResult == null && verificator.CheckEmailTaken(p_admin.Email);
+        }
+
+        private void UpdateAdmin(Administrator_SQLDTO adminToUpdate, Administrator updatedAdmin)
+        {
+            adminToUpdate.Id = updatedAdmin.Id;
+            adminToUpdate.Username = updatedAdmin.Username;
+            adminToUpdate.Token = updatedAdmin.Token;
+            adminToUpdate.FirstName = updatedAdmin.FirstName;
+            adminToUpdate.LastName = updatedAdmin.LastName;
+            adminToUpdate.Email = updatedAdmin.Email;
+
+            this._context.Update(adminToUpdate);
+            this._context.SaveChanges();
+        }
+
+        private void InsertAdminDTO(Administrator adminInfos)
+        {
+            Administrator_SQLDTO adminDTO = new Administrator_SQLDTO();
+            adminDTO.Username = adminInfos.Username;
+            adminDTO.Token = adminInfos.Token;
+            adminDTO.FirstName = adminInfos.FirstName;
+            adminDTO.LastName = adminInfos.LastName;
+            adminDTO.Email = adminInfos.Email;
+            adminDTO.Active = true;
+
+            this._context.Administrators.Add(adminDTO);
+            this._context.SaveChanges();
         }
     }
 }

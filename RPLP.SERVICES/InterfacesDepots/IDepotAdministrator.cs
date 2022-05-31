@@ -10,6 +10,7 @@ namespace RPLP.SERVICES.InterfacesDepots
     public interface IDepotAdministrator
     {
         public List<Administrator> GetAdministrators();
+        public List<Administrator> GetDeactivatedAdministrators();
         public Administrator GetAdministratorById(int p_id);
         public Administrator GetAdministratorByUsername(string p_adminUsername);
         public Administrator GetAdministratorByEmail(string p_email);
@@ -18,5 +19,6 @@ namespace RPLP.SERVICES.InterfacesDepots
         public void JoinOrganisation(string p_adminUsername, string p_organisationName);
         public void LeaveOrganisation(string p_adminUsername, string p_organisationName);
         public void DeleteAdministrator(string p_adminUsername);
+        public void ReactivateAdministrator(string p_adminUsername);
     }
 }

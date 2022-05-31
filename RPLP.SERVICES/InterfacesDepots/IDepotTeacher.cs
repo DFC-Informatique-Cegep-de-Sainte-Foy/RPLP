@@ -10,6 +10,7 @@ namespace RPLP.SERVICES.InterfacesDepots
     public interface IDepotTeacher
     {
         public List<Teacher> GetTeachers();
+        public List<Teacher> GetDeactivatedTeachers();
         public Teacher GetTeacherById(int p_id);
         public Teacher GetTeacherByEmail(string p_teacherEmail);
         public Teacher GetTeacherByUsername(string p_teacherUsername);
@@ -19,5 +20,6 @@ namespace RPLP.SERVICES.InterfacesDepots
         public List<Classroom> GetTeacherClasses(string p_teacherUsername);
         public void UpsertTeacher(Teacher p_teacher);
         public void DeleteTeacher(string p_teacherUsername);
+        public void ReactivateTeacher(string p_teacherUsername);
     }
 }

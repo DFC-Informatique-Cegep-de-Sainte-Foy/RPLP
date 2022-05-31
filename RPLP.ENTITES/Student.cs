@@ -13,6 +13,7 @@ namespace RPLP.ENTITES
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
+        public string Matricule { get; set; }
         public List<Classroom> Classes { get; set; }
 
         public Student()
@@ -20,13 +21,14 @@ namespace RPLP.ENTITES
             this.Classes = new List<Classroom>();
         }
 
-        public Student(int p_id, string p_username, string p_firstName, string p_lastName, string p_email, List<Classroom> p_classes)
+        public Student(int p_id, string p_username, string p_firstName, string p_lastName, string p_email, string p_matricule, List<Classroom> p_classes)
         {
             this.Id = p_id;
             this.Username = p_username;
             this.FirstName = p_firstName;
             this.LastName = p_lastName;
             this.Email = p_email;
+            this.Matricule = p_matricule;
             this.Classes = p_classes;
         }
     }
