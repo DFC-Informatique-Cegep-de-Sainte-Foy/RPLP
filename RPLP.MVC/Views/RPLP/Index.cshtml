@@ -398,20 +398,23 @@
 
     function DownloadComments ()
     {
-        var url = `https://localhost/RPLP/DownloadCommentsOfPullRequestByAssignment?organisationName=${SelectedOrganisationName}&classroomName=${SelectedClassroomName}&assignmentName=${SelectedAssignmentName}`;
+        //var localURL = window.location.hostname.replace('www.', 'https://');
+        var url = `RPLP/DownloadCommentsOfPullRequestByAssignment?organisationName=${SelectedOrganisationName}&classroomName=${SelectedClassroomName}&assignmentName=${SelectedAssignmentName}`;
         window.open(url);
     }
 
     function DownloadSingleRepository()
     {
-        var selectedStudent = document.getElementById("selectStudent").value;
-        var url = `https://localhost/RPLP/DownloadSingleRepository?organisationName=${SelectedOrganisationName}&classroomName=${SelectedClassroomName}&assignmentName=${SelectedAssignmentName}&studentUsername=${selectedStudent}`;
+        //var localURL = window.location.hostname.replace('www.', 'https://');
+        var selectedStudent = document.getElementById('selectStudent').value;
+        var url = `RPLP/DownloadSingleRepository?organisationName=${SelectedOrganisationName}&classroomName=${SelectedClassroomName}&assignmentName=${SelectedAssignmentName}&studentUsername=${selectedStudent}`;
         window.open(url);
     }
 
     function DownloadAllRepositoriesForAssignment()
     {
-        var url = `https://localhost/RPLP/DownloadAllRepositoriesForAssignment?organisationName=${SelectedOrganisationName}&classroomName=${SelectedClassroomName}&assignmentName=${SelectedAssignmentName}`;
+        //var localURL = window.location.hostname.replace('www.', 'https://');
+        var url = `RPLP/DownloadAllRepositoriesForAssignment?organisationName=${SelectedOrganisationName}&classroomName=${SelectedClassroomName}&assignmentName=${SelectedAssignmentName}`;
         window.open(url);
     }
 
