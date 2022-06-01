@@ -398,14 +398,12 @@
 
     function DownloadComments ()
     {
-        //var localURL = window.location.hostname.replace('www.', 'https://');
         var url = `RPLP/DownloadCommentsOfPullRequestByAssignment?organisationName=${SelectedOrganisationName}&classroomName=${SelectedClassroomName}&assignmentName=${SelectedAssignmentName}`;
         window.open(url);
     }
 
     function DownloadSingleRepository()
     {
-        //var localURL = window.location.hostname.replace('www.', 'https://');
         var selectedStudent = document.getElementById('selectStudent').value;
         var url = `RPLP/DownloadSingleRepository?organisationName=${SelectedOrganisationName}&classroomName=${SelectedClassroomName}&assignmentName=${SelectedAssignmentName}&studentUsername=${selectedStudent}`;
         window.open(url);
@@ -413,7 +411,6 @@
 
     function DownloadAllRepositoriesForAssignment()
     {
-        //var localURL = window.location.hostname.replace('www.', 'https://');
         var url = `RPLP/DownloadAllRepositoriesForAssignment?organisationName=${SelectedOrganisationName}&classroomName=${SelectedClassroomName}&assignmentName=${SelectedAssignmentName}`;
         window.open(url);
     }
