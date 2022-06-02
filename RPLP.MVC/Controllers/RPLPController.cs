@@ -614,17 +614,17 @@ namespace RPLP.MVC.Controllers
 
             foreach (string rawStudent in SplitStudents)
             {
-                string[] student = rawStudent.Split("=");
+                string[] student = rawStudent.Split(";");
                 string studentUsername = "";
 
                 if (student.Count() >= 5)
                 {
-                    studentUsername = JsonConvert.DeserializeObject<string>(student[4].Replace(";", ""));
+                    studentUsername = JsonConvert.DeserializeObject<string>(student[3].Replace("=", ""));
                 }
 
-                string studentMatricule = JsonConvert.DeserializeObject<string>(student[1].Replace(";", ""));
-                string studentLastName = JsonConvert.DeserializeObject<string>(student[2].Replace(";", ""));
-                string studentFirstName = JsonConvert.DeserializeObject<string>(student[3].Replace(";", ""));
+                string studentMatricule = JsonConvert.DeserializeObject<string>(student[0].Replace("=", ""));
+                string studentLastName = JsonConvert.DeserializeObject<string>(student[1].Replace("=", ""));
+                string studentFirstName = JsonConvert.DeserializeObject<string>(student[2].Replace("=", ""));
                 string studentEmail = studentMatricule + "@csfoy.ca";
 
                 if (studentUsername == "")

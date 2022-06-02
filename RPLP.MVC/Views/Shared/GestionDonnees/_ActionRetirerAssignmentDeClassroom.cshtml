@@ -116,9 +116,6 @@
         var classroomName = document.getElementById("removeAssignmentFromClassroomClassroomDropdown").value;
         var assignmentName = document.getElementById("removeAssignmentFromClassroomAssignmentDropdown").value;
 
-        console.log(classroomName);
-        console.log(assignmentName);
-
         var ajaxURL = '/RPLP/POSTRemoveAssignmentFromClassroom';
 
         $.post(ajaxURL,{
