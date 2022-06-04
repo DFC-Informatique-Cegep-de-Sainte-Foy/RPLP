@@ -10,7 +10,7 @@
             <div class="collapsible-content">
                 @foreach (var org in Model.Organisations)
                 {
-                        <Button class="btn-lg btn-outline-primary p-2 buttons" onclick="SetOrganisationName('@org.Name')" id='@org.Name'>@org.Name</Button>
+                    <Button class="btn-lg btn-outline-primary p-2 buttons" onclick="SetOrganisationName('@org.Name')" id='@org.Name'>@org.Name</Button>
                 }
             </div>
         </div>
