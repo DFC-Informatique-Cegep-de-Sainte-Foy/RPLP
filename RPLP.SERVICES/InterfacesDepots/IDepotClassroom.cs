@@ -19,6 +19,7 @@ namespace RPLP.SERVICES.InterfacesDepots
         public void AddTeacherToClassroom(string p_classroomName, string p_teacherUsername);
         public void RemoveTeacherFromClassroom(string p_classroomName, string p_teacherUsername);
         public void AddStudentToClassroom(string p_classroomName, string p_studentUsername);
+        public void AddStudentToClassroomMatricule(string p_classroomName, string p_studentMatricule);
         public void RemoveStudentFromClassroom(string p_classroomName, string p_studentUsername);
         public void AddAssignmentToClassroom(string p_classroomName, string p_assignmentName);
         public void RemoveAssignmentFromClassroom(string p_classroomName, string p_assignmentName);

@@ -49,6 +49,7 @@ namespace RPLP.UnitTesting.DepotTests
                         FirstName = "Jonathan",
                         LastName = "Blouin",
                         Email = "ikeameatbol@hotmail.com",
+                        Matricule = "1133224",
                         Active = true
                     });
                 context.Teachers.Add(
