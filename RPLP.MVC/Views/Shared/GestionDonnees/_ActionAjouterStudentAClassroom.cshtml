@@ -116,9 +116,6 @@
         var classroomName = document.getElementById("addStudentToClassroomClassroomDropdown").value;
         var studentUsername = document.getElementById("addStudentToClassroomStudentDropdown").value;
 
-        console.log(classroomName);
-        console.log(studentUsername);
-
         var ajaxURL = '/RPLP/POSTAddStudentToClassroom';
 
         $.post(ajaxURL,{
@@ -155,8 +152,6 @@
 
     ajouterStudentAClassroom.GetStudentsNotInClassroomByClassroomName = function (classroomName)
      {
-
-    console.log(classroomName);
 
        var ajaxURL = '/RPLP/GetStudentsNotInClassroomByClassroomName';
         $.ajax({

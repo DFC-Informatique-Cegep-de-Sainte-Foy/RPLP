@@ -36,7 +36,7 @@
 
     <div class="wrapper" id="scriptStart" hidden>
         <div id="level">
-            <label for="numberOfReview">Nombre de revue par étudiant</label>
+            <label for="numberOfReview">Nombre de revues par étudiant</label>
             <input class="p-2 buttons" type="number" id="numberOfReview" min="0" max="10" value="3" />
             <button class="btn-lg btn-primary p-2 buttons" onclick="StartStudentAssignationScript()">Lancer le script de revue des pairs</button>
             <button class="btn-lg btn-primary p-2 buttons" onclick="StartTeacherAssignationScript()">Lancer le script de revue du prof</button>
@@ -127,7 +127,6 @@
             assignments.forEach(assignment => {
                 if(assignment.name == assignmentName)
                 {
-                    console.log("test")
                     document.getElementById(assignment.name).classList.remove("btn-outline-primary");
                     document.getElementById(assignment.name).classList.add("btn-primary");
                 } else {
