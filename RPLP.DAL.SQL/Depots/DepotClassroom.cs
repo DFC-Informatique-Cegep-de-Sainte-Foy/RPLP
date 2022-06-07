@@ -208,6 +208,25 @@ namespace RPLP.DAL.SQL.Depots
             }
         }
 
+        public void AddStudentToClassroomMatricule(string p_classroomName, string p_studentMatricule)
+        {
+            Classroom_SQLDTO classroomResult = this._context.Classrooms.Include(classroom => classroom.Students.Where(student => student.Active))
+                                                                       .FirstOrDefault(classroom => classroom.Name == p_classroomName && classroom.Active);
+            if (classroomResult != null)
+            {
+                Student_SQLDTO studentResult = this._context.Students.Where(student => student.Active)
+                                                                     .SingleOrDefault(student => student.Matricule == p_studentMatricule);
+
+                if (studentResult != null && !classroomResult.Students.Contains(studentResult))
+                {
+                    classroomResult.Students.Add(studentResult);
+
+                    this._context.Update(classroomResult);
+                    this._context.SaveChanges();
+                }
+            }
+        }
+
         public void AddTeacherToClassroom(string p_classroomName, string p_teacherUsername)
         {
             Classroom_SQLDTO classroomResult = this._context.Classrooms.Where(classroom => classroom.Active)

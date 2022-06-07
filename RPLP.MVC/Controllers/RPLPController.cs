@@ -763,12 +763,12 @@ namespace RPLP.MVC.Controllers
 
             foreach (string rawStudent in SplitStudents)
             {
-                string[] student = rawStudent.Split("=");
+                string[] student = rawStudent.Split(";");
 
-                string studentUsername = JsonConvert.DeserializeObject<string>(student[1].Replace(";", ""));
+                string studentMatricule = JsonConvert.DeserializeObject<string>(student[0].Replace("=", ""));
 
                 Task<HttpResponseMessage> response = this._httpClient
-                                                 .PostAsJsonAsync($"Classroom/Name/{ClassroomName}/Students/Add/{studentUsername}", "");
+                                                 .PostAsJsonAsync($"Classroom/Name/{ClassroomName}/Students/Add/Matricule/{studentMatricule}", "");
 
                 result = response.Result;
             }

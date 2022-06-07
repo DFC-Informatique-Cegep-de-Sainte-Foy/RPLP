@@ -90,6 +90,19 @@ namespace RPLP.API.Controllers
             return Created(nameof(this.AddStudentToClassroom), classroomName);
         }
 
+        [HttpPost("Name/{classroomName}/Students/Add/Matricule/{studentMatricule}")]
+        public ActionResult AddStudentToClassroomMatricule(string classroomName, string studentMatricule)
+        {
+            if (string.IsNullOrWhiteSpace(classroomName) || string.IsNullOrWhiteSpace(studentMatricule))
+            {
+                return BadRequest();
+            }
+
+            this._depot.AddStudentToClassroomMatricule(classroomName, studentMatricule);
+
+            return Created(nameof(this.AddStudentToClassroom), classroomName);
+        }
+
         [HttpPost("Name/{classroomName}/Assignments/Add/{assignmentName}")]
         public ActionResult AddAssignmentToClassroom(string classroomName, string assignmentName)
         {
