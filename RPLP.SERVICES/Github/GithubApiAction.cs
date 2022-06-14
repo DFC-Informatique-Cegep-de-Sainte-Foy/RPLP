@@ -13,7 +13,7 @@ namespace RPLP.SERVICES.Github
     public class GithubApiAction
     {
         private static HttpClient _httpClient;
-        private string _getOrganisationRepositoriesGithub = "/orgs/{organisationName}/repos";
+        private string _getOrganisationRepositoriesGithub = "/orgs/{organisationName}/repos?page={page}";
         private string _getRepositoryInfoGithub = "/repos/{organisationName}/{repositoryName}";
         private string _getRepositoryCommitsGithub = "/repos/{organisationName}/{repositoryName}/commits";
         private string _getBranchesFromRepositoryCommitGithub = "/repos/{organisationName}/{repositoryName}/git/refs/heads";
@@ -44,11 +44,39 @@ namespace RPLP.SERVICES.Github
 
         public List<Repository_JSONDTO> GetOrganisationRepositoriesGithub(string p_organisationName)
         {
-            string fullPath = _getOrganisationRepositoriesGithub.Replace(organisationName, p_organisationName);
-            Task<List<Repository_JSONDTO>> RepositoriesJSON = OrganisationRepositoryGithubApiRequest(fullPath);
-            RepositoriesJSON.Wait();
+            Dictionary<string, Repository_JSONDTO> repositories = new Dictionary<string, Repository_JSONDTO>();
+            int callCount = 0;
+            int maxCalls = 50;
 
-            return RepositoriesJSON.Result;
+            //Console.Out.WriteLine($"GetOrganisationRepositoriesGithub({organisationName} -> {p_organisationName}) : (_getOrganisationRepositoriesGithub)");
+            string fullPath = _getOrganisationRepositoriesGithub.Replace(organisationName, p_organisationName);
+            try {
+                for (int i = 0; i < maxCalls; i++)
+                {
+                    Task<List<Repository_JSONDTO>> RepositoriesJSON = OrganisationRepositoryGithubApiRequest(fullPath.Replace("{page}", (callCount + 1).ToString()));
+                    RepositoriesJSON.Wait();
+                    //Console.Out.WriteLine($"Count == {RepositoriesJSON.Result.Count}");
+
+                    RepositoriesJSON.Result.ForEach(rJson => {
+                        if (!repositories.ContainsKey(rJson.name)) {
+                            repositories.Add(rJson.name, rJson);
+                        }
+                    });
+                    callCount++;
+                    if (RepositoriesJSON.Result.Count == 0) {
+                        //Console.Out.WriteLine("Compte avec == 0");
+                        break;
+                    }
+                }
+            }
+            catch (InvalidOperationException ex) {
+                Console.Error.WriteLine($"Impossible de récupérer les dépôts sur Git : {ex.Message}");
+            }
+
+
+            Console.Out.WriteLine(repositories.Count);
+
+            return repositories.Values.ToList();
         }
 
         private static async Task<List<Repository_JSONDTO>> OrganisationRepositoryGithubApiRequest(string p_githubLink)
@@ -56,10 +84,16 @@ namespace RPLP.SERVICES.Github
             List<Repository_JSONDTO> repositories = new List<Repository_JSONDTO>();
             HttpResponseMessage response = await _httpClient.GetAsync(p_githubLink);
 
+            //Console.Out.WriteLine($"OrganisationRepositoryGithubApiRequest ({p_githubLink})");
+
             if (response.IsSuccessStatusCode)
             {
+                //Console.Out.WriteLine("OrganisationRepositoryGithubApiRequest : 200");
+
                 string JSONContent = await response.Content.ReadAsStringAsync();
                 repositories = JsonConvert.DeserializeObject<List<Repository_JSONDTO>>(JSONContent);
+            } else {
+                throw new InvalidOperationException($"Erreur lors de la requête vers les dépots (url : {p_githubLink}, code : {response.StatusCode})");
             }
 
             return repositories;
