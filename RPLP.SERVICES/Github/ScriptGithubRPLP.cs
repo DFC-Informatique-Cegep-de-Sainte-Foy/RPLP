@@ -234,9 +234,11 @@ namespace RPLP.SERVICES.Github
             if (assignment == null)
                 throw new ArgumentException($"No assignment with name {p_assignmentName}");
 
+Console.Out.WriteLine($"API - ScriptGithubRPLP.cs -- ScriptDownloadOneRepositoryForAssignment - p_repositoryName == {p_repositoryName}");
             Repository repository = _depotRepository.GetRepositoryByName(p_repositoryName);
-
+Console.Out.WriteLine($"API - ScriptGithubRPLP.cs -- ScriptDownloadOneRepositoryForAssignment - repository == null : {repository == null}");
             string path = DownloadRepositoryToFile(repository);
+Console.Out.WriteLine($"API - ScriptGithubRPLP.cs -- ScriptDownloadOneRepositoryForAssignment - path == {path}");
 
             return path;
         }
