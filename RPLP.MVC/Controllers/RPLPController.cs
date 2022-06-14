@@ -646,15 +646,16 @@ namespace RPLP.MVC.Controllers
         {
             Stream stream;
             FileStreamResult fileStreamResult;
-
+Console.Out.WriteLine($"Github/Telechargement/{organisationName}/{classroomName}/{assignmentName}/{studentUsername}");
             try
             {
                 stream = await this._httpClient.GetStreamAsync($"Github/Telechargement/{organisationName}/{classroomName}/{assignmentName}/{studentUsername}");
                 fileStreamResult = new FileStreamResult(stream, "application/octet-stream");
                 fileStreamResult.FileDownloadName = $"{assignmentName}-{studentUsername}.zip";
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Console.Out.WriteLine(ex.Message);
                 return NotFound("Le dépôt na pas pu être trouvé. Il est peut-être privé et inaccessible à l'utilisateur.");
             }
 
