@@ -643,6 +643,7 @@ namespace RPLP.MVC.Controllers
                 return result.ToString();
             } catch (Exception ex) {
                 Console.Out.WriteLine($"POSTUpsertBatchStudent - Exception : {ex.Message} {ex.StackTrace}");
+                throw;
             }
         }
 
