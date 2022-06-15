@@ -614,6 +614,7 @@ namespace RPLP.MVC.Controllers
 
             foreach (string rawStudent in SplitStudents)
             {
+                Console.Out.WriteLine($"POSTUpsertBatchStudent - rawStudent : {rawStudent}");
                 string[] student = rawStudent.Split(";");
                 string studentUsername = "";
 
@@ -634,7 +635,7 @@ namespace RPLP.MVC.Controllers
 
                 Task<HttpResponseMessage> response = this._httpClient
                                                         .PostAsJsonAsync<Student>($"Student", studentObj);
-
+                response.Wait();
                 result = response.Result;
 
             }
