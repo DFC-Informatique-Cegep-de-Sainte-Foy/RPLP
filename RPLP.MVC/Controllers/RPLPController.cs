@@ -619,7 +619,7 @@ namespace RPLP.MVC.Controllers
                     string[] student = rawStudent.Split(";");
                     string studentUsername = "";
 
-                    if (student.Count() >= 5)
+                    if (student.Count() >= 4)
                     {
                         studentUsername = JsonConvert.DeserializeObject<string>(student[3].Replace("=", ""));
                     }
