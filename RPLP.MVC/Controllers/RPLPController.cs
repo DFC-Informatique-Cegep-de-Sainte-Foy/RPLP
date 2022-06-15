@@ -634,6 +634,8 @@ namespace RPLP.MVC.Controllers
 
                     Student studentObj = new Student { Id = 0, Email = studentEmail, FirstName = studentFirstName, LastName = studentLastName, Username = studentUsername, Classes = new List<Classroom>(), Matricule = studentMatricule };
 
+                    Console.Out.WriteLine($"Append to upset student({studentObj.Id}, {studentObj.Email}, {studentObj.FirstName}, {studentObj.LastName}, {studentObj.Username}, {studentObj.Matricule})");
+
                     Task<HttpResponseMessage> response = this._httpClient
                                                             .PostAsJsonAsync<Student>($"Student", studentObj);
                     response.Wait();
