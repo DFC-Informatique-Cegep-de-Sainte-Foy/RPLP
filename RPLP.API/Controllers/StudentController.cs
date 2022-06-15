@@ -56,6 +56,7 @@ namespace RPLP.API.Controllers
 
             try
             {
+                Console.Out.WriteLine($"Append to upset student({p_student.Id}, {p_student.Email}, {p_student.FirstName}, {p_student.LastName}, {p_student.Username}, {p_student.Matricule})");                
                 this._depot.UpsertStudent(p_student);
             }
 
