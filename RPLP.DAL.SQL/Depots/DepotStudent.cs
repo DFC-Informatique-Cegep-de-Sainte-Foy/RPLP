@@ -138,7 +138,7 @@ namespace RPLP.DAL.SQL.Depots
                 .AsNoTracking()
                 .SingleOrDefault(student => student.Id == p_student.Id);
 
-
+            Console.Out.WriteLine($"UpsertStudent(Student p_student) - Id : {p_student.Id} - studentResult is null : {studentResult is null}")
 
             if (studentResult != null)
             {
