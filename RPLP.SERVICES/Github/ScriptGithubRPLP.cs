@@ -207,7 +207,7 @@ namespace RPLP.SERVICES.Github
             List<Repository> repositories = GetStudentsRepositoriesForAssignment(repositoriesResult, students, p_assignmentName);
 
             Console.Out.WriteLine($"repositoriesResult.Count == {repositoriesResult.Count}");
-            Console.Out.WriteLine($"repositories.Count == {repositoriesResult.Count}");
+            Console.Out.WriteLine($"repositories.Count == {repositories.Count}");
 
             DeleteFilesAndDirectoriesForDownloads();
             Directory.CreateDirectory(directoryToZipName);
