@@ -178,6 +178,7 @@ namespace RPLP.SERVICES.Github
 
         public string ScriptDownloadAllRepositoriesForAssignment(string p_organisationName, string p_classRoomName, string p_assignmentName)
         {
+            Console.Out.WriteLine($"API - ScriptDownloadAllRepositoriesForAssignment({p_organisationName}, {p_classRoomName}, {p_assignmentName})");
             string directoryToZipName = "ZippedRepos";
 
             if (string.IsNullOrWhiteSpace(p_organisationName) || string.IsNullOrWhiteSpace(p_classRoomName) || string.IsNullOrWhiteSpace(p_assignmentName))
@@ -185,23 +186,28 @@ namespace RPLP.SERVICES.Github
 
 
             List<Student> students = _depotClassroom.GetStudentsByClassroomName(p_classRoomName);
-
+            Console.Out.WriteLine($"students.Count == {students.Count}");
             if (students.Count < 1)
                 throw new ArgumentException("Number of students cannot be less than one");
 
             List<Assignment> assignmentsResult = _depotClassroom.GetAssignmentsByClassroomName(p_classRoomName);
 
+            Console.Out.WriteLine($"assignmentsResult.Count == {assignmentsResult.Count}");
             if (assignmentsResult.Count < 1)
                 throw new ArgumentException($"No assignment in {p_classRoomName}");
 
             Assignment assignment = assignmentsResult.SingleOrDefault(assignment => assignment.Name == p_assignmentName);
 
+            Console.Out.WriteLine($"assignment is null == {assignment == null}");
             if (assignment == null)
                 throw new ArgumentException($"No assignment with name {p_assignmentName}");
 
 
             List<Repository> repositoriesResult = this._depotRepository.GetRepositoriesFromOrganisationName(p_organisationName);
             List<Repository> repositories = GetStudentsRepositoriesForAssignment(repositoriesResult, students, p_assignmentName);
+
+            Console.Out.WriteLine($"repositoriesResult.Count == {repositoriesResult}");
+            Console.Out.WriteLine($"repositories.Count == {repositoriesResult}");
 
             DeleteFilesAndDirectoriesForDownloads();
             Directory.CreateDirectory(directoryToZipName);
@@ -234,11 +240,9 @@ namespace RPLP.SERVICES.Github
             if (assignment == null)
                 throw new ArgumentException($"No assignment with name {p_assignmentName}");
 
-Console.Out.WriteLine($"API - ScriptGithubRPLP.cs -- ScriptDownloadOneRepositoryForAssignment - p_repositoryName == {p_repositoryName}");
             Repository repository = _depotRepository.GetRepositoryByName(p_repositoryName);
-Console.Out.WriteLine($"API - ScriptGithubRPLP.cs -- ScriptDownloadOneRepositoryForAssignment - repository == null : {repository == null}");
+
             string path = DownloadRepositoryToFile(repository);
-Console.Out.WriteLine($"API - ScriptGithubRPLP.cs -- ScriptDownloadOneRepositoryForAssignment - path == {path}");
 
             return path;
         }
@@ -387,8 +391,11 @@ Console.Out.WriteLine($"API - ScriptGithubRPLP.cs -- ScriptDownloadOneRepository
         private void DownloadRepositoriesToDirectory(List<Repository> p_repositories)
         {
 
+            Console.Out.WriteLine($"Trying to DownloadRepositoriesToDirectory");
             foreach (Repository repository in p_repositories)
             {
+                Console.Out.WriteLine($"Processing repository {repository.OrganisationName} / {repository.Name}");
+
                 var download = _githubApiAction.DownloadRepository(repository.OrganisationName, repository.Name);
                 Stream stream = download.Content.ReadAsStream();
 
