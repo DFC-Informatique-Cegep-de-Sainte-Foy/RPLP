@@ -58,11 +58,12 @@ namespace RPLP.API.Controllers
             {
                 Console.Out.WriteLine($"Append to upset student({p_student.Id}, {p_student.Email}, {p_student.FirstName}, {p_student.LastName}, {p_student.Username}, {p_student.Matricule})");                
                 this._depot.UpsertStudent(p_student);
+                Console.Out.WriteLine($"<-- Append to upset student({p_student.Id}, {p_student.Email}, {p_student.FirstName}, {p_student.LastName}, {p_student.Username}, {p_student.Matricule})");                
             }
 
             catch (Exception ex)
             {
-                Console.Out.WriteLine(ex.Message);
+                Console.Out.WriteLine($"Erreur lors de l'UpSert : {ex.Message}");
                 return BadRequest(ex.Message);
             }
 
