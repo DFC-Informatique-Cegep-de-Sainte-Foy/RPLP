@@ -671,12 +671,15 @@ namespace RPLP.MVC.Controllers
 
             try
             {
-                stream = await this._httpClient.GetStreamAsync($"Github/Telechargement/{organisationName}/{classroomName}/{assignmentName}");
+                string url = $"Github/Telechargement/{organisationName}/{classroomName}/{assignmentName}";
+                Console.Out.WriteLine($"Trying to DownloadAllRepositoriesForAssignment - URL : {url}");
+                stream = await this._httpClient.GetStreamAsync(url);
                 fileStreamResult = new FileStreamResult(stream, "application/octet-stream");
                 fileStreamResult.FileDownloadName = $"{assignmentName}-{classroomName}.zip";
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Console.Error.WriteLine($"Error DownloadAllRepositoriesForAssignment - Message : {ex.Message}");
                 return NotFound("Un ou plusieurs dépôts n'ont pas pu être trouvé. Ils sont peut-être privés et inaccessibles à l'utilisateur.");
             }
 
