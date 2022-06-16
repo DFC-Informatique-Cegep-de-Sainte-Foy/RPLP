@@ -56,6 +56,7 @@ namespace RPLP.API.Controllers
         public FileStreamResult StartScriptDownloadOneRepositoriesForAssignment(string organisationName, string classroomName, string assignmentName, string studentUsername)
         {
             string repositoryName = $"{assignmentName}-{studentUsername}";
+            Console.Out.WriteLine($"Trying to call ScriptDownloadOneRepositoryForAssignment({organisationName}, {classroomName}, {assignmentName}, {repositoryName})");
             string path = _scriptGithub.ScriptDownloadOneRepositoryForAssignment(organisationName, classroomName, assignmentName, repositoryName);
 
             FileStream file = System.IO.File.OpenRead(path);
