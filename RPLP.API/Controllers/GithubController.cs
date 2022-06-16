@@ -43,6 +43,7 @@ namespace RPLP.API.Controllers
         [HttpGet("Telechargement/{organisationName}/{classroomName}/{assignmentName}")]
         public FileStreamResult StartScriptDownloadAllRepositoriesForAssignment(string organisationName, string classroomName, string assignmentName)
         {
+            Console.Out.WriteLine($"Trying to call StartScriptDownloadAllRepositoriesForAssignment({organisationName}, {classroomName}, {assignmentName})");
             string path = _scriptGithub.ScriptDownloadAllRepositoriesForAssignment(organisationName, classroomName, assignmentName);
 
             FileStream file = System.IO.File.OpenRead(path);
