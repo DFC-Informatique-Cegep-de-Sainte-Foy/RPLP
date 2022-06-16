@@ -641,6 +641,8 @@ namespace RPLP.MVC.Controllers
                     response.Wait();
                     result = response.Result;
 
+                    Console.Out.WriteLine($"POSTUpsertBatchStudent - Resultat appel API - {response.StatusCode} ({response.ReasonPhrase}) - Result : {result}");
+
                 }
                 return result.ToString();
             } catch (Exception ex) {
