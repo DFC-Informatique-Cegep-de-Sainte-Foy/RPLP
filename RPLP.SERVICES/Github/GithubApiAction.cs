@@ -347,6 +347,9 @@ namespace RPLP.SERVICES.Github
         public HttpResponseMessage DownloadRepository(string p_organisationName, string p_repositoryName)
         {
             string fullPath = _downloadRepository.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName);
+
+            Console.Out.WriteLine($"Trying to DownloadRepository - URL : {fullPath}");
+
             Task<HttpResponseMessage> task = GetRepositoryDownloadTask(fullPath);
             task.Wait();
 
