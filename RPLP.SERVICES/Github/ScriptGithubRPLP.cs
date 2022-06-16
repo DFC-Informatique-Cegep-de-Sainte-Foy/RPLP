@@ -402,18 +402,27 @@ namespace RPLP.SERVICES.Github
             {
                 Console.Out.WriteLine($"Processing repository {repository.OrganisationName} / {repository.Name}");
 
-                var download = _githubApiAction.DownloadRepository(repository.OrganisationName, repository.Name);
-                Stream stream = download.Content.ReadAsStream();
+                try {
+                    var download = _githubApiAction.DownloadRepository(repository.OrganisationName, repository.Name);
+                    Stream stream = download.Content.ReadAsStream();
 
-                using (var fileStream = File.Create("repo.zip"))
-                {
-                    stream.CopyTo(fileStream);
+                    using (var fileStream = File.Create("repo.zip"))
+                    {
+                        stream.CopyTo(fileStream);
+                    }
+
+                    ZipFile.ExtractToDirectory("repo.zip", $"ZippedRepos/{repository.Name}");
+                } catch (Exception ex) {
+                    Console.Out.WriteLine($"DownloadRepositoriesToDirectory - {ex.Message}");
                 }
 
-                ZipFile.ExtractToDirectory("repo.zip", $"ZippedRepos/{repository.Name}");
-
-                if (File.Exists("repo.zip"))
-                    File.Delete("repo.zip");
+                try {
+                    if (File.Exists("repo.zip")) {
+                        File.Delete("repo.zip");
+                    }
+                } catch (Exception ex) {
+                    Console.Out.WriteLine($"DownloadRepositoriesToDirectory - {ex.Message}");
+                }
             }
         }
 
