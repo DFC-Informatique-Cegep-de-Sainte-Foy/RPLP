@@ -345,9 +345,11 @@ namespace RPLP.SERVICES.Github
                 string[] splitRepository = repository.Name.Split('-');
 
                 //if (splitRepository[0] == assignmentName)
+                Console.Out.WriteLine($"repository.Name.StartsWith(assignmentName) == {repository.Name.StartsWith(assignmentName)}");
                 if (repository.Name.StartsWith(assignmentName))
                 {
-                    string username = repository.Name.Substring(assignmentName.Length);
+                    string username = repository.Name.Substring(assignmentName.Length + 1);
+                    Console.Out.WriteLine($"username == {username}");
                     foreach (Student student in p_students)
                     {
                         if (username == student.Username)
