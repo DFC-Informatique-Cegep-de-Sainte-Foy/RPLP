@@ -336,17 +336,21 @@ namespace RPLP.SERVICES.Github
 
         private List<Repository> GetStudentsRepositoriesForAssignment(List<Repository> p_repositories, List<Student> p_students, string assignmentName)
         {
+            Console.Out.WriteLine($"GetStudentsRepositoriesForAssignment");
             List<Repository> repositories = new List<Repository>();
 
             foreach (Repository repository in p_repositories)
             {
+                Console.Out.WriteLine($"Trying to parse repository.Name {repository.Name}");
                 string[] splitRepository = repository.Name.Split('-');
 
-                if (splitRepository[0] == assignmentName)
+                //if (splitRepository[0] == assignmentName)
+                if (repository.Name.StartsWith(assignmentName))
                 {
+                    string username = repository.Name.Substring(assignmentName.Length);
                     foreach (Student student in p_students)
                     {
-                        if (splitRepository[1] == student.Username)
+                        if (username == student.Username)
                         {
                             repositories.Add(repository);
                             break;
