@@ -206,8 +206,8 @@ namespace RPLP.SERVICES.Github
             List<Repository> repositoriesResult = this._depotRepository.GetRepositoriesFromOrganisationName(p_organisationName);
             List<Repository> repositories = GetStudentsRepositoriesForAssignment(repositoriesResult, students, p_assignmentName);
 
-            Console.Out.WriteLine($"repositoriesResult.Count == {repositoriesResult}");
-            Console.Out.WriteLine($"repositories.Count == {repositoriesResult}");
+            Console.Out.WriteLine($"repositoriesResult.Count == {repositoriesResult.Count}");
+            Console.Out.WriteLine($"repositories.Count == {repositoriesResult.Count}");
 
             DeleteFilesAndDirectoriesForDownloads();
             Directory.CreateDirectory(directoryToZipName);
@@ -391,7 +391,7 @@ namespace RPLP.SERVICES.Github
         private void DownloadRepositoriesToDirectory(List<Repository> p_repositories)
         {
 
-            Console.Out.WriteLine($"Trying to DownloadRepositoriesToDirectory");
+            Console.Out.WriteLine($"Trying to DownloadRepositoriesToDirectory - p_repositories.Count == {p_repositories.Count}");
             foreach (Repository repository in p_repositories)
             {
                 Console.Out.WriteLine($"Processing repository {repository.OrganisationName} / {repository.Name}");
