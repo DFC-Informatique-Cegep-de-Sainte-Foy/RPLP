@@ -152,6 +152,7 @@
 
         students.forEach(student => {
             var option = document.createElement("option");
+            console.log(student);
             option.text = student.firstName + " " + student.lastName;
             option.value = student.username;
             var select = document.getElementById("selectStudent");
