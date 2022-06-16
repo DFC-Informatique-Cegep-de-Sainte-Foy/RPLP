@@ -168,23 +168,30 @@ namespace RPLP.SERVICES.Github
             }
 
             branchDTO = GetMainBranchFromBranchList(branchesResult);
+            Console.Out.WriteLine($"main branch found == {branchDTO is null}");
 
             CreatePullRequestAndAssignTeacher(p_organisationName, p_repositoryName, branchDTO.gitObject.sha, p_newFileName, p_message, p_content, teacherUsername);
         }
 
         private void CreatePullRequestAndAssignTeacher(string p_organisationName, string p_repositoryName, string p_sha, string p_newFileName, string p_message, string p_content, string teacherUsername)
         {
+            Console.Out.WriteLine($"CreatePullRequestAndAssignTeacher({p_organisationName}, {p_repositoryName}, {p_sha}, {p_newFileName}, {p_message}, {p_content}, {teacherUsername})");
             string newBranchName = $"feedback-{teacherUsername}";
 
+            Console.Out.WriteLine($"Trying to create branch {newBranchName} - CreateNewBranchForFeedbackGitHub({p_organisationName}, {p_repositoryName}, {p_sha}, {newBranchName})");
             string resultCreateBranch = this._githubApiAction.CreateNewBranchForFeedbackGitHub(p_organisationName, p_repositoryName, p_sha, newBranchName);
+            Console.Out.WriteLine($"Branch created == {resultCreateBranch != "Created"}");
             if (resultCreateBranch != "Created")
                 throw new ArgumentException($"Branch not created in {p_repositoryName}");
 
+            Console.Out.WriteLine($"Trying to AddFileToContentsGitHub({p_organisationName}, {p_repositoryName}, {newBranchName}, {p_newFileName}, {p_message}, {p_content})");
             this._githubApiAction.AddFileToContentsGitHub(p_organisationName, p_repositoryName, newBranchName, p_newFileName, p_message, p_content);
 
+            Console.Out.WriteLine($"Trying to CreateNewPullRequestFeedbackGitHub({p_organisationName}, {p_repositoryName}, {newBranchName}, Feedback, Voici où vous devez mettre vos commentaires)");
             string resultCreatePR = this._githubApiAction.CreateNewPullRequestFeedbackGitHub(p_organisationName, p_repositoryName, newBranchName, "Feedback", "Voici où vous devez mettre vos commentaires");
             if (resultCreatePR != "Created")
                 throw new ArgumentException($"PullRequest not created in {p_repositoryName}");
+            Console.Out.WriteLine($"PR created == {resultCreatePR != "Created"}");
         }
 
         public string ScriptDownloadAllRepositoriesForAssignment(string p_organisationName, string p_classRoomName, string p_assignmentName)
@@ -379,10 +386,11 @@ namespace RPLP.SERVICES.Github
 
         private Branch_JSONDTO GetMainBranchFromBranchList(List<Branch_JSONDTO> branchesResult)
         {
-            Branch_JSONDTO branchDTO = new Branch_JSONDTO();
+            Branch_JSONDTO branchDTO = null;
 
             foreach (Branch_JSONDTO branch in branchesResult)
             {
+                Console.Out.WriteLine($"GetMainBranchFromBranchList - Parsing {branch.reference} seeking for main");
                 string[] branchName = branch.reference.Split("/");
 
                 if (branchName[2] == "main")
