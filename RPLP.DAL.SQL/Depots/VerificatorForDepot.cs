@@ -45,6 +45,8 @@ namespace RPLP.DAL.SQL.Depots
 
         public bool CheckUsernameTaken(string p_username)
         {
+            Console.Out.WriteLine($"CheckUsernameTaken(string p_username) - p_username : {p_username}");
+
             return
                 this._context.Administrators.Any(a => a.Username == p_username) ||
                 this._context.Students.Any(s => s.Username == p_username) ||
