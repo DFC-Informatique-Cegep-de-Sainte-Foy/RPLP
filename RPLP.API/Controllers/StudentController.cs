@@ -62,6 +62,7 @@ namespace RPLP.API.Controllers
 
             catch (Exception ex)
             {
+                Console.Out.WriteLine(ex.Message);
                 return BadRequest(ex.Message);
             }
 
