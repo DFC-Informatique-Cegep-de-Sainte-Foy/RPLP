@@ -136,9 +136,9 @@ namespace RPLP.DAL.SQL.Depots
 
             Student_SQLDTO? studentResult = this._context.Students
                 .AsNoTracking()
-                .SingleOrDefault(student => student.Id == p_student.Id);
+                .SingleOrDefault(student => student.Matricule == p_student.Matricule);
 
-            Console.Out.WriteLine($"UpsertStudent(Student p_student) - Id : {p_student.Id} - studentResult is null : {studentResult is null}");
+            Console.Out.WriteLine($"UpsertStudent(Student p_student) - Id : {p_student.Id} - Matricule : {p_student.Matricule} - studentResult is null : {studentResult is null}");
 
             if (studentResult != null)
             {
