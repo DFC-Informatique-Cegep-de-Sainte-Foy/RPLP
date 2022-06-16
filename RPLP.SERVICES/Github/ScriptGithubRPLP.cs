@@ -74,6 +74,7 @@ namespace RPLP.SERVICES.Github
 
         private void prepareRepositoryAndCreatePullRequest(string p_organisationName, string p_repositoryName, Dictionary<string, int> p_studentDictionary, int p_reviewsPerRepository)
         {
+            Console.Out.WriteLine($"prepareRepositoryAndCreatePullRequest({p_organisationName}, {p_repositoryName}, {p_studentDictionary.Count}, {p_reviewsPerRepository})");
             Branch_JSONDTO branchDTO = new Branch_JSONDTO();
 
             List<Branch_JSONDTO> branchesResult = this._githubApiAction.GetRepositoryBranchesGithub(p_organisationName, p_repositoryName);
@@ -124,11 +125,15 @@ namespace RPLP.SERVICES.Github
 
         public void ScriptAssignTeacherToAssignmentReview(string p_organisationName, string p_classRoomName, string p_assignmentName, string teacherUsername)
         {
+            Console.Out.WriteLine($"ScriptAssignTeacherToAssignmentReview({p_organisationName}, {p_classRoomName}, {p_assignmentName}, {teacherUsername})");
             if (string.IsNullOrWhiteSpace(p_organisationName) || string.IsNullOrWhiteSpace(p_classRoomName) || string.IsNullOrWhiteSpace(p_assignmentName))
                 throw new ArgumentException("One of the provided value is incorrect or null");
 
             List<Student> students = _depotClassroom.GetStudentsByClassroomName(p_classRoomName);
             List<Teacher> teachers = _depotClassroom.GetTeachersByClassroomName(p_classRoomName);
+
+            Console.Out.WriteLine($"students.Count == {students.Count}");
+            Console.Out.WriteLine($"teachers.Count == {teachers.Count}");
 
             if (students.Count < 1)
                 throw new ArgumentException("Number of students cannot be less than one");
@@ -138,23 +143,29 @@ namespace RPLP.SERVICES.Github
 
             List<Repository> repositoriesToAssign = getRepositoriesToAssign(p_organisationName, p_classRoomName, p_assignmentName, students);
 
+            Console.Out.WriteLine($"repositoriesToAssign.Count == {repositoriesToAssign?.Count}");
+
             if (repositoriesToAssign == null)
                 throw new ArgumentNullException($"No repositories to assign in {p_classRoomName}");
 
             foreach (Repository repository in repositoriesToAssign)
             {
+                Console.Out.WriteLine($"Processing repository {p_organisationName} / {repository.Name}");
                 createPullRequestForTeacher(p_organisationName, repository.Name, "FichierTexte.txt", "FeedbackTeacher", "RmljaGllciB0ZXh0ZSBwb3VyIGNyw6nDqSBQUg==", teacherUsername);
             }
         }
 
         private void createPullRequestForTeacher(string p_organisationName, string p_repositoryName, string p_newFileName, string p_message, string p_content, string teacherUsername)
         {
+            Console.Out.WriteLine($"createPullRequestForTeacher({p_organisationName}, {p_repositoryName}, {p_newFileName}, {p_message}, {p_content}, {teacherUsername})");
             Branch_JSONDTO branchDTO = new Branch_JSONDTO();
 
             List<Branch_JSONDTO> branchesResult = this._githubApiAction.GetRepositoryBranchesGithub(p_organisationName, p_repositoryName);
+            Console.Out.WriteLine($"branchesResult.Count == {branchesResult.Count}");
 
-            if (branchesResult.Count <= 0)
+            if (branchesResult.Count <= 0) {
                 throw new ArgumentNullException($"Branch does not exist or wrong name was entered");
+            }
 
             branchDTO = GetMainBranchFromBranchList(branchesResult);
 
