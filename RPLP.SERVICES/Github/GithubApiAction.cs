@@ -321,9 +321,13 @@ namespace RPLP.SERVICES.Github
 
         public string AddFileToContentsGitHub(string p_organisationName, string p_repositoryName, string p_branchName, string p_newFileName, string p_content, string p_message)
         {
+            Console.Out.WriteLine($"Trying to AddFileToContentsGitHub({p_organisationName}, {p_repositoryName}, {p_branchName}, {p_newFileName}, {p_content}, {p_message})");
             string fullPath = _addFileToContentsGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName).Replace(newFileName, p_newFileName);
+            Console.Out.WriteLine($"URL - {fullPath}");
             Task<string> statusCode = addFileToContentsGithubApiRequest(fullPath, p_branchName, p_content, p_message);
             statusCode.Wait();
+
+            Console.Out.WriteLine($"Result : {statusCode.Result}");
 
             return statusCode.Result;
         }
