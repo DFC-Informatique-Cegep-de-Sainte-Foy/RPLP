@@ -215,6 +215,8 @@ namespace RPLP.SERVICES.Github
             DownloadRepositoriesToDirectory(repositories);
             string path = GetZipFromReposDirectory();
 
+            Console.Out.WriteLine($"End of ScriptDownloadAllRepositoriesForAssignment - path == {path}");
+
             return path;
         }
 
