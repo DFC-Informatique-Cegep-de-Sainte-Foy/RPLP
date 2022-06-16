@@ -649,7 +649,9 @@ namespace RPLP.MVC.Controllers
 
             try
             {
-                stream = await this._httpClient.GetStreamAsync($"Github/Telechargement/{organisationName}/{classroomName}/{assignmentName}/{studentUsername}");
+                string url = $"Github/Telechargement/{organisationName}/{classroomName}/{assignmentName}/{studentUsername}";
+                Console.Out.WriteLine($"Trying to download single repository. URL : {url}");
+                stream = await this._httpClient.GetStreamAsync(url);
                 fileStreamResult = new FileStreamResult(stream, "application/octet-stream");
                 fileStreamResult.FileDownloadName = $"{assignmentName}-{studentUsername}.zip";
             }
