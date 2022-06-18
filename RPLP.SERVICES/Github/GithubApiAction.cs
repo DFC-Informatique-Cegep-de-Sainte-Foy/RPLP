@@ -231,7 +231,8 @@ namespace RPLP.SERVICES.Github
         {
             PullRequest_JSONRequest pullRequest_request = new PullRequest_JSONRequest { fromBranch = "main", targetBranch = p_BranchName, title = p_title, body = p_body };
             string pullRequest = JsonConvert.SerializeObject(pullRequest_request);
-            HttpResponseMessage response = _httpClient.PostAsync(p_githubLink, new StringContent(pullRequest, Encoding.UTF8, "application/json")).Result;
+            Console.Out.WriteLine($"NewPullRequestFeedbackGitHubApiRequest - POST - {pullRequest}");
+            HttpResponseMessage response = await _httpClient.PostAsync(p_githubLink, new StringContent(pullRequest, Encoding.UTF8, "application/json"));
 
             return response.StatusCode.ToString();
         }
