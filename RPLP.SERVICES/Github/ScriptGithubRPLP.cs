@@ -189,9 +189,9 @@ namespace RPLP.SERVICES.Github
 
             Console.Out.WriteLine($"Trying to CreateNewPullRequestFeedbackGitHub({p_organisationName}, {p_repositoryName}, {newBranchName}, Feedback, Voici où vous devez mettre vos commentaires)");
             string resultCreatePR = this._githubApiAction.CreateNewPullRequestFeedbackGitHub(p_organisationName, p_repositoryName, newBranchName, "Feedback", "Voici où vous devez mettre vos commentaires");
+            Console.Out.WriteLine($"PR created == {resultCreatePR == "Created"}");
             if (resultCreatePR != "Created")
                 throw new ArgumentException($"PullRequest not created in {p_repositoryName}");
-            Console.Out.WriteLine($"PR created == {resultCreatePR != "Created"}");
         }
 
         public string ScriptDownloadAllRepositoriesForAssignment(string p_organisationName, string p_classRoomName, string p_assignmentName)
