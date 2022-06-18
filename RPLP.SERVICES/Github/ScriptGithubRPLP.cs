@@ -180,7 +180,7 @@ namespace RPLP.SERVICES.Github
 
             Console.Out.WriteLine($"Trying to create branch {newBranchName} - CreateNewBranchForFeedbackGitHub({p_organisationName}, {p_repositoryName}, {p_sha}, {newBranchName})");
             string resultCreateBranch = this._githubApiAction.CreateNewBranchForFeedbackGitHub(p_organisationName, p_repositoryName, p_sha, newBranchName);
-            Console.Out.WriteLine($"Branch created == {resultCreateBranch != "Created"}");
+            Console.Out.WriteLine($"Branch created == {resultCreateBranch == "Created"}");
             if (resultCreateBranch != "Created")
                 throw new ArgumentException($"Branch not created in {p_repositoryName}");
 
