@@ -217,9 +217,12 @@ namespace RPLP.SERVICES.Github
 
         public string CreateNewPullRequestFeedbackGitHub(string p_organisationName, string p_repositoryName, string p_BranchName, string p_title, string p_body)
         {
+            Console.Out.WriteLine($"CreateNewPullRequestFeedbackGitHub({p_organisationName}, {p_repositoryName}, {p_BranchName}, {p_title}, {p_body})");
             string fullPath = _createPullRequestOnRepositoryBranchGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName);
+            Console.Out.WriteLine($"requesting {fullPath}");
             Task<string> statusCode = NewPullRequestFeedbackGitHubApiRequest(fullPath, p_BranchName, p_title, p_body);
             statusCode.Wait();
+            Console.Out.WriteLine($"result {statusCode.Result}");
 
             return statusCode.Result;
         }
