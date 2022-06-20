@@ -342,10 +342,12 @@ namespace RPLP.SERVICES.Github
 
         private Dictionary<string, int> GetStudentDictionary(List<Repository> p_repositories, string p_assignmentName)
         {
+            Console.Out.WriteLine($"GetStudentDictionary({p_repositories.Count}, {p_assignmentName})");
             Dictionary<string, int> studentDictionary = new Dictionary<string, int>();
 
             foreach (Repository repository in p_repositories)
             {
+                Console.Out.WriteLine($"GetStudentDictionary({p_repositories.Count}, {p_assignmentName}) processing repository {repository.Name}");
                 //string[] splitRepository = repository.Name.Split('-');
                 //string studentUsername = splitRepository[1];
                 string studentUsername = repository.Name.Substring(p_assignmentName.Length + 1);
