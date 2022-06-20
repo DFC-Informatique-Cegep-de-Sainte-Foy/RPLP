@@ -30,26 +30,33 @@ namespace RPLP.SERVICES.Github
 
         public void ScriptAssignStudentToAssignmentReview(string p_organisationName, string p_classRoomName, string p_assignmentName, int p_reviewsPerRepository)
         {
+            Console.Out.WriteLine($"ScriptAssignStudentToAssignmentReview({p_organisationName}, {p_classRoomName}, {p_assignmentName}, {p_reviewsPerRepository})");
             if (p_reviewsPerRepository <= 0 || string.IsNullOrWhiteSpace(p_organisationName) || string.IsNullOrWhiteSpace(p_classRoomName) || string.IsNullOrWhiteSpace(p_assignmentName))
                 throw new ArgumentException("One of the provided value is incorrect or null");
 
             List<Student> students = _depotClassroom.GetStudentsByClassroomName(p_classRoomName);
+            Console.Out.WriteLine($"Students count : {students.Count}");
 
             if (students.Count < p_reviewsPerRepository + 1)
                 throw new ArgumentException("Number of students inferior to number of reviews");
 
 
             List<Repository> repositoriesToAssign = getRepositoriesToAssign(p_organisationName, p_classRoomName, p_assignmentName, students);
-            Dictionary<string, int> studentDictionary = new Dictionary<string, int>();
+            Console.Out.WriteLine($"Repositories count to assign : {repositoriesToAssign.Count}");
+            Dictionary<string, int> studentDictionary = null;
 
             if (repositoriesToAssign == null)
                 throw new ArgumentNullException($"No repositories to assign in {p_classRoomName}");
 
-            studentDictionary = GetStudentDictionary(repositoriesToAssign);
+            studentDictionary = GetStudentDictionary(repositoriesToAssign, p_assignmentName);
 
             foreach (Repository repository in repositoriesToAssign)
             {
-                prepareRepositoryAndCreatePullRequest(p_organisationName, repository.Name, studentDictionary, p_reviewsPerRepository);
+                try {
+                    prepareRepositoryAndCreatePullRequest(p_organisationName, repository.Name, studentDictionary, p_reviewsPerRepository);
+                } catch (Exception ex) {
+                    Console.Out.WriteLine()
+                }
             }
         }
 
@@ -75,7 +82,7 @@ namespace RPLP.SERVICES.Github
         private void prepareRepositoryAndCreatePullRequest(string p_organisationName, string p_repositoryName, Dictionary<string, int> p_studentDictionary, int p_reviewsPerRepository)
         {
             Console.Out.WriteLine($"prepareRepositoryAndCreatePullRequest({p_organisationName}, {p_repositoryName}, {p_studentDictionary.Count}, {p_reviewsPerRepository})");
-            Branch_JSONDTO branchDTO = new Branch_JSONDTO();
+            Branch_JSONDTO branchDTO = null;
 
             List<Branch_JSONDTO> branchesResult = this._githubApiAction.GetRepositoryBranchesGithub(p_organisationName, p_repositoryName);
 
@@ -150,8 +157,12 @@ namespace RPLP.SERVICES.Github
 
             foreach (Repository repository in repositoriesToAssign)
             {
-                Console.Out.WriteLine($"Processing repository {p_organisationName} / {repository.Name}");
-                createPullRequestForTeacher(p_organisationName, repository.Name, "FichierTexte.txt", "FeedbackTeacher", "RmljaGllciB0ZXh0ZSBwb3VyIGNyw6nDqSBQUg==", teacherUsername);
+                try {
+                    Console.Out.WriteLine($"Processing repository {p_organisationName} / {repository.Name}");
+                    createPullRequestForTeacher(p_organisationName, repository.Name, "FichierTexte.txt", "FeedbackTeacher", "RmljaGllciB0ZXh0ZSBwb3VyIGNyw6nDqSBQUg==", teacherUsername);
+                } catch (Exception ex) {
+                    Console.Out.WriteLine($"Error processing {p_organisationName} / {repository.Name} : {ex.Message}");
+                }
             }
         }
 
@@ -302,14 +313,15 @@ namespace RPLP.SERVICES.Github
 
         #region Private Submethods
 
-        private Dictionary<string, int> GetStudentDictionary(List<Repository> p_repositories)
+        private Dictionary<string, int> GetStudentDictionary(List<Repository> p_repositories, string p_assignmentName)
         {
             Dictionary<string, int> studentDictionary = new Dictionary<string, int>();
 
             foreach (Repository repository in p_repositories)
             {
-                string[] splitRepository = repository.Name.Split('-');
-                string studentUsername = splitRepository[1];
+                //string[] splitRepository = repository.Name.Split('-');
+                //string studentUsername = splitRepository[1];
+                string studentUsername = repository.Name.Substring(p_assignmentName.Length + 1);
 
                 studentDictionary[studentUsername] = 0;
             }
@@ -339,16 +351,17 @@ namespace RPLP.SERVICES.Github
             string p_repositoryName, int p_reviewsPerRepository, Branch_JSONDTO branchDTO)
         {
             int numberStudentAdded = 0;
-            string[] splitRepository = p_repositoryName.Split('-');
+            //string[] splitRepository = p_repositoryName.Split('-');
+            string userName = p_repositoryName.Substring(p_repositoryName.Length + 1);
 
             do
             {
-                string username = p_studentDictionary.Where(dictionary => dictionary.Key.ToLower() != splitRepository[1].ToLower())
+                string username = p_studentDictionary.Where(dictionary => dictionary.Key.ToLower() != userName.ToLower())
                                                      .FirstOrDefault(dictionary => dictionary.Value == p_studentDictionary.Values.Min()).Key;
 
                 createPullRequestAndAssignUser(p_organisationName, p_repositoryName, branchDTO.gitObject.sha, username);
 
-                p_studentDictionary[username] = p_studentDictionary[username]++;
+                p_studentDictionary[username] = p_studentDictionary[username] + 1;
                 numberStudentAdded++;
 
             } while (numberStudentAdded < p_reviewsPerRepository);
