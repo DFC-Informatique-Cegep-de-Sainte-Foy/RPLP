@@ -30,6 +30,8 @@ namespace RPLP.SERVICES.Github
 
         public void ScriptAssignStudentToAssignmentReview(string p_organisationName, string p_classRoomName, string p_assignmentName, int p_reviewsPerRepository)
         {
+            Console.Out.WriteLine();
+            Console.Out.WriteLine();
             Console.Out.WriteLine($"ScriptAssignStudentToAssignmentReview({p_organisationName}, {p_classRoomName}, {p_assignmentName}, {p_reviewsPerRepository})");
             if (p_reviewsPerRepository <= 0 || string.IsNullOrWhiteSpace(p_organisationName) || string.IsNullOrWhiteSpace(p_classRoomName) || string.IsNullOrWhiteSpace(p_assignmentName))
                 throw new ArgumentException("One of the provided value is incorrect or null");
@@ -81,6 +83,8 @@ namespace RPLP.SERVICES.Github
 
         private void prepareRepositoryAndCreatePullRequest(string p_organisationName, string p_repositoryName, Dictionary<string, int> p_studentDictionary, int p_reviewsPerRepository, string p_assignmentName)
         {
+            Console.Out.WriteLine();
+            Console.Out.WriteLine("=====================================");
             Console.Out.WriteLine($"prepareRepositoryAndCreatePullRequest({p_organisationName}, {p_repositoryName}, {p_studentDictionary.Count}, {p_reviewsPerRepository}, {p_assignmentName})");
             Branch_JSONDTO branchDTO = null;
 
