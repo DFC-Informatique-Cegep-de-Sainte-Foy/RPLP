@@ -95,7 +95,7 @@ namespace RPLP.SERVICES.Github
 
         private void createPullRequestAndAssignUser(string p_organisationName, string p_repositoryName, string p_sha, string p_username)
         {
-            Console.Out.WriteLine($$"createPullRequestAndAssignUser({p_organisationName}, {p_repositoryName}, {p_sha}, {p_username})");
+            Console.Out.WriteLine($"createPullRequestAndAssignUser({p_organisationName}, {p_repositoryName}, {p_sha}, {p_username})");
 
             string newBranchName = $"Feedback-{p_username}";
             Console.Out.WriteLine($"Trying to create a the new branch {newBranchName} from {p_sha}");
@@ -357,7 +357,7 @@ namespace RPLP.SERVICES.Github
 
         private Branch_JSONDTO GetFeedbackBranchFromBranchList(List<Branch_JSONDTO> p_branches)
         {
-            Console.Out.WriteLine($"GetFeedbackBranchFromBranchList - {p_branches.Count} branches to process}");
+            Console.Out.WriteLine($"GetFeedbackBranchFromBranchList - {p_branches.Count} branches to process");
             Branch_JSONDTO feedbackBranch = new Branch_JSONDTO();
 
             foreach (Branch_JSONDTO branch in p_branches)
