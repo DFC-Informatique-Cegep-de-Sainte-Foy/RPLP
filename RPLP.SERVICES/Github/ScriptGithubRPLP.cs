@@ -53,7 +53,7 @@ namespace RPLP.SERVICES.Github
             foreach (Repository repository in repositoriesToAssign)
             {
                 try {
-                    prepareRepositoryAndCreatePullRequest(p_organisationName, repository.Name, studentDictionary, p_reviewsPerRepository);
+                    prepareRepositoryAndCreatePullRequest(p_organisationName, repository.Name, studentDictionary, p_reviewsPerRepository, p_assignmentName);
                 } catch (Exception ex) {
                     Console.Out.WriteLine($"ScriptAssignStudentToAssignmentReview - Error processing repo {repository.Name} : {ex.Message}");
                 }
@@ -79,9 +79,9 @@ namespace RPLP.SERVICES.Github
             }
         }
 
-        private void prepareRepositoryAndCreatePullRequest(string p_organisationName, string p_repositoryName, Dictionary<string, int> p_studentDictionary, int p_reviewsPerRepository)
+        private void prepareRepositoryAndCreatePullRequest(string p_organisationName, string p_repositoryName, Dictionary<string, int> p_studentDictionary, int p_reviewsPerRepository, string p_assignmentName)
         {
-            Console.Out.WriteLine($"prepareRepositoryAndCreatePullRequest({p_organisationName}, {p_repositoryName}, {p_studentDictionary.Count}, {p_reviewsPerRepository})");
+            Console.Out.WriteLine($"prepareRepositoryAndCreatePullRequest({p_organisationName}, {p_repositoryName}, {p_studentDictionary.Count}, {p_reviewsPerRepository}, {p_assignmentName})");
             Branch_JSONDTO branchDTO = null;
 
             List<Branch_JSONDTO> branchesResult = this._githubApiAction.GetRepositoryBranchesGithub(p_organisationName, p_repositoryName);
@@ -91,7 +91,7 @@ namespace RPLP.SERVICES.Github
             }
 
             branchDTO = GetFeedbackBranchFromBranchList(branchesResult);
-            AssignStudentReviewersToPullRequests(p_studentDictionary, p_organisationName, p_repositoryName, p_reviewsPerRepository, branchDTO);
+            AssignStudentReviewersToPullRequests(p_studentDictionary, p_organisationName, p_repositoryName, p_reviewsPerRepository, branchDTO, p_assignmentName);
         }
 
         private void createPullRequestAndAssignUser(string p_organisationName, string p_repositoryName, string p_sha, string p_username)
@@ -379,11 +379,12 @@ namespace RPLP.SERVICES.Github
         }
 
         private void AssignStudentReviewersToPullRequests(Dictionary<string, int> p_studentDictionary, string p_organisationName,
-            string p_repositoryName, int p_reviewsPerRepository, Branch_JSONDTO branchDTO)
+            string p_repositoryName, int p_reviewsPerRepository, Branch_JSONDTO branchDTO, string p_assignmentName)
         {
+            Console.Out.WriteLine($"AssignStudentReviewersToPullRequests({p_studentDictionary.Count}, {p_organisationName}, {p_repositoryName}, {p_reviewsPerRepository}, {branchDTO.reference}, {p_assignmentName})");
             int numberStudentAdded = 0;
             //string[] splitRepository = p_repositoryName.Split('-');
-            string userName = p_repositoryName.Substring(p_repositoryName.Length + 1);
+            string userName = p_repositoryName.Substring(p_assignmentName.Length + 1);
 
             do
             {
