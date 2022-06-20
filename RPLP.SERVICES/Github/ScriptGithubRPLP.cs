@@ -365,7 +365,7 @@ namespace RPLP.SERVICES.Github
 
             foreach (Branch_JSONDTO branch in p_branches)
             {
-                Console.Out.WriteLine($"GetFeedbackBranchFromBranchList - Processing branch.reference");
+                Console.Out.WriteLine($"GetFeedbackBranchFromBranchList - Processing {branch.reference}");
                 string[] branchName = branch.reference.Split("/");
 
                 if (branchName[2] == "feedback")
