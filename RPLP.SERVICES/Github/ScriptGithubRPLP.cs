@@ -55,7 +55,7 @@ namespace RPLP.SERVICES.Github
                 try {
                     prepareRepositoryAndCreatePullRequest(p_organisationName, repository.Name, studentDictionary, p_reviewsPerRepository);
                 } catch (Exception ex) {
-                    Console.Out.WriteLine($"ScriptAssignStudentToAssignmentReview - Error processing repo {repository.Name} : ex.Message");
+                    Console.Out.WriteLine($"ScriptAssignStudentToAssignmentReview - Error processing repo {repository.Name} : {ex.Message}");
                 }
             }
         }
@@ -86,8 +86,9 @@ namespace RPLP.SERVICES.Github
 
             List<Branch_JSONDTO> branchesResult = this._githubApiAction.GetRepositoryBranchesGithub(p_organisationName, p_repositoryName);
 
-            if (branchesResult == null)
+            if (branchesResult == null) {
                 throw new ArgumentNullException($"Branch does not exist or wrong name was entered");
+            }
 
             branchDTO = GetFeedbackBranchFromBranchList(branchesResult);
             AssignStudentReviewersToPullRequests(p_studentDictionary, p_organisationName, p_repositoryName, p_reviewsPerRepository, branchDTO);
