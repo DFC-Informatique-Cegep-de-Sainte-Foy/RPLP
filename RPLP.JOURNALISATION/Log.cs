@@ -20,8 +20,8 @@ namespace RPLP.JOURNALISATION
 
 
         //Erreurs
-        public Exception ExceptionLevee { get; private set; }
-        public StackTrace StackTrace { get; private set; }
+        public Exception? ExceptionLevee { get; private set; }
+        public StackTrace? StackTrace { get; private set; }
 
         //Api
         public string RouteApi { get; private set; }
@@ -110,7 +110,7 @@ namespace RPLP.JOURNALISATION
         public Log(string p_utilisateurConnectee, string p_role, string p_messageSupplementaire)
         {
             this.Identifiant = Guid.NewGuid();
-            this.TypeDeLog = "AppelAPI";
+            this.TypeDeLog = "ConnexionAuth0";
             this.DateDuLog = DateTime.Now;
             this.UtilisateurConnecte = "";
             this.ExceptionLevee = null;
@@ -134,7 +134,22 @@ namespace RPLP.JOURNALISATION
 
             foreach (PropertyInfo propriete in this.GetType().GetProperties())
             {
-                ligneFichierCSV += propriete.GetValue(this).ToString();
+                if (propriete != null)
+                {
+                    if (propriete.GetValue(this) != null && propriete.GetValue(this) != "")
+                    {
+                        ligneFichierCSV += propriete.GetValue(this).ToString();
+                    }
+                    else
+                    {
+                        ligneFichierCSV += "";
+                    }
+                }
+                else
+                {
+                    ligneFichierCSV += "";
+                }
+
                 ligneFichierCSV += "~";
             }
 
