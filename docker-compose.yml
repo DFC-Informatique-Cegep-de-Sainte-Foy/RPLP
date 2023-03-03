@@ -44,7 +44,6 @@ services:
     build:
       context: .
       dockerfile: RPLP.JOURNALISATION/Dockerfile
-    restart: always
 
   rplp.db:
     container_name: rplp.db
