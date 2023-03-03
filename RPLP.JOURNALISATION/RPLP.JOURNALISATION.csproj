@@ -7,7 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="ClassesException\" />
+    <Compile Remove="ClassesException\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="ClassesException\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="ClassesException\**" />
   </ItemGroup>
 
 </Project>
