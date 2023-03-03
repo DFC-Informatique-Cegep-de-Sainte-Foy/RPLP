@@ -9,8 +9,9 @@ namespace RPLP.JOURNALISATION
     public static class Journalisation
     {
         //A changer pour la bd
-        private static string CheminDossierLogs = "/home/Logs";
+        private static string CheminDossierLogs = @"/app/log";
         private static string CheminFichierDeLogs = CheminDossierLogs + "/" + "Log_Revue_Par_Les_Paires.csv";
+
         public static void Journaliser(Log log)
         {
             CreerDossierSiNonExistant();
@@ -37,7 +38,11 @@ namespace RPLP.JOURNALISATION
 
         private static void AjouterJournalisation(Log log)
         {
-            File.AppendAllLines(CheminFichierDeLogs, new List<string> { log.ToString() });
+            using (StreamWriter sw = new StreamWriter(CheminFichierDeLogs))
+            {
+                sw.WriteLine(log.ToString());
+                //File.AppendAllLines(CheminFichierDeLogs, new List<string> { log.ToString() });
+            }
         }
     }
 }
