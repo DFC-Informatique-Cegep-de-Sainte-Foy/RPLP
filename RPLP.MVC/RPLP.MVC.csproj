@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\RPLP.JOURNALISATION\RPLP.JOURNALISATION.csproj" />
     <ProjectReference Include="..\RPLP.DAL.SQL\RPLP.DAL.SQL.csproj" />
     <ProjectReference Include="..\RPLP.SERVICES\RPLP.SERVICES.csproj" />
   </ItemGroup>
