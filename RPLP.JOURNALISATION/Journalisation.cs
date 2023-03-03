@@ -11,6 +11,7 @@ namespace RPLP.JOURNALISATION
     {
         private static string CheminDossierLogs = "./Logs";
         private static string CheminFichierDeLogs = CheminDossierLogs + "/" + "Log_Revue_Par_Les_Paires.csv";
+        
         public static void Journaliser(Log log)
         {
             CreerDossierSiNonExistant();
