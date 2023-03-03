@@ -3,7 +3,7 @@ using RPLP.DAL.SQL.Depots;
 using RPLP.SERVICES.Github;
 using System.Timers;
 
-string token = "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";
+string token = "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";
 ScriptGithubRPLP scripts = new ScriptGithubRPLP(new DepotClassroom(), new DepotRepository(), new DepotOrganisation(), token);
 
 while(true)
