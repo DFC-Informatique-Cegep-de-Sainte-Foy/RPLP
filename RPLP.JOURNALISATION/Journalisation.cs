@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,9 +8,9 @@ namespace RPLP.JOURNALISATION
 {
     public static class Journalisation
     {
+        //A changer pour la bd
         private static string CheminDossierLogs = "./Logs";
         private static string CheminFichierDeLogs = CheminDossierLogs + "/" + "Log_Revue_Par_Les_Paires.csv";
-        
         public static void Journaliser(Log log)
         {
             CreerDossierSiNonExistant();
@@ -40,6 +39,5 @@ namespace RPLP.JOURNALISATION
         {
             File.AppendAllLines(CheminFichierDeLogs, new List<string> { log.ToString() });
         }
-
     }
 }

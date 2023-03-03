@@ -38,6 +38,14 @@ services:
       - rplp.db
     restart: always
 
+  rplp.journalisation:
+    container_name: rplp.journalisation
+    image: revueparlespairs/rplp-journalisation
+    build:
+      context: .
+      dockerfile: RPLP.JOURNALISATION/Dockerfile
+    restart: always
+
   rplp.db:
     container_name: rplp.db
     user: root
