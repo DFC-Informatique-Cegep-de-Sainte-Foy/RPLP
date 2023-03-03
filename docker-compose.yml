@@ -7,9 +7,9 @@ services:
     build:
       context: .
       dockerfile: RPLP.API/Dockerfile
-    ports: 
+    ports:
       - "47001:80"
-    depends_on: 
+    depends_on:
       - rplp.db
     restart: always
 
@@ -32,7 +32,7 @@ services:
     build:
       context: .
       dockerfile: RPLP.COHERENCECHECKER/Dockerfile
-    depends_on: 
+    depends_on:
       - rplp.db
     restart: always
 
@@ -46,7 +46,7 @@ services:
       SA_PASSWORD: "Cad3pend86!"
       ACCEPT_EULA: "Y"
     volumes:
-        - rplpvolume:/var/opt/mssql/data
+      - rplpvolume:/var/opt/mssql/data
     restart: always
 
   rplp.db.test:
@@ -59,6 +59,6 @@ services:
       SA_PASSWORD: "Cad3pend86!"
       ACCEPT_EULA: "Y"
 
-volumes: 
-    rplpvolume:
-        name: "rplpvolume"
+volumes:
+  rplpvolume:
+    name: "rplpvolume"
