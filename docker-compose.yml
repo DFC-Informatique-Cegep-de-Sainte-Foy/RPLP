@@ -44,6 +44,9 @@ services:
     build:
       context: .
       dockerfile: RPLP.JOURNALISATION/Dockerfile
+    volumes:
+      - /home/casiogoncalves/logs:/app/logs
+    restart: always
 
   rplp.db:
     container_name: rplp.db
@@ -71,3 +74,5 @@ services:
 volumes:
   rplpvolume:
     name: "rplpvolume"
+  rplpvolume_logs:
+    name: "rplpvolume_logs"
