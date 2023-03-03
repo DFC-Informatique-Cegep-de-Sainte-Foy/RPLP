@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\RPLP.ENTITES\RPLP.ENTITES.csproj" />
+    <ProjectReference Include="..\RPLP.JOURNALISATION\RPLP.JOURNALISATION.csproj" />
   </ItemGroup>
 
 </Project>

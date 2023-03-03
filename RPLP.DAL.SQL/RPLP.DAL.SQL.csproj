@@ -22,6 +22,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\RPLP.DAL.DTO\RPLP.DAL.DTO.csproj" />
+		<ProjectReference Include="..\RPLP.JOURNALISATION\RPLP.JOURNALISATION.csproj" />
 		<ProjectReference Include="..\RPLP.SERVICES\RPLP.SERVICES.csproj" />
 	</ItemGroup>
 
