@@ -12,12 +12,17 @@ namespace RPLP.JOURNALISATION
     {
         private ManualResetEvent faireAttendreProgrammePrincipal = new ManualResetEvent(false);
         private ConnectionFactory fabriqueDeConnexion = new ConnectionFactory() { HostName = "rplp.rabbitmq" };
-        private static string CheminDossierLogs = @"/var/log/";
+        private static string CheminDossierLogs = @"/var/log/rplp/";
         private static string CheminFichierDeLogs = CheminDossierLogs + "Log_Revue_Par_Les_Paires.csv";
 
         public ConsommateurJournalisation()
         {
             DeclarerLaQueue();
+
+            if (!Directory.Exists(CheminDossierLogs))
+            {
+                Directory.CreateDirectory(CheminDossierLogs);
+            }
         }
 
         public void DeclarerLaQueue()
