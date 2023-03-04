@@ -10,7 +10,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="ClassesException\" />
+    <Compile Remove="ClassesException\**" />
+    <EmbeddedResource Remove="ClassesException\**" />
+    <None Remove="ClassesException\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="RabbitMQ.Client" Version="6.2.4" />
   </ItemGroup>
 
 </Project>
