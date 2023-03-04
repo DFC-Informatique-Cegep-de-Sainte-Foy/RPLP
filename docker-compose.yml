@@ -45,7 +45,7 @@ services:
       context: .
       dockerfile: RPLP.JOURNALISATION/Dockerfile
     volumes:
-      - /var/lib/docker/volumes/rplpvolume/_data:/var/log/rplp/
+      - rplpvolume_logs:/var/log/rplp/
     restart: always
 
   rplp.db:
