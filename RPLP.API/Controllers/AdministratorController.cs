@@ -223,33 +223,49 @@ namespace RPLP.API.Controllers
         [HttpPost]
         public ActionResult UpsertAdmin([FromBody] Administrator p_admin)
         {
+            if (p_admin == null || !ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
             try
             {
-                if (p_admin == null)
-                {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "AdministratorController - UpsertAdmin - p_admin passé en paramêtre est null"));
-
-                    return BadRequest();
-                }
-
-                if (!ModelState.IsValid)
-                {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                   "AdministratorController - UpsertAdmin - p_admin n'est pas un model valide"));
-
-                    return BadRequest();
-                }
-
                 this._depot.UpsertAdministrator(p_admin);
+            }
 
-                return Created(nameof(this.UpsertAdmin), p_admin);
-            }
-            catch (Exception)
+            catch (ArgumentException ex)
             {
-                throw;
+                return BadRequest(ex.Message);
             }
-           
+
+            return Created(nameof(this.UpsertAdmin), p_admin);
+            //try
+            //{
+            //    if (p_admin == null)
+            //    {
+            //        RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
+            //        "AdministratorController - UpsertAdmin - p_admin passé en paramêtre est null"));
+
+            //        return BadRequest();
+            //    }
+
+            //    if (!ModelState.IsValid)
+            //    {
+            //        RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentException().ToString(), new StackTrace().ToString(),
+            //       "AdministratorController - UpsertAdmin - p_admin n'est pas un model valide"));
+
+            //        return BadRequest();
+            //    }
+
+            //    this._depot.UpsertAdministrator(p_admin);
+
+            //    return Created(nameof(this.UpsertAdmin), p_admin);
+            //}
+            //catch (Exception)
+            //{
+            //    throw;
+            //}
+
         }
 
         [HttpDelete("Username/{username}")]
