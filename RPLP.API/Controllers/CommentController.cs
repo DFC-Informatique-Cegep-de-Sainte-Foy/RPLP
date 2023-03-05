@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RPLP.DAL.SQL.Depots;
 using RPLP.ENTITES;
+using RPLP.JOURNALISATION;
 using RPLP.SERVICES.InterfacesDepots;
+using System.Diagnostics;
 
 namespace RPLP.API.Controllers
 {
@@ -12,39 +15,95 @@ namespace RPLP.API.Controllers
 
         public CommentController(IDepotComment p_depot)
         {
+            if (p_depot == null)
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
+                    "CommentController - Constructeur - p_depot passé en paramêtre null"));
+            }
             this._depot = p_depot;
         }
 
         [HttpGet]
         public ActionResult<IEnumerable<Comment>> Get()
         {
-            return Ok(this._depot.GetComments());
+            try
+            {
+                return Ok(this._depot.GetComments());
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         [HttpGet("Id/{id}")]
         public ActionResult<Comment> GetCommentById(int id)
         {
-            return Ok(this._depot.GetCommentById(id));
+            try
+            {
+                if (id <= 0)
+                {
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString(),
+                    "CommentController - GetCommentById - id passé en paramêtre est hors limites"));
+                }
+
+                return Ok(this._depot.GetCommentById(id));
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         [HttpPost]
         public ActionResult Post([FromBody] Comment p_comment)
         {
-            if (p_comment == null || !ModelState.IsValid)
+            try
             {
-                return BadRequest();
+                if (p_comment == null)
+                {
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
+                        "CommentController - Post - p_comment passé en paramêtre est vide"));
+
+                    return BadRequest();
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentException().ToString(), new StackTrace().ToString(),
+                        "CommentController - Post - p_comment passé en paramêtre n'est pas valide"));
+
+                    return BadRequest();
+                }
+
+                this._depot.UpsertComment(p_comment);
+
+                return Created(nameof(this.Post), p_comment);
             }
-
-            this._depot.UpsertComment(p_comment);
-
-            return Created(nameof(this.Post), p_comment);
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         [HttpDelete("Id/{id}")]
         public ActionResult DeleteComment(int id)
         {
-            this._depot.DeleteComment(id);
-            return NoContent();
+            try
+            {
+                if (id <= 0)
+                {
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString(),
+                    "CommentController - DeleteComment - id passé en paramêtre est hors limites"));
+                }
+
+                this._depot.DeleteComment(id);
+                return NoContent();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }
