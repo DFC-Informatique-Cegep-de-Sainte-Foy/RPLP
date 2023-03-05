@@ -2,9 +2,11 @@
 using Newtonsoft.Json.Linq;
 using RPLP.DAL.DTO.Json;
 using RPLP.ENTITES;
+using RPLP.JOURNALISATION;
 using RPLP.SERVICES.InterfacesDepots;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Text;
@@ -20,6 +22,24 @@ namespace RPLP.SERVICES.Github.GithubReviewCommentFetcher
 
         public GithubPRCommentFetcher(string p_token, IDepotClassroom p_depotClassroom, IDepotRepository p_depotRepository)
         {
+            if (string.IsNullOrWhiteSpace(p_token))
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
+                            "GithubPRCommentFetcher - Constructeur - p_token passé en paramêtre est vide"));
+            }
+
+            if (p_depotClassroom == null)
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
+                            "GithubPRCommentFetcher - Constructeur - p_depotClassroom passé en paramêtre est null"));
+            }
+
+            if (p_depotRepository == null)
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
+                            "GithubPRCommentFetcher - Constructeur - p_depotClassroom passé en paramêtre est null"));
+            }
+
             this._depotClassroom = p_depotClassroom;
             this._depotRepository = p_depotRepository;
 
@@ -33,6 +53,18 @@ namespace RPLP.SERVICES.Github.GithubReviewCommentFetcher
 
         public async Task<List<CommentAggregate>> GetMultipleUsersCommentsReviewsAndIssues(List<Pull> p_pulls, List<string> p_usernames)
         {
+            if (p_pulls == null)
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
+                            "GithubPRCommentFetcher - GetMultipleUsersCommentsReviewsAndIssues - p_pulls passé en paramêtre est null"));
+            }
+
+            if (p_usernames == null)
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
+                            "GithubPRCommentFetcher - GetMultipleUsersCommentsReviewsAndIssues - p_usernames passé en paramêtre est null"));
+            }
+
             List<CommentAggregate> comments = new List<CommentAggregate>();
 
             foreach (string username in p_usernames)
@@ -46,6 +78,18 @@ namespace RPLP.SERVICES.Github.GithubReviewCommentFetcher
 
         public async Task<CommentAggregate> GetUserCommentsReviewsAndIssues(List<Pull> p_pulls, string p_username)
         {
+            if (p_pulls == null)
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
+                            "GithubPRCommentFetcher - GetUserCommentsReviewsAndIssues - p_pulls passé en paramêtre est null"));
+            }
+
+            if (string.IsNullOrWhiteSpace(p_username))
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
+                            "GithubPRCommentFetcher - GetUserCommentsReviewsAndIssues - p_username passé en paramêtre est null"));
+            }
+
             List<CodeComment> codeComments = new List<CodeComment>();
             List<Issue> issues = new List<Issue>();
             List<Review> reviews = new List<Review>();
@@ -70,10 +114,28 @@ namespace RPLP.SERVICES.Github.GithubReviewCommentFetcher
 
         public async Task<List<Issue>> GetPullRequestIssueAsync(string p_owner, string p_repository)
         {
+            if (string.IsNullOrWhiteSpace(p_owner))
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
+                            "GithubPRCommentFetcher - GetPullRequestIssueAsync - p_owner passé en paramêtre est null"));
+            }
+
+            if (string.IsNullOrWhiteSpace(p_repository))
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
+                            "GithubPRCommentFetcher - GetPullRequestIssueAsync - p_repository passé en paramêtre est null"));
+            }
+
             List<Issue> issues = new List<Issue>();
 
             var jsonIssues = JArray.Parse(
                 GetRepositoryIssueCommentsJSONStringAsync(p_owner, p_repository).Result);
+
+            if(jsonIssues.Count == 0)
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
+                            "GithubPRCommentFetcher - GetPullRequestIssueAsync - la variable jsonIssues assigné par la méthode  GetRepositoryIssueCommentsJSONStringAsync(p_owner, p_repository).Result) est null"));
+            }
 
             foreach (var issueJToken in jsonIssues)
             {
@@ -86,10 +148,34 @@ namespace RPLP.SERVICES.Github.GithubReviewCommentFetcher
 
         public async Task<List<Review>> GetPullRequestReviewCommentsAsync(string p_owner, string p_repository, int p_pullNumber)
         {
+            if (string.IsNullOrWhiteSpace(p_owner))
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
+                            "GithubPRCommentFetcher - GetPullRequestReviewCommentsAsync - p_owner passé en paramêtre est null"));
+            }
+
+            if (string.IsNullOrWhiteSpace(p_repository))
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
+                            "GithubPRCommentFetcher - GetPullRequestReviewCommentsAsync - p_repository passé en paramêtre est null"));
+            }
+
+            if(p_pullNumber <= 0)
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString(),
+                            "GithubPRCommentFetcher - GetPullRequestReviewCommentsAsync - p_pullNumber passé en paramêtre est hors des limites"));
+            }
+
             List<Review> reviews = new List<Review>();
 
             var jsonReviews = JArray.Parse(
                 GetPullRequestReviewsJSONStringAsync(p_owner, p_repository, p_pullNumber).Result);
+
+            if (jsonReviews.Count == 0)
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
+                            "GithubPRCommentFetcher - GetPullRequestReviewCommentsAsync - la variable jsonReviews assigné par la méthode  GetPullRequestReviewsJSONStringAsync(p_owner, p_repository, p_pullNumber).Result) est null"));
+            }
 
             foreach (var reviewJToken in jsonReviews)
             {
