@@ -1,9 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RPLP.DAL.DTO.Sql;
 using RPLP.ENTITES;
+using RPLP.JOURNALISATION;
 using RPLP.SERVICES.InterfacesDepots;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -37,6 +39,8 @@ namespace RPLP.DAL.SQL.Depots
                     administrators[i].Organisations = adminResult[i].Organisations.Select(organisation => organisation.ToEntityWithoutList()).ToList();
             }
 
+            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Administrators - Organisations", $"DepotAdministrator - Method - GetAdministrators() - Return List<Administrator>"));
+    
             return administrators;
         }
 
@@ -51,6 +55,8 @@ namespace RPLP.DAL.SQL.Depots
                 if (adminResult[i].Id == administrators[i].Id && adminResult[i].Organisations.Count >= 1)
                     administrators[i].Organisations = adminResult[i].Organisations.Select(organisation => organisation.ToEntityWithoutList()).ToList();
             }
+
+            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Administrators - Organisations", $"DepotAdministrator - Method - GetDeactivatedAdministrators() - Return List<Administrator>"));
 
             return administrators;
         }
@@ -71,6 +77,8 @@ namespace RPLP.DAL.SQL.Depots
                 administrator.Organisations = organisations;
             }
 
+            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Administrators - Organisations", $"DepotAdministrator - Method - GetAdministratorById(int p_id) - Return Administrator"));
+
             return administrator;
         }
 
@@ -89,6 +97,8 @@ namespace RPLP.DAL.SQL.Depots
                 List<Organisation> organisations = adminResult.Organisations.Select(organisation => organisation.ToEntityWithoutList()).ToList();
                 administrator.Organisations = organisations;
             }
+
+            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Administrators - Organisations", $"DepotAdministrator - Method - GetAdministratorByEmail(string p_email) - Return Administrator"));
 
             return administrator;
         }
@@ -109,6 +119,8 @@ namespace RPLP.DAL.SQL.Depots
                 List<Organisation> organisations = adminResult.Organisations.Select(organisation => organisation.ToEntityWithoutList()).ToList();
                 administrator.Organisations = organisations;
             }
+
+            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Administrators - Organisations", $"DepotAdministrator - Method - GetAdministratorByUsername(string p_adminUsername) - Return Administrator"));
 
             return administrator;
         }
@@ -132,6 +144,8 @@ namespace RPLP.DAL.SQL.Depots
                 }
             }
 
+            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Administrators - Organisations", $"DepotAdministrator - Method - GetAdminOrganisations(string p_adminUsername) - Return List<Organisation>"));
+
             return new List<Organisation>();
         }
 
@@ -151,6 +165,8 @@ namespace RPLP.DAL.SQL.Depots
                     this._context.SaveChanges();
                 }
             }
+
+            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Administrators - Organisations", $"DepotAdministrator - Method - JoinOrganisation(string p_adminUsername, string p_organisationName) - Void"));
         }
 
         public void LeaveOrganisation(string p_adminUsername, string p_organisationName)
@@ -171,6 +187,8 @@ namespace RPLP.DAL.SQL.Depots
                     this._context.SaveChanges();
                 }
             }
+
+            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Administrators - Organisations", $"DepotAdministrator - Method - LeaveOrganisation(string p_adminUsername, string p_organisationName) - Void"));
         }
 
         public void UpsertAdministrator(Administrator p_administrator)
@@ -223,6 +241,8 @@ namespace RPLP.DAL.SQL.Depots
                 this._context.Update(adminResult);
                 this._context.SaveChanges();
             }
+
+            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Administrators", $"DepotAdministrator - Method - DeleteAdministrator(string p_adminUsername) - Void"));
         }
 
         public void ReactivateAdministrator(string p_adminUsername)
@@ -236,6 +256,8 @@ namespace RPLP.DAL.SQL.Depots
                 this._context.Update(adminResult);
                 this._context.SaveChanges();
             }
+
+            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Administrators", $"DepotAdministrator - Method - ReactivateAdministrator(string p_adminUsername) - Void"));
         }
 
         private bool CheckIfUsernameTakenForUpsert(Administrator_SQLDTO p_adminResult, Administrator p_admin)
@@ -266,6 +288,8 @@ namespace RPLP.DAL.SQL.Depots
 
             this._context.Update(adminToUpdate);
             this._context.SaveChanges();
+
+            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Administrators", $"DepotAdministrator - Method - UpdateAdmin(Administrator_SQLDTO adminToUpdate, Administrator updatedAdmin) - Void"));
         }
 
         private void InsertAdminDTO(Administrator adminInfos)
@@ -280,6 +304,8 @@ namespace RPLP.DAL.SQL.Depots
 
             this._context.Administrators.Add(adminDTO);
             this._context.SaveChanges();
+
+            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Administrators", $"DepotAdministrator - Method - InsertAdminDTO(Administrator adminInfos) - Void"));
         }
     }
 }

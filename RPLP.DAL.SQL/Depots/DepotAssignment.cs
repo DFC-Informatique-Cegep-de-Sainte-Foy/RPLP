@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RPLP.DAL.DTO.Sql;
 using RPLP.ENTITES;
+using RPLP.JOURNALISATION;
 using RPLP.SERVICES.InterfacesDepots;
 using System;
 using System.Collections.Generic;
@@ -27,6 +28,8 @@ namespace RPLP.DAL.SQL.Depots
 
         public List<Assignment> GetAssignments()
         {
+            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Assignments", $"DepotAssignment - Method - GetAssignments() - Return List<Assignment>"));
+            
             return this._context.Assignments.Where(assignment => assignment.Active)
                                             .Select(assignment => assignment.ToEntity()).ToList();
         }
@@ -35,6 +38,8 @@ namespace RPLP.DAL.SQL.Depots
         {
             Assignment assignment = this._context.Assignments.FirstOrDefault(assignment => assignment.Id == p_id && assignment.Active)
                                                              .ToEntity();
+
+            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Assignments", $"DepotAssignment - Method - GetAssignmentById(int p_id) - Return Assignment"));
 
             if (assignment == null)
                 return new Assignment();
@@ -48,6 +53,8 @@ namespace RPLP.DAL.SQL.Depots
                                                 .FirstOrDefault(assignment => assignment.Name == p_assignmentName && assignment.Active)
                                                 .ToEntity();
 
+            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Assignments", $"DepotAssignment - Method - GetAssignmentByName(string p_assignmentName) - Return Assignment"));
+
             if (assignment == null)
                 return new Assignment();
 
@@ -60,6 +67,8 @@ namespace RPLP.DAL.SQL.Depots
                 .Where(assignment => assignment.ClassroomName == p_classroomName && assignment.Active)
                 .Select(s => s.ToEntity())
                 .ToList();
+
+            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Assignments", $"DepotAssignment - Method - GetAssignmentsByClassroomName(string p_classroomName) - Return List<Assignment>"));
 
             return assignments;
         }
@@ -91,6 +100,8 @@ namespace RPLP.DAL.SQL.Depots
                 this._context.Assignments.Add(assignmentDTO);
                 this._context.SaveChanges();
             }
+
+            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Assignments", $"DepotAssignment - Method - UpsertAssignment(Assignment p_assignment) - Void"));
         }
 
         public void DeleteAssignment(string p_assignmentName)
@@ -104,6 +115,8 @@ namespace RPLP.DAL.SQL.Depots
                 this._context.Update(assignmentResult);
                 this._context.SaveChanges();
             }
+
+            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Assignments", $"DepotAssignment - Method - DeleteAssignment(string p_assignmentName) - Void"));
         }
     }
 }
