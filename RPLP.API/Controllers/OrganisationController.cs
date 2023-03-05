@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using RPLP.ENTITES;
+using RPLP.JOURNALISATION;
 using RPLP.SERVICES.InterfacesDepots;
+using System.Diagnostics;
 
 namespace RPLP.API.Controllers
 {
@@ -12,77 +15,198 @@ namespace RPLP.API.Controllers
 
         public OrganisationController(IDepotOrganisation p_depot)
         {
+            if (p_depot == null)
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
+                "OrganisationController - Constructeur - p_depot passé en paramêtre est null"));
+            }
+
             this._depot = p_depot;
         }
 
         [HttpGet]
         public ActionResult<IEnumerable<Organisation>> Get()
         {
-            return Ok(this._depot.GetOrganisations());
+            try
+            {
+                return Ok(this._depot.GetOrganisations());
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         [HttpGet("Id/{id}")]
         public ActionResult<Organisation> GetOrganisationById(int id)
         {
-            return Ok(this._depot.GetOrganisationById(id));
+            try
+            {
+                if (id <= 0)
+                {
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString(),
+                    "OrganisationController - GetOrganisationById - id passé en paramêtre est hors limites"));
+                }
+
+                return Ok(this._depot.GetOrganisationById(id));
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         [HttpGet("Name/{organisationName}")]
         public ActionResult<Organisation> GetOrganisationByName(string organisationName)
         {
-            return Ok(this._depot.GetOrganisationByName(organisationName));
+            try
+            {
+                if (string.IsNullOrWhiteSpace(organisationName))
+                {
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
+                    "OrganisationController - GetOrganisationByName - organisationName passé en paramêtre est vide"));
+                }
+
+                return Ok(this._depot.GetOrganisationByName(organisationName));
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         [HttpGet("Name/{organisationName}/Administrators")]
         public ActionResult<List<Administrator>> GetAdministratorsByOrganisation(string organisationName)
         {
-            return Ok(this._depot.GetAdministratorsByOrganisation(organisationName));
+            try
+            {
+                if (string.IsNullOrWhiteSpace(organisationName))
+                {
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
+                    "OrganisationController - GetAdministratorsByOrganisation - organisationName passé en paramêtre est vide"));
+                }
+
+                return Ok(this._depot.GetAdministratorsByOrganisation(organisationName));
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         [HttpPost("Name/{organisationName}/Administrators/Add/{adminUsername}")]
         public ActionResult AddAdministratorToOrganisation(string organisationName, string adminUsername)
         {
-            if (string.IsNullOrWhiteSpace(organisationName) || string.IsNullOrWhiteSpace(adminUsername))
+            try
             {
-                return BadRequest();
+                if (string.IsNullOrWhiteSpace(organisationName))
+                {
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
+                       "OrganisationController - AddAdministratorToOrganisation - organisationName passé en paramêtre est vide"));
+
+                    return BadRequest();
+                }
+
+                if (string.IsNullOrWhiteSpace(adminUsername))
+                {
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
+                       "OrganisationController - AddAdministratorToOrganisation - adminUsername passé en paramêtre est vide"));
+
+                    return BadRequest();
+                }
+
+                this._depot.AddAdministratorToOrganisation(organisationName, adminUsername);
+
+                return Created(nameof(this.AddAdministratorToOrganisation), organisationName);
             }
-
-            this._depot.AddAdministratorToOrganisation(organisationName, adminUsername);
-
-            return Created(nameof(this.AddAdministratorToOrganisation), organisationName);
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         [HttpPost("Name/{organisationName}/Administrators/Remove/{adminUsername}")]
         public ActionResult RemoveAdministratorToOrganisation(string organisationName, string adminUsername)
         {
-            if (string.IsNullOrWhiteSpace(organisationName) || string.IsNullOrWhiteSpace(adminUsername))
+            try
             {
-                return BadRequest();
+                if (string.IsNullOrWhiteSpace(organisationName))
+                {
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
+                           "OrganisationController - RemoveAdministratorToOrganisation - organisationName passé en paramêtre est vide"));
+
+                    return BadRequest();
+                }
+
+                if (string.IsNullOrWhiteSpace(adminUsername))
+                {
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
+                           "OrganisationController - RemoveAdministratorToOrganisation - adminUsername passé en paramêtre est vide"));
+
+                    return BadRequest();
+                }
+
+                this._depot.RemoveAdministratorFromOrganisation(organisationName, adminUsername);
+
+                return NoContent();
             }
-
-            this._depot.RemoveAdministratorFromOrganisation(organisationName, adminUsername);
-
-            return NoContent();
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         [HttpPost]
         public ActionResult Post([FromBody] Organisation p_organisation)
         {
-            if (p_organisation == null || !ModelState.IsValid)
+            try
             {
-                return BadRequest();
+                if (p_organisation == null)
+                {
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
+                               "OrganisationController - Post - p_organisation passé en paramêtre est vide"));
+
+                    return BadRequest();
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentException().ToString(), new StackTrace().ToString(),
+                               "OrganisationController - Post - p_organisation passé en paramêtre n'est pas un modèle valide"));
+
+                    return BadRequest();
+                }
+
+                this._depot.UpsertOrganisation(p_organisation);
+
+                return Created(nameof(this.Post), p_organisation);
             }
-
-            this._depot.UpsertOrganisation(p_organisation);
-
-            return Created(nameof(this.Post), p_organisation);
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         [HttpDelete("Name/{organisationName}")]
         public ActionResult DeleteOrganisation(string organisationName)
         {
-            this._depot.DeleteOrganisation(organisationName);
-            return NoContent();
+            try
+            {
+                if (string.IsNullOrWhiteSpace(organisationName))
+                {
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
+                           "OrganisationController - DeleteOrganisation - organisationName passé en paramêtre est vide"));
+
+                    return BadRequest();
+                }
+
+                this._depot.DeleteOrganisation(organisationName);
+                return NoContent();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }

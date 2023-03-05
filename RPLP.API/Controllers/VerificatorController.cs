@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RPLP.DAL.SQL.Depots;
+using RPLP.JOURNALISATION;
+using System.Diagnostics;
 
 namespace RPLP.API.Controllers
 {
@@ -17,27 +19,68 @@ namespace RPLP.API.Controllers
         [HttpGet("UserType/{email}")]
         public ActionResult<string> GetUserTypeByEmail(string email)
         {
-            Type type = this._verificator.GetUserTypeByEmail(email);
-
-            if (type == null)
+            try
             {
-                return BadRequest();
+                if (string.IsNullOrWhiteSpace(email))
+                {
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
+                    "VerificatorForDepot - GetUserTypeByEmail - email passé en paramêtre est vide"));
+                }
+
+                Type type = this._verificator.GetUserTypeByEmail(email);
+
+                if (type == null)
+                {
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
+                   "VerificatorForDepot - GetUserTypeByEmail - variable type assigné par la méthode GetUserTypeByEmail est null"));
+
+                    return BadRequest();
+                }
+
+                return type.ToString();
             }
-
-            return type.ToString();
-
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         [HttpGet("UsernameTaken/{username}")]
         public ActionResult<bool> CheckUsernameTaken(string username)
         {
-            return this._verificator.CheckUsernameTaken(username);
+            try
+            {
+                if (string.IsNullOrWhiteSpace(username))
+                {
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
+                    "VerificatorForDepot - CheckUsernameTaken - username passé en paramêtre est vide"));
+                }
+
+                return this._verificator.CheckUsernameTaken(username);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         [HttpGet("EmailTaken/{email}")]
         public ActionResult<bool> CheckEmailTaken(string email)
         {
-            return this._verificator.CheckEmailTaken(email);
+            try
+            {
+                if (string.IsNullOrWhiteSpace(email))
+                {
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
+                    "VerificatorForDepot - CheckEmailTaken - email passé en paramêtre est vide"));
+                }
+
+                return this._verificator.CheckEmailTaken(email);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }
