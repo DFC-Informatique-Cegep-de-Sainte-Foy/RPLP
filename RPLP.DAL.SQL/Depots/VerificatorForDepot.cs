@@ -1,4 +1,5 @@
 ﻿using RPLP.ENTITES;
+using RPLP.JOURNALISATION;
 using System;
 using System.Collections.Generic;
 using System.Linq;

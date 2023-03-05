@@ -1,5 +1,6 @@
 ﻿using RPLP.DAL.DTO.Sql;
 using RPLP.ENTITES;
+using RPLP.JOURNALISATION;
 using RPLP.SERVICES.InterfacesDepots;
 using System;
 using System.Collections.Generic;
@@ -25,6 +26,8 @@ namespace RPLP.DAL.SQL.Depots
 
         public List<Comment> GetComments()
         {
+            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Comment", $"DepotComment - Method - GetComments() - Return List<Comment>"));
+
             return this._context.Comments.Where(comment => comment.Active)
                                          .Select(comment => comment.ToEntity()).ToList();
         }
@@ -33,6 +36,9 @@ namespace RPLP.DAL.SQL.Depots
         {
             Comment_SQLDTO? comment = this._context.Comments
                                             .FirstOrDefault(comment => comment.Id == p_id && comment.Active);
+
+            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Comment", $"DepotComment - Method - GetComments(int p_id) - Return Comment"));
+
             if (comment == null)
                 return new Comment();
 
@@ -75,6 +81,8 @@ namespace RPLP.DAL.SQL.Depots
                 this._context.Comments.Add(comment);
                 this._context.SaveChanges();
             }
+
+            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Comment", $"DepotComment - Method - UpsertComment(Comment p_comment) - Void"));
         }
 
         public void DeleteComment(int p_commentId)
@@ -87,6 +95,8 @@ namespace RPLP.DAL.SQL.Depots
                 this._context.Update(commentResult);
                 this._context.SaveChanges();
             }
+
+            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Comment", $"DepotComment - Method - DeleteComment(int p_commentId) - Void"));
         }
     }
 }

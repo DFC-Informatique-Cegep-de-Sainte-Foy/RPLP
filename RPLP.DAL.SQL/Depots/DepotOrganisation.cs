@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RPLP.DAL.DTO.Sql;
 using RPLP.ENTITES;
+using RPLP.JOURNALISATION;
 using RPLP.SERVICES.InterfacesDepots;
 using System;
 using System.Collections.Generic;
@@ -38,6 +39,8 @@ namespace RPLP.DAL.SQL.Depots
                     organisations[i].Administrators = organisationResult[i].Administrators.Select(organisation => organisation.ToEntityWithoutList()).ToList();
             }
 
+            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Organisation", $"DepotOrganisation - Method - GetOrganisations() - Return List<Organisation>"));
+
             return organisations;
         }
 
@@ -46,6 +49,9 @@ namespace RPLP.DAL.SQL.Depots
             Organisation_SQLDTO organisationResult = this._context.Organisations.Where(organisation => organisation.Active)
                                                                            .Include(organisation => organisation.Administrators.Where(admin => admin.Active))
                                                                            .FirstOrDefault(organisation => organisation.Id == p_id);
+
+            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Organisation", $"DepotOrganisation - Method - GetOrganisationById(int p_id) - Return Organisation"));
+
             if (organisationResult == null)
                 return new Organisation();
 
@@ -65,6 +71,9 @@ namespace RPLP.DAL.SQL.Depots
             Organisation_SQLDTO organisationResult = this._context.Organisations.Where(organisation => organisation.Active)
                                                                                 .Include(organisation => organisation.Administrators.Where(admin => admin.Active))
                                                                                 .FirstOrDefault(organisation => organisation.Name == p_name);
+
+            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Organisation - Administrator", $"DepotOrganisation - Method -  GetOrganisationByName(string p_name) - Return Organisation"));
+
             if (organisationResult == null)
                 return new Organisation();
 
@@ -85,7 +94,7 @@ namespace RPLP.DAL.SQL.Depots
                 .Include(organisation => organisation.Administrators.Where(a => a.Active))
                 .FirstOrDefault(organisation => organisation.Name == p_organisationName && organisation.Active);
 
-
+            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Organisation - Administrator", $"DepotOrganisation - Method - GetAdministratorsByOrganisation(string p_organisationName) - Return List<Administrator>"));
 
             if (organisationResult != null && organisationResult.Administrators.Count >= 1)
                 return organisationResult.Administrators.Select(administrator => administrator.ToEntityWithoutList()).ToList();
@@ -109,6 +118,8 @@ namespace RPLP.DAL.SQL.Depots
                     this._context.SaveChanges();
                 }
             }
+
+            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Organisation - Administrator", $"DepotOrganisation - Method - AddAdministratorToOrganisation(string p_organisationName, string p_adminUsername) - Void"));
         }
 
         public void RemoveAdministratorFromOrganisation(string p_organisationName, string p_adminUsername)
@@ -127,6 +138,8 @@ namespace RPLP.DAL.SQL.Depots
                     this._context.SaveChanges();
                 }
             }
+
+            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Organisation - Administrator", $"DepotOrganisation - Method - RemoveAdministratorFromOrganisation(string p_organisationName, string p_adminUsername) - Void"));
         }
 
         public void UpsertOrganisation(Organisation p_organisation)
@@ -161,6 +174,8 @@ namespace RPLP.DAL.SQL.Depots
                 this._context.Organisations.Add(organisation);
                 this._context.SaveChanges();
             }
+
+            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Organisation - Administrator", $"DepotOrganisation - Method - UpsertOrganisation(Organisation p_organisation) - Void"));
         }
 
         public void DeleteOrganisation(string p_organisationName)
@@ -174,6 +189,8 @@ namespace RPLP.DAL.SQL.Depots
                 this._context.Update(organisationResult);
                 this._context.SaveChanges();
             }
+
+            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Organisation", $"DepotOrganisation - Method - DeleteOrganisation(string p_organisationName) - Void"));
         }
     }
 }

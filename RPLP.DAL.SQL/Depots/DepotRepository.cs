@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RPLP.DAL.DTO.Sql;
 using RPLP.ENTITES;
+using RPLP.JOURNALISATION;
 using RPLP.SERVICES.InterfacesDepots;
 using System;
 using System.Collections.Generic;
@@ -28,6 +29,9 @@ namespace RPLP.DAL.SQL.Depots
         public Repository GetRepositoryById(int id)
         {
             Repository_SQLDTO repository = this._context.Repositories.FirstOrDefault(repository => repository.Id == id && repository.Active);
+
+            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Repository", $"DepotRepository - Method - GetRepositoryById(int id) - Return Repository"));
+
             if (repository == null)
                 return null;
 
@@ -37,6 +41,8 @@ namespace RPLP.DAL.SQL.Depots
         public Repository GetRepositoryByName(string p_repositoryName)
         {
             Repository_SQLDTO repository = this._context.Repositories.FirstOrDefault(repository => repository.Name == p_repositoryName && repository.Active);
+
+            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Repository", $"DepotRepository - Method - GetRepositoryByName(string p_repositoryName) - Return Repository"));
 
             if (repository == null)
                 return null;
@@ -68,6 +74,8 @@ namespace RPLP.DAL.SQL.Depots
                 this._context.Repositories.Add(repository);
                 this._context.SaveChanges();
             }
+
+            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Repository", $"DepotRepository - Method - UpsertRepository(Repository p_repository) - Void"));
         }
 
         public void DeleteRepository(string p_repositoryName)
@@ -81,10 +89,14 @@ namespace RPLP.DAL.SQL.Depots
                 this._context.Update(repositoryResult);
                 this._context.SaveChanges();
             }
+
+            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Repository", $"DepotRepository - Method - DeleteRepository(string p_repositoryName) - Void"));
         }
 
         public List<Repository> GetRepositories()
         {
+            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Repository", $"DepotRepository - Method - GetRepositories() - Return List<Repository>"));
+
             return this._context.Repositories.Where(repository => repository.Active)
                 .Select(repository => repository.ToEntity())
                 .ToList();
@@ -92,6 +104,8 @@ namespace RPLP.DAL.SQL.Depots
 
         public List<Repository> GetRepositoriesFromOrganisationName(string p_organisationName)
         {
+            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Repository", $"DepotRepository - Method - GetRepositoriesFromOrganisationName(string p_organisationName) - Return List<Repository>"));
+
             return this._context.Repositories
                 .Where(repository => repository.Active && repository.OrganisationName == p_organisationName)
                 .Select(repository => repository.ToEntity())
