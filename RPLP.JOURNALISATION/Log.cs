@@ -16,8 +16,8 @@ namespace RPLP.JOURNALISATION
 
 
         //Erreurs
-        public Exception? ExceptionLevee { get; private set; }
-        public StackTrace? StackTrace { get; private set; }
+        public string? ExceptionLevee { get; private set; }
+        public string? StackTrace { get; private set; }
 
         //Api
         public string RouteApi { get; private set; }
@@ -35,7 +35,7 @@ namespace RPLP.JOURNALISATION
         public string MessageSupplementaire { get; private set; }
 
         //Complet
-        public Log(string p_TypeDeLog, Exception p_exception, StackTrace p_stacktrace, string p_RouteApi,
+        public Log(string p_TypeDeLog, string p_exception, string p_stacktrace, string p_RouteApi,
             int p_CodeStatusRequete, string p_tableAffectee, string p_utilisateurConnectee, string p_role, string p_messageSupplementaire)
         {
             this.Identifiant = Guid.NewGuid();
@@ -69,7 +69,7 @@ namespace RPLP.JOURNALISATION
         }
 
         //Constructeur pour la journalisation des erreurs
-        public Log(Exception p_exception, StackTrace p_stacktrace, string p_messageSupplementaire)
+        public Log(string p_exception, string p_stacktrace, string p_messageSupplementaire, int defaut)
         {
             this.Identifiant = Guid.NewGuid();
             this.TypeDeLog = "Erreur";

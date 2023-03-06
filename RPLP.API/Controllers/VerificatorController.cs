@@ -23,16 +23,16 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(email))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "VerificatorForDepot - GetUserTypeByEmail - email passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "VerificatorForDepot - GetUserTypeByEmail - email passé en paramêtre est vide", 0));
                 }
 
                 Type type = this._verificator.GetUserTypeByEmail(email);
 
                 if (type == null)
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                   "VerificatorForDepot - GetUserTypeByEmail - variable type assigné par la méthode GetUserTypeByEmail est null"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                   "VerificatorForDepot - GetUserTypeByEmail - variable type assigné par la méthode GetUserTypeByEmail est null", 0));
 
                     return BadRequest();
                 }
@@ -52,8 +52,8 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(username))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "VerificatorForDepot - CheckUsernameTaken - username passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "VerificatorForDepot - CheckUsernameTaken - username passé en paramêtre est vide", 0));
                 }
 
                 return this._verificator.CheckUsernameTaken(username);
@@ -71,8 +71,8 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(email))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "VerificatorForDepot - CheckEmailTaken - email passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "VerificatorForDepot - CheckEmailTaken - email passé en paramêtre est vide", 0));
                 }
 
                 return this._verificator.CheckEmailTaken(email);

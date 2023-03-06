@@ -16,8 +16,8 @@ namespace RPLP.API.Controllers
         {
             if(p_depot == null)
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                "StudentController - Constructeur - p_depot passé en paramêtre est null"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                "StudentController - Constructeur - p_depot passé en paramêtre est null", 0));
             }
 
             this._depot = p_depot;
@@ -56,8 +56,8 @@ namespace RPLP.API.Controllers
             {
                 if (id <= 0)
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString(),
-                    "StudentController - GetStudentById - id passé en paramêtre hors limites"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "StudentController - GetStudentById - id passé en paramêtre hors limites", 0));
                 }
 
                 return Ok(this._depot.GetStudentById(id));
@@ -75,8 +75,8 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(studentUsername))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "StudentController - GetStudentByUsername - studentUsername passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "StudentController - GetStudentByUsername - studentUsername passé en paramêtre est vide", 0));
                 }
 
                 return Ok(this._depot.GetStudentByUsername(studentUsername));
@@ -94,8 +94,8 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(studentUsername))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "StudentController - GetStudentClasses - studentUsername passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "StudentController - GetStudentClasses - studentUsername passé en paramêtre est vide", 0));
                 }
 
                 return Ok(this._depot.GetStudentClasses(studentUsername));
@@ -114,24 +114,24 @@ namespace RPLP.API.Controllers
             {
                 if (p_student == null)
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "StudentController - Post - p_student passé en paramêtre est null"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "StudentController - Post - p_student passé en paramêtre est null", 0));
 
                     return BadRequest();
                 }
 
                 if(p_student.Id <= 0)
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString(),
-                    "StudentController - Post - Le id du paramêtre p_student passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "StudentController - Post - Le id du paramêtre p_student passé en paramêtre est vide", 0));
 
                     return BadRequest();
                 }
 
                 if(!ModelState.IsValid)
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentException().ToString(), new StackTrace().ToString(),
-                    "StudentController - Post - p_student passé en paramêtre n'est pas un modèle valide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "StudentController - Post - p_student passé en paramêtre n'est pas un modèle valide", 0));
 
                     return BadRequest();
                 }
@@ -153,8 +153,8 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(studentUsername))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "StudentController - DeleteStudent - studentUsername passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "StudentController - DeleteStudent - studentUsername passé en paramêtre est vide", 0));
                 }
 
                 this._depot.DeleteStudent(studentUsername);
@@ -173,8 +173,8 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(username))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "StudentController - ReactivateStudent - username passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "StudentController - ReactivateStudent - username passé en paramêtre est vide", 0));
                 }
 
                 this._depot.ReactivateStudent(username);
