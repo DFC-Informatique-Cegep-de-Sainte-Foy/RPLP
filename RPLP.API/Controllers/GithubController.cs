@@ -24,8 +24,8 @@ namespace RPLP.API.Controllers
         {
             if (configuration == null)
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                "GithubController - Constructeur - configuration passé en paramêtre est null"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                "GithubController - Constructeur - configuration passé en paramêtre est null", 0));
             }
 
             string token = configuration.GetValue<string>("Token");
@@ -42,26 +42,26 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(organisationName))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubController - StartScript - organisationName passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - StartScript - organisationName passé en paramêtre est vide", 0));
                 }
 
                 if (string.IsNullOrWhiteSpace(classroomName))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubController - StartScript - classroomName passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - StartScript - classroomName passé en paramêtre est vide", 0));
                 }
 
                 if (string.IsNullOrWhiteSpace(assignmentName))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubController - StartScript - assignmentName passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - StartScript - assignmentName passé en paramêtre est vide", 0));
                 }
 
                 if (numberOfReviews < 0)
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString(),
-                    "GithubController - StartScript - numberOfReviews passé en paramêtre n'est pas valide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - StartScript - numberOfReviews passé en paramêtre n'est pas valide", 0));
                 }
 
                 this._scriptGithub.ScriptAssignStudentToAssignmentReview(organisationName, classroomName, assignmentName, numberOfReviews);
@@ -81,20 +81,20 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(organisationName))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubController - StartScriptDownloadAllRepositoriesForAssignment - organisationName passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - StartScriptDownloadAllRepositoriesForAssignment - organisationName passé en paramêtre est vide", 0));
                 }
 
                 if (string.IsNullOrWhiteSpace(classroomName))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubController - StartScriptDownloadAllRepositoriesForAssignment - classroomName passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - StartScriptDownloadAllRepositoriesForAssignment - classroomName passé en paramêtre est vide", 0));
                 }
 
                 if (string.IsNullOrWhiteSpace(assignmentName))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubController - StartScriptDownloadAllRepositoriesForAssignment - assignmentName passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - StartScriptDownloadAllRepositoriesForAssignment - assignmentName passé en paramêtre est vide", 0));
                 }
 
                 Console.Out.WriteLine($"Trying to call StartScriptDownloadAllRepositoriesForAssignment({organisationName}, {classroomName}, {assignmentName})");
@@ -102,24 +102,24 @@ namespace RPLP.API.Controllers
 
                 if (string.IsNullOrWhiteSpace(path))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                  "GithubController - StartScriptDownloadAllRepositoriesForAssignment - variable 'path' assigné est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                  "GithubController - StartScriptDownloadAllRepositoriesForAssignment - variable 'path' assigné est vide", 0));
                 }
 
                 FileStream file = System.IO.File.OpenRead(path);
 
                 if (file == null)
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                  "GithubController - StartScriptDownloadAllRepositoriesForAssignment - variable 'file' assigné est null"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                  "GithubController - StartScriptDownloadAllRepositoriesForAssignment - variable 'file' assigné est null", 0));
                 }
 
                 FileStreamResult fileStreamResult = new FileStreamResult(file, "application/octet-stream");
 
                 if (fileStreamResult == null)
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                  "GithubController - StartScriptDownloadAllRepositoriesForAssignment - variable 'fileStreamResult' assigné est null"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                  "GithubController - StartScriptDownloadAllRepositoriesForAssignment - variable 'fileStreamResult' assigné est null", 0));
                 }
 
                 fileStreamResult.FileDownloadName = $"{assignmentName}_{DateTime.Now}.zip";
@@ -139,25 +139,25 @@ namespace RPLP.API.Controllers
             {
                 if(string.IsNullOrWhiteSpace(organisationName))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubController - StartScriptDownloadOneRepositoriesForAssignment - organisationName passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - StartScriptDownloadOneRepositoriesForAssignment - organisationName passé en paramêtre est vide", 0));
                 }
 
                 if (string.IsNullOrWhiteSpace(classroomName))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubController - StartScriptDownloadOneRepositoriesForAssignment - classroomName passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - StartScriptDownloadOneRepositoriesForAssignment - classroomName passé en paramêtre est vide", 0));
                 }
 
                 if (string.IsNullOrWhiteSpace(assignmentName))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubController - StartScriptDownloadOneRepositoriesForAssignment - assignmentName passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - StartScriptDownloadOneRepositoriesForAssignment - assignmentName passé en paramêtre est vide", 0));
                 }
 
                 if (string.IsNullOrWhiteSpace(studentUsername))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
                     "GithubController - StartScriptDownloadOneRepositoriesForAssignment - studentUsername passé en paramêtre est vide"));
                 }
 
@@ -167,24 +167,24 @@ namespace RPLP.API.Controllers
 
                 if (string.IsNullOrWhiteSpace(path))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                  "GithubController - StartScriptDownloadOneRepositoriesForAssignment - variable 'path' assigné est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                  "GithubController - StartScriptDownloadOneRepositoriesForAssignment - variable 'path' assigné est vide", 0));
                 }
 
                 FileStream file = System.IO.File.OpenRead(path);
 
                 if (file == null)
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                  "GithubController - StartScriptDownloadOneRepositoriesForAssignment - variable 'file' assigné est null"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                  "GithubController - StartScriptDownloadOneRepositoriesForAssignment - variable 'file' assigné est null", 0));
                 }
 
                 FileStreamResult fileStreamResult = new FileStreamResult(file, "application/octet-stream");
 
                 if (fileStreamResult == null)
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                  "GithubController - StartScriptDownloadOneRepositoriesForAssignment - variable 'fileStreamResult' assigné est null"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                  "GithubController - StartScriptDownloadOneRepositoriesForAssignment - variable 'fileStreamResult' assigné est null", 0));
                 }
 
                 fileStreamResult.FileDownloadName = $"{assignmentName}_{DateTime.Now}.zip";
@@ -205,26 +205,26 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(organisationName))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubController - StartScriptProf - organisationName passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - StartScriptProf - organisationName passé en paramêtre est vide", 0));
                 }
 
                 if (string.IsNullOrWhiteSpace(classroomName))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubController - StartScriptProf - classroomName passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - StartScriptProf - classroomName passé en paramêtre est vide", 0));
                 }
 
                 if (string.IsNullOrWhiteSpace(assignmentName))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
                     "GithubController - StartScriptProf - assignmentName passé en paramêtre est vide"));
                 }
 
                 if (string.IsNullOrWhiteSpace(teacherUsername))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubController - StartScriptProf - teacherUsername passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - StartScriptProf - teacherUsername passé en paramêtre est vide", 0));
                 }
 
                 this._scriptGithub.ScriptAssignTeacherToAssignmentReview(organisationName, classroomName, assignmentName, teacherUsername);
@@ -245,8 +245,8 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(organisationName))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubController - GetRepositories - organisationName passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - GetRepositories - organisationName passé en paramêtre est vide", 0));
                 }
 
                 return Ok(this._githubAction.GetOrganisationRepositoriesGithub(organisationName));
@@ -264,14 +264,14 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(organisationName))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubController - GetRepository - organisationName passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - GetRepository - organisationName passé en paramêtre est vide", 0));
                 }
 
                 if (string.IsNullOrWhiteSpace(repositoryName))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubController - GetRepository - repositoryName passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - GetRepository - repositoryName passé en paramêtre est vide", 0));
                 }
 
                 return Ok(this._githubAction.GetRepositoryInfoGithub(organisationName, repositoryName));
@@ -290,14 +290,14 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(organisationName))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubController - GetRepositoryCommits - organisationName passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - GetRepositoryCommits - organisationName passé en paramêtre est vide", 0));
                 }
 
                 if (string.IsNullOrWhiteSpace(repositoryName))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubController - GetRepositoryCommits - repositoryName passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - GetRepositoryCommits - repositoryName passé en paramêtre est vide", 0));
                 }
 
                 return Ok(this._githubAction.GetRepositoryCommitsGithub(organisationName, repositoryName));
@@ -315,14 +315,14 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(organisationName))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubController - GetRepositoryBranches - organisationName passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - GetRepositoryBranches - organisationName passé en paramêtre est vide", 0));
                 }
 
                 if (string.IsNullOrWhiteSpace(repositoryName))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubController - GetRepositoryBranches - repositoryName passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - GetRepositoryBranches - repositoryName passé en paramêtre est vide", 0));
                 }
 
                 return Ok(this._githubAction.GetRepositoryBranchesGithub(organisationName, repositoryName));
@@ -341,25 +341,25 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(organisationName))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubController - CreateNewBranch - organisationName passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - CreateNewBranch - organisationName passé en paramêtre est vide", 0));
                 }
 
                 if (string.IsNullOrWhiteSpace(repositoryName))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubController - CreateNewBranch - repositoryName passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - CreateNewBranch - repositoryName passé en paramêtre est vide", 0));
                 }
 
                 if (string.IsNullOrWhiteSpace(branchName))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubController - CreateNewBranch - branchName passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - CreateNewBranch - branchName passé en paramêtre est vide", 0));
                 }
 
                 if (string.IsNullOrWhiteSpace(sha))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
                     "GithubController - CreateNewBranch - sha passé en paramêtre est vide"));
                 }
 
@@ -379,32 +379,32 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(organisationName))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubController - CreateNewPR - organisationName passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - CreateNewPR - organisationName passé en paramêtre est vide", 0));
                 }
 
                 if (string.IsNullOrWhiteSpace(repositoryName))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubController - CreateNewPR - repositoryName passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - CreateNewPR - repositoryName passé en paramêtre est vide", 0));
                 }
 
                 if (string.IsNullOrWhiteSpace(branchName))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubController - CreateNewPR - branchName passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - CreateNewPR - branchName passé en paramêtre est vide", 0));
                 }
 
                 if (string.IsNullOrWhiteSpace(title))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubController - CreateNewPR - title passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - CreateNewPR - title passé en paramêtre est vide", 0));
                 }
 
                 if (string.IsNullOrWhiteSpace(body))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubController - CreateNewPR - body passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - CreateNewPR - body passé en paramêtre est vide", 0));
                 }
 
                 return Ok(this._githubAction.CreateNewPullRequestFeedbackGitHub(organisationName, repositoryName, branchName, title, body));
@@ -422,26 +422,26 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(organisationName))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubController - AssignStudentToPR (POST :{organisationName}/{repositoryName}/Assign/PullRequest/{pullRequest}/Student/{studentUsername}) - organisationName passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - AssignStudentToPR (POST :{organisationName}/{repositoryName}/Assign/PullRequest/{pullRequest}/Student/{studentUsername}) - organisationName passé en paramêtre est vide", 0));
                 }
 
                 if (string.IsNullOrWhiteSpace(repositoryName))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubController - AssignStudentToPR (POST :{organisationName}/{repositoryName}/Assign/PullRequest/{pullRequest}/Student/{studentUsername}) - repositoryName passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - AssignStudentToPR (POST :{organisationName}/{repositoryName}/Assign/PullRequest/{pullRequest}/Student/{studentUsername}) - repositoryName passé en paramêtre est vide", 0));
                 }
 
                 if (string.IsNullOrWhiteSpace(pullRequest))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubController - AssignStudentToPR (POST :{organisationName}/{repositoryName}/Assign/PullRequest/{pullRequest}/Student/{studentUsername}) - pullRequest passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - AssignStudentToPR (POST :{organisationName}/{repositoryName}/Assign/PullRequest/{pullRequest}/Student/{studentUsername}) - pullRequest passé en paramêtre est vide", 0));
                 }
 
                 if (string.IsNullOrWhiteSpace(studentUsername))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubController - AssignStudentToPR (POST :{organisationName}/{repositoryName}/Assign/PullRequest/{pullRequest}/Student/{studentUsername}) - studentUsername passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - AssignStudentToPR (POST :{organisationName}/{repositoryName}/Assign/PullRequest/{pullRequest}/Student/{studentUsername}) - studentUsername passé en paramêtre est vide", 0));
                 }
 
                 return Ok(this._githubAction.AssignReviewerToPullRequestGitHub(organisationName, repositoryName, pullRequest, studentUsername));
@@ -460,20 +460,20 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(organisationName))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubController - AssignStudentToPR (PUT : {organisationName}/{repositoryName}/Add/Collaborator/Student/{studentUsername}) - organisationName passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - AssignStudentToPR (PUT : {organisationName}/{repositoryName}/Add/Collaborator/Student/{studentUsername}) - organisationName passé en paramêtre est vide", 0));
                 }
 
                 if (string.IsNullOrWhiteSpace(repositoryName))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubController - AssignStudentToPR (PUT : {organisationName}/{repositoryName}/Add/Collaborator/Student/{studentUsername}) - repositoryName passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - AssignStudentToPR (PUT : {organisationName}/{repositoryName}/Add/Collaborator/Student/{studentUsername}) - repositoryName passé en paramêtre est vide" , 0));
                 }
 
                 if (string.IsNullOrWhiteSpace(studentUsername))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubController - AssignStudentToPR (PUT : {organisationName}/{repositoryName}/Add/Collaborator/Student/{studentUsername}) - studentUsername passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - AssignStudentToPR (PUT : {organisationName}/{repositoryName}/Add/Collaborator/Student/{studentUsername}) - studentUsername passé en paramêtre est vide", 0));
                 }
 
                 return Ok(this._githubAction.AddStudentAsCollaboratorToPeerRepositoryGithub(organisationName, repositoryName, studentUsername));
@@ -494,14 +494,14 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(repositoryName))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubController - GetPullRequestsFromRepository - repositoryName passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - GetPullRequestsFromRepository - repositoryName passé en paramêtre est vide", 0));
                 }
 
                 if (string.IsNullOrWhiteSpace(teacherUsername))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubController - GetPullRequestsFromRepository - teacherUsername passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - GetPullRequestsFromRepository - teacherUsername passé en paramêtre est vide", 0));
                 }
 
                 return Ok(this._githubPRCommentFetcher.GetPullRequestsFromRepositoryAsync(teacherUsername, repositoryName).Result);
@@ -520,34 +520,34 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(repositoryName))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubController - GetIssuesReviewsAndCommentsByStudentOnAssignment (POST : {teacherUsername}/{repositoryName}/PullRequests/Comments/Students) - repositoryName passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - GetIssuesReviewsAndCommentsByStudentOnAssignment (POST : {teacherUsername}/{repositoryName}/PullRequests/Comments/Students) - repositoryName passé en paramêtre est vide", 0));
                 }
 
                 if (string.IsNullOrWhiteSpace(teacherUsername))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubController - GetIssuesReviewsAndCommentsByStudentOnAssignment (POST : {teacherUsername}/{repositoryName}/PullRequests/Comments/Students) - teacherUsername passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - GetIssuesReviewsAndCommentsByStudentOnAssignment (POST : {teacherUsername}/{repositoryName}/PullRequests/Comments/Students) - teacherUsername passé en paramêtre est vide", 0));
                 }
 
                 if(studentNames == null)
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubController - GetIssuesReviewsAndCommentsByStudentOnAssignment (POST : {teacherUsername}/{repositoryName}/PullRequests/Comments/Students) - studentNames passé en paramêtre est null"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - GetIssuesReviewsAndCommentsByStudentOnAssignment (POST : {teacherUsername}/{repositoryName}/PullRequests/Comments/Students) - studentNames passé en paramêtre est null", 0));
                 }
 
                 if(!ModelState.IsValid)
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubController - GetIssuesReviewsAndCommentsByStudentOnAssignment (POST : {teacherUsername}/{repositoryName}/PullRequests/Comments/Students) - studentNames passé en paramêtre n'est pas un model valide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - GetIssuesReviewsAndCommentsByStudentOnAssignment (POST : {teacherUsername}/{repositoryName}/PullRequests/Comments/Students) - studentNames passé en paramêtre n'est pas un model valide", 0));
                 }
 
                 List<Pull> pulls = this._githubPRCommentFetcher.GetPullRequestsFromRepositoryAsync(teacherUsername, repositoryName).Result;
 
                 if(pulls == null)
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubController - GetIssuesReviewsAndCommentsByStudentOnAssignment (POST : {teacherUsername}/{repositoryName}/PullRequests/Comments/Students) - variable pulls assigné de la méthode GetPullRequestsFromRepositoryAsyncest null"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - GetIssuesReviewsAndCommentsByStudentOnAssignment (POST : {teacherUsername}/{repositoryName}/PullRequests/Comments/Students) - variable pulls assigné de la méthode GetPullRequestsFromRepositoryAsyncest null", 0));
                 }
 
                 return Ok(this._githubPRCommentFetcher.GetMultipleUsersCommentsReviewsAndIssues(pulls, studentNames).Result);
@@ -566,28 +566,28 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(repositoryName))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubController - GetIssuesReviewsAndCommentsByStudentOnAssignment (GET : {teacherUsername}/{repositoryName}/PullRequests/Comments/{studentName}) - repositoryName passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - GetIssuesReviewsAndCommentsByStudentOnAssignment (GET : {teacherUsername}/{repositoryName}/PullRequests/Comments/{studentName}) - repositoryName passé en paramêtre est vide", 0));
                 }
 
                 if (string.IsNullOrWhiteSpace(teacherUsername))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubController - GetIssuesReviewsAndCommentsByStudentOnAssignment (GET : {teacherUsername}/{repositoryName}/PullRequests/Comments/{studentName}) - teacherUsername passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - GetIssuesReviewsAndCommentsByStudentOnAssignment (GET : {teacherUsername}/{repositoryName}/PullRequests/Comments/{studentName}) - teacherUsername passé en paramêtre est vide", 0));
                 }
 
                 if (string.IsNullOrWhiteSpace(studentName))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubController - GetIssuesReviewsAndCommentsByStudentOnAssignment (GET - {teacherUsername}/{repositoryName}/PullRequests/Comments/{studentName}) - studentName passé en paramêtre est null"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - GetIssuesReviewsAndCommentsByStudentOnAssignment (GET - {teacherUsername}/{repositoryName}/PullRequests/Comments/{studentName}) - studentName passé en paramêtre est null", 0));
                 }
 
                 List<Pull> pulls = this._githubPRCommentFetcher.GetPullRequestsFromRepositoryAsync(teacherUsername, repositoryName).Result;
 
                 if (pulls == null)
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubController - GetIssuesReviewsAndCommentsByStudentOnAssignment (GET - {teacherUsername}/{repositoryName}/PullRequests/Comments/{studentName}) - variable pulls assigné de la méthode GetPullRequestsFromRepositoryAsync est null"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - GetIssuesReviewsAndCommentsByStudentOnAssignment (GET - {teacherUsername}/{repositoryName}/PullRequests/Comments/{studentName}) - variable pulls assigné de la méthode GetPullRequestsFromRepositoryAsync est null", 0));
                 }
 
                 return Ok(this._githubPRCommentFetcher.GetUserCommentsReviewsAndIssues(pulls, studentName).Result);
@@ -606,37 +606,37 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(organisationName))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubController - GetFileWithCommentsOfPullRequestByAssignmentForSingleRepository - organisationName passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - GetFileWithCommentsOfPullRequestByAssignmentForSingleRepository - organisationName passé en paramêtre est vide", 0));
                 }
 
                 if (string.IsNullOrWhiteSpace(repositoryName))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubController - GetFileWithCommentsOfPullRequestByAssignmentForSingleRepository - repositoryName passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - GetFileWithCommentsOfPullRequestByAssignmentForSingleRepository - repositoryName passé en paramêtre est vide", 0));
                 }
 
                 List<Pull>? pull = this._githubPRCommentFetcher.GetPullRequestsFromRepositoryAsync(organisationName, repositoryName).Result;
 
                 if (pull == null)
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubController - GetFileWithCommentsOfPullRequestByAssignmentForSingleRepository - variable pulls assigné de la méthode GetPullRequestsFromRepositoryAsync est null"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - GetFileWithCommentsOfPullRequestByAssignmentForSingleRepository - variable pulls assigné de la méthode GetPullRequestsFromRepositoryAsync est null", 0));
                 }
 
                 var stream = new MemoryStream(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(pull)));
 
                 if(stream.Length <= 0)
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                   "GithubController - GetFileWithCommentsOfPullRequestByAssignmentForSingleRepository - variable stream est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                   "GithubController - GetFileWithCommentsOfPullRequestByAssignmentForSingleRepository - variable stream est vide", 0));
                 }
 
                 FileStreamResult fileStreamResult = new FileStreamResult(stream, "application/octet-stream");
 
                 if(fileStreamResult == null)
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
                     "GithubController - GetFileWithCommentsOfPullRequestByAssignmentForSingleRepository - variable fileStreamResult est null"));
                 }
 
@@ -657,43 +657,43 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(organisationName))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubController - GetFileWithCommentsOfPullRequestByAssignmentForAllRepositories - organisationName passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - GetFileWithCommentsOfPullRequestByAssignmentForAllRepositories - organisationName passé en paramêtre est vide", 0));
                 }
 
                 if (string.IsNullOrWhiteSpace(classroomName))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubController - GetFileWithCommentsOfPullRequestByAssignmentForAllRepositories - classroomName passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - GetFileWithCommentsOfPullRequestByAssignmentForAllRepositories - classroomName passé en paramêtre est vide", 0));
                 }
                 if (string.IsNullOrWhiteSpace(assignmentName))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubController - GetFileWithCommentsOfPullRequestByAssignmentForAllRepositories - assignmentName passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - GetFileWithCommentsOfPullRequestByAssignmentForAllRepositories - assignmentName passé en paramêtre est vide", 0));
                 }
 
                 List<ReviewerUser>? reviewerUsers = this._githubPRCommentFetcher.GetCommentsReviewsAndIssuesByReviewersAsync(organisationName, classroomName, assignmentName).Result;
                 
                 if(reviewerUsers == null)
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubController - GetFileWithCommentsOfPullRequestByAssignmentForAllRepositories - variable reviewerUsers assigné de la méthode GetCommentsReviewsAndIssuesByReviewersAsync est null"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - GetFileWithCommentsOfPullRequestByAssignmentForAllRepositories - variable reviewerUsers assigné de la méthode GetCommentsReviewsAndIssuesByReviewersAsync est null", 0));
                 }
                 
                 var stream = new MemoryStream(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(reviewerUsers)));
 
                 if (stream.Length <= 0)
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                   "GithubController - GetFileWithCommentsOfPullRequestByAssignmentForAllRepositories - variable stream est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                   "GithubController - GetFileWithCommentsOfPullRequestByAssignmentForAllRepositories - variable stream est vide", 0));
                 }
 
                 FileStreamResult fileStreamResult = new FileStreamResult(stream, "application/octet-stream");
 
                 if (fileStreamResult == null)
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubController - GetFileWithCommentsOfPullRequestByAssignmentForAllRepositories - variable fileStreamResult est null"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "GithubController - GetFileWithCommentsOfPullRequestByAssignmentForAllRepositories - variable fileStreamResult est null", 0));
                 }
 
                 fileStreamResult.FileDownloadName = $"Comments_{assignmentName}_{DateTime.Now}.json";
