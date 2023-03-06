@@ -383,14 +383,14 @@ namespace RPLP.SERVICES.Github.GithubReviewCommentFetcher
             HttpResponseMessage response = await this._client.GetAsync($"/repos/{p_owner}/{p_repository}/issues/comments");
 
             HttpHeaders headers = response.Headers;
-            int remaining;
+            int remaining = 0;
             IEnumerable<string> headerValues;
             if (headers.TryGetValues("X-RateLimit-Remaining", out headerValues))
             {
                 int.TryParse(headerValues.First(), out remaining);
             }
 
-            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log($"/repos/{p_owner}/{p_repository}/issues/comments", (int)response.StatusCode, $"Requête GET pour les commentaires d'une issue un dépot"));
+            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log($"/repos/{p_owner}/{p_repository}/issues/comments", (int)response.StatusCode, remaining, $"Requête GET pour les commentaires d'une issue un dépot"));
 
             return await response.Content.ReadAsStringAsync();
             // Gardé le return original au cas où il y a un problème
@@ -423,14 +423,14 @@ namespace RPLP.SERVICES.Github.GithubReviewCommentFetcher
             HttpResponseMessage response = await this._client.GetAsync($"/repos/{p_owner}/{p_repository}/pulls/{p_pullNumber}/reviews");
 
             HttpHeaders headers = response.Headers;
-            int remaining;
+            int remaining = 0;
             IEnumerable<string> headerValues;
             if (headers.TryGetValues("X-RateLimit-Remaining", out headerValues))
             {
                 int.TryParse(headerValues.First(), out remaining);
             }
 
-            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log($"/repos/{p_owner}/{p_repository}/pulls/{p_pullNumber}/reviews", (int)response.StatusCode, $"Requête GET pour les review d'une pull request"));
+            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log($"/repos/{p_owner}/{p_repository}/pulls/{p_pullNumber}/reviews", (int)response.StatusCode, remaining, $"Requête GET pour les review d'une pull request"));
 
             return await response.Content.ReadAsStringAsync();
             // Gardé le return original au cas où il y a un problème
@@ -458,14 +458,14 @@ namespace RPLP.SERVICES.Github.GithubReviewCommentFetcher
             HttpResponseMessage response = await this._client.GetAsync($"/repos/{p_owner}/{p_repository}/pulls/comments");
 
             HttpHeaders headers = response.Headers;
-            int remaining;
+            int remaining = 0;
             IEnumerable<string> headerValues;
             if (headers.TryGetValues("X-RateLimit-Remaining", out headerValues))
             {
                 int.TryParse(headerValues.First(), out remaining);
             }
 
-            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log($"/repos/{p_owner}/{p_repository}/pulls/comments", (int)response.StatusCode, $"Requête GET pour les comments d'une pull request"));
+            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log($"/repos/{p_owner}/{p_repository}/pulls/comments", (int)response.StatusCode, remaining, $"Requête GET pour les comments d'une pull request"));
 
             return await response.Content.ReadAsStringAsync();
             // Gardé le return original au cas où il y a un problème
@@ -491,14 +491,14 @@ namespace RPLP.SERVICES.Github.GithubReviewCommentFetcher
             HttpResponseMessage response = await this._client.GetAsync($"/repos/{p_owner}/{p_repository}/pulls");
 
             HttpHeaders headers = response.Headers;
-            int remaining;
+            int remaining = 0;
             IEnumerable<string> headerValues;
             if (headers.TryGetValues("X-RateLimit-Remaining", out headerValues))
             {
                 int.TryParse(headerValues.First(), out remaining);
             }
 
-            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log($"/repos/{p_owner}/{p_repository}/pulls", (int)response.StatusCode, $"Requête GET pour les json des pull requests d'un dépot"));
+            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log($"/repos/{p_owner}/{p_repository}/pulls", (int)response.StatusCode, remaining, $"Requête GET pour les json des pull requests d'un dépot"));
 
             return await response.Content.ReadAsStringAsync();
             //return await this._client.GetAsync($"/repos/{p_owner}/{p_repository}/pulls")
@@ -536,10 +536,24 @@ namespace RPLP.SERVICES.Github.GithubReviewCommentFetcher
             List<string> jsons = repositories
                 .Select(r =>
                 {
-                    Task<string> a = this._client.GetStringAsync($"/repos/{r.OrganisationName}/{r.Name}/pulls");
+                    //Task<string> a = this._client.GetStringAsync($"/repos/{r.OrganisationName}/{r.Name}/pulls");
+                    //a.Wait();
+                    //// La donnée requêtes restantes n'est pas accessible avec cette requête puisque la méthode GetStringAsync renvoie un Task<string> et non un HttpResponseMessage (mis valeur bidon pour remaining)
+                    //RPLP.JOURNALISATION.Journalisation.Journaliser(new Log($"/repos/{r.OrganisationName}/{r.Name}/pulls", 0, 66666, "Requête GET pour le json d'une pull request d'un dépot"));
+                    //return a.Result;
+                    Task<HttpResponseMessage> a = this._client.GetAsync($"/repos/{r.OrganisationName}/{r.Name}/pulls");
                     a.Wait();
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log($"/repos/{r.OrganisationName}/{r.Name}/pulls", 0, "Requête GET pour le json d'une pull request d'un dépot"));
-                    return a.Result;
+
+                    HttpHeaders headers = a.Result.Headers;
+                    int remaining = 0;
+                    IEnumerable<string> headerValues;
+                    if (headers.TryGetValues("X-RateLimit-Remaining", out headerValues))
+                    {
+                        int.TryParse(headerValues.First(), out remaining);
+                    }
+                    // La donnée requêtes restantes n'est pas accessible avec cette requête puisque la méthode GetStringAsync renvoie un Task<string> et non un HttpResponseMessage (mis valeur bidon pour remaining)
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log($"/repos/{r.OrganisationName}/{r.Name}/pulls", (int)a.Result.StatusCode, remaining, "Requête GET pour le json d'une pull request d'un dépot"));
+                    return a.Result.Content.ReadAsStringAsync().Result;
                 }).ToList();
 
             return jsons;
