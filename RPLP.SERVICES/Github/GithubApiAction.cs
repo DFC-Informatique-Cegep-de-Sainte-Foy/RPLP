@@ -78,6 +78,14 @@ namespace RPLP.SERVICES.Github
             List<Repository_JSONDTO> repositories = new List<Repository_JSONDTO>();
             HttpResponseMessage response = await _httpClient.GetAsync(p_githubLink);
 
+            HttpHeaders headers = response.Headers;
+            int remaining;
+            IEnumerable<string> headerValues;
+            if (headers.TryGetValues("X-RateLimit-Remaining", out headerValues))
+            {
+                int.TryParse(headerValues.First(), out remaining);
+            }
+
             RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(p_githubLink, (int)response.StatusCode, "Requête GET pour les dépots d'une organisation"));
 
             if (response.IsSuccessStatusCode)
@@ -121,6 +129,14 @@ namespace RPLP.SERVICES.Github
         {
             Repository_JSONDTO repository = new Repository_JSONDTO();
             HttpResponseMessage response = await _httpClient.GetAsync(p_githubLink);
+
+            HttpHeaders headers = response.Headers;
+            int remaining;
+            IEnumerable<string> headerValues;
+            if (headers.TryGetValues("X-RateLimit-Remaining", out headerValues))
+            {
+                int.TryParse(headerValues.First(), out remaining);
+            }
 
             RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(p_githubLink, (int)response.StatusCode, "Requête GET pour les infos d'un dépot"));
 
@@ -166,6 +182,14 @@ namespace RPLP.SERVICES.Github
             List<Branch_JSONDTO> refs = new List<Branch_JSONDTO>();
             HttpResponseMessage response = await _httpClient.GetAsync(p_githubLink);
 
+            HttpHeaders headers = response.Headers;
+            int remaining;
+            IEnumerable<string> headerValues;
+            if (headers.TryGetValues("X-RateLimit-Remaining", out headerValues))
+            {
+                int.TryParse(headerValues.First(), out remaining);
+            }
+
             RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(p_githubLink, (int)response.StatusCode, "Requête GET pour les branches d'un dépots"));
 
             if (response.IsSuccessStatusCode)
@@ -210,6 +234,14 @@ namespace RPLP.SERVICES.Github
             List<Commit_JSONDTO> commits = new List<Commit_JSONDTO>();
             HttpResponseMessage response = await _httpClient.GetAsync(p_githubLink);
 
+            HttpHeaders headers = response.Headers;
+            int remaining;
+            IEnumerable<string> headerValues;
+            if (headers.TryGetValues("X-RateLimit-Remaining", out headerValues))
+            {
+                int.TryParse(headerValues.First(), out remaining);
+            }
+
             RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(p_githubLink, (int)response.StatusCode, "Requête GET pour les commits d'un dépots"));
 
             if (response.IsSuccessStatusCode)
@@ -253,6 +285,14 @@ namespace RPLP.SERVICES.Github
         {
             List<PullRequest_JSONDTO> branches = new List<PullRequest_JSONDTO>();
             HttpResponseMessage response = await _httpClient.GetAsync(p_githubLink);
+
+            HttpHeaders headers = response.Headers;
+            int remaining;
+            IEnumerable<string> headerValues;
+            if (headers.TryGetValues("X-RateLimit-Remaining", out headerValues))
+            {
+                int.TryParse(headerValues.First(), out remaining);
+            }
 
             RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(p_githubLink, (int)response.StatusCode, "Requête GET pour les pull requests d'un dépots"));
 
@@ -315,7 +355,15 @@ namespace RPLP.SERVICES.Github
 
             string branchRequest = JsonConvert.SerializeObject(branch_request);
 
-            HttpResponseMessage response = _httpClient.PostAsync(p_githubLink, new StringContent(branchRequest, Encoding.UTF8, "application/json")).Result;
+            HttpResponseMessage response = await _httpClient.PostAsync(p_githubLink, new StringContent(branchRequest, Encoding.UTF8, "application/json"));
+
+            HttpHeaders headers = response.Headers;
+            int remaining;
+            IEnumerable<string> headerValues;
+            if (headers.TryGetValues("X-RateLimit-Remaining", out headerValues))
+            {
+                int.TryParse(headerValues.First(), out remaining);
+            }
 
             RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(p_githubLink, (int)response.StatusCode, $"Requête POST pour la création de la branche \"{p_newBranchName}\" pour Feedback"));
 
@@ -373,7 +421,15 @@ namespace RPLP.SERVICES.Github
             PullRequest_JSONRequest pullRequest_request = new PullRequest_JSONRequest { fromBranch = "main", targetBranch = p_BranchName, title = p_title, body = p_body };
             string pullRequest = JsonConvert.SerializeObject(pullRequest_request);
 
-            HttpResponseMessage response = _httpClient.PostAsync(p_githubLink, new StringContent(pullRequest, Encoding.UTF8, "application/json")).Result;
+            HttpResponseMessage response = await _httpClient.PostAsync(p_githubLink, new StringContent(pullRequest, Encoding.UTF8, "application/json"));
+
+            HttpHeaders headers = response.Headers;
+            int remaining;
+            IEnumerable<string> headerValues;
+            if (headers.TryGetValues("X-RateLimit-Remaining", out headerValues))
+            {
+                int.TryParse(headerValues.First(), out remaining);
+            }
 
             RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(p_githubLink, (int)response.StatusCode, $"Requête POST pour la création d'une pull request pour Feedback vers la branche \"{p_BranchName}\""));
 
@@ -447,6 +503,14 @@ namespace RPLP.SERVICES.Github
             List<Collaborator_JSONDTO> collaborators = new List<Collaborator_JSONDTO>();
             HttpResponseMessage response = await _httpClient.GetAsync(p_githubLink);
 
+            HttpHeaders headers = response.Headers;
+            int remaining;
+            IEnumerable<string> headerValues;
+            if (headers.TryGetValues("X-RateLimit-Remaining", out headerValues))
+            {
+                int.TryParse(headerValues.First(), out remaining);
+            }
+
             RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(p_githubLink, (int)response.StatusCode, "Requête GET pour les collaborateurs d'un dépot étudiant"));
 
             if (response.IsSuccessStatusCode)
@@ -461,7 +525,15 @@ namespace RPLP.SERVICES.Github
         private async Task<string> AddStudentAsCollaboratorToPeerRepositoryGithubApiRequest(string p_githubLink)
         {
             string permission = "{\"permission\":\"Triage\"}";
-            HttpResponseMessage response = _httpClient.PutAsync(p_githubLink, new StringContent(permission, Encoding.UTF8, "application/json")).Result;
+            HttpResponseMessage response = await _httpClient.PutAsync(p_githubLink, new StringContent(permission, Encoding.UTF8, "application/json"));
+
+            HttpHeaders headers = response.Headers;
+            int remaining;
+            IEnumerable<string> headerValues;
+            if (headers.TryGetValues("X-RateLimit-Remaining", out headerValues))
+            {
+                int.TryParse(headerValues.First(), out remaining);
+            }
 
             RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(p_githubLink, (int)response.StatusCode, "Requête PUT pour l'ajout d'un étudiant en tant que collaborateur à un dépot"));
 
@@ -504,7 +576,15 @@ namespace RPLP.SERVICES.Github
 
         private async Task<string> RemoveStudentAsCollaboratorFromPeerRepositoryGithubApiRequest(string p_githubLink)
         {
-            HttpResponseMessage response = _httpClient.DeleteAsync(p_githubLink).Result;
+            HttpResponseMessage response = await _httpClient.DeleteAsync(p_githubLink);
+
+            HttpHeaders headers = response.Headers;
+            int remaining;
+            IEnumerable<string> headerValues;
+            if (headers.TryGetValues("X-RateLimit-Remaining", out headerValues))
+            {
+                int.TryParse(headerValues.First(), out remaining);
+            }
 
             RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(p_githubLink, (int)response.StatusCode, "Requête DELETE pour la suppression d'un étudiant comme collaborateur d'un dépot"));
 
@@ -577,7 +657,15 @@ namespace RPLP.SERVICES.Github
                    "GithubApiAction - AssignReviewerToPullRequestGitHubApiRequest - la chaine de caractère reviewers assignée par la méthode JsonConvert.SerializeObject(reviewerJSON); est vide"));
             }
 
-            HttpResponseMessage response = _httpClient.PostAsync(p_githubLink, new StringContent(reviewers, Encoding.UTF8, "application/json")).Result;
+            HttpResponseMessage response = await _httpClient.PostAsync(p_githubLink, new StringContent(reviewers, Encoding.UTF8, "application/json"));
+
+            HttpHeaders headers = response.Headers;
+            int remaining;
+            IEnumerable<string> headerValues;
+            if (headers.TryGetValues("X-RateLimit-Remaining", out headerValues))
+            {
+                int.TryParse(headerValues.First(), out remaining);
+            }
 
             RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(p_githubLink, (int)response.StatusCode, $"Requête POST pour l'assignation d'un reviewer (\"{p_studentUsername}\") à une pull request"));
 
@@ -654,7 +742,15 @@ namespace RPLP.SERVICES.Github
                    "GithubApiAction - addFileToContentsGithubApiRequest - la chaine de caractères contentRequest assignée par la méthode JsonConvert.SerializeObject(content_request) est vide"));
             }
 
-            HttpResponseMessage response = _httpClient.PutAsync(p_githubLink, new StringContent(contentRequest, Encoding.UTF8, "application/json")).Result;
+            HttpResponseMessage response = await _httpClient.PutAsync(p_githubLink, new StringContent(contentRequest, Encoding.UTF8, "application/json"));
+
+            HttpHeaders headers = response.Headers;
+            int remaining;
+            IEnumerable<string> headerValues;
+            if (headers.TryGetValues("X-RateLimit-Remaining", out headerValues))
+            {
+                int.TryParse(headerValues.First(), out remaining);
+            }
 
             RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(p_githubLink, (int)response.StatusCode, $"Requête PUT pour ajouter un fichier à un dépot"));
 
@@ -686,14 +782,24 @@ namespace RPLP.SERVICES.Github
             Task<HttpResponseMessage> task = GetRepositoryDownloadTask(fullPath);
             task.Wait();
 
+            HttpHeaders headers = task.Result.Headers;
+            int remaining;
+            IEnumerable<string> headerValues;
+            if (headers.TryGetValues("X-RateLimit-Remaining", out headerValues))
+            {
+                int.TryParse(headerValues.First(), out remaining);
+            }
+
+            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(fullPath, (int)task.Result.StatusCode, "Requête GET pour télécharger un dépot"));
+
+
             return task.Result;
         }
 
+        // méthode à vérifier, devrait-elle être async
         private Task<HttpResponseMessage> GetRepositoryDownloadTask(string p_githubLink)
         {
             Task<HttpResponseMessage> response = _httpClient.GetAsync(p_githubLink);
-
-            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(p_githubLink, (int)response.Result.StatusCode, "Requête GET pour télécharger un dépot"));
 
             return response;
         }
