@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace RPLP.MVC.Controllers;
 
-public class LogController : Controller
+public class LogsController : Controller
 {
     public IActionResult Index()
     {
