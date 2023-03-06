@@ -22,6 +22,7 @@ namespace RPLP.JOURNALISATION
         //Api
         public string RouteApi { get; private set; }
         public int CodeStatusRequete { get; set; }
+        public int RequetesRestantes { get; private set; }
 
 
         //Base de données 
@@ -36,7 +37,7 @@ namespace RPLP.JOURNALISATION
 
         //Complet
         public Log(string p_TypeDeLog, string p_exception, string p_stacktrace, string p_RouteApi,
-            int p_CodeStatusRequete, string p_tableAffectee, string p_utilisateurConnectee, string p_role, string p_messageSupplementaire)
+            int p_CodeStatusRequete, int p_requetesRestantes, string p_tableAffectee, string p_utilisateurConnectee, string p_role, string p_messageSupplementaire)
         {
             this.Identifiant = Guid.NewGuid();
             this.TypeDeLog = p_TypeDeLog;
@@ -45,6 +46,7 @@ namespace RPLP.JOURNALISATION
             this.StackTrace = p_stacktrace;
             this.RouteApi = p_RouteApi;
             this.CodeStatusRequete = p_CodeStatusRequete;
+            this.RequetesRestantes = p_requetesRestantes;
             this.TableAffectee = p_tableAffectee;
             this.UtilisateurConnecte = p_utilisateurConnectee;
             this.Role = p_role;
@@ -62,6 +64,7 @@ namespace RPLP.JOURNALISATION
             this.StackTrace = null;
             this.RouteApi = "";
             this.CodeStatusRequete = 0;
+            this.RequetesRestantes = 0;
             this.TableAffectee = p_tableAffectee;
             this.UtilisateurConnecte = "";
             this.Role = "";
@@ -79,13 +82,14 @@ namespace RPLP.JOURNALISATION
             this.StackTrace = p_stacktrace;
             this.RouteApi = "";
             this.CodeStatusRequete = 0;
+            this.RequetesRestantes = 0;
             this.TableAffectee = "";
             this.UtilisateurConnecte = "";
             this.Role = "";
             this.MessageSupplementaire = p_messageSupplementaire;
         }
 
-        //Constructeur pour la journalisation des appels API
+        //Constructeur pour la journalisation des appels API RPLP
         public Log(string p_RouteApi, int p_CodeStatusRequete, string p_messageSupplementaire)
         {
             this.Identifiant = Guid.NewGuid();
@@ -96,6 +100,25 @@ namespace RPLP.JOURNALISATION
             this.StackTrace = null;
             this.RouteApi = p_RouteApi;
             this.CodeStatusRequete = p_CodeStatusRequete;
+            this.RequetesRestantes = 0;
+            this.TableAffectee = "";
+            this.UtilisateurConnecte = "";
+            this.Role = "";
+            this.MessageSupplementaire = p_messageSupplementaire;
+        }
+
+        //Constructeur pour la journalisation des appels API GitHub
+        public Log(string p_RouteApi, int p_CodeStatusRequete, int p_requetesRestantes, string p_messageSupplementaire)
+        {
+            this.Identifiant = Guid.NewGuid();
+            this.TypeDeLog = "AppelAPI";
+            this.DateDuLog = DateTime.Now;
+            this.UtilisateurConnecte = "";
+            this.ExceptionLevee = null;
+            this.StackTrace = null;
+            this.RouteApi = p_RouteApi;
+            this.CodeStatusRequete = p_CodeStatusRequete;
+            this.RequetesRestantes = p_requetesRestantes;
             this.TableAffectee = "";
             this.UtilisateurConnecte = "";
             this.Role = "";
@@ -113,6 +136,7 @@ namespace RPLP.JOURNALISATION
             this.StackTrace = null;
             this.RouteApi = "";
             this.CodeStatusRequete = 0;
+            this.RequetesRestantes = 0;
             this.TableAffectee = "";
             this.UtilisateurConnecte = p_utilisateurConnectee;
             this.Role = p_role;
