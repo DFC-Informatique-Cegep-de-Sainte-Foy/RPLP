@@ -26,6 +26,8 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    depends_on:
+      - rplp.journalisation
     volumes:
       - rplpvolume_logs:/var/log/rplp/
     restart: always
@@ -46,6 +48,8 @@ services:
     build:
       context: .
       dockerfile: RPLP.JOURNALISATION/Dockerfile
+    depends_on:
+      - rplp.rabbitmq
     volumes:
       - rplpvolume_logs:/var/log/rplp/
     restart: always
