@@ -14,6 +14,7 @@ namespace RPLP.JOURNALISATION
         private ConnectionFactory fabriqueDeConnexion = new ConnectionFactory() { HostName = "rplp.rabbitmq" };
         private static string CheminDossierLogs = @"/var/log/rplp/";
         private static string CheminFichierDeLogs = CheminDossierLogs + "Log_Revue_Par_Les_Paires.csv";
+        private static string Header = "Identifiant~TypeDeLog~DateDuLog~ExceptionLevee~StackTrace~RouteApi~CodeStatusRequete~TableAffectee~UtilisateurConnecte~Role~MessageSupplementaire";
 
         public ConsommateurJournalisation()
         {
@@ -22,6 +23,11 @@ namespace RPLP.JOURNALISATION
             if (!Directory.Exists(CheminDossierLogs))
             {
                 Directory.CreateDirectory(CheminDossierLogs);
+            }
+
+            if (!File.Exists(CheminFichierDeLogs))
+            {
+                File.AppendAllLines(CheminFichierDeLogs, new List<string> { Header });
             }
         }
 
@@ -67,6 +73,5 @@ namespace RPLP.JOURNALISATION
                 }
             }
         }
-
     }
 }
