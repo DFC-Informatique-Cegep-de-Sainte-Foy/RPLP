@@ -25,26 +25,26 @@ namespace RPLP.SERVICES.Github
         {
             if (p_depotClassroom == null)
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                            "ScriptGithubRPLP - Constructeur - p_depotClassroom passé en paramètre est null"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                            "ScriptGithubRPLP - Constructeur - p_depotClassroom passé en paramètre est null", 0));
             }
 
             if (p_depotRepository == null)
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                            "ScriptGithubRPLP - Constructeur - p_depotRepository passé en paramètre est null"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                            "ScriptGithubRPLP - Constructeur - p_depotRepository passé en paramètre est null", 0));
             }
 
             if (p_depotOrganisation == null)
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                            "ScriptGithubRPLP - Constructeur - p_depotOrganisation passé en paramètre est null"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                            "ScriptGithubRPLP - Constructeur - p_depotOrganisation passé en paramètre est null", 0));
             }
 
             if (string.IsNullOrWhiteSpace(p_token))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                            "ScriptGithubRPLP - Constructeur - p_token passé en paramètre est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                            "ScriptGithubRPLP - Constructeur - p_token passé en paramètre est vide", 0));
             }
 
             this._depotClassroom = p_depotClassroom;
@@ -57,32 +57,32 @@ namespace RPLP.SERVICES.Github
         {
             if (p_reviewsPerRepository <= 0)
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString(),
-                            "ScriptGithubRPLP - ScriptAssignStudentToAssignmentReview - p_reviewsPerRepository passé en paramètre est hors des limites"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                            "ScriptGithubRPLP - ScriptAssignStudentToAssignmentReview - p_reviewsPerRepository passé en paramètre est hors des limites", 0));
 
                 throw new ArgumentException("the provided value is incorrect or null");
             }
 
             if(string.IsNullOrWhiteSpace(p_organisationName))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                            "ScriptGithubRPLP - ScriptAssignStudentToAssignmentReview - p_organisationName passé en paramètre est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                            "ScriptGithubRPLP - ScriptAssignStudentToAssignmentReview - p_organisationName passé en paramètre est vide", 0));
 
                 throw new ArgumentException("the provided value is incorrect or null");
             }
 
             if(string.IsNullOrWhiteSpace(p_classRoomName))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                            "ScriptGithubRPLP - ScriptAssignStudentToAssignmentReview - p_classRoomName passé en paramètre est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                            "ScriptGithubRPLP - ScriptAssignStudentToAssignmentReview - p_classRoomName passé en paramètre est vide", 0));
 
                 throw new ArgumentException("the provided value is incorrect or null");
             }
 
             if (string.IsNullOrWhiteSpace(p_assignmentName))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                            "ScriptGithubRPLP - ScriptAssignStudentToAssignmentReview - p_token passé en paramètre est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                            "ScriptGithubRPLP - ScriptAssignStudentToAssignmentReview - p_token passé en paramètre est vide", 0));
 
                 throw new ArgumentException("the provided value is incorrect or null");
             }
@@ -91,8 +91,8 @@ namespace RPLP.SERVICES.Github
 
             if (students.Count < p_reviewsPerRepository + 1)
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                            "ScriptGithubRPLP - ScriptAssignStudentToAssignmentReview - La liste students assignée à partir de la méthode _depotClassroom.GetStudentsByClassroomName(p_classRoomName) n'est pas conforme selon la demande"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                            "ScriptGithubRPLP - ScriptAssignStudentToAssignmentReview - La liste students assignée à partir de la méthode _depotClassroom.GetStudentsByClassroomName(p_classRoomName) n'est pas conforme selon la demande", 0));
 
                 throw new ArgumentException("Number of students inferior to number of reviews");
             }
@@ -104,8 +104,8 @@ namespace RPLP.SERVICES.Github
 
             if (repositoriesToAssign == null)
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                            "ScriptGithubRPLP - ScriptAssignStudentToAssignmentReview - La liste repositoriesToAssign assignée à partir de la méthode getRepositoriesToAssign(p_organisationName, p_classRoomName, p_assignmentName, students) n'est pas conforme selon la demande"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                            "ScriptGithubRPLP - ScriptAssignStudentToAssignmentReview - La liste repositoriesToAssign assignée à partir de la méthode getRepositoriesToAssign(p_organisationName, p_classRoomName, p_assignmentName, students) n'est pas conforme selon la demande", 0));
 
                 throw new ArgumentNullException($"No repositories to assign in {p_classRoomName}");
             }
@@ -122,24 +122,24 @@ namespace RPLP.SERVICES.Github
         {
             if (string.IsNullOrWhiteSpace(p_organisationName))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                           "ScriptGithubRPLP - ScriptRemoveStudentCollaboratorsFromAssignment - p_organisationName passé en paramètre est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                           "ScriptGithubRPLP - ScriptRemoveStudentCollaboratorsFromAssignment - p_organisationName passé en paramètre est vide", 0));
 
                 throw new ArgumentException("the provided value is incorrect or null");
             }
 
             if (string.IsNullOrWhiteSpace(p_classRoomName))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                           "ScriptGithubRPLP - ScriptRemoveStudentCollaboratorsFromAssignment - p_classRoomName passé en paramètre est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                           "ScriptGithubRPLP - ScriptRemoveStudentCollaboratorsFromAssignment - p_classRoomName passé en paramètre est vide", 0));
 
                 throw new ArgumentException("the provided value is incorrect or null");
             }
 
             if(string.IsNullOrWhiteSpace(p_assignmentName))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                           "ScriptGithubRPLP - ScriptRemoveStudentCollaboratorsFromAssignment - p_assignmentName passé en paramètre est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                           "ScriptGithubRPLP - ScriptRemoveStudentCollaboratorsFromAssignment - p_assignmentName passé en paramètre est vide", 0));
 
                 throw new ArgumentException("the provided value is incorrect or null");
             }
@@ -150,8 +150,8 @@ namespace RPLP.SERVICES.Github
 
             if(repositoriesToAssign == null)
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                       "ScriptGithubRPLP - ScriptRemoveStudentCollaboratorsFromAssignment - la liste repositoriesToAssign assignée à partir de la méthode getRepositoriesToAssign(p_organisationName, p_classRoomName, p_assignmentName, students);  est null"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                       "ScriptGithubRPLP - ScriptRemoveStudentCollaboratorsFromAssignment - la liste repositoriesToAssign assignée à partir de la méthode getRepositoriesToAssign(p_organisationName, p_classRoomName, p_assignmentName, students);  est null", 0));
             }
 
             foreach (Repository repository in repositoriesToAssign)
@@ -160,8 +160,8 @@ namespace RPLP.SERVICES.Github
 
                 if(collaborator == null)
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                       "ScriptGithubRPLP - ScriptRemoveStudentCollaboratorsFromAssignment - la liste collaborator assignée à partir de la méthode _githubApiAction.GetCollaboratorFromStudentRepositoryGithub(p_organisationName, repository.Name);  est null"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                       "ScriptGithubRPLP - ScriptRemoveStudentCollaboratorsFromAssignment - la liste collaborator assignée à partir de la méthode _githubApiAction.GetCollaboratorFromStudentRepositoryGithub(p_organisationName, repository.Name);  est null", 0));
                 }
 
                 collaborator.ForEach(collaborator =>
@@ -180,8 +180,8 @@ namespace RPLP.SERVICES.Github
 
             if (branchesResult == null)
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                       "ScriptGithubRPLP - prepareRepositoryAndCreatePullRequest - la liste branchesResult assignée à partir de la méthode this._githubApiAction.GetRepositoryBranchesGithub(p_organisationName, p_repositoryName)  est null"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                       "ScriptGithubRPLP - prepareRepositoryAndCreatePullRequest - la liste branchesResult assignée à partir de la méthode this._githubApiAction.GetRepositoryBranchesGithub(p_organisationName, p_repositoryName)  est null", 0));
 
                 throw new ArgumentNullException($"Branch does not exist or wrong name was entered");
             }
@@ -198,19 +198,18 @@ namespace RPLP.SERVICES.Github
 
             if (resultCreateBranch != "Created")
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                       "ScriptGithubRPLP - createPullRequestAndAssignUser - la variable resultCreateBranch retourne que la branche n'as pas été créée à partir de la méthode this._githubApiAction.CreateNewBranchForFeedbackGitHub(p_organisationName, p_repositoryName, p_sha, newBranchName); "));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                       "ScriptGithubRPLP - createPullRequestAndAssignUser - la variable resultCreateBranch retourne que la branche n'as pas été créée à partir de la méthode this._githubApiAction.CreateNewBranchForFeedbackGitHub(p_organisationName, p_repositoryName, p_sha, newBranchName); ", 0));
 
                 throw new ArgumentException($"Branch not created in {p_repositoryName}");
             }
-                
 
             string resultCreatePR = this._githubApiAction.CreateNewPullRequestFeedbackGitHub(p_organisationName, p_repositoryName, newBranchName, newBranchName.ToLower(), "Voici où vous devez mettre vos commentaires");
             
             if (resultCreatePR != "Created")
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                       "ScriptGithubRPLP - createPullRequestAndAssignUser - la variable resultCreatePR retourne que la requête de tirage n'as pas été créée à partir de la méthode his._githubApiAction.CreateNewPullRequestFeedbackGitHub(p_organisationName, p_repositoryName, newBranchName, newBranchName.ToLower(), \"Voici où vous devez mettre vos commentaires\"); "));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                       "ScriptGithubRPLP - createPullRequestAndAssignUser - la variable resultCreatePR retourne que la requête de tirage n'as pas été créée à partir de la méthode his._githubApiAction.CreateNewPullRequestFeedbackGitHub(p_organisationName, p_repositoryName, newBranchName, newBranchName.ToLower(), \"Voici où vous devez mettre vos commentaires\"); ", 0));
 
                 throw new ArgumentException($"PullRequest not created in {p_repositoryName}");
             }
@@ -220,8 +219,8 @@ namespace RPLP.SERVICES.Github
 
             if (resultAddStudent != "Created")
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                      "ScriptGithubRPLP - createPullRequestAndAssignUser - la variable resultAddStudent retourne que l'utilisateur n'as pas été créée à partir de la méthode his._githubApiAction.CreateNewPullRequestFeedbackGitHub(p_organisationName, p_repositoryName, newBranchName, newBranchName.ToLower(), \"Voici où vous devez mettre vos commentaires\"); "));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                      "ScriptGithubRPLP - createPullRequestAndAssignUser - la variable resultAddStudent retourne que l'utilisateur n'as pas été créée à partir de la méthode his._githubApiAction.CreateNewPullRequestFeedbackGitHub(p_organisationName, p_repositoryName, newBranchName, newBranchName.ToLower(), \"Voici où vous devez mettre vos commentaires\"); ", 0));
 
                 throw new ArgumentException($"Student not added in {p_repositoryName}");
             }
@@ -233,8 +232,8 @@ namespace RPLP.SERVICES.Github
 
             if (assignmentsResult.Count < 1)
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                      "ScriptGithubRPLP - getRepositoriesToAssign - la liste assignmentsResult retourne qu'il n'y pas d'assignement à partir de la méthode _depotClassroom.GetAssignmentsByClassroomName(p_classRoomName); "));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                      "ScriptGithubRPLP - getRepositoriesToAssign - la liste assignmentsResult retourne qu'il n'y pas d'assignement à partir de la méthode _depotClassroom.GetAssignmentsByClassroomName(p_classRoomName); ", 0));
 
                 throw new ArgumentException($"No assignment in {p_classRoomName}");
             }
@@ -244,8 +243,8 @@ namespace RPLP.SERVICES.Github
             if (assignment == null)
             {
 
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                      "ScriptGithubRPLP - getRepositoriesToAssign - la variable assignment assignée à partir de la méthode assignmentsResult.SingleOrDefault(assignment => assignment.Name == p_assignmentName); est null "));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                      "ScriptGithubRPLP - getRepositoriesToAssign - la variable assignment assignée à partir de la méthode assignmentsResult.SingleOrDefault(assignment => assignment.Name == p_assignmentName); est null ", 0));
 
                 throw new ArgumentException($"no assignment with name {p_assignmentName}");
             }
@@ -262,32 +261,32 @@ namespace RPLP.SERVICES.Github
         {
             if (string.IsNullOrWhiteSpace(p_organisationName))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                           "ScriptGithubRPLP - ScriptAssignTeacherToAssignmentReview - p_organisationName passé en paramètre est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                           "ScriptGithubRPLP - ScriptAssignTeacherToAssignmentReview - p_organisationName passé en paramètre est vide", 0));
 
                 throw new ArgumentException("the provided value is incorrect or null");
             }
 
             if (string.IsNullOrWhiteSpace(p_classRoomName))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                           "ScriptGithubRPLP - ScriptAssignTeacherToAssignmentReview - p_classRoomName passé en paramètre est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                           "ScriptGithubRPLP - ScriptAssignTeacherToAssignmentReview - p_classRoomName passé en paramètre est vide", 0));
 
                 throw new ArgumentException("the provided value is incorrect or null");
             }
 
             if (string.IsNullOrWhiteSpace(p_assignmentName))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                           "ScriptGithubRPLP - ScriptAssignTeacherToAssignmentReview - p_assignmentName passé en paramètre est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                           "ScriptGithubRPLP - ScriptAssignTeacherToAssignmentReview - p_assignmentName passé en paramètre est vide", 0));
 
                 throw new ArgumentException("the provided value is incorrect or null");
             }
 
             if (string.IsNullOrWhiteSpace(teacherUsername))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                           "ScriptGithubRPLP - ScriptAssignTeacherToAssignmentReview - teacherUsername passé en paramètre est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                           "ScriptGithubRPLP - ScriptAssignTeacherToAssignmentReview - teacherUsername passé en paramètre est vide", 0));
 
                 throw new ArgumentException("the provided value is incorrect or null");
             }
@@ -297,16 +296,16 @@ namespace RPLP.SERVICES.Github
 
             if (students.Count < 1)
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                           "ScriptGithubRPLP - ScriptAssignTeacherToAssignmentReview - la liste students assignée à partir de la méthode _depotClassroom.GetStudentsByClassroomName(p_classRoomName); est vide."));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                           "ScriptGithubRPLP - ScriptAssignTeacherToAssignmentReview - la liste students assignée à partir de la méthode _depotClassroom.GetStudentsByClassroomName(p_classRoomName); est vide.", 0));
 
                 throw new ArgumentException("Number of students cannot be less than one");
             }
                 
             if (teachers.Count < 1)
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                           "ScriptGithubRPLP - ScriptAssignTeacherToAssignmentReview -  la liste teachers assignée à partir de la méthode _depotClassroom.GetTeachersByClassroomName(p_classRoomName); est vide."));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                           "ScriptGithubRPLP - ScriptAssignTeacherToAssignmentReview -  la liste teachers assignée à partir de la méthode _depotClassroom.GetTeachersByClassroomName(p_classRoomName); est vide.", 0));
 
                 throw new ArgumentException("Number of teachers cannot be less than one");
             }
@@ -315,8 +314,8 @@ namespace RPLP.SERVICES.Github
 
             if (repositoriesToAssign == null)
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                           "ScriptGithubRPLP - ScriptAssignTeacherToAssignmentReview - la liste repositoriesToAssign assignée à partir de getRepositoriesToAssign(p_organisationName, p_classRoomName, p_assignmentName, students); est null"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                           "ScriptGithubRPLP - ScriptAssignTeacherToAssignmentReview - la liste repositoriesToAssign assignée à partir de getRepositoriesToAssign(p_organisationName, p_classRoomName, p_assignmentName, students); est null", 0));
 
                 throw new ArgumentNullException($"No repositories to assign in {p_classRoomName}");
             }
@@ -335,8 +334,8 @@ namespace RPLP.SERVICES.Github
 
             if (branchesResult.Count <= 0)
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                          "ScriptGithubRPLP - createPullRequestForTeacher - la liste branchesResult assignée à partir de this._githubApiAction.GetRepositoryBranchesGithub(p_organisationName, p_repositoryName); est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                          "ScriptGithubRPLP - createPullRequestForTeacher - la liste branchesResult assignée à partir de this._githubApiAction.GetRepositoryBranchesGithub(p_organisationName, p_repositoryName); est vide", 0));
 
                 throw new ArgumentNullException($"Branch does not exist or wrong name was entered");
             }
@@ -351,42 +350,96 @@ namespace RPLP.SERVICES.Github
             string newBranchName = $"feedback-{teacherUsername}";
 
             string resultCreateBranch = this._githubApiAction.CreateNewBranchForFeedbackGitHub(p_organisationName, p_repositoryName, p_sha, newBranchName);
-            if (resultCreateBranch != "Created")
-                throw new ArgumentException($"Branch not created in {p_repositoryName}");
 
+            if (resultCreateBranch != "Created")
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                         "ScriptGithubRPLP - CreatePullRequestAndAssignTeacher - la variable resultCreateBranch indique que la branche n'as pas été créée à partir de la méthode  this._githubApiAction.CreateNewBranchForFeedbackGitHub(p_organisationName, p_repositoryName, p_sha, newBranchName);", 0));
+
+                throw new ArgumentException($"Branch not created in {p_repositoryName}");
+            }
+                
             this._githubApiAction.AddFileToContentsGitHub(p_organisationName, p_repositoryName, newBranchName, p_newFileName, p_message, p_content);
 
             string resultCreatePR = this._githubApiAction.CreateNewPullRequestFeedbackGitHub(p_organisationName, p_repositoryName, newBranchName, "Feedback", "Voici où vous devez mettre vos commentaires");
+            
             if (resultCreatePR != "Created")
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                         "ScriptGithubRPLP - CreatePullRequestAndAssignTeacher - la variable resultCreatePR indique que la requête de tirage n'as pas été créée à partir de la méthode  this._githubApiAction.CreateNewPullRequestFeedbackGitHub(p_organisationName, p_repositoryName, newBranchName, \"Feedback\", \"Voici où vous devez mettre vos commentaires\");", 0));
+
                 throw new ArgumentException($"PullRequest not created in {p_repositoryName}");
+            }
         }
 
         public string ScriptDownloadAllRepositoriesForAssignment(string p_organisationName, string p_classRoomName, string p_assignmentName)
         {
             Console.Out.WriteLine($"API - ScriptDownloadAllRepositoriesForAssignment({p_organisationName}, {p_classRoomName}, {p_assignmentName})");
+
             string directoryToZipName = "ZippedRepos";
 
-            if (string.IsNullOrWhiteSpace(p_organisationName) || string.IsNullOrWhiteSpace(p_classRoomName) || string.IsNullOrWhiteSpace(p_assignmentName))
-                throw new ArgumentException("One of the provided value is incorrect or null");
+            if (string.IsNullOrWhiteSpace(p_organisationName))
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                           "ScriptGithubRPLP - ScriptDownloadAllRepositoriesForAssignment - p_organisationName passé en paramètre est vide", 0));
+
+                throw new ArgumentException("the provided value is incorrect or null");
+            }
+
+            if (string.IsNullOrWhiteSpace(p_classRoomName))
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                           "ScriptGithubRPLP - ScriptDownloadAllRepositoriesForAssignment - p_classRoomName passé en paramètre est vide", 0));
+
+                throw new ArgumentException("the provided value is incorrect or null");
+            }
+
+            if (string.IsNullOrWhiteSpace(p_assignmentName))
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                           "ScriptGithubRPLP - ScriptDownloadAllRepositoriesForAssignment - p_assignmentName passé en paramètre est vide", 0));
+
+                throw new ArgumentException("the provided value is incorrect or null");
+            }
 
 
             List<Student> students = _depotClassroom.GetStudentsByClassroomName(p_classRoomName);
+
             Console.Out.WriteLine($"students.Count == {students.Count}");
+
             if (students.Count < 1)
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                          "ScriptGithubRPLP - ScriptDownloadAllRepositoriesForAssignment - la liste students assignée à partir de _depotClassroom.GetStudentsByClassroomName(p_classRoomName); est vide", 0));
+
                 throw new ArgumentException("Number of students cannot be less than one");
+            }
 
             List<Assignment> assignmentsResult = _depotClassroom.GetAssignmentsByClassroomName(p_classRoomName);
 
             Console.Out.WriteLine($"assignmentsResult.Count == {assignmentsResult.Count}");
+
             if (assignmentsResult.Count < 1)
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                          "ScriptGithubRPLP - ScriptDownloadAllRepositoriesForAssignment - la liste assignmentsResult assignée à partir de _depotClassroom.GetAssignmentsByClassroomName(p_classRoomName); est vide", 0));
+
+
                 throw new ArgumentException($"No assignment in {p_classRoomName}");
+            }
 
             Assignment assignment = assignmentsResult.SingleOrDefault(assignment => assignment.Name == p_assignmentName);
 
             Console.Out.WriteLine($"assignment is null == {assignment == null}");
-            if (assignment == null)
-                throw new ArgumentException($"No assignment with name {p_assignmentName}");
 
+            if (assignment == null)
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                         "ScriptGithubRPLP - ScriptDownloadAllRepositoriesForAssignment - la liste assignment assignée à partir de assignmentsResult.SingleOrDefault(assignment => assignment.Name == p_assignmentName); est null", 0));
+
+
+                throw new ArgumentException($"No assignment with name {p_assignmentName}");
+            }
 
             List<Repository> repositoriesResult = this._depotRepository.GetRepositoriesFromOrganisationName(p_organisationName);
             List<Repository> repositories = GetStudentsRepositoriesForAssignment(repositoriesResult, students, p_assignmentName);
@@ -405,25 +458,61 @@ namespace RPLP.SERVICES.Github
 
         public string ScriptDownloadOneRepositoryForAssignment(string p_organisationName, string p_classRoomName, string p_assignmentName, string p_repositoryName)
         {
-            if (string.IsNullOrWhiteSpace(p_organisationName) || string.IsNullOrWhiteSpace(p_classRoomName) || string.IsNullOrWhiteSpace(p_assignmentName))
-                throw new ArgumentException("One of the provided value is incorrect or null");
+            if (string.IsNullOrWhiteSpace(p_organisationName))
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                           "ScriptGithubRPLP - ScriptDownloadOneRepositoryForAssignment - p_organisationName passé en paramètre est vide", 0));
 
+                throw new ArgumentException("the provided value is incorrect or null");
+            }
+
+            if (string.IsNullOrWhiteSpace(p_classRoomName))
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                           "ScriptGithubRPLP - ScriptDownloadOneRepositoryForAssignment - p_classRoomName passé en paramètre est vide", 0));
+
+                throw new ArgumentException("the provided value is incorrect or null");
+            }
+
+            if (string.IsNullOrWhiteSpace(p_assignmentName))
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                           "ScriptGithubRPLP - ScriptDownloadOneRepositoryForAssignment - p_assignmentName passé en paramètre est vide", 0));
+
+                throw new ArgumentException("the provided value is incorrect or null");
+            }
 
             List<Student> students = _depotClassroom.GetStudentsByClassroomName(p_classRoomName);
 
             if (students.Count < 1)
-                throw new ArgumentException("Number of students cannot be less than one");
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                         "ScriptGithubRPLP - ScriptDownloadOneRepositoryForAssignment - la liste students assignée à partir de _depotClassroom.GetStudentsByClassroomName(p_classRoomName); est vide", 0));
 
+
+                throw new ArgumentException("Number of students cannot be less than one");
+            }
 
             List<Assignment> assignmentsResult = _depotClassroom.GetAssignmentsByClassroomName(p_classRoomName);
 
             if (assignmentsResult.Count < 1)
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                         "ScriptGithubRPLP - ScriptDownloadOneRepositoryForAssignment - la liste assignmentsResult assignée à partir de _depotClassroom.GetAssignmentsByClassroomName(p_classRoomName);est vide", 0));
+
+
                 throw new ArgumentException($"No assignment in {p_classRoomName}");
+            }
 
             Assignment assignment = assignmentsResult.SingleOrDefault(assignment => assignment.Name == p_assignmentName);
 
             if (assignment == null)
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                         "ScriptGithubRPLP - ScriptDownloadOneRepositoryForAssignment - la liste assignment assignée à partir de assignmentsResult.SingleOrDefault(assignment => assignment.Name == p_assignmentName); est null", 0));
+
                 throw new ArgumentException($"No assignment with name {p_assignmentName}");
+            }
 
             Repository repository = _depotRepository.GetRepositoryByName(p_repositoryName);
 
@@ -437,6 +526,14 @@ namespace RPLP.SERVICES.Github
         public void EnsureOrganisationRepositoriesAreInDB()
         {
             List<Repository> repositories = this.ReturnMissingRepositories();
+
+            if(repositories.Count == null)
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                         "ScriptGithubRPLP - EnsureOrganisationRepositoriesAreInDB - la liste repositories assignée à partir de this.ReturnMissingRepositories(); est null", 0));
+
+            }
+
             repositories.ForEach(r => this._depotRepository.UpsertRepository(r));
         }
 
@@ -444,6 +541,13 @@ namespace RPLP.SERVICES.Github
         {
             List<Repository> repositoriesToAdd = new List<Repository>();
             List<Organisation> organisations = this._depotOrganisation.GetOrganisations();
+
+            if(organisations == null)
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                        "ScriptGithubRPLP - ReturnMissingRepositories - la liste organisations assignée à partir de this._depotOrganisation.GetOrganisations(); est null", 0));
+
+            }
 
             foreach (Organisation organisation in organisations)
             {
