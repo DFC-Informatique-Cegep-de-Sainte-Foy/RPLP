@@ -40,8 +40,8 @@ namespace RPLP.SERVICES.Github
         {
             if(string.IsNullOrWhiteSpace(p_token))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                            "GithubApiAction - Constructeur - p_token passé en paramètre est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                            "GithubApiAction - Constructeur - p_token passé en paramètre est vide", 0));
             }
 
             _httpClient = new HttpClient();
@@ -55,16 +55,16 @@ namespace RPLP.SERVICES.Github
         {
             if (string.IsNullOrWhiteSpace(p_organisationName))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                            "GithubApiAction - GetOrganisationRepositoriesGithub - p_organisationName passé en paramètre est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                            "GithubApiAction - GetOrganisationRepositoriesGithub - p_organisationName passé en paramètre est vide", 0));
             }
 
             string fullPath = _getOrganisationRepositoriesGithub.Replace(organisationName, p_organisationName);
 
             if (string.IsNullOrWhiteSpace(fullPath))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                            "GithubApiAction - GetOrganisationRepositoriesGithub - la variable fullPath assigné à partir de la méthode string.Replace est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                            "GithubApiAction - GetOrganisationRepositoriesGithub - la variable fullPath assigné à partir de la méthode string.Replace est vide", 0));
             }
 
             Task<List<Repository_JSONDTO>> RepositoriesJSON = OrganisationRepositoryGithubApiRequest(fullPath);
@@ -101,22 +101,22 @@ namespace RPLP.SERVICES.Github
         {
             if (string.IsNullOrWhiteSpace(p_organisationName))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubApiAction - GetRepositoryInfoGithub - p_organisationName passé en paramètre est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    "GithubApiAction - GetRepositoryInfoGithub - p_organisationName passé en paramètre est vide", 0));
             }
 
             if (string.IsNullOrWhiteSpace(p_repositoryName))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubApiAction - GetRepositoryInfoGithub - p_repositoryName passé en paramètre est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    "GithubApiAction - GetRepositoryInfoGithub - p_repositoryName passé en paramètre est vide", 0));
             }
 
             string fullPath = _getRepositoryInfoGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName);
 
             if (string.IsNullOrWhiteSpace(fullPath))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubApiAction - GetRepositoryInfoGithub - la variable fullPath assigné par la méthode _getRepositoryInfoGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName) est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    "GithubApiAction - GetRepositoryInfoGithub - la variable fullPath assigné par la méthode _getRepositoryInfoGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName) est vide", 0));
             }
 
             Task<Repository_JSONDTO> RepositoryJSON = RepositoryInfoGithubApiRequest(fullPath);
@@ -153,22 +153,22 @@ namespace RPLP.SERVICES.Github
         {
             if (string.IsNullOrWhiteSpace(p_organisationName))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                   "GithubApiAction - GetRepositoryBranchesGithub - p_organisationName passé en paramètre est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                   "GithubApiAction - GetRepositoryBranchesGithub - p_organisationName passé en paramètre est vide", 0));
             }
 
             if (string.IsNullOrWhiteSpace(p_repositoryName))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                   "GithubApiAction - GetRepositoryBranchesGithub - p_repositoryName passé en paramètre est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                   "GithubApiAction - GetRepositoryBranchesGithub - p_repositoryName passé en paramètre est vide", 0));
             }
 
             string fullPath = _getBranchesFromRepositoryCommitGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName);
 
             if (string.IsNullOrWhiteSpace(fullPath))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubApiAction - GetRepositoryBranchesGithub - la variable fullPath assigné par la méthode _getBranchesFromRepositoryCommitGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName) est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    "GithubApiAction - GetRepositoryBranchesGithub - la variable fullPath assigné par la méthode _getBranchesFromRepositoryCommitGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName) est vide", 0));
             }
 
             Task<List<Branch_JSONDTO>> refsJSON = RepositoryBranchesGithubApiRequest(fullPath);
@@ -205,22 +205,22 @@ namespace RPLP.SERVICES.Github
         {
             if (string.IsNullOrWhiteSpace(p_organisationName))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                   "GithubApiAction - GetRepositoryCommitsGithub - p_organisationName passé en paramètre est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                   "GithubApiAction - GetRepositoryCommitsGithub - p_organisationName passé en paramètre est vide", 0));
             }
 
             if (string.IsNullOrWhiteSpace(p_repositoryName))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                   "GithubApiAction - GetRepositoryCommitsGithub - p_repositoryName passé en paramètre est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                   "GithubApiAction - GetRepositoryCommitsGithub - p_repositoryName passé en paramètre est vide", 0));
             }
 
             string fullPath = _getRepositoryCommitsGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName);
 
             if (string.IsNullOrWhiteSpace(fullPath))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubApiAction - GetRepositoryCommitsGithub - la variable fullPath assigné par la méthode _getRepositoryCommitsGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName) est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    "GithubApiAction - GetRepositoryCommitsGithub - la variable fullPath assigné par la méthode _getRepositoryCommitsGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName) est vide", 0));
             }
 
             Task<List<Commit_JSONDTO>> commitsJSON = RepositoryCommitsGithubApiRequest(fullPath);
@@ -257,22 +257,22 @@ namespace RPLP.SERVICES.Github
         {
             if (string.IsNullOrWhiteSpace(p_organisationName))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                   "GithubApiAction - GetRepositoryPullRequestsGithub - p_organisationName passé en paramètre est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                   "GithubApiAction - GetRepositoryPullRequestsGithub - p_organisationName passé en paramètre est vide", 0));
             }
 
             if (string.IsNullOrWhiteSpace(p_repositoryName))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                   "GithubApiAction - GetRepositoryPullRequestsGithub - p_repositoryName passé en paramètre est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                   "GithubApiAction - GetRepositoryPullRequestsGithub - p_repositoryName passé en paramètre est vide", 0));
             }
 
             string fullPath = _getPullRequestsFromRepositoryGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName);
 
             if (string.IsNullOrWhiteSpace(fullPath))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubApiAction - GetRepositoryPullRequestsGithub - la variable fullPath assigné par la méthode _getPullRequestsFromRepositoryGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName) est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    "GithubApiAction - GetRepositoryPullRequestsGithub - la variable fullPath assigné par la méthode _getPullRequestsFromRepositoryGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName) est vide", 0));
             }
 
             Task<List<PullRequest_JSONDTO>> pullRequests = RepositoryPullRequestsGithubApiRequest(fullPath);
@@ -309,34 +309,34 @@ namespace RPLP.SERVICES.Github
         {
             if (string.IsNullOrWhiteSpace(p_organisationName))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                   "GithubApiAction - CreateNewBranchForFeedbackGitHub - p_organisationName passé en paramètre est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                   "GithubApiAction - CreateNewBranchForFeedbackGitHub - p_organisationName passé en paramètre est vide", 0));
             }
 
             if (string.IsNullOrWhiteSpace(p_repositoryName))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                   "GithubApiAction - CreateNewBranchForFeedbackGitHub - p_repositoryName passé en paramètre est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                   "GithubApiAction - CreateNewBranchForFeedbackGitHub - p_repositoryName passé en paramètre est vide", 0));
             }
 
             if (string.IsNullOrWhiteSpace(p_sha))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                   "GithubApiAction - CreateNewBranchForFeedbackGitHub - p_sha passé en paramètre est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                   "GithubApiAction - CreateNewBranchForFeedbackGitHub - p_sha passé en paramètre est vide", 0));
             }
 
             if (string.IsNullOrWhiteSpace(p_newBranchName))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                   "GithubApiAction - CreateNewBranchForFeedbackGitHub - p_newBranchName passé en paramètre est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                   "GithubApiAction - CreateNewBranchForFeedbackGitHub - p_newBranchName passé en paramètre est vide", 0));
             }
 
             string fullPath = _createNewBranchInRepositoryGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName);
 
             if (string.IsNullOrWhiteSpace(fullPath))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubApiAction - CreateNewBranchForFeedbackGitHub - la variable fullPath assigné par la méthode _createNewBranchInRepositoryGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName) est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    "GithubApiAction - CreateNewBranchForFeedbackGitHub - la variable fullPath assigné par la méthode _createNewBranchInRepositoryGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName) est vide", 0));
             }
 
             Task<string> statusCode = NewBranchForFeedbackGithubApiRequest(fullPath, p_sha, p_newBranchName);
@@ -374,40 +374,40 @@ namespace RPLP.SERVICES.Github
         {
             if (string.IsNullOrWhiteSpace(p_organisationName))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                   "GithubApiAction - CreateNewPullRequestFeedbackGitHub - p_organisationName passé en paramètre est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                   "GithubApiAction - CreateNewPullRequestFeedbackGitHub - p_organisationName passé en paramètre est vide", 0));
             }
 
             if (string.IsNullOrWhiteSpace(p_repositoryName))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                   "GithubApiAction - CreateNewPullRequestFeedbackGitHub - p_repositoryName passé en paramètre est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                   "GithubApiAction - CreateNewPullRequestFeedbackGitHub - p_repositoryName passé en paramètre est vide", 0));
             }
 
             if (string.IsNullOrWhiteSpace(p_BranchName))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                   "GithubApiAction - CreateNewPullRequestFeedbackGitHub - p_BranchName passé en paramètre est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                   "GithubApiAction - CreateNewPullRequestFeedbackGitHub - p_BranchName passé en paramètre est vide", 0));
             }
 
             if (string.IsNullOrWhiteSpace(p_title))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                   "GithubApiAction - CreateNewPullRequestFeedbackGitHub - p_title passé en paramètre est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                   "GithubApiAction - CreateNewPullRequestFeedbackGitHub - p_title passé en paramètre est vide", 0));
             }
 
             if (string.IsNullOrWhiteSpace(p_body))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                   "GithubApiAction - CreateNewPullRequestFeedbackGitHub - p_body passé en paramètre est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                   "GithubApiAction - CreateNewPullRequestFeedbackGitHub - p_body passé en paramètre est vide", 0));
             }
 
             string fullPath = _createPullRequestOnRepositoryBranchGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName);
 
             if (string.IsNullOrWhiteSpace(fullPath))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubApiAction - CreateNewPullRequestFeedbackGitHub - la variable fullPath assigné par la méthode _createPullRequestOnRepositoryBranchGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName) est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    "GithubApiAction - CreateNewPullRequestFeedbackGitHub - la variable fullPath assigné par la méthode _createPullRequestOnRepositoryBranchGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName) est vide", 0));
             }
 
             Task<string> statusCode = NewPullRequestFeedbackGitHubApiRequest(fullPath, p_BranchName, p_title, p_body);
@@ -440,28 +440,28 @@ namespace RPLP.SERVICES.Github
         {
             if (string.IsNullOrWhiteSpace(p_organisationName))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                   "GithubApiAction - AddStudentAsCollaboratorToPeerRepositoryGithub - p_organisationName passé en paramètre est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                   "GithubApiAction - AddStudentAsCollaboratorToPeerRepositoryGithub - p_organisationName passé en paramètre est vide", 0));
             }
 
             if (string.IsNullOrWhiteSpace(p_repositoryName))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                   "GithubApiAction - AddStudentAsCollaboratorToPeerRepositoryGithub - p_repositoryName passé en paramètre est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                   "GithubApiAction - AddStudentAsCollaboratorToPeerRepositoryGithub - p_repositoryName passé en paramètre est vide", 0));
             }
 
             if (string.IsNullOrWhiteSpace(p_studentUsername))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                   "GithubApiAction - AddStudentAsCollaboratorToPeerRepositoryGithub - p_studentUsername passé en paramètre est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                   "GithubApiAction - AddStudentAsCollaboratorToPeerRepositoryGithub - p_studentUsername passé en paramètre est vide", 0));
             }
 
             string fullPath = _addorRemoveCollaboratorToRepositoryGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName).Replace(studentUsername, p_studentUsername);
 
             if (string.IsNullOrWhiteSpace(fullPath))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubApiAction - AddStudentAsCollaboratorToPeerRepositoryGithub - la variable fullPath assigné par la méthode _addorRemoveCollaboratorToRepositoryGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName).Replace(studentUsername, p_studentUsername) est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    "GithubApiAction - AddStudentAsCollaboratorToPeerRepositoryGithub - la variable fullPath assigné par la méthode _addorRemoveCollaboratorToRepositoryGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName).Replace(studentUsername, p_studentUsername) est vide", 0));
             }
 
             Task<string> statusCode = AddStudentAsCollaboratorToPeerRepositoryGithubApiRequest(fullPath);
@@ -474,22 +474,22 @@ namespace RPLP.SERVICES.Github
         {
             if (string.IsNullOrWhiteSpace(p_organisationName))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                   "GithubApiAction - GetCollaboratorFromStudentRepositoryGithub - p_organisationName passé en paramètre est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                   "GithubApiAction - GetCollaboratorFromStudentRepositoryGithub - p_organisationName passé en paramètre est vide", 0));
             }
 
             if (string.IsNullOrWhiteSpace(p_repositoryName))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                   "GithubApiAction - GetCollaboratorFromStudentRepositoryGithub - p_repositoryName passé en paramètre est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                   "GithubApiAction - GetCollaboratorFromStudentRepositoryGithub - p_repositoryName passé en paramètre est vide", 0));
             }
 
             string fullPath = _getCollaboratorfromRepositoryGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName);
 
             if (string.IsNullOrWhiteSpace(fullPath))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubApiAction - GetCollaboratorFromStudentRepositoryGithub - la variable fullPath assigné par la méthode _getCollaboratorfromRepositoryGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName) est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    "GithubApiAction - GetCollaboratorFromStudentRepositoryGithub - la variable fullPath assigné par la méthode _getCollaboratorfromRepositoryGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName) est vide", 0));
             }
 
             Task<List<Collaborator_JSONDTO>> collaboratorsResult = GetCollaboratorFromStudentRepositoryGithubGithubApiRequest(fullPath);
@@ -544,28 +544,28 @@ namespace RPLP.SERVICES.Github
         {
             if (string.IsNullOrWhiteSpace(p_organisationName))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                   "GithubApiAction - RemoveStudentAsCollaboratorFromPeerRepositoryGithub - p_organisationName passé en paramètre est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                   "GithubApiAction - RemoveStudentAsCollaboratorFromPeerRepositoryGithub - p_organisationName passé en paramètre est vide", 0));
             }
 
             if (string.IsNullOrWhiteSpace(p_repositoryName))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                   "GithubApiAction - RemoveStudentAsCollaboratorFromPeerRepositoryGithub - p_repositoryName passé en paramètre est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                   "GithubApiAction - RemoveStudentAsCollaboratorFromPeerRepositoryGithub - p_repositoryName passé en paramètre est vide", 0));
             }
 
             if (string.IsNullOrWhiteSpace(p_studentUsername))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                   "GithubApiAction - RemoveStudentAsCollaboratorFromPeerRepositoryGithub - p_studentUsername passé en paramètre est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                   "GithubApiAction - RemoveStudentAsCollaboratorFromPeerRepositoryGithub - p_studentUsername passé en paramètre est vide", 0));
             }
 
             string fullPath = _addorRemoveCollaboratorToRepositoryGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName).Replace(studentUsername, p_studentUsername);
 
             if (string.IsNullOrWhiteSpace(fullPath))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubApiAction - RemoveStudentAsCollaboratorFromPeerRepositoryGithub - la variable fullPath assigné par la méthode _addorRemoveCollaboratorToRepositoryGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName).Replace(studentUsername, p_studentUsername) est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    "GithubApiAction - RemoveStudentAsCollaboratorFromPeerRepositoryGithub - la variable fullPath assigné par la méthode _addorRemoveCollaboratorToRepositoryGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName).Replace(studentUsername, p_studentUsername) est vide", 0));
             }
 
             Task<string> statusCode = RemoveStudentAsCollaboratorFromPeerRepositoryGithubApiRequest(fullPath);
@@ -595,26 +595,26 @@ namespace RPLP.SERVICES.Github
         {
             if (string.IsNullOrWhiteSpace(p_organisationName))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                   "GithubApiAction - AssignReviewerToPullRequestGitHub - p_organisationName passé en paramètre est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                   "GithubApiAction - AssignReviewerToPullRequestGitHub - p_organisationName passé en paramètre est vide", 0));
             }
 
             if (string.IsNullOrWhiteSpace(p_repositoryName))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                   "GithubApiAction - AssignReviewerToPullRequestGitHub - p_repositoryName passé en paramètre est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                   "GithubApiAction - AssignReviewerToPullRequestGitHub - p_repositoryName passé en paramètre est vide", 0));
             }
 
             if (string.IsNullOrWhiteSpace(p_pullRequestName))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                   "GithubApiAction - AssignReviewerToPullRequestGitHub - p_pullRequestName passé en paramètre est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                   "GithubApiAction - AssignReviewerToPullRequestGitHub - p_pullRequestName passé en paramètre est vide", 0));
             }
 
             if (string.IsNullOrWhiteSpace(p_studentUsername))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubApiAction - AssignReviewerToPullRequestGitHub - p_studentUsername passé en paramètre est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    "GithubApiAction - AssignReviewerToPullRequestGitHub - p_studentUsername passé en paramètre est vide", 0));
             }
 
             List<PullRequest_JSONDTO> pullRequests = GetRepositoryPullRequestsGithub(p_organisationName, p_repositoryName);
@@ -627,8 +627,8 @@ namespace RPLP.SERVICES.Github
 
                 if (string.IsNullOrWhiteSpace(fullPath))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                        "GithubApiAction - RemoveStudentAsCollaboratorFromPeerRepositoryGithub - la variable fullPath assigné par la méthode _addorRemoveCollaboratorToRepositoryGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName).Replace(studentUsername, p_studentUsername) est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                        "GithubApiAction - RemoveStudentAsCollaboratorFromPeerRepositoryGithub - la variable fullPath assigné par la méthode _addorRemoveCollaboratorToRepositoryGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName).Replace(studentUsername, p_studentUsername) est vide", 0));
                 }
 
                 Task<string> statusCode = AssignReviewerToPullRequestGitHubApiRequest(fullPath, p_studentUsername);
@@ -638,8 +638,8 @@ namespace RPLP.SERVICES.Github
             }
             else
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubApiAction - AssignReviewerToPullRequestGitHub - la variable pullRequests assignée par la méthode GetRepositoryPullRequestsGithub(p_organisationName, p_repositoryName) est null"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    "GithubApiAction - AssignReviewerToPullRequestGitHub - la variable pullRequests assignée par la méthode GetRepositoryPullRequestsGithub(p_organisationName, p_repositoryName) est null", 0));
             }
 
             return "No Branches";
@@ -653,8 +653,8 @@ namespace RPLP.SERVICES.Github
 
             if (string.IsNullOrWhiteSpace(reviewers))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                   "GithubApiAction - AssignReviewerToPullRequestGitHubApiRequest - la chaine de caractère reviewers assignée par la méthode JsonConvert.SerializeObject(reviewerJSON); est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                   "GithubApiAction - AssignReviewerToPullRequestGitHubApiRequest - la chaine de caractère reviewers assignée par la méthode JsonConvert.SerializeObject(reviewerJSON); est vide", 0));
             }
 
             HttpResponseMessage response = await _httpClient.PostAsync(p_githubLink, new StringContent(reviewers, Encoding.UTF8, "application/json"));
@@ -677,46 +677,46 @@ namespace RPLP.SERVICES.Github
         {
             if (string.IsNullOrWhiteSpace(p_organisationName))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                   "GithubApiAction - AddFileToContentsGitHub - p_organisationName passé en paramètre est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                   "GithubApiAction - AddFileToContentsGitHub - p_organisationName passé en paramètre est vide", 0));
             }
 
             if (string.IsNullOrWhiteSpace(p_repositoryName))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                   "GithubApiAction - AddFileToContentsGitHub - p_repositoryName passé en paramètre est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                   "GithubApiAction - AddFileToContentsGitHub - p_repositoryName passé en paramètre est vide", 0));
             }
 
             if (string.IsNullOrWhiteSpace(p_branchName))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                   "GithubApiAction - AddFileToContentsGitHub - p_branchName passé en paramètre est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                   "GithubApiAction - AddFileToContentsGitHub - p_branchName passé en paramètre est vide", 0));
             }
 
             if (string.IsNullOrWhiteSpace(p_newFileName))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubApiAction - AddFileToContentsGitHub - p_newFileName passé en paramètre est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    "GithubApiAction - AddFileToContentsGitHub - p_newFileName passé en paramètre est vide", 0));
             }
 
             if (string.IsNullOrWhiteSpace(p_content))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubApiAction - AddFileToContentsGitHub - p_content passé en paramètre est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    "GithubApiAction - AddFileToContentsGitHub - p_content passé en paramètre est vide", 0));
             }
 
             if (string.IsNullOrWhiteSpace(p_message))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubApiAction - AddFileToContentsGitHub - p_content passé en paramètre est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    "GithubApiAction - AddFileToContentsGitHub - p_content passé en paramètre est vide", 0));
             }
 
             string fullPath = _addFileToContentsGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName).Replace(newFileName, p_newFileName);
 
             if (string.IsNullOrWhiteSpace(fullPath))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubApiAction - AddFileToContentsGitHub - la variable fullPath assigné par la méthode _addFileToContentsGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName).Replace(newFileName, p_newFileName) est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    "GithubApiAction - AddFileToContentsGitHub - la variable fullPath assigné par la méthode _addFileToContentsGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName).Replace(newFileName, p_newFileName) est vide", 0));
             }
 
             Task<string> statusCode = addFileToContentsGithubApiRequest(fullPath, p_branchName, p_content, p_message);
@@ -738,8 +738,8 @@ namespace RPLP.SERVICES.Github
 
             if (string.IsNullOrWhiteSpace(contentRequest))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                   "GithubApiAction - addFileToContentsGithubApiRequest - la chaine de caractères contentRequest assignée par la méthode JsonConvert.SerializeObject(content_request) est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                   "GithubApiAction - addFileToContentsGithubApiRequest - la chaine de caractères contentRequest assignée par la méthode JsonConvert.SerializeObject(content_request) est vide", 0));
             }
 
             HttpResponseMessage response = await _httpClient.PutAsync(p_githubLink, new StringContent(contentRequest, Encoding.UTF8, "application/json"));
@@ -761,22 +761,22 @@ namespace RPLP.SERVICES.Github
         {
             if (string.IsNullOrWhiteSpace(p_organisationName))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                   "GithubApiAction - DownloadRepository - p_organisationName passé en paramètre est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                   "GithubApiAction - DownloadRepository - p_organisationName passé en paramètre est vide", 0));
             }
 
             if (string.IsNullOrWhiteSpace(p_repositoryName))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubApiAction - DownloadRepository - p_repositoryName passé en paramètre est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    "GithubApiAction - DownloadRepository - p_repositoryName passé en paramètre est vide", 0));
             }
 
             string fullPath = _downloadRepository.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName);
 
             if (string.IsNullOrWhiteSpace(fullPath))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "GithubApiAction - DownloadRepository - la variable fullPath assigné par la méthode _downloadRepository.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName) est vide"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    "GithubApiAction - DownloadRepository - la variable fullPath assigné par la méthode _downloadRepository.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName) est vide", 0));
             }
 
             Task<HttpResponseMessage> task = GetRepositoryDownloadTask(fullPath);
