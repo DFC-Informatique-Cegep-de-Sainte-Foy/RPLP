@@ -16,8 +16,8 @@ namespace RPLP.API.Controllers
         {
             if (p_depot == null)
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "AssignmentController - Constructeur - Dépot passé en paramêtre null"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "AssignmentController - Constructeur - Dépot passé en paramêtre null", 0));
             }
 
             this._depot = p_depot;
@@ -44,8 +44,8 @@ namespace RPLP.API.Controllers
             {
                 if (id <= 0)
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString(),
-                    "AssignmentController - GetAssignmentById - id passé en paramêtre est hors limites"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "AssignmentController - GetAssignmentById - id passé en paramêtre est hors limites", 0));
                 }
 
                 return Ok(this._depot.GetAssignmentById(id));
@@ -63,8 +63,8 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(assignmentName))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "AssignmentController - GetAssignmentByName - assignmentName passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "AssignmentController - GetAssignmentByName - assignmentName passé en paramêtre est vide", 0));
                 }
 
                 return Ok(this._depot.GetAssignmentByName(assignmentName));
@@ -83,8 +83,8 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(classroomName))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "AssignmentController - GetAssignmentsByClassroomName - classroomName passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "AssignmentController - GetAssignmentsByClassroomName - classroomName passé en paramêtre est vide", 0));
                 }
 
                 return Ok(this._depot.GetAssignmentsByClassroomName(classroomName));
@@ -103,16 +103,16 @@ namespace RPLP.API.Controllers
             {
                 if (p_assignment == null)
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                       "AssignmentController - Post - p_assignment passé en paramêtre est null"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                       "AssignmentController - Post - p_assignment passé en paramêtre est null", 0));
 
                     return BadRequest();
                 }
 
                 if (!ModelState.IsValid)
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentException().ToString(), new StackTrace().ToString(),
-                       "AssignmentController - Post - classroomName passé en paramêtre n'est pas valide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                       "AssignmentController - Post - classroomName passé en paramêtre n'est pas valide", 0));
 
                     return BadRequest();
                 }
@@ -134,8 +134,8 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(assignmentName))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString(),
-                    "AssignmentController - DeleteAssignment - assignmentName passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "replacement text"),
+                    "AssignmentController - DeleteAssignment - assignmentName passé en paramêtre est vide", 0));
                 }
 
                 this._depot.DeleteAssignment(assignmentName);
