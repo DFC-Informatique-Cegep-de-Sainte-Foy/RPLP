@@ -128,8 +128,12 @@ namespace RPLP.JOURNALISATION
         {
             string ligneFichierCSV = "";
 
+            int compteur = 0;
+
             foreach (PropertyInfo propriete in this.GetType().GetProperties())
             {
+                compteur++;
+
                 if (propriete != null)
                 {
                     if (propriete.GetValue(this) != null && propriete.GetValue(this) != "")
@@ -146,7 +150,10 @@ namespace RPLP.JOURNALISATION
                     ligneFichierCSV += "";
                 }
 
-                ligneFichierCSV += "~";
+                if(compteur < this.GetType().GetProperties().Count())
+                {
+                    ligneFichierCSV += "~";
+                }
             }
 
             return ligneFichierCSV;
