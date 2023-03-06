@@ -379,8 +379,23 @@ namespace RPLP.SERVICES.Github.GithubReviewCommentFetcher
             }
 
             //Gérer le client http
-             return await this._client.GetAsync($"/repos/{p_owner}/{p_repository}/issues/comments")
-                .Result.Content.ReadAsStringAsync();
+
+            HttpResponseMessage response = await this._client.GetAsync($"/repos/{p_owner}/{p_repository}/issues/comments");
+
+            HttpHeaders headers = response.Headers;
+            int remaining;
+            IEnumerable<string> headerValues;
+            if (headers.TryGetValues("X-RateLimit-Remaining", out headerValues))
+            {
+                int.TryParse(headerValues.First(), out remaining);
+            }
+
+            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log($"/repos/{p_owner}/{p_repository}/issues/comments", (int)response.StatusCode, $"Requête GET pour les commentaires d'une issue un dépot"));
+
+            return await response.Content.ReadAsStringAsync();
+            // Gardé le return original au cas où il y a un problème
+            //return await this._client.GetAsync($"/repos/{p_owner}/{p_repository}/issues/comments")
+            //    .Result.Content.ReadAsStringAsync();
 
         }
 
@@ -405,8 +420,22 @@ namespace RPLP.SERVICES.Github.GithubReviewCommentFetcher
             }
 
             //Gérer le client http
-            return await this._client.GetAsync($"/repos/{p_owner}/{p_repository}/pulls/{p_pullNumber}/reviews")
-                    .Result.Content.ReadAsStringAsync();
+            HttpResponseMessage response = await this._client.GetAsync($"/repos/{p_owner}/{p_repository}/pulls/{p_pullNumber}/reviews");
+
+            HttpHeaders headers = response.Headers;
+            int remaining;
+            IEnumerable<string> headerValues;
+            if (headers.TryGetValues("X-RateLimit-Remaining", out headerValues))
+            {
+                int.TryParse(headerValues.First(), out remaining);
+            }
+
+            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log($"/repos/{p_owner}/{p_repository}/pulls/{p_pullNumber}/reviews", (int)response.StatusCode, $"Requête GET pour les review d'une pull request"));
+
+            return await response.Content.ReadAsStringAsync();
+            // Gardé le return original au cas où il y a un problème
+            //return await this._client.GetAsync($"/repos/{p_owner}/{p_repository}/pulls/{p_pullNumber}/reviews")
+            //        .Result.Content.ReadAsStringAsync();
 
 
         }
@@ -426,8 +455,22 @@ namespace RPLP.SERVICES.Github.GithubReviewCommentFetcher
             }
 
             //Gérer le client http
-            return await this._client.GetAsync($"/repos/{p_owner}/{p_repository}/pulls/comments")
-                .Result.Content.ReadAsStringAsync();
+            HttpResponseMessage response = await this._client.GetAsync($"/repos/{p_owner}/{p_repository}/pulls/comments");
+
+            HttpHeaders headers = response.Headers;
+            int remaining;
+            IEnumerable<string> headerValues;
+            if (headers.TryGetValues("X-RateLimit-Remaining", out headerValues))
+            {
+                int.TryParse(headerValues.First(), out remaining);
+            }
+
+            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log($"/repos/{p_owner}/{p_repository}/pulls/comments", (int)response.StatusCode, $"Requête GET pour les comments d'une pull request"));
+
+            return await response.Content.ReadAsStringAsync();
+            // Gardé le return original au cas où il y a un problème
+            //return await this._client.GetAsync($"/repos/{p_owner}/{p_repository}/pulls/comments")
+            //    .Result.Content.ReadAsStringAsync();
         }
 
         public async Task<string> GetPullRequestsJSONFromRepositoryAsync(string p_owner, string p_repository)
@@ -445,8 +488,21 @@ namespace RPLP.SERVICES.Github.GithubReviewCommentFetcher
             }
 
             //Gérer le client http
-            return await this._client.GetAsync($"/repos/{p_owner}/{p_repository}/pulls")
-                .Result.Content.ReadAsStringAsync();
+            HttpResponseMessage response = await this._client.GetAsync($"/repos/{p_owner}/{p_repository}/pulls");
+
+            HttpHeaders headers = response.Headers;
+            int remaining;
+            IEnumerable<string> headerValues;
+            if (headers.TryGetValues("X-RateLimit-Remaining", out headerValues))
+            {
+                int.TryParse(headerValues.First(), out remaining);
+            }
+
+            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log($"/repos/{p_owner}/{p_repository}/pulls", (int)response.StatusCode, $"Requête GET pour les json des pull requests d'un dépot"));
+
+            return await response.Content.ReadAsStringAsync();
+            //return await this._client.GetAsync($"/repos/{p_owner}/{p_repository}/pulls")
+            //    .Result.Content.ReadAsStringAsync();
         }
 
         public IEnumerable<string> GetPullRequestsJSONFromRepositoriesAsync(string p_organisation, string p_classroomName, string p_assignment)
@@ -482,6 +538,7 @@ namespace RPLP.SERVICES.Github.GithubReviewCommentFetcher
                 {
                     Task<string> a = this._client.GetStringAsync($"/repos/{r.OrganisationName}/{r.Name}/pulls");
                     a.Wait();
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log($"/repos/{r.OrganisationName}/{r.Name}/pulls", 0, "Requête GET pour le json d'une pull request d'un dépot"));
                     return a.Result;
                 }).ToList();
 
