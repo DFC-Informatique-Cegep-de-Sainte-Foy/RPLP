@@ -8,7 +8,7 @@
 
 <div>
     <hr/>
-    <table class="table table-striped">
+    <table id="logsTable" class="table table-striped">
         <thead>
         <tr>
             @foreach (DataColumn dc in Model.Columns)
@@ -23,10 +23,24 @@
             <tr>
                 @foreach (DataColumn dc in Model.Columns)
                 {
-                    <td>@dr[dc.ColumnName]</td>
+                    <td class="text-truncate" style="max-width: 200px;">@dr[dc.ColumnName]</td>
                 }
             </tr>
         }
         </tbody>
     </table>
 </div>
+
+<script type="text/javascript">
+function clickHandler() {
+    if (this.classList.contains('show')){
+        this.classList.add('text-truncate');
+        this.classList.remove('show');
+    }else{
+        this.classList.add('show');
+        this.classList.remove('text-truncate');
+    }
+}
+document.querySelectorAll('#logsTable td')
+    .forEach(e => e.addEventListener("click", clickHandler));
+</script>
