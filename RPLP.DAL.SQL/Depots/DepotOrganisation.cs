@@ -163,6 +163,8 @@ namespace RPLP.DAL.SQL.Depots
 
                 this._context.Update(organisationResult);
                 this._context.SaveChanges();
+
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Organisation - Administrator", $"DepotOrganisation - Method - UpsertOrganisation(Organisation p_organisation) - Void - Update Organisation"));
             }
             else
             {
@@ -173,9 +175,9 @@ namespace RPLP.DAL.SQL.Depots
 
                 this._context.Organisations.Add(organisation);
                 this._context.SaveChanges();
-            }
 
-            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Organisation - Administrator", $"DepotOrganisation - Method - UpsertOrganisation(Organisation p_organisation) - Void"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Organisation - Administrator", $"DepotOrganisation - Method - UpsertOrganisation(Organisation p_organisation) - Void - Add Organisation"));
+            }
         }
 
         public void DeleteOrganisation(string p_organisationName)

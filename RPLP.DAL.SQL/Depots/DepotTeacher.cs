@@ -280,6 +280,8 @@ namespace RPLP.DAL.SQL.Depots
 
                 this._context.Update(teacherResult);
                 this._context.SaveChanges();
+
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Teacher - Classroom", $"DepotTeacher - Method - UpsertTeacher(Teacher p_teacher) - Void - Update Teacher"));
             }
             else
             {
@@ -306,9 +308,9 @@ namespace RPLP.DAL.SQL.Depots
 
                 this._context.Teachers.Add(teacher);
                 this._context.SaveChanges();
-            }
 
-            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Teacher - Classroom", $"DepotTeacher - Method - UpsertTeacher(Teacher p_teacher) - Void"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Teacher - Classroom", $"DepotTeacher - Method - UpsertTeacher(Teacher p_teacher) - Void - Add Teacher"));
+            }
         }
 
         public void DeleteTeacher(string p_teacherUsername)

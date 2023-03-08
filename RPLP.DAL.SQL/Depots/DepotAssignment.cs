@@ -86,6 +86,8 @@ namespace RPLP.DAL.SQL.Depots
 
                 this._context.Update(assignmentResult);
                 this._context.SaveChanges();
+
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Assignments", $"DepotAssignment - Method - UpsertAssignment(Assignment p_assignment) - Void - Update Assignment"));
             }
             else
             {
@@ -99,9 +101,9 @@ namespace RPLP.DAL.SQL.Depots
 
                 this._context.Assignments.Add(assignmentDTO);
                 this._context.SaveChanges();
-            }
 
-            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Assignments", $"DepotAssignment - Method - UpsertAssignment(Assignment p_assignment) - Void"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Assignments", $"DepotAssignment - Method - UpsertAssignment(Assignment p_assignment) - Void - Add Assignment"));
+            }
         }
 
         public void DeleteAssignment(string p_assignmentName)
