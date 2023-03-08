@@ -1,5 +1,7 @@
 using System.Data;
+using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using RPLP.JOURNALISATION;
 
 namespace RPLP.MVC.Controllers;
 
@@ -11,6 +13,18 @@ public class LogsController : Controller
 
         string fileName = "Log_Revue_Par_Les_Paires.csv";
         string filePath = Path.Combine(path, fileName);
+
+        if (string.IsNullOrWhiteSpace(filePath))
+        {
+            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                           "LogsController - Index - la variable filePath est null ou vide", 0));
+        }
+
+        if (!System.IO.File.Exists(filePath))
+        {
+            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                          "LogsController - Index - le fichier /var/log/rplp/Log_Revue_Par_Les_Paires.csv est introuvable ", 0));
+        }
 
         string csvData = System.IO.File.ReadAllText(filePath);
         DataTable dt = new DataTable();
