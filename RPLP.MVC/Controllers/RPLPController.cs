@@ -1291,7 +1291,7 @@ namespace RPLP.MVC.Controllers
         {
             try
             {
-                if (Id <= 0)
+                if (Id < 0)
                 {
                     RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                          "RPLPController - POSTUpsertTeacher - Id passé en paramètre est hors des limites", 0));

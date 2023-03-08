@@ -120,7 +120,7 @@ namespace RPLP.API.Controllers
                     return BadRequest();
                 }
 
-                if(p_student.Id <= 0)
+                if(p_student.Id < 0)
                 {
                     RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "StudentController - Post - Le id du paramêtre p_student passé en paramêtre est vide", 0));

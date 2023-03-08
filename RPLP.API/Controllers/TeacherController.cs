@@ -208,15 +208,15 @@ namespace RPLP.API.Controllers
                 if (p_teacher == null)
                 {
                     RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                   "TeacherController - GetClassroomsOfTeacherInOrganisationByEmail - p_teacher passé en paramêtre est null", 0));
+                   "TeacherController - UpsertTeacher - p_teacher passé en paramêtre est null", 0));
 
                     return BadRequest();
                 }
 
-                if(p_teacher.Id <= 0)
+                if(p_teacher.Id < 0)
                 {
                     RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                   "TeacherController - GetClassroomsOfTeacherInOrganisationByEmail - le ID du paramêtre p_teacher est hors limites", 0));
+                   "TeacherController - UpsertTeacher - le ID du paramêtre p_teacher est hors limites", 0));
 
                     return BadRequest();
                 }
@@ -224,7 +224,7 @@ namespace RPLP.API.Controllers
                 if(!ModelState.IsValid)
                 {
                     RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                   "TeacherController - GetClassroomsOfTeacherInOrganisationByEmail - p_teacher passé en paramêtre n'est pas un modèle valide", 0));
+                   "TeacherController - UpsertTeacher - p_teacher passé en paramêtre n'est pas un modèle valide", 0));
 
                     return BadRequest();
                 }
