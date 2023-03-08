@@ -372,6 +372,8 @@ namespace RPLP.DAL.SQL.Depots
 
                 this._context.Update(classroomResult);
                 this._context.SaveChanges();
+
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Classroom - Student - Teacher - Assignment", $"DepotClassroom - Method - UpsertClassroom(Classroom p_classroom) - Void - Update Classroom"));
             }
             else
             {
@@ -385,9 +387,9 @@ namespace RPLP.DAL.SQL.Depots
 
                 this._context.Classrooms.Add(classDTO);
                 this._context.SaveChanges();
-            }
 
-            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Classroom - Student - Teacher - Assignment", $"DepotClassroom - Method - UpsertClassroom(Classroom p_classroom) - Void"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Classroom - Student - Teacher - Assignment", $"DepotClassroom - Method - UpsertClassroom(Classroom p_classroom) - Void - Add Classroom"));
+            }
         }
 
         public void DeleteClassroom(string p_classroomName)

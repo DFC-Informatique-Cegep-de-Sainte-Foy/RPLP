@@ -166,6 +166,8 @@ namespace RPLP.DAL.SQL.Depots
 
                 this._context.Update(studentResult);
                 this._context.SaveChanges();
+
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Student - Classroom", $"DepotStudent - Method - UpsertStudent(Student p_student) - Void - Update Student"));
             }
             else
             {
@@ -193,9 +195,9 @@ namespace RPLP.DAL.SQL.Depots
 
                 this._context.Students.Add(student);
                 this._context.SaveChanges();
-            }
 
-            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Student - Classroom", $"DepotStudent - Method - UpsertStudent(Student p_student) - Void"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Student - Classroom", $"DepotStudent - Method - UpsertStudent(Student p_student) - Void - Add Student"));
+            }
         }
 
         public void DeleteStudent(string p_studentUsername)

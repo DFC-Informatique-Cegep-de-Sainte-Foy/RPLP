@@ -62,6 +62,8 @@ namespace RPLP.DAL.SQL.Depots
 
                 this._context.Update(repositoryResult);
                 this._context.SaveChanges();
+
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Repository", $"DepotRepository - Method - UpsertRepository(Repository p_repository) - Void - Update Repository"));
             }
             else
             {
@@ -73,9 +75,9 @@ namespace RPLP.DAL.SQL.Depots
 
                 this._context.Repositories.Add(repository);
                 this._context.SaveChanges();
-            }
 
-            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Repository", $"DepotRepository - Method - UpsertRepository(Repository p_repository) - Void"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Repository", $"DepotRepository - Method - UpsertRepository(Repository p_repository) - Void - Add Repository"));
+            }
         }
 
         public void DeleteRepository(string p_repositoryName)

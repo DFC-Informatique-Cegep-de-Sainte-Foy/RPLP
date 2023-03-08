@@ -64,6 +64,8 @@ namespace RPLP.DAL.SQL.Depots
 
                 this._context.Update(commentResult);
                 this._context.SaveChanges();
+
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Comment", $"DepotComment - Method - UpsertComment(Comment p_comment) - Void - Update Comment"));
             }
             else
             {
@@ -80,9 +82,11 @@ namespace RPLP.DAL.SQL.Depots
 
                 this._context.Comments.Add(comment);
                 this._context.SaveChanges();
+
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Comment", $"DepotComment - Method - UpsertComment(Comment p_comment) - Void - Add Comment"));
             }
 
-            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Comment", $"DepotComment - Method - UpsertComment(Comment p_comment) - Void"));
+            
         }
 
         public void DeleteComment(int p_commentId)
