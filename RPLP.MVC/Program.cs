@@ -2,48 +2,60 @@ using Auth0.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using RPLP.DAL.SQL;
 using RPLP.DAL.SQL.Depots;
+using RPLP.JOURNALISATION;
 using RPLP.SERVICES.InterfacesDepots;
+using System.Diagnostics;
+using System;
 using System.Net;
 
-var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-builder.Services.AddControllersWithViews();
-builder.Services.AddHttpsRedirection(options =>
+try
 {
-    options.RedirectStatusCode = (int)HttpStatusCode.TemporaryRedirect;
-    options.HttpsPort = 443;
-});
-builder.Services.AddAuth0WebAppAuthentication(options =>
+    var builder = WebApplication.CreateBuilder(args);
+
+    // Add services to the container.
+    builder.Services.AddControllersWithViews();
+    builder.Services.AddHttpsRedirection(options =>
+    {
+        options.RedirectStatusCode = (int)HttpStatusCode.TemporaryRedirect;
+        options.HttpsPort = 443;
+    });
+    builder.Services.AddAuth0WebAppAuthentication(options =>
+    {
+        options.Domain = builder.Configuration["Auth0:Domain"];
+        options.ClientId = builder.Configuration["Auth0:ClientId"];
+        options.Scope = "openid profile email";
+    });
+
+    builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
+
+
+    var app = builder.Build();
+
+    // Configure the HTTP request pipeline.
+    if (!app.Environment.IsDevelopment())
+    {
+        app.UseExceptionHandler("/Home/Error");
+    }
+
+    app.UseStaticFiles();
+
+    app.UseRouting();
+
+    app.UseHttpsRedirection();
+    app.UseHsts();
+
+    app.UseAuthentication();
+    app.UseAuthorization();
+
+    app.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Home}/{action=Index}/{id?}");
+    app.Run();
+
+}
+catch (Exception exception)
 {
-    options.Domain = builder.Configuration["Auth0:Domain"];
-    options.ClientId = builder.Configuration["Auth0:ClientId"];
-    options.Scope = "openid profile email";
-});
-
-builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
-
-
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Home/Error");
+    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(exception.ToString(), exception.StackTrace.ToString().Replace(System.Environment.NewLine, "."),
+         "Projet - RPLP.MVC - Erreur récupérer dans le try/catch central", 0));
 }
 
-app.UseStaticFiles();
-
-app.UseRouting();
-
-app.UseHttpsRedirection();
-app.UseHsts();
-
-app.UseAuthentication();
-app.UseAuthorization();
-
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
-
-app.Run();
