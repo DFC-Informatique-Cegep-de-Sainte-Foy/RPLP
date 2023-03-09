@@ -948,7 +948,7 @@ namespace RPLP.MVC.Controllers
         {
             try
             {
-                if (Id <= 0)
+                if (Id < 0)
                 {
                     RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                          "RPLPController - POSTUpsertAdmin - Id passé en paramètre est hors des limites", 0));
@@ -999,7 +999,7 @@ namespace RPLP.MVC.Controllers
         {
             try
             {
-                if (Id <= 0)
+                if (Id < 0)
                 {
                     RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                          "RPLPController - POSTUpsertOrg - Id passé en paramètre est hors des limites", 0));
@@ -1030,7 +1030,7 @@ namespace RPLP.MVC.Controllers
         {
             try
             {
-                if (Id <= 0)
+                if (Id < 0)
                 {
                     RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                          "RPLPController - POSTUpsertClassroom - Id passé en paramètre est hors des limites", 0));
@@ -1096,7 +1096,7 @@ namespace RPLP.MVC.Controllers
         {
             try
             {
-                if (Id <= 0)
+                if (Id < 0)
                 {
                     RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                          "RPLPController - POSTUpsertStudent - Id passé en paramètre est hors des limites", 0));
@@ -1388,7 +1388,7 @@ namespace RPLP.MVC.Controllers
         {
             try
             {
-                if (Id <= 0)
+                if (Id < 0)
                 {
                     RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                          "RPLPController - POSTModifyAssignment - Id passé en paramètre est hors des limites", 0));

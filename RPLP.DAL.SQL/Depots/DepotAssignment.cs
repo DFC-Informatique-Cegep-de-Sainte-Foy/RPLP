@@ -5,6 +5,7 @@ using RPLP.JOURNALISATION;
 using RPLP.SERVICES.InterfacesDepots;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,6 +24,12 @@ namespace RPLP.DAL.SQL.Depots
 
         public DepotAssignment(RPLPDbContext p_context)
         {
+            if (p_context == null)
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                               "DepotAssignment - DepotAssignment(RPLPDbContext p_context) - p_context de type RPLPDbContext passé en paramètre est null", 0));
+            }
+
             this._context = p_context;
         }
 
@@ -36,6 +43,12 @@ namespace RPLP.DAL.SQL.Depots
 
         public Assignment GetAssignmentById(int p_id)
         {
+            if (p_id < 0)
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                       "DepotAssignment - GetAssignmentById - p_id passé en paramêtre est hors des limites", 0));
+            }
+
             Assignment assignment = this._context.Assignments.FirstOrDefault(assignment => assignment.Id == p_id && assignment.Active)
                                                              .ToEntity();
 
@@ -49,6 +62,12 @@ namespace RPLP.DAL.SQL.Depots
 
         public Assignment GetAssignmentByName(string p_assignmentName)
         {
+            if (string.IsNullOrWhiteSpace(p_assignmentName))
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                     "DepotAssignment - GetAssignmentByName - p_assignmentName passé en paramètre est vide", 0));
+            }
+
             Assignment assignment = this._context.Assignments
                                                 .FirstOrDefault(assignment => assignment.Name == p_assignmentName && assignment.Active)
                                                 .ToEntity();
@@ -63,6 +82,12 @@ namespace RPLP.DAL.SQL.Depots
 
         public List<Assignment> GetAssignmentsByClassroomName(string p_classroomName)
         {
+            if (string.IsNullOrWhiteSpace(p_classroomName))
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                     "DepotAssignment - GetAssignmentsByClassroomName - p_classroomName passé en paramètre est vide", 0));
+            }
+
             List<Assignment> assignments = this._context.Assignments
                 .Where(assignment => assignment.ClassroomName == p_classroomName && assignment.Active)
                 .Select(s => s.ToEntity())
@@ -75,6 +100,12 @@ namespace RPLP.DAL.SQL.Depots
 
         public void UpsertAssignment(Assignment p_assignment)
         {
+            if (p_assignment == null)
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                     "DepotAssignment - UpsertAssignment - p_assignment passé en paramètre est null", 0));
+            }
+
             Assignment_SQLDTO assignmentResult = this._context.Assignments.Where(assignment => assignment.Active)
                                                                           .FirstOrDefault(assignment => assignment.Id == p_assignment.Id);
             if (assignmentResult != null)
@@ -108,6 +139,12 @@ namespace RPLP.DAL.SQL.Depots
 
         public void DeleteAssignment(string p_assignmentName)
         {
+            if (string.IsNullOrWhiteSpace(p_assignmentName))
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                     "DepotAssignment - DeleteAssignment - p_assignmentName passé en paramètre est vide", 0));
+            }
+
             Assignment_SQLDTO assignmentResult = this._context.Assignments.Where(assignment => assignment.Active)
                                                                           .FirstOrDefault(assignment => assignment.Name == p_assignmentName);
             if (assignmentResult != null)
