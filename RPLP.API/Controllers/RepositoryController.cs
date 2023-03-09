@@ -34,6 +34,8 @@ namespace RPLP.API.Controllers
                     "RepositoryController - GetRepositoryById - id passé en paramêtre est hors limites", 0));
                 }
 
+                Journalisation.Journaliser(new Log($"api/Repository/Id/{id}", 200, "RepositoryController - GET méthode GetRepositoryById"));
+
                 return Ok(this._depot.GetRepositoryById(id));
             }
             catch (Exception)
@@ -52,6 +54,8 @@ namespace RPLP.API.Controllers
                     RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "RepositoryController - GetRepositoryByName - repositoryName passé en paramêtre est vide", 0));
                 }
+
+                Journalisation.Journaliser(new Log($"api/Repository/Name/{repositoryName}", 200, "RepositoryController - GET méthode GetRepositoryByName"));
 
                 return Ok(this._depot.GetRepositoryByName(repositoryName));
             }
@@ -82,6 +86,8 @@ namespace RPLP.API.Controllers
                     return BadRequest();
                 }
 
+                Journalisation.Journaliser(new Log($"api/Repository", 201, "RepositoryController - POST méthode Post"));
+
                 this._depot.UpsertRepository(p_repository);
 
                 return Created(nameof(this.Post), p_repository);
@@ -103,6 +109,8 @@ namespace RPLP.API.Controllers
                     RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "RepositoryController - DeleteRepository - repositoryName passé en paramêtre est vide", 0));
                 }
+
+                Journalisation.Journaliser(new Log($"api/Repository/Name/{repositoryName}", 204, "RepositoryController - DELETE méthode DeleteRepository"));
 
                 this._depot.DeleteRepository(repositoryName);
                 return NoContent();
