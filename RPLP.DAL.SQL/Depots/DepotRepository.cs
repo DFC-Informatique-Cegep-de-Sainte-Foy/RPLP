@@ -5,9 +5,11 @@ using RPLP.JOURNALISATION;
 using RPLP.SERVICES.InterfacesDepots;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace RPLP.DAL.SQL.Depots
 {
@@ -23,11 +25,23 @@ namespace RPLP.DAL.SQL.Depots
 
         public DepotRepository(RPLPDbContext p_context)
         {
+            if (p_context == null)
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                               "DepotRepository - DepotRepository(RPLPDbContext p_context) - p_context de type RPLPDbContext passé en paramètre est null", 0));
+            }
+
             this._context = p_context;
         }
 
         public Repository GetRepositoryById(int id)
         {
+            if (id < 0)
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                       "DepotRepository - GetRepositoryById - id passé en paramêtre est hors des limites", 0));
+            }
+
             Repository_SQLDTO repository = this._context.Repositories.FirstOrDefault(repository => repository.Id == id && repository.Active);
 
             RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Repository", $"DepotRepository - Method - GetRepositoryById(int id) - Return Repository"));
@@ -40,6 +54,12 @@ namespace RPLP.DAL.SQL.Depots
 
         public Repository GetRepositoryByName(string p_repositoryName)
         {
+            if (string.IsNullOrWhiteSpace(p_repositoryName))
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                     "DepotRepository - GetRepositoryByName - p_repositoryName passé en paramètre est vide", 0));
+            }
+
             Repository_SQLDTO repository = this._context.Repositories.FirstOrDefault(repository => repository.Name == p_repositoryName && repository.Active);
 
             RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Repository", $"DepotRepository - Method - GetRepositoryByName(string p_repositoryName) - Return Repository"));
@@ -52,6 +72,12 @@ namespace RPLP.DAL.SQL.Depots
 
         public void UpsertRepository(Repository p_repository)
         {
+            if (p_repository == null)
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                     "DepotRepository - UpsertRepository - p_repository passé en paramètre est null", 0));
+            }
+
             Repository_SQLDTO repositoryResult = this._context.Repositories.SingleOrDefault(repository => repository.Id == p_repository.Id &&
                                                                                             repository.Active);
             if (repositoryResult != null)
@@ -82,6 +108,12 @@ namespace RPLP.DAL.SQL.Depots
 
         public void DeleteRepository(string p_repositoryName)
         {
+            if (string.IsNullOrWhiteSpace(p_repositoryName))
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                     "DepotRepository - DeleteRepository - p_repositoryName passé en paramètre est vide", 0));
+            }
+
             Repository_SQLDTO repositoryResult = this._context.Repositories.Where(repository => repository.Active)
                                                                            .FirstOrDefault(repository => repository.Name == p_repositoryName);
             if (repositoryResult != null)
@@ -106,6 +138,12 @@ namespace RPLP.DAL.SQL.Depots
 
         public List<Repository> GetRepositoriesFromOrganisationName(string p_organisationName)
         {
+            if (string.IsNullOrWhiteSpace(p_organisationName))
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                     "DepotRepository - GetRepositoriesFromOrganisationName - p_organisationName passé en paramètre est vide", 0));
+            }
+
             RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Repository", $"DepotRepository - Method - GetRepositoriesFromOrganisationName(string p_organisationName) - Return List<Repository>"));
 
             return this._context.Repositories

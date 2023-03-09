@@ -41,7 +41,7 @@ namespace RPLP.JOURNALISATION
         {
             this.Identifiant = Guid.NewGuid();
             this.TypeDeLog = p_TypeDeLog;
-            this.DateDuLog = DateTime.Now;
+            this.DateDuLog = DateTime.UtcNow;
             this.ExceptionLevee = p_exception;
             this.StackTrace = p_stacktrace;
             this.RouteApi = p_RouteApi;
@@ -58,7 +58,25 @@ namespace RPLP.JOURNALISATION
         {
             this.Identifiant = Guid.NewGuid();
             this.TypeDeLog = "RequeteBaseDeDonnees";
-            this.DateDuLog = DateTime.Now;
+            this.DateDuLog = DateTime.UtcNow;
+            this.UtilisateurConnecte = "";
+            this.ExceptionLevee = null;
+            this.StackTrace = null;
+            this.RouteApi = "";
+            this.CodeStatusRequete = 0;
+            this.RequetesRestantes = 0;
+            this.TableAffectee = p_tableAffectee;
+            this.UtilisateurConnecte = "";
+            this.Role = "";
+            this.MessageSupplementaire = p_messageSupplementaire;
+        }
+
+        //Constructeur pour la journalisation des Connexions BD
+        public Log(string p_tableAffectee, string p_messageSupplementaire, int defaut)
+        {
+            this.Identifiant = Guid.NewGuid();
+            this.TypeDeLog = "EchecRequeteBaseDeDonnees";
+            this.DateDuLog = DateTime.UtcNow;
             this.UtilisateurConnecte = "";
             this.ExceptionLevee = null;
             this.StackTrace = null;
@@ -76,7 +94,7 @@ namespace RPLP.JOURNALISATION
         {
             this.Identifiant = Guid.NewGuid();
             this.TypeDeLog = "Erreur";
-            this.DateDuLog = DateTime.Now;
+            this.DateDuLog = DateTime.UtcNow;
             this.UtilisateurConnecte = "";
             this.ExceptionLevee = p_exception;
             this.StackTrace = p_stacktrace;
@@ -94,7 +112,7 @@ namespace RPLP.JOURNALISATION
         {
             this.Identifiant = Guid.NewGuid();
             this.TypeDeLog = "AppelAPI";
-            this.DateDuLog = DateTime.Now;
+            this.DateDuLog = DateTime.UtcNow;
             this.UtilisateurConnecte = "";
             this.ExceptionLevee = null;
             this.StackTrace = null;
@@ -112,7 +130,7 @@ namespace RPLP.JOURNALISATION
         {
             this.Identifiant = Guid.NewGuid();
             this.TypeDeLog = "AppelAPI";
-            this.DateDuLog = DateTime.Now;
+            this.DateDuLog = DateTime.UtcNow;
             this.UtilisateurConnecte = "";
             this.ExceptionLevee = null;
             this.StackTrace = null;
@@ -130,7 +148,7 @@ namespace RPLP.JOURNALISATION
         {
             this.Identifiant = Guid.NewGuid();
             this.TypeDeLog = "ConnexionAuth0";
-            this.DateDuLog = DateTime.Now;
+            this.DateDuLog = DateTime.UtcNow;
             this.UtilisateurConnecte = "";
             this.ExceptionLevee = null;
             this.StackTrace = null;
