@@ -28,6 +28,8 @@ namespace RPLP.API.Controllers
         {
             try
             {
+                Journalisation.Journaliser(new Log("api/Comment", 200, "CommentController - GET méthode Get"));
+
                 return Ok(this._depot.GetComments());
             }
             catch (Exception)
@@ -46,6 +48,8 @@ namespace RPLP.API.Controllers
                     RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "CommentController - GetCommentById - id passé en paramêtre est hors limites", 0));
                 }
+
+                Journalisation.Journaliser(new Log($"api/Comment/Id/{id}", 200, "CommentController - GET méthode GetCommentById"));
 
                 return Ok(this._depot.GetCommentById(id));
             }
@@ -76,6 +80,8 @@ namespace RPLP.API.Controllers
                     return BadRequest();
                 }
 
+                Journalisation.Journaliser(new Log($"api/Comment", 201, "CommentController - POST méthode Post"));
+
                 this._depot.UpsertComment(p_comment);
 
                 return Created(nameof(this.Post), p_comment);
@@ -96,6 +102,8 @@ namespace RPLP.API.Controllers
                     RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "CommentController - DeleteComment - id passé en paramêtre est hors limites", 0));
                 }
+
+                Journalisation.Journaliser(new Log($"api/Comment/Id/{id}", 204, "CommentController - GET méthode DeleteComment"));
 
                 this._depot.DeleteComment(id);
                 return NoContent();
