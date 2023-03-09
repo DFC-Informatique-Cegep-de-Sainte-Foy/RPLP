@@ -64,6 +64,8 @@ namespace RPLP.API.Controllers
                     "GithubController - StartScript - numberOfReviews passé en paramêtre n'est pas valide", 0));
                 }
 
+                Journalisation.Journaliser(new Log($"api/Github/test/{organisationName}/{classroomName}/{assignmentName}/{numberOfReviews}", 200, "GithubController - GET méthode StartScript"));
+
                 this._scriptGithub.ScriptAssignStudentToAssignmentReview(organisationName, classroomName, assignmentName, numberOfReviews);
                 return Ok("Assigned successfully");
             }
@@ -96,6 +98,8 @@ namespace RPLP.API.Controllers
                     RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "GithubController - StartScriptDownloadAllRepositoriesForAssignment - assignmentName passé en paramêtre est vide", 0));
                 }
+
+                Journalisation.Journaliser(new Log($"api/Github/Telechargement/{organisationName}/{classroomName}/{assignmentName}", 0, "GithubController - GET méthode StartScriptDownloadAllRepositoriesForAssignment"));
 
                 Console.Out.WriteLine($"Trying to call StartScriptDownloadAllRepositoriesForAssignment({organisationName}, {classroomName}, {assignmentName})");
                 string path = _scriptGithub.ScriptDownloadAllRepositoriesForAssignment(organisationName, classroomName, assignmentName);
@@ -160,6 +164,8 @@ namespace RPLP.API.Controllers
                     RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "GithubController - StartScriptDownloadOneRepositoriesForAssignment - studentUsername passé en paramêtre est vide"));
                 }
+
+                Journalisation.Journaliser(new Log($"api/Github/Telechargement/{organisationName}/{classroomName}/{assignmentName}/{studentUsername}", 0, "GithubController - GET méthode StartScriptDownloadOneRepositoriesForAssignment"));
 
                 string repositoryName = $"{assignmentName}-{studentUsername}";
                 Console.Out.WriteLine($"Trying to call ScriptDownloadOneRepositoryForAssignment({organisationName}, {classroomName}, {assignmentName}, {repositoryName})");
@@ -227,6 +233,8 @@ namespace RPLP.API.Controllers
                     "GithubController - StartScriptProf - teacherUsername passé en paramêtre est vide", 0));
                 }
 
+                Journalisation.Journaliser(new Log($"api/Github/test/{organisationName}/{classroomName}/{assignmentName}", 200, "GithubController - GET méthode StartScriptProf"));
+
                 this._scriptGithub.ScriptAssignTeacherToAssignmentReview(organisationName, classroomName, assignmentName, teacherUsername);
 
                 return Ok("Assigned successfully");
@@ -248,6 +256,8 @@ namespace RPLP.API.Controllers
                     RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "GithubController - GetRepositories - organisationName passé en paramêtre est vide", 0));
                 }
+
+                Journalisation.Journaliser(new Log($"api/Github/{organisationName}", 200, "GithubController - GET méthode GetRepositories"));
 
                 return Ok(this._githubAction.GetOrganisationRepositoriesGithub(organisationName));
             }
@@ -273,6 +283,8 @@ namespace RPLP.API.Controllers
                     RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "GithubController - GetRepository - repositoryName passé en paramêtre est vide", 0));
                 }
+
+                Journalisation.Journaliser(new Log($"api/Github/{organisationName}/{repositoryName}", 200, "GithubController - GET méthode GetRepository"));
 
                 return Ok(this._githubAction.GetRepositoryInfoGithub(organisationName, repositoryName));
             }
@@ -300,6 +312,8 @@ namespace RPLP.API.Controllers
                     "GithubController - GetRepositoryCommits - repositoryName passé en paramêtre est vide", 0));
                 }
 
+                Journalisation.Journaliser(new Log($"api/Github/{organisationName}/{repositoryName}/Commit/", 200, "GithubController - GET méthode GetRepositoryCommits"));
+
                 return Ok(this._githubAction.GetRepositoryCommitsGithub(organisationName, repositoryName));
             }
             catch (Exception)
@@ -324,6 +338,8 @@ namespace RPLP.API.Controllers
                     RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "GithubController - GetRepositoryBranches - repositoryName passé en paramêtre est vide", 0));
                 }
+
+                Journalisation.Journaliser(new Log($"api/Github/{organisationName}/{repositoryName}/Branches/", 200, "GithubController - GET méthode GetRepositoryBranches"));
 
                 return Ok(this._githubAction.GetRepositoryBranchesGithub(organisationName, repositoryName));
             }
@@ -362,6 +378,8 @@ namespace RPLP.API.Controllers
                     RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "GithubController - CreateNewBranch - sha passé en paramêtre est vide"));
                 }
+
+                Journalisation.Journaliser(new Log($"api/Github/{organisationName}/{repositoryName}/Create/Branch/{branchName}/From/{sha}", 200, "GithubController - POST méthode CreateNewBranch"));
 
                 return Ok(this._githubAction.CreateNewBranchForFeedbackGitHub(organisationName, repositoryName, sha, branchName));
             }
@@ -407,6 +425,8 @@ namespace RPLP.API.Controllers
                     "GithubController - CreateNewPR - body passé en paramêtre est vide", 0));
                 }
 
+                Journalisation.Journaliser(new Log($"api/Github/{organisationName}/{repositoryName}/Create/PullRequest/{branchName}/Title/{{title}}/Body/{body}", 200, "GithubController - POST méthode CreateNewPR"));
+
                 return Ok(this._githubAction.CreateNewPullRequestFeedbackGitHub(organisationName, repositoryName, branchName, title, body));
             }
             catch (Exception)
@@ -444,6 +464,8 @@ namespace RPLP.API.Controllers
                     "GithubController - AssignStudentToPR (POST :{organisationName}/{repositoryName}/Assign/PullRequest/{pullRequest}/Student/{studentUsername}) - studentUsername passé en paramêtre est vide", 0));
                 }
 
+                Journalisation.Journaliser(new Log($"api/Github/{organisationName}/{repositoryName}/Assign/PullRequest/{pullRequest}/Student/{studentUsername}", 200, "GithubController - POST méthode AssignStudentToPR"));
+
                 return Ok(this._githubAction.AssignReviewerToPullRequestGitHub(organisationName, repositoryName, pullRequest, studentUsername));
             }
             catch (Exception)
@@ -476,6 +498,8 @@ namespace RPLP.API.Controllers
                     "GithubController - AssignStudentToPR (PUT : {organisationName}/{repositoryName}/Add/Collaborator/Student/{studentUsername}) - studentUsername passé en paramêtre est vide", 0));
                 }
 
+                Journalisation.Journaliser(new Log($"api/Github/{organisationName}/{repositoryName}/Add/Collaborator/Student/{studentUsername}", 200, "GithubController - PUT méthode AssignStudentToPR"));
+
                 return Ok(this._githubAction.AddStudentAsCollaboratorToPeerRepositoryGithub(organisationName, repositoryName, studentUsername));
             }
             catch (Exception)
@@ -503,6 +527,8 @@ namespace RPLP.API.Controllers
                     RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "GithubController - GetPullRequestsFromRepository - teacherUsername passé en paramêtre est vide", 0));
                 }
+
+                Journalisation.Journaliser(new Log($"api/Github/{teacherUsername}/{repositoryName}/PullRequests", 200, "GithubController - GET méthode GetPullRequestsFromRepository"));
 
                 return Ok(this._githubPRCommentFetcher.GetPullRequestsFromRepositoryAsync(teacherUsername, repositoryName).Result);
             }
@@ -550,6 +576,8 @@ namespace RPLP.API.Controllers
                     "GithubController - GetIssuesReviewsAndCommentsByStudentOnAssignment (POST : {teacherUsername}/{repositoryName}/PullRequests/Comments/Students) - variable pulls assigné de la méthode GetPullRequestsFromRepositoryAsyncest null", 0));
                 }
 
+                Journalisation.Journaliser(new Log($"api/Github/{teacherUsername}/{repositoryName}/PullRequests/Comments/Students", 200, "GithubController - POST méthode GetIssuesReviewsAndCommentsByStudentOnAssignment"));
+
                 return Ok(this._githubPRCommentFetcher.GetMultipleUsersCommentsReviewsAndIssues(pulls, studentNames).Result);
             }
             catch (Exception)
@@ -590,6 +618,8 @@ namespace RPLP.API.Controllers
                     "GithubController - GetIssuesReviewsAndCommentsByStudentOnAssignment (GET - {teacherUsername}/{repositoryName}/PullRequests/Comments/{studentName}) - variable pulls assigné de la méthode GetPullRequestsFromRepositoryAsync est null", 0));
                 }
 
+                Journalisation.Journaliser(new Log($"api/Github/{teacherUsername}/{repositoryName}/PullRequests/Comments/{studentName}", 200, "GithubController - GET méthode GetIssuesReviewsAndCommentsByStudentOnAssignment"));
+
                 return Ok(this._githubPRCommentFetcher.GetUserCommentsReviewsAndIssues(pulls, studentName).Result);
             }
             catch (Exception)
@@ -615,6 +645,8 @@ namespace RPLP.API.Controllers
                     RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "GithubController - GetFileWithCommentsOfPullRequestByAssignmentForSingleRepository - repositoryName passé en paramêtre est vide", 0));
                 }
+
+                Journalisation.Journaliser(new Log($"api/Github/{organisationName}/{repositoryName}/PullRequests/Comments/File", 0, "GithubController - GET méthode GetFileWithCommentsOfPullRequestByAssignmentForSingleRepository"));
 
                 List<Pull>? pull = this._githubPRCommentFetcher.GetPullRequestsFromRepositoryAsync(organisationName, repositoryName).Result;
 
@@ -671,6 +703,8 @@ namespace RPLP.API.Controllers
                     RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "GithubController - GetFileWithCommentsOfPullRequestByAssignmentForAllRepositories - assignmentName passé en paramêtre est vide", 0));
                 }
+
+                Journalisation.Journaliser(new Log($"api/Github/{organisationName}/{classroomName}/{assignmentName}/PullRequests/Comments/File", 0, "GithubController - GET méthode GetFileWithCommentsOfPullRequestByAssignmentForAllRepositories"));
 
                 List<ReviewerUser>? reviewerUsers = this._githubPRCommentFetcher.GetCommentsReviewsAndIssuesByReviewersAsync(organisationName, classroomName, assignmentName).Result;
                 

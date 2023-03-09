@@ -111,7 +111,7 @@ namespace RPLP.JOURNALISATION
         public Log(string p_RouteApi, int p_CodeStatusRequete, string p_messageSupplementaire)
         {
             this.Identifiant = Guid.NewGuid();
-            this.TypeDeLog = "AppelAPI";
+            this.TypeDeLog = "AppelAPI_RPLP";
             this.DateDuLog = DateTime.UtcNow;
             this.UtilisateurConnecte = "";
             this.ExceptionLevee = null;
@@ -129,7 +129,7 @@ namespace RPLP.JOURNALISATION
         public Log(string p_RouteApi, int p_CodeStatusRequete, int p_requetesRestantes, string p_messageSupplementaire)
         {
             this.Identifiant = Guid.NewGuid();
-            this.TypeDeLog = "AppelAPI";
+            this.TypeDeLog = "AppelAPI_GitHub";
             this.DateDuLog = DateTime.UtcNow;
             this.UtilisateurConnecte = "";
             this.ExceptionLevee = null;

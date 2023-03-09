@@ -28,6 +28,8 @@ namespace RPLP.API.Controllers
         {
             try
             {
+                Journalisation.Journaliser(new Log("api/Assignment", 200, "AssignmentController - GET méthode Get"));
+
                 return Ok(this._depot.GetAssignments());
             }
             catch (Exception)
@@ -48,6 +50,8 @@ namespace RPLP.API.Controllers
                     "AssignmentController - GetAssignmentById - id passé en paramêtre est hors limites", 0));
                 }
 
+                Journalisation.Journaliser(new Log($"api/Assignment/Id/{id}", 200, "AssignmentController - GET méthode GetAssignmentById"));
+
                 return Ok(this._depot.GetAssignmentById(id));
             }
             catch (Exception)
@@ -66,6 +70,8 @@ namespace RPLP.API.Controllers
                     RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "AssignmentController - GetAssignmentByName - assignmentName passé en paramêtre est vide", 0));
                 }
+
+                Journalisation.Journaliser(new Log($"api/Assignment/Name/{assignmentName}", 200, "AssignmentController - GET méthode GetAssignmentByName"));
 
                 return Ok(this._depot.GetAssignmentByName(assignmentName));
             }
@@ -86,6 +92,8 @@ namespace RPLP.API.Controllers
                     RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "AssignmentController - GetAssignmentsByClassroomName - classroomName passé en paramêtre est vide", 0));
                 }
+
+                Journalisation.Journaliser(new Log($"api/Assignment/Classroom/{classroomName}/Assignments", 200, "AssignmentController - GET méthode GetAssignmentsByClassroomName"));
 
                 return Ok(this._depot.GetAssignmentsByClassroomName(classroomName));
             }
@@ -117,6 +125,8 @@ namespace RPLP.API.Controllers
                     return BadRequest();
                 }
 
+                Journalisation.Journaliser(new Log($"api/Assignment/", 201, "AssignmentController - POST méthode Post"));
+
                 this._depot.UpsertAssignment(p_assignment);
 
                 return Created(nameof(this.Post), p_assignment);
@@ -137,6 +147,8 @@ namespace RPLP.API.Controllers
                     RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "AssignmentController - DeleteAssignment - assignmentName passé en paramêtre est vide", 0));
                 }
+
+                Journalisation.Journaliser(new Log($"api/Assignment/Name/{assignmentName}", 204, "AssignmentController - DELETE méthode DeleteAssignment"));
 
                 this._depot.DeleteAssignment(assignmentName);
                 return NoContent();
