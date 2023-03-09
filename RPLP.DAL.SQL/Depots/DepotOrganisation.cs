@@ -5,9 +5,11 @@ using RPLP.JOURNALISATION;
 using RPLP.SERVICES.InterfacesDepots;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace RPLP.DAL.SQL.Depots
 {
@@ -23,6 +25,12 @@ namespace RPLP.DAL.SQL.Depots
 
         public DepotOrganisation(RPLPDbContext p_context)
         {
+            if (p_context == null)
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                               "DepotOrganisation - DepotOrganisation(RPLPDbContext p_context) - p_context de type RPLPDbContext passé en paramètre est null", 0));
+            }
+
             this._context = p_context;
         }
 
@@ -46,6 +54,12 @@ namespace RPLP.DAL.SQL.Depots
 
         public Organisation GetOrganisationById(int p_id)
         {
+            if (p_id < 0)
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                       "DepotOrganisation - GetOrganisationById - p_id passé en paramêtre est hors des limites", 0));
+            }
+
             Organisation_SQLDTO organisationResult = this._context.Organisations.Where(organisation => organisation.Active)
                                                                            .Include(organisation => organisation.Administrators.Where(admin => admin.Active))
                                                                            .FirstOrDefault(organisation => organisation.Id == p_id);
@@ -68,6 +82,12 @@ namespace RPLP.DAL.SQL.Depots
 
         public Organisation GetOrganisationByName(string p_name)
         {
+            if (string.IsNullOrWhiteSpace(p_name))
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                     "DepotOrganisation - GetOrganisationByName - p_name passé en paramètre est vide", 0));
+            }
+
             Organisation_SQLDTO organisationResult = this._context.Organisations.Where(organisation => organisation.Active)
                                                                                 .Include(organisation => organisation.Administrators.Where(admin => admin.Active))
                                                                                 .FirstOrDefault(organisation => organisation.Name == p_name);
@@ -90,6 +110,12 @@ namespace RPLP.DAL.SQL.Depots
 
         public List<Administrator> GetAdministratorsByOrganisation(string p_organisationName)
         {
+            if (string.IsNullOrWhiteSpace(p_organisationName))
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                     "DepotOrganisation - GetAdministratorsByOrganisation - p_organisationName passé en paramètre est vide", 0));
+            }
+
             Organisation_SQLDTO organisationResult = this._context.Organisations
                 .Include(organisation => organisation.Administrators.Where(a => a.Active))
                 .FirstOrDefault(organisation => organisation.Name == p_organisationName && organisation.Active);
@@ -104,6 +130,17 @@ namespace RPLP.DAL.SQL.Depots
 
         public void AddAdministratorToOrganisation(string p_organisationName, string p_adminUsername)
         {
+            if (string.IsNullOrWhiteSpace(p_organisationName))
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                     "DepotOrganisation - AddAdministratorToOrganisation - p_organisationName passé en paramètre est vide", 0));
+            }
+            if (string.IsNullOrWhiteSpace(p_adminUsername))
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                     "DepotOrganisation - AddAdministratorToOrganisation - p_adminUsername passé en paramètre est vide", 0));
+            }
+
             Administrator_SQLDTO adminResult = this._context.Administrators.Where(admin => admin.Active)
                                                                            .FirstOrDefault(admin => admin.Username == p_adminUsername);
             if (adminResult != null)
@@ -116,14 +153,32 @@ namespace RPLP.DAL.SQL.Depots
 
                     this._context.Update(organisationResult);
                     this._context.SaveChanges();
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Organisation - Administrator", $"DepotOrganisation - Method - AddAdministratorToOrganisation(string p_organisationName, string p_adminUsername) - Void"));
+                }
+                else
+                {
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Organisation - Administrator", $"DepotOrganisation - Method - la variable organisationResult est null", 0));
                 }
             }
-
-            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Organisation - Administrator", $"DepotOrganisation - Method - AddAdministratorToOrganisation(string p_organisationName, string p_adminUsername) - Void"));
+            else
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Organisation - Administrator", $"DepotOrganisation - Method - la variable adminResult est null", 0));
+            }
         }
 
         public void RemoveAdministratorFromOrganisation(string p_organisationName, string p_adminUsername)
         {
+            if (string.IsNullOrWhiteSpace(p_organisationName))
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                     "DepotOrganisation - RemoveAdministratorFromOrganisation - p_organisationName passé en paramètre est vide", 0));
+            }
+            if (string.IsNullOrWhiteSpace(p_adminUsername))
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                     "DepotOrganisation - RemoveAdministratorFromOrganisation - p_adminUsername passé en paramètre est vide", 0));
+            }
+
             Administrator_SQLDTO adminResult = this._context.Administrators.Where(admin => admin.Active)
                                                                            .FirstOrDefault(admin => admin.Username == p_adminUsername);
             if (adminResult != null)
@@ -144,6 +199,12 @@ namespace RPLP.DAL.SQL.Depots
 
         public void UpsertOrganisation(Organisation p_organisation)
         {
+            if(p_organisation == null)
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    "DepotOrganisation - UpsertOrganisation - p_organisation passé en paramètre est null", 0));
+            }
+
             List<Administrator_SQLDTO> administrators = new List<Administrator_SQLDTO>();
 
             if (p_organisation.Administrators.Count >= 1)
@@ -182,6 +243,12 @@ namespace RPLP.DAL.SQL.Depots
 
         public void DeleteOrganisation(string p_organisationName)
         {
+            if (string.IsNullOrWhiteSpace(p_organisationName))
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                     "DepotOrganisation - DeleteOrganisation - p_organisationName passé en paramètre est vide", 0));
+            }
+
             Organisation_SQLDTO organisationResult = this._context.Organisations.Where(organisation => organisation.Active)
                                                                                 .FirstOrDefault(organisation => organisation.Name == p_organisationName);
             if (organisationResult != null)

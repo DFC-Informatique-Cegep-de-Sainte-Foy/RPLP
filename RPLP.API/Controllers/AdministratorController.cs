@@ -55,7 +55,7 @@ namespace RPLP.API.Controllers
         {
             try
             {
-                if (id <= 0)
+                if (id < 0)
                 {
                     RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                         "AdministratorController - GetAdministratorById - id passé en paramêtre n'est pas valide", 0));

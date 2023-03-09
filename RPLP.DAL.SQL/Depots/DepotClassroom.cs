@@ -5,9 +5,11 @@ using RPLP.JOURNALISATION;
 using RPLP.SERVICES.InterfacesDepots;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace RPLP.DAL.SQL.Depots
 {
@@ -23,6 +25,12 @@ namespace RPLP.DAL.SQL.Depots
 
         public DepotClassroom(RPLPDbContext context)
         {
+            if (context == null)
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                               "DepotClassroom - DepotClassroom(RPLPDbContext context) - context de type RPLPDbContext passé en paramètre est null", 0));
+            }
+
             this._context = context;
         }
 
@@ -41,6 +49,13 @@ namespace RPLP.DAL.SQL.Depots
             else
             {
                 List<Classroom> classes = classesResult.Select(classroom => classroom.ToEntityWithoutList()).ToList();
+
+                if(classes == null)
+                {
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                                   "DepotClassroom - GetClassrooms - la liste classes assignée à partir de classesResult.Select(classroom => classroom.ToEntityWithoutList()).ToList(); est null", 0));
+
+                }
 
                 for (int i = 0; i < classesResult.Count; i++)
                 {
@@ -72,6 +87,12 @@ namespace RPLP.DAL.SQL.Depots
 
         public Classroom GetClassroomById(int p_id)
         {
+            if (p_id < 0)
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                       "DepotClassroom - GetClassroomById - p_id passé en paramêtre est hors des limites", 0));
+            }
+
             Classroom_SQLDTO classroomResult = this._context.Classrooms.Where(classroom => classroom.Id == p_id && classroom.Active)
                                                                        .Include(classroom => classroom.Teachers.Where(teacher => teacher.Active))
                                                                        .Include(classroom => classroom.Students.Where(student => student.Active))
@@ -108,6 +129,12 @@ namespace RPLP.DAL.SQL.Depots
 
         public Classroom GetClassroomByName(string p_name)
         {
+            if (string.IsNullOrWhiteSpace(p_name))
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                     "DepotClassroom - GetClassroomByName - p_name passé en paramètre est vide", 0));
+            }
+
             Classroom_SQLDTO classroomResult = this._context.Classrooms.Where(classroom => classroom.Name == p_name && classroom.Active)
                                                                        .Include(classroom => classroom.Teachers.Where(teacher => teacher.Active))
                                                                        .Include(classroom => classroom.Students.Where(student => student.Active))
@@ -144,6 +171,12 @@ namespace RPLP.DAL.SQL.Depots
 
         public List<Assignment> GetAssignmentsByClassroomName(string p_classroomName)
         {
+            if (string.IsNullOrWhiteSpace(p_classroomName))
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                     "DepotClassroom - GetAssignmentsByClassroomName - p_classroomName passé en paramètre est vide", 0));
+            }
+
             Classroom_SQLDTO classroomResult = this._context.Classrooms.Where(classroom => classroom.Active)
                                                                        .Include(classroom => classroom.Assignments.Where(assignment => assignment.Active))
                                                                        .FirstOrDefault(classroom => classroom.Name == p_classroomName);
@@ -158,6 +191,12 @@ namespace RPLP.DAL.SQL.Depots
 
         public List<Student> GetStudentsByClassroomName(string p_classroomName)
         {
+            if (string.IsNullOrWhiteSpace(p_classroomName))
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                     "DepotClassroom - GetStudentsByClassroomName - p_classroomName passé en paramètre est vide", 0));
+            }
+
             Classroom_SQLDTO classroomResult = this._context.Classrooms.Where(classroom => classroom.Active)
                                                                        .Include(classroom => classroom.Students.Where(student => student.Active))
                                                                        .FirstOrDefault(classroom => classroom.Name == p_classroomName);
@@ -172,6 +211,12 @@ namespace RPLP.DAL.SQL.Depots
 
         public List<Teacher> GetTeachersByClassroomName(string p_classroomName)
         {
+            if (string.IsNullOrWhiteSpace(p_classroomName))
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                     "DepotClassroom - GetTeachersByClassroomName - p_classroomName passé en paramètre est vide", 0));
+            }
+
             Classroom_SQLDTO classroomResult = this._context.Classrooms.Where(classroom => classroom.Active)
                                                                        .Include(classroom => classroom.Teachers.Where(teachers => teachers.Active))
                                                                        .FirstOrDefault(classroom => classroom.Name == p_classroomName);
@@ -186,6 +231,17 @@ namespace RPLP.DAL.SQL.Depots
 
         public void AddAssignmentToClassroom(string p_classroomName, string p_assignmentName)
         {
+            if (string.IsNullOrWhiteSpace(p_classroomName))
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                     "DepotClassroom - AddAssignmentToClassroom - p_classroomName passé en paramètre est vide", 0));
+            }
+            if (string.IsNullOrWhiteSpace(p_assignmentName))
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                     "DepotClassroom - AddAssignmentToClassroom - p_assignmentName passé en paramètre est vide", 0));
+            }
+
             Classroom_SQLDTO classroomResult = this._context.Classrooms.Where(classroom => classroom.Active)
                                                                        .Include(classroom => classroom.Assignments.Where(assignment => assignment.Active))
                                                                        .FirstOrDefault(classroom => classroom.Name == p_classroomName);
@@ -209,6 +265,17 @@ namespace RPLP.DAL.SQL.Depots
 
         public void AddStudentToClassroom(string p_classroomName, string p_studentUsername)
         {
+            if (string.IsNullOrWhiteSpace(p_classroomName))
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                     "DepotClassroom - AddStudentToClassroom - p_classroomName passé en paramètre est vide", 0));
+            }
+            if (string.IsNullOrWhiteSpace(p_studentUsername))
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                     "DepotClassroom - AddStudentToClassroom - p_studentUsername passé en paramètre est vide", 0));
+            }
+
             Classroom_SQLDTO classroomResult = this._context.Classrooms.Include(classroom => classroom.Students.Where(student => student.Active))
                                                                        .FirstOrDefault(classroom => classroom.Name == p_classroomName && classroom.Active);
             if (classroomResult != null)
@@ -230,6 +297,17 @@ namespace RPLP.DAL.SQL.Depots
 
         public void AddStudentToClassroomMatricule(string p_classroomName, string p_studentMatricule)
         {
+            if (string.IsNullOrWhiteSpace(p_classroomName))
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                     "DepotClassroom - AddStudentToClassroomMatricule - p_classroomName passé en paramètre est vide", 0));
+            }
+            if (string.IsNullOrWhiteSpace(p_studentMatricule))
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                     "DepotClassroom - AddStudentToClassroomMatricule - p_studentUsername passé en paramètre est vide", 0));
+            }
+
             Classroom_SQLDTO classroomResult = this._context.Classrooms.Include(classroom => classroom.Students.Where(student => student.Active))
                                                                        .FirstOrDefault(classroom => classroom.Name == p_classroomName && classroom.Active);
             if (classroomResult != null)
@@ -251,6 +329,17 @@ namespace RPLP.DAL.SQL.Depots
 
         public void AddTeacherToClassroom(string p_classroomName, string p_teacherUsername)
         {
+            if (string.IsNullOrWhiteSpace(p_classroomName))
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                     "DepotClassroom - AddTeacherToClassroom - p_classroomName passé en paramètre est vide", 0));
+            }
+            if (string.IsNullOrWhiteSpace(p_teacherUsername))
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                     "DepotClassroom - AddTeacherToClassroom - p_teacherUsername passé en paramètre est vide", 0));
+            }
+
             Classroom_SQLDTO classroomResult = this._context.Classrooms.Where(classroom => classroom.Active)
                                                                        .Include(classroom => classroom.Teachers.Where(teacher => teacher.Active))
                                                                        .FirstOrDefault(classroom => classroom.Name == p_classroomName);
@@ -273,6 +362,17 @@ namespace RPLP.DAL.SQL.Depots
 
         public void RemoveAssignmentFromClassroom(string p_classroomName, string p_assignmentName)
         {
+            if (string.IsNullOrWhiteSpace(p_classroomName))
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                     "DepotClassroom - RemoveAssignmentFromClassroom - p_classroomName passé en paramètre est vide", 0));
+            }
+            if (string.IsNullOrWhiteSpace(p_assignmentName))
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                     "DepotClassroom - RemoveAssignmentFromClassroom - p_assignmentName passé en paramètre est vide", 0));
+            }
+
             Classroom_SQLDTO classroomResult = this._context.Classrooms.Where(classroom => classroom.Active)
                                                                        .Include(classroom => classroom.Assignments.Where(assignment => assignment.Active))
                                                                        .FirstOrDefault(classroom => classroom.Name == p_classroomName);
@@ -296,6 +396,17 @@ namespace RPLP.DAL.SQL.Depots
 
         public void RemoveStudentFromClassroom(string p_classroomName, string p_username)
         {
+            if (string.IsNullOrWhiteSpace(p_classroomName))
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                     "DepotClassroom - RemoveStudentFromClassroom - p_classroomName passé en paramètre est vide", 0));
+            }
+            if (string.IsNullOrWhiteSpace(p_username))
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                     "DepotClassroom - RemoveStudentFromClassroom - p_username passé en paramètre est vide", 0));
+            }
+
             Classroom_SQLDTO classroomResult = this._context.Classrooms.Include(classroom => classroom.Students.Where(student => student.Active))
                                                                        .FirstOrDefault(classroom => classroom.Name == p_classroomName && classroom.Active);
 
@@ -315,6 +426,17 @@ namespace RPLP.DAL.SQL.Depots
 
         public void RemoveTeacherFromClassroom(string p_classroomName, string p_username)
         {
+            if (string.IsNullOrWhiteSpace(p_classroomName))
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                     "DepotClassroom - RemoveTeacherFromClassroom - p_classroomName passé en paramètre est vide", 0));
+            }
+            if (string.IsNullOrWhiteSpace(p_username))
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                     "DepotClassroom - RemoveTeacherFromClassroom - p_username passé en paramètre est vide", 0));
+            }
+
             Classroom_SQLDTO classroomResult = this._context.Classrooms.Include(classroom => classroom.Teachers.Where(teacher => teacher.Active))
                                                                        .FirstOrDefault(classroom => classroom.Name == p_classroomName && classroom.Active);
 
@@ -334,9 +456,31 @@ namespace RPLP.DAL.SQL.Depots
 
         public void UpsertClassroom(Classroom p_classroom)
         {
+            if (p_classroom == null)
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                     "DepotClassroom - UpsertClassroom - p_classroom passé en paramètre est null", 0));
+            }
+
             List<Student_SQLDTO> students = new List<Student_SQLDTO>();
             List<Teacher_SQLDTO> teachers = new List<Teacher_SQLDTO>();
             List<Assignment_SQLDTO> assignments = new List<Assignment_SQLDTO>();
+
+            if (p_classroom.Students == null)
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                     "DepotClassroom - UpsertClassroom - p_classroom.Students passé en paramètre est null", 0));
+            }
+            if (p_classroom.Teachers == null)
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                     "DepotClassroom - UpsertClassroom - p_classroom.Teachers passé en paramètre est null", 0));
+            }
+            if (p_classroom.Assignments == null)
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                     "DepotClassroom - UpsertClassroom - p_classroom.Assignments passé en paramètre est null", 0));
+            }
 
             if (p_classroom.Students.Count >= 1)
             {
@@ -394,6 +538,12 @@ namespace RPLP.DAL.SQL.Depots
 
         public void DeleteClassroom(string p_classroomName)
         {
+            if (string.IsNullOrWhiteSpace(p_classroomName))
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                     "DepotClassroom - DeleteClassroom - p_classroomName passé en paramètre est vide", 0));
+            }
+
             Classroom_SQLDTO classroomResult = this._context.Classrooms.Where(classroom => classroom.Active)
                                                                        .SingleOrDefault(classroom => classroom.Name == p_classroomName);
             if (classroomResult != null)
@@ -409,6 +559,12 @@ namespace RPLP.DAL.SQL.Depots
 
         public List<Classroom> GetClassroomsByOrganisationName(string p_organisationName)
         {
+            if (string.IsNullOrWhiteSpace(p_organisationName))
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                     "DepotClassroom - GetClassroomsByOrganisationName - p_organisationName passé en paramètre est vide", 0));
+            }
+
             List<Classroom_SQLDTO> classesResult = this._context.Classrooms.Where(classroom => classroom.Active && classroom.OrganisationName == p_organisationName).ToList();
 
             RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Classroom", $"DepotClassroom - Method - GetClassroomsByOrganisationName(string p_organisationName) - Return List<Classroom>"));
