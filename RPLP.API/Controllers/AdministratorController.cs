@@ -16,7 +16,7 @@ namespace RPLP.API.Controllers
         {
             if (p_depotAdmin == null)
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."), 
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "AdministratorController - Constructeur - Dépot passé en paramêtre null", 0));
             }
 
@@ -28,6 +28,7 @@ namespace RPLP.API.Controllers
         {
             try
             {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("api/Administrator", 200, "AdministratorController - GET méthode Get"));
                 return Ok(this._depot.GetAdministrators());
             }
             catch (Exception)
@@ -41,6 +42,7 @@ namespace RPLP.API.Controllers
         {
             try
             {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("api/Administrator/Deactivated", 200, "AdministratorController - GET méthode GetDeactivated"));
                 return Ok(this._depot.GetDeactivatedAdministrators());
             }
             catch (Exception)
@@ -61,6 +63,8 @@ namespace RPLP.API.Controllers
                         "AdministratorController - GetAdministratorById - id passé en paramêtre n'est pas valide", 0));
                 }
 
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log($"api/Administrator/Id/{id}", 200, "AdministratorController - GET méthode GetAdministratorById"));
+
                 return Ok(this._depot.GetAdministratorById(id));
             }
             catch (Exception)
@@ -79,6 +83,8 @@ namespace RPLP.API.Controllers
                     RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                         "AdministratorController - GetAdministratorByUsername - username passé en paramêtre vide", 0));
                 }
+
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log($"api/Administrator/Username/{username}", 200, "AdministratorController - GET méthode GetAdministratorByUsername"));
 
                 return Ok(this._depot.GetAdministratorByUsername(username));
             }
@@ -99,6 +105,8 @@ namespace RPLP.API.Controllers
                     "AdministratorController - GetAdministratorByEmail - email passé en paramêtre vide", 0));
                 }
 
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log($"api/Administrator/Email/{email}", 200, "AdministratorController - GET méthode GetAdministratorByEmail"));
+
                 return Ok(this._depot.GetAdministratorByEmail(email));
             }
             catch (Exception)
@@ -118,6 +126,8 @@ namespace RPLP.API.Controllers
                    "AdministratorController - GetAdminOrganisations - username passé en paramêtre vide", 0));
                 }
 
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log($"api/Administrator/Username/{username}/Organisations", 200, "AdministratorController - GET méthode GetAdminOrganisations"));
+
                 return Ok(this._depot.GetAdminOrganisations(username));
             }
             catch (Exception)
@@ -136,6 +146,8 @@ namespace RPLP.API.Controllers
                     RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "AdministratorController - GetAdminOrganisationsByEmail - email passé en paramêtre vide", 0));
                 }
+
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log($"api/Administrator/Email/{email}/Organisations", 200, "AdministratorController - GET méthode GetAdminOrganisationsByEmail"));
 
                 string? username = this._depot.GetAdministratorByEmail(email)?.Username;
 
@@ -178,6 +190,8 @@ namespace RPLP.API.Controllers
                     return BadRequest();
                 }
 
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log($"api/Administrator/Username/{adminUsername}/Orgs/Add/{organisationName}", 201, "AdministratorController - POST méthode AddAdminToOrganisation"));
+
                 this._depot.JoinOrganisation(adminUsername, organisationName);
 
                 return Created(nameof(this.AddAdminToOrganisation), adminUsername);
@@ -210,6 +224,8 @@ namespace RPLP.API.Controllers
                     return BadRequest();
                 }
 
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log($"api/Administrator/Username/{adminUsername}/Orgs/Remove/{organisationName}", 204, "AdministratorController - POST méthode RemoveAdminFromOrganisation"));
+
                 this._depot.LeaveOrganisation(adminUsername, organisationName);
 
                 return NoContent();
@@ -230,6 +246,8 @@ namespace RPLP.API.Controllers
 
             try
             {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log($"api/Administrator/", 201, "AdministratorController - POST méthode UpsertAdmin"));
+
                 this._depot.UpsertAdministrator(p_admin);
             }
 
@@ -279,6 +297,8 @@ namespace RPLP.API.Controllers
                    "AdministratorController - DeleteAdmin - username passé en paramêtre vide", 0));
                 }
 
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log($"api/Administrator/Username/{username}", 204, "AdministratorController - DELETE méthode DeleteAdmin"));
+
                 this._depot.DeleteAdministrator(username);
                 return NoContent();
             }
@@ -298,6 +318,8 @@ namespace RPLP.API.Controllers
                     RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "AdministratorController - ReactivateAdmin - username passé en paramêtre vide", 0));
                 }
+
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log($"api/Administrator/Reactivate/{username}", 204, "AdministratorController - GET méthode ReactivateAdmin"));
 
                 this._depot.ReactivateAdministrator(username);
                 return NoContent();
