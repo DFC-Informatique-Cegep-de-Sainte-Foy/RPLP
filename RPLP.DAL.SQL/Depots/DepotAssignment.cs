@@ -183,8 +183,6 @@ namespace RPLP.DAL.SQL.Depots
                 RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "DepotAssignment - DeleteAssignment(string p_assignmentName) - assignmentResult est null", 0));
             }
-        }
-            
-        }
+        }  
     }
 }
