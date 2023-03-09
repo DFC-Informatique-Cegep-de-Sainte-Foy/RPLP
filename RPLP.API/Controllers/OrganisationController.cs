@@ -29,6 +29,8 @@ namespace RPLP.API.Controllers
         {
             try
             {
+                Journalisation.Journaliser(new Log("api/Organisation", 200, "OrganisationController - GET méthode Get"));
+
                 return Ok(this._depot.GetOrganisations());
             }
             catch (Exception)
@@ -47,6 +49,8 @@ namespace RPLP.API.Controllers
                     RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "OrganisationController - GetOrganisationById - id passé en paramêtre est hors limites", 0));
                 }
+
+                Journalisation.Journaliser(new Log($"api/Organisation/Id/{id}", 200, "OrganisationController - GET méthode GetOrganisationById"));
 
                 return Ok(this._depot.GetOrganisationById(id));
             }
@@ -67,6 +71,8 @@ namespace RPLP.API.Controllers
                     "OrganisationController - GetOrganisationByName - organisationName passé en paramêtre est vide", 0));
                 }
 
+                Journalisation.Journaliser(new Log($"api/Organisation/Name/{organisationName}", 200, "OrganisationController - GET méthode GetOrganisationByName"));
+
                 return Ok(this._depot.GetOrganisationByName(organisationName));
             }
             catch (Exception)
@@ -85,6 +91,8 @@ namespace RPLP.API.Controllers
                     RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "OrganisationController - GetAdministratorsByOrganisation - organisationName passé en paramêtre est vide", 0));
                 }
+
+                Journalisation.Journaliser(new Log($"api/Organisation/Name/{organisationName}/Administrators", 200, "OrganisationController - GET méthode GetAdministratorsByOrganisation"));
 
                 return Ok(this._depot.GetAdministratorsByOrganisation(organisationName));
             }
@@ -114,6 +122,8 @@ namespace RPLP.API.Controllers
 
                     return BadRequest();
                 }
+
+                Journalisation.Journaliser(new Log($"api/Organisation/Name/{organisationName}/Administrators/Add/{adminUsername}", 201, "OrganisationController - POST méthode AddAdministratorToOrganisation"));
 
                 this._depot.AddAdministratorToOrganisation(organisationName, adminUsername);
 
@@ -146,6 +156,8 @@ namespace RPLP.API.Controllers
                     return BadRequest();
                 }
 
+                Journalisation.Journaliser(new Log($"api/Organisation/Name/{organisationName}/Administrators/Remove/{adminUsername}", 204, "OrganisationController - POST méthode RemoveAdministratorToOrganisation"));
+
                 this._depot.RemoveAdministratorFromOrganisation(organisationName, adminUsername);
 
                 return NoContent();
@@ -177,6 +189,8 @@ namespace RPLP.API.Controllers
                     return BadRequest();
                 }
 
+                Journalisation.Journaliser(new Log($"api/Organisation", 201, "OrganisationController - POST méthode Post"));
+
                 this._depot.UpsertOrganisation(p_organisation);
 
                 return Created(nameof(this.Post), p_organisation);
@@ -199,6 +213,8 @@ namespace RPLP.API.Controllers
 
                     return BadRequest();
                 }
+
+                Journalisation.Journaliser(new Log($"api/Organisation/Name/{organisationName}", 204, "OrganisationController - DELETE méthode DeleteOrganisation"));
 
                 this._depot.DeleteOrganisation(organisationName);
                 return NoContent();
