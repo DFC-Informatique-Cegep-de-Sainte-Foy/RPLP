@@ -50,10 +50,17 @@ namespace RPLP.DAL.SQL.Depots
             Comment_SQLDTO? comment = this._context.Comments
                                             .FirstOrDefault(comment => comment.Id == p_id && comment.Active);
 
-            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Comment", $"DepotComment - Method - GetComments(int p_id) - Return Comment"));
-
             if (comment == null)
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                       "DepotComment - GetCommentById(int p_id) - comment est null", 0));
+
                 return new Comment();
+            }
+            else
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Comment", $"DepotComment - Method - GetComments(int p_id) - Return Comment - comment != null"));
+            }
 
             return comment.ToEntity();
         }
@@ -123,9 +130,14 @@ namespace RPLP.DAL.SQL.Depots
 
                 this._context.Update(commentResult);
                 this._context.SaveChanges();
-            }
 
-            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Comment", $"DepotComment - Method - DeleteComment(int p_commentId) - Void"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Comment", $"DepotComment - Method - DeleteComment(int p_commentId) - Void - delete comment"));
+            }
+            else
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                      "DepotComment - DeleteComment(int p_commentId) - commentResult est null", 0));
+            }
         }
     }
 }

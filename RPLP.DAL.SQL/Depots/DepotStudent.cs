@@ -93,17 +93,26 @@ namespace RPLP.DAL.SQL.Depots
                 .Include(student => student.Classes.Where(classroom => classroom.Active))
                 .FirstOrDefault(student => student.Id == p_id && student.Active);
 
-            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Student", $"DepotStudent - Method - GetStudentById(int p_id) - Return Student"));
-
+            
             if (studentResult == null)
-                return null;
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Student", $"DepotStudent - Method - GetStudentById(int p_id) - Return Student - studentResult est null",0));
 
+                return null;
+            }
+               
             Student student = studentResult.ToEntityWithoutList();
 
             if (studentResult.Classes.Count >= 1)
             {
                 List<Classroom> classes = studentResult.Classes.Select(classroom => classroom.ToEntityWithoutList()).ToList();
                 student.Classes = classes;
+
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Student", $"DepotStudent - Method - GetStudentById(int p_id) - Return Student"));
+            }
+            else
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Student", $"DepotStudent - Method - GetStudentById(int p_id) - Return Student - studentResult.Classes.Count est vide",0));
             }
 
             return student;
@@ -121,19 +130,26 @@ namespace RPLP.DAL.SQL.Depots
                 .Include(student => student.Classes.Where(classroom => classroom.Active))
                 .FirstOrDefault(student => student.Username == p_studentUsername && student.Active);
 
-            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Student", $"DepotStudent - Method - GetStudentByUsername(string p_studentUsername) - Return Student"));
 
             if (studentResult == null)
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Student", $"DepotStudent - Method - GetStudentByUsername(string p_studentUsername) - Return Student - studentResult est null",0));
                 return null;
-
+            }
+             
             Student student = studentResult.ToEntityWithoutList();
 
             if (studentResult.Classes.Count >= 1)
             {
                 List<Classroom> classes = studentResult.Classes.Select(classroom => classroom.ToEntityWithoutList()).ToList();
                 student.Classes = classes;
-            }
 
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Student", $"DepotStudent - Method - GetStudentByUsername(string p_studentUsername) - Return Student"));
+            }
+            else
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Student", $"DepotStudent - Method - GetStudentByUsername(string p_studentUsername) - Return Student - studentResult.Classes.Count est vide",0));
+            }
             return student;
         }
 
@@ -151,8 +167,6 @@ namespace RPLP.DAL.SQL.Depots
                                                            .Include(student => student.Classes.Where(classroom => classroom.Active))
                                                            .FirstOrDefault(student => student.Username == p_studentUsername);
 
-            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Student - Classroom", $"DepotStudent - Method - GetStudentClasses(string p_studentUsername) - Return List<Classroom>"));
-
             if (student != null)
             {
                 if (student.Classes.Count >= 1)
@@ -161,9 +175,18 @@ namespace RPLP.DAL.SQL.Depots
                     {
                         classes.Add(classroom.ToEntityWithoutList());
                     }
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Student - Classroom", $"DepotStudent - Method - GetStudentClasses(string p_studentUsername) - Return List<Classroom>"));
 
                     return classes;
                 }
+                else
+                {
+                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Student - Classroom", $"DepotStudent - Method - GetStudentClasses(string p_studentUsername) - Return List<Classroom> - student.Classes.Count est vide",0));
+                }
+            }
+            else
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Student - Classroom", $"DepotStudent - Method - GetStudentClasses(string p_studentUsername) - Return List<Classroom> - student est null", 0));
             }
 
             return new List<Classroom>();
@@ -259,9 +282,13 @@ namespace RPLP.DAL.SQL.Depots
 
                 this._context.Update(studentResult);
                 this._context.SaveChanges();
-            }
 
-            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Student", $"DepotStudent - Method - DeleteStudent(string p_studentUsername) - Void"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Student", $"DepotStudent - Method - DeleteStudent(string p_studentUsername) - Void - delete student"));
+            }
+            else
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Student", $"DepotStudent - Method - DeleteStudent(string p_studentUsername) - Void - studentResult est null",0));
+            }
         }
 
         public void ReactivateStudent(string p_studentUsername)
@@ -280,9 +307,14 @@ namespace RPLP.DAL.SQL.Depots
 
                 this._context.Update(studentResult);
                 this._context.SaveChanges();
-            }
 
-            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Student", $"DepotStudent - Method - ReactivateStudent(string p_studentUsername) - Void"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Student", $"DepotStudent - Method - ReactivateStudent(string p_studentUsername) - Void - reactive student"));
+            }
+            else
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Student", $"DepotStudent - Method - ReactivateStudent(string p_studentUsername) - Void - studentResult est null",0));
+            }
+            
         }
     }
 }

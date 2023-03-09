@@ -44,10 +44,15 @@ namespace RPLP.DAL.SQL.Depots
 
             Repository_SQLDTO repository = this._context.Repositories.FirstOrDefault(repository => repository.Id == id && repository.Active);
 
-            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Repository", $"DepotRepository - Method - GetRepositoryById(int id) - Return Repository"));
-
             if (repository == null)
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Repository", $"DepotRepository - Method - GetRepositoryById(int id) - Return Repository - repository est null",0));
                 return null;
+            }
+            else
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Repository", $"DepotRepository - Method - GetRepositoryById(int id) - Return Repository"));
+            }
 
             return repository.ToEntity();
         }
@@ -62,10 +67,15 @@ namespace RPLP.DAL.SQL.Depots
 
             Repository_SQLDTO repository = this._context.Repositories.FirstOrDefault(repository => repository.Name == p_repositoryName && repository.Active);
 
-            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Repository", $"DepotRepository - Method - GetRepositoryByName(string p_repositoryName) - Return Repository"));
-
             if (repository == null)
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Repository", $"DepotRepository - Method - GetRepositoryByName(string p_repositoryName) - Return Repository - repository est null",0));
                 return null;
+            }
+            else
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Repository", $"DepotRepository - Method - GetRepositoryByName(string p_repositoryName) - Return Repository"));
+            }
 
             return repository.ToEntity();
         }
@@ -122,9 +132,14 @@ namespace RPLP.DAL.SQL.Depots
 
                 this._context.Update(repositoryResult);
                 this._context.SaveChanges();
-            }
 
-            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Repository", $"DepotRepository - Method - DeleteRepository(string p_repositoryName) - Void"));
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Repository", $"DepotRepository - Method - DeleteRepository(string p_repositoryName) - Void - delete repository"));
+            }
+            else
+            {
+                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Repository", $"DepotRepository - Method - DeleteRepository(string p_repositoryName) - Void - repositoryResult est null",0));
+            }
+            
         }
 
         public List<Repository> GetRepositories()
