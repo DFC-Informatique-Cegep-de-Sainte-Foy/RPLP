@@ -27,6 +27,8 @@ namespace RPLP.API.Controllers
                     "VerificatorForDepot - GetUserTypeByEmail - email passé en paramêtre est vide", 0));
                 }
 
+                Journalisation.Journaliser(new Log($"api/Verificator/UserType/{email}", 0, "VerificatorController - GET méthode GetUserTypeByEmail"));
+
                 Type type = this._verificator.GetUserTypeByEmail(email);
 
                 if (type == null)
@@ -56,6 +58,8 @@ namespace RPLP.API.Controllers
                     "VerificatorForDepot - CheckUsernameTaken - username passé en paramêtre est vide", 0));
                 }
 
+                Journalisation.Journaliser(new Log($"api/Verificator/UsernameTaken/{username}", 0, "VerificatorController - GET méthode CheckUsernameTaken"));
+
                 return this._verificator.CheckUsernameTaken(username);
             }
             catch (Exception)
@@ -74,6 +78,8 @@ namespace RPLP.API.Controllers
                     RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "VerificatorForDepot - CheckEmailTaken - email passé en paramêtre est vide", 0));
                 }
+
+                Journalisation.Journaliser(new Log($"api/Verificator/EmailTaken/{email}", 0, "VerificatorController - GET méthode CheckEmailTaken"));
 
                 return this._verificator.CheckEmailTaken(email);
             }
