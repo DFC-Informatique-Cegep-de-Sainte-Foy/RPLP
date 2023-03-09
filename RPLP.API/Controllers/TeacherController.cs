@@ -28,6 +28,8 @@ namespace RPLP.API.Controllers
         {
             try
             {
+                Journalisation.Journaliser(new Log("api/Teacher", 200, "TeacherController - GET méthode Get"));
+
                 return Ok(this._depot.GetTeachers());
             }
             catch (Exception)
@@ -41,6 +43,8 @@ namespace RPLP.API.Controllers
         {
             try
             {
+                Journalisation.Journaliser(new Log("api/Teacher/Deactivated", 200, "TeacherController - GET méthode GetDeactivated"));
+
                 return Ok(this._depot.GetDeactivatedTeachers());
             }
             catch (Exception)
@@ -59,6 +63,8 @@ namespace RPLP.API.Controllers
                     RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "TeacherController - GetTeacherById - id passé en paramêtre hors limites", 0));
                 }
+
+                Journalisation.Journaliser(new Log($"api/Teacher/Id/{id}", 200, "TeacherController - GET méthode GetTeacherById"));
 
                 return Ok(this._depot.GetTeacherById(id));
             }
@@ -79,6 +85,8 @@ namespace RPLP.API.Controllers
                     "TeacherController - GetTeacherByUsername - teacherUsername passé en paramêtre est vide", 0));
                 }
 
+                Journalisation.Journaliser(new Log($"api/Teacher/Username/{teacherUsername}", 200, "TeacherController - GET méthode GetTeacherByUsername"));
+
                 return Ok(this._depot.GetTeacherByUsername(teacherUsername));
             }
             catch (Exception)
@@ -97,6 +105,8 @@ namespace RPLP.API.Controllers
                     RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "TeacherController - GetTeacherByEmail - email passé en paramêtre est vide", 0));
                 }
+
+                Journalisation.Journaliser(new Log($"api/Teacher/Email/{email}", 200, "TeacherController - GET méthode GetTeacherByEmail"));
 
                 return Ok(this._depot.GetTeacherByEmail(email));
             }
@@ -117,6 +127,8 @@ namespace RPLP.API.Controllers
                     "TeacherController - GetTeacherClasses - teacherUsername passé en paramêtre est vide", 0));
                 }
 
+                Journalisation.Journaliser(new Log($"api/Teacher/Username/{teacherUsername}/Classrooms", 200, "TeacherController - GET méthode GetTeacherClasses"));
+
                 return Ok(this._depot.GetTeacherClasses(teacherUsername));
             }
             catch (Exception)
@@ -135,6 +147,8 @@ namespace RPLP.API.Controllers
                     RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "TeacherController - GetTeacherOrganisationsByEmail - email passé en paramêtre est vide", 0));
                 }
+
+                Journalisation.Journaliser(new Log($"api/Teacher/Email/{email}/Organisations", 200, "TeacherController - GET méthode GetTeacherOrganisationsByEmail"));
 
                 string? username = this._depot.GetTeacherByEmail(email)?.Username;
 
@@ -167,6 +181,8 @@ namespace RPLP.API.Controllers
                     return BadRequest();
                 }
 
+                Journalisation.Journaliser(new Log($"api/Teacher/Username/{username}/Organisations", 200, "TeacherController - GET méthode GetTeacherOrganisationsByUsername"));
+
                 return Ok(this._depot.GetTeacherOrganisations(username));
             }
             catch (Exception)
@@ -191,6 +207,8 @@ namespace RPLP.API.Controllers
                     RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "TeacherController - GetClassroomsOfTeacherInOrganisationByEmail - organisationName passé en paramêtre est vide", 0));
                 }
+
+                Journalisation.Journaliser(new Log($"api/Teacher/Email/{email}/Organisation/{organisationName}/Classrooms", 200, "TeacherController - GET méthode GetClassroomsOfTeacherInOrganisationByEmail"));
 
                 return Ok(this._depot.GetTeacherClassesInOrganisationByEmail(email, organisationName));
             }
@@ -229,6 +247,8 @@ namespace RPLP.API.Controllers
                     return BadRequest();
                 }
 
+                Journalisation.Journaliser(new Log($"api/Teacher", 201, "TeacherController - POST méthode UpsertTeacher"));
+
                 this._depot.UpsertTeacher(p_teacher);
                 
                 return Created(nameof(this.UpsertTeacher), p_teacher);
@@ -250,6 +270,8 @@ namespace RPLP.API.Controllers
                     "TeacherController - DeleteTeacher - teacherUsername passé en paramêtre est vide", 0));
                 }
 
+                Journalisation.Journaliser(new Log($"api/Teacher/Username/{teacherUsername}", 204, "TeacherController - DELETE méthode DeleteTeacher"));
+
                 this._depot.DeleteTeacher(teacherUsername);
                 return NoContent();
             }
@@ -269,6 +291,8 @@ namespace RPLP.API.Controllers
                     RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "TeacherController - ReactivateTeacher - username passé en paramêtre est vide", 0));
                 }
+
+                Journalisation.Journaliser(new Log($"api/Teacher/Reactivate/{username}", 204, "TeacherController - GET méthode ReactivateTeacher"));
 
                 this._depot.ReactivateTeacher(username);
                 return NoContent();
