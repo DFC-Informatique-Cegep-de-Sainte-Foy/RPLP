@@ -29,6 +29,8 @@ namespace RPLP.API.Controllers
         {
             try
             {
+                Journalisation.Journaliser(new Log("api/Classroom", 200, "ClassroomController - GET méthode Get"));
+
                 return Ok(this._depot.GetClassrooms());
             }
             catch (Exception)
@@ -47,6 +49,8 @@ namespace RPLP.API.Controllers
                     RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "ClassroomController - GetClassroomById - id passé en paramêtre est hors limites", 0));
                 }
+
+                Journalisation.Journaliser(new Log($"api/Classroom/Id/{id}", 200, "ClassroomController - GET méthode GetClassroomById"));
 
                 return Ok(this._depot.GetClassroomById(id));
             }
@@ -68,6 +72,7 @@ namespace RPLP.API.Controllers
                     "ClassroomController - GetClassroomByName - classroomName passé en paramêtre est vide", 0));
                 }
 
+                Journalisation.Journaliser(new Log($"api/Classroom/Name/{classroomName}", 200, "ClassroomController - GET méthode GetClassroomByName"));
 
                 return Ok(this._depot.GetClassroomByName(classroomName));
             }
@@ -89,6 +94,8 @@ namespace RPLP.API.Controllers
                     "ClassroomController - GetClassroomsByOrganisationName - organisationName passé en paramêtre est vide", 0));
                 }
 
+                Journalisation.Journaliser(new Log($"api/Classroom/Organisation/{organisationName}/Classroom", 200, "ClassroomController - GET méthode GetClassroomsByOrganisationName"));
+
                 return Ok(this._depot.GetClassroomsByOrganisationName(organisationName));
             }
             catch (Exception)
@@ -107,6 +114,8 @@ namespace RPLP.API.Controllers
                     RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "ClassroomController - GetAssignmentsByClassroomName - classroomName passé en paramêtre est vide", 0));
                 }
+
+                Journalisation.Journaliser(new Log($"api/Classroom/Assignments/{classroomName}", 200, "ClassroomController - GET méthode GetAssignmentsByClassroomName"));
 
                 return Ok(this._depot.GetAssignmentsByClassroomName(classroomName));
             }
@@ -128,6 +137,8 @@ namespace RPLP.API.Controllers
                     "ClassroomController - GetTeachers - classroomName passé en paramêtre est vide", 0));
                 }
 
+                Journalisation.Journaliser(new Log($"api/Classroom/Name/{classroomName}/Teachers", 200, "ClassroomController - GET méthode GetTeachers"));
+
                 return Ok(this._depot.GetTeachersByClassroomName(classroomName));
             }
             catch (Exception)
@@ -146,6 +157,8 @@ namespace RPLP.API.Controllers
                     RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "ClassroomController - GetStudents - classroomName passé en paramêtre est vide", 0));
                 }
+
+                Journalisation.Journaliser(new Log($"api/Classroom/Name/{classroomName}/Students", 200, "ClassroomController - GET méthode GetStudents"));
 
                 return Ok(this._depot.GetStudentsByClassroomName(classroomName));
             }
@@ -166,6 +179,8 @@ namespace RPLP.API.Controllers
                     RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "ClassroomController - GetAssignments - classroomName passé en paramêtre est vide", 0));
                 }
+
+                Journalisation.Journaliser(new Log($"api/Classroom/Name/{classroomName}/Assignments", 200, "ClassroomController - GET méthode GetAssignments"));
 
                 return Ok(this._depot.GetAssignmentsByClassroomName(classroomName));
             }
@@ -195,6 +210,8 @@ namespace RPLP.API.Controllers
 
                     return BadRequest();
                 }
+
+                Journalisation.Journaliser(new Log($"api/Classroom/Name/{classroomName}/Teachers/Add/{teacherUsername}", 201, "ClassroomController - POST méthode AddTeacherToClassroom"));
 
                 this._depot.AddTeacherToClassroom(classroomName, teacherUsername);
 
@@ -227,6 +244,8 @@ namespace RPLP.API.Controllers
                     return BadRequest();
                 }
 
+                Journalisation.Journaliser(new Log($"api/Classroom/Name/{classroomName}/Students/Add/{studentUsername}", 201, "ClassroomController - POST méthode AddStudentToClassroom"));
+
                 this._depot.AddStudentToClassroom(classroomName, studentUsername);
 
                 return Created(nameof(this.AddStudentToClassroom), classroomName);
@@ -257,6 +276,8 @@ namespace RPLP.API.Controllers
 
                     return BadRequest();
                 }
+
+                Journalisation.Journaliser(new Log($"api/Classroom/Name/{classroomName}/Students/Add/Matricule/{studentMatricule}", 201, "ClassroomController - POST méthode AddStudentToClassroomMatricules"));
 
                 this._depot.AddStudentToClassroomMatricule(classroomName, studentMatricule);
 
@@ -289,6 +310,8 @@ namespace RPLP.API.Controllers
                     return BadRequest();
                 }
 
+                Journalisation.Journaliser(new Log($"api/Classroom/Name/{classroomName}/Assignments/Add/{assignmentName}", 201, "ClassroomController - POST méthode AddAssignmentToClassroom"));
+
                 this._depot.AddAssignmentToClassroom(classroomName, assignmentName);
 
                 return Created(nameof(this.AddAssignmentToClassroom), classroomName);
@@ -319,6 +342,8 @@ namespace RPLP.API.Controllers
 
                     return BadRequest();
                 }
+
+                Journalisation.Journaliser(new Log($"api/Classroom/Name/{classroomName}/Teachers/Remove/{teacherUsername}", 204, "ClassroomController - POST méthode RemoveTeacherFromClassroom"));
 
                 this._depot.RemoveTeacherFromClassroom(classroomName, teacherUsername);
 
@@ -352,6 +377,8 @@ namespace RPLP.API.Controllers
                     return BadRequest();
                 }
 
+                Journalisation.Journaliser(new Log($"api/Classroom/Name/{classroomName}/Students/Remove/{studentUsername}", 204, "ClassroomController - POST méthode RemoveStudentFromClassroom"));
+
                 this._depot.RemoveStudentFromClassroom(classroomName, studentUsername);
 
                 return NoContent();
@@ -383,6 +410,8 @@ namespace RPLP.API.Controllers
 
                     return BadRequest();
                 }
+
+                Journalisation.Journaliser(new Log($"api/Classroom/Name/{classroomName}/Assignments/Remove/{assignmentName}", 204, "ClassroomController - POST méthode RemoveAssignmentFromClassroom"));
 
                 this._depot.RemoveAssignmentFromClassroom(classroomName, assignmentName);
 
@@ -416,6 +445,8 @@ namespace RPLP.API.Controllers
                     return BadRequest();
                 }
 
+                Journalisation.Journaliser(new Log($"api/Classroom", 201, "ClassroomController - POST méthode UpsertClassroom"));
+
                 this._depot.UpsertClassroom(p_classroom);
 
                 return Created(nameof(this.UpsertClassroom), p_classroom);
@@ -438,6 +469,8 @@ namespace RPLP.API.Controllers
 
                     return BadRequest();
                 }
+
+                Journalisation.Journaliser(new Log($"api/Classroom/Name/{classroomName}", 204, "ClassroomController - DELETE méthode DeleteClassroom"));
 
                 this._depot.DeleteClassroom(classroomName);
                 return NoContent();
