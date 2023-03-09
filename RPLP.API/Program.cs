@@ -50,6 +50,6 @@ try
 catch (Exception exception)
 {
     RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(exception.ToString(), exception.StackTrace.ToString().Replace(System.Environment.NewLine, "."),
-             "Projet - RPLP.API - Erreur récupérer dans le try/catch central", 0));
+             "Projet - RPLP.API - Erreur rÃ©cupÃ©rer dans le try/catch central", 0));
 }
 

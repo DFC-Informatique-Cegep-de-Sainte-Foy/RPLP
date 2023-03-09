@@ -7,12 +7,32 @@ namespace RPLP.MVC.Controllers;
 
 public class LogsController : Controller
 {
+    private string _path = @"/var/log/rplp";
+    private string _fileName = "Log_Revue_Par_Les_Paires.csv";
+    
+    [HttpGet]
+    public ActionResult ClearLogs()
+    {
+        //RPLP.JOURNALISATION.Journalisation.ClearLogs();
+        // A changer l'appelation de la journalisation
+        RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Debug","Methode ClearLogs appeler"));
+        return Ok();
+    }
+    
+    [HttpGet]
+    public ActionResult ExportLogs()
+    {
+        string filePath = Path.Combine(_path, _fileName);
+        var fs = new FileStream(filePath, FileMode.Open); // convert it to a stream
+
+        // Return the file. A byte array can also be used instead of a stream
+        return File(fs, "application/octet-stream", "Logs.csv");
+    }
+
     public IActionResult Index()
     {
-        string path = @"/var/log/rplp";
 
-        string fileName = "Log_Revue_Par_Les_Paires.csv";
-        string filePath = Path.Combine(path, fileName);
+        string filePath = Path.Combine(_path, _fileName);
 
         if (string.IsNullOrWhiteSpace(filePath))
         {

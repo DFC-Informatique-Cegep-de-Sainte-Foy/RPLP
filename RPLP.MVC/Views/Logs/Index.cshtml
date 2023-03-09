@@ -5,7 +5,10 @@
 @*
 	//Commentaire
 *@
-
+<div>
+    <button id="btnClearLogs" class="btn-lg btn-outline-primary buttons" onclick="clearLogs()">Clear Logs</button>
+    <button id="btnExportLogFile" class="btn-lg btn-outline-primary buttons" onclick="exportLogs()">Export Logs</button>
+</div>
 <div>
     <hr/>
     <table id="logsTable" class="table table-striped">
@@ -32,6 +35,46 @@
 </div>
 
 <script type="text/javascript">
+function clearLogs(){
+    var ajaxURL = '/Logs/ClearLogs';
+    $.ajax({
+    type: 'GET',
+    url: ajaxURL,
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
+    beforeSend: function () {
+        console.log('firing ajax call');
+        },
+        success: function (data) {
+        console.log(data);
+        },
+        error: function (ex) {
+        console.log(ex);
+        }
+    });
+    }
+    
+function exportLogs(){
+    var ajaxURL = '/Logs/ExportLogs';
+    $.ajax({
+    type: 'GET',
+    url: ajaxURL,
+    xhrFields: {
+    responseType: 'blob'
+    },
+        success: function (data) {
+            var a = document.createElement('a');
+            var url = window.URL.createObjectURL(data);
+            a.href = url;
+            a.download = 'logs.csv';
+            document.body.append(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(url);
+            }
+    });
+    }
+    
 function clickHandler() {
     if (this.classList.contains('show')){
         this.classList.add('text-truncate');
