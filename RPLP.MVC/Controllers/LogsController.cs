@@ -13,9 +13,8 @@ public class LogsController : Controller
     [HttpGet]
     public ActionResult ClearLogs()
     {
-        //RPLP.JOURNALISATION.Journalisation.ClearLogs();
-        // A changer l'appelation de la journalisation
-        RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Debug","Methode ClearLogs appeler"));
+        RPLP.JOURNALISATION.Logging.ClearLogs();
+        RPLP.JOURNALISATION.Logging.Journal(new Log("Methode ClearLogs appeler"));
         return Ok();
     }
     
@@ -26,7 +25,7 @@ public class LogsController : Controller
         var fs = new FileStream(filePath, FileMode.Open); // convert it to a stream
 
         // Return the file. A byte array can also be used instead of a stream
-        return File(fs, "application/octet-stream", "Logs.csv");
+        return File(fs, "application/octet-stream", $"{Guid.NewGuid()}_Logs.csv");
     }
 
     public IActionResult Index()
@@ -36,13 +35,13 @@ public class LogsController : Controller
 
         if (string.IsNullOrWhiteSpace(filePath))
         {
-            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+            RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                            "LogsController - Index - la variable filePath est null ou vide", 0));
         }
 
         if (!System.IO.File.Exists(filePath))
         {
-            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+            RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                           "LogsController - Index - le fichier /var/log/rplp/Log_Revue_Par_Les_Paires.csv est introuvable ", 0));
         }
 
