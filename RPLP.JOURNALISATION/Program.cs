@@ -4,10 +4,10 @@ using RPLP.JOURNALISATION;
 
 Thread.Sleep(5000);
 
-ConsommateurJournalisation consommateur = new ConsommateurJournalisation();
-consommateur.DeclarerLaQueue();
+ConsummerLogs consummerLogs = new ConsummerLogs();
+consummerLogs.DeclareQueue();
 
 while (true)
 {
-    consommateur.Ecouter();
+    consummerLogs.Listen();
 }

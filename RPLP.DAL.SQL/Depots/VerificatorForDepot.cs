@@ -23,7 +23,7 @@ namespace RPLP.DAL.SQL.Depots
         {
             if (p_context == null)
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                                "VerificatorForDepot - VerificatorForDepot(RPLPDbContext p_context) - p_context de type RPLPDbContext passé en paramètre est null", 0));
             }
 
@@ -34,7 +34,7 @@ namespace RPLP.DAL.SQL.Depots
         {
             if (string.IsNullOrWhiteSpace(p_email))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "VerificatorForDepot - GetGetUserTypeByEmailTeacherByEmail - p_email passé en paramètre est vide", 0));
             }
 
@@ -61,7 +61,7 @@ namespace RPLP.DAL.SQL.Depots
         {
             if (string.IsNullOrWhiteSpace(p_username))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "VerificatorForDepot - CheckUsernameTaken - p_username passé en paramètre est vide", 0));
             }
 
@@ -75,7 +75,7 @@ namespace RPLP.DAL.SQL.Depots
         {
             if (string.IsNullOrWhiteSpace(p_email))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "VerificatorForDepot - CheckUsernameTaken - p_email passé en paramètre est vide", 0));
             }
 
