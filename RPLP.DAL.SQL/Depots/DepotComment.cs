@@ -52,8 +52,7 @@ namespace RPLP.DAL.SQL.Depots
 
             if (comment == null)
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                       "DepotComment - GetCommentById(int p_id) - comment est null", 0));
+                RPLP.JOURNALISATION.Logging.Journal(new Log("Comment", $"DepotComment - Method - GetComments(int p_id) - Return Comment - comment est null",0));
 
                 return new Comment();
             }

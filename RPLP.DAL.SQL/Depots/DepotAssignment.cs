@@ -54,8 +54,7 @@ namespace RPLP.DAL.SQL.Depots
 
             if (assignment == null)
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                               "DepotAssignment - GetAssignmentById(int p_id) - assignment est null", 0));
+                RPLP.JOURNALISATION.Logging.Journal(new Log("Assignments", $"DepotAssignment - Method - GetAssignmentById(int p_id) - Return Assignment - assignment est null",0));
 
                 return new Assignment();
             }
@@ -81,8 +80,7 @@ namespace RPLP.DAL.SQL.Depots
 
             if (assignment == null)
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                               "DepotAssignment - GetAssignmentByName(string p_assignmentName) - assignment est null", 0));
+                RPLP.JOURNALISATION.Logging.Journal(new Log("Assignments", $"DepotAssignment - Method - GetAssignmentByName(string p_assignmentName) - Return Assignment - assignment est null",0));
 
                 return new Assignment();
             }
