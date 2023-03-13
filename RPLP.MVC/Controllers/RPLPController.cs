@@ -858,7 +858,7 @@ namespace RPLP.MVC.Controllers
                     RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                          "RPLPController - StartStudentAssignationScript - numberOfReviews passé en paramètre est hors des limites", 0));
                 }
-
+                RPLP.JOURNALISATION.Logging.Journal(new Log($"RPLPController - StartStudentAssignationScript(string organisationName:{organisationName}, string classroomName:{classroomName}, string assignmentName:{assignmentName}, int numberOfReviews:{numberOfReviews})"));
                 _scriptGithub.ScriptAssignStudentToAssignmentReview(organisationName, classroomName, assignmentName, numberOfReviews);
                 return Ok();
             }

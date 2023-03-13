@@ -51,7 +51,7 @@ namespace RPLP.DAL.SQL.Depots
                     teachers[i].Classes = teachersResult[i].Classes.Select(classroom => classroom.ToEntityWithoutList()).ToList();
             }
 
-            RPLP.JOURNALISATION.Logging.Journal(new Log("Teacher", $"DepotTeacher - Method - GetTeachers() - Return List<Teacher>"));
+            RPLP.JOURNALISATION.Logging.Journal(new Log("Teacher", $"DepotTeacher - Method - GetTeachers() - Return List<Teacher> {teachers[0].Username}"));
 
             return teachers;
         }

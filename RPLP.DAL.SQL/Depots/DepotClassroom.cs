@@ -197,7 +197,7 @@ namespace RPLP.DAL.SQL.Depots
 
             if (classroomResult != null && classroomResult.Assignments.Count >= 1)
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log("Classroom - Assignment", $"DepotClassroom - Method - GetAssignmentsByClassroomName(string p_classroomName) - Return List<Assignment>"));
+                RPLP.JOURNALISATION.Logging.Journal(new Log("Classroom - Assignment", $"DepotClassroom - Method - GetAssignmentsByClassroomName(string p_classroomName) - Return List<Assignment> {classroomResult.Assignments[0].Name} Count : {classroomResult.Assignments.Count}"));
                 return classroomResult.Assignments.Select(assignment => assignment.ToEntity()).ToList();
             }
             else
@@ -223,7 +223,7 @@ namespace RPLP.DAL.SQL.Depots
 
             if (classroomResult != null && classroomResult.Students.Count >= 1)
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log("Classroom - Student", $"DepotClassroom - Method - GetStudentsByClassroomName(string p_classroomName) - Return List<Student>"));
+                RPLP.JOURNALISATION.Logging.Journal(new Log("Classroom - Student", $"DepotClassroom - Method - GetStudentsByClassroomName(string p_classroomName) - Return List<Student> {classroomResult.Students[0].Username} Count : {classroomResult.Students.Count}"));
                 return classroomResult.Students.Select(student => student.ToEntityWithoutList()).ToList();
             }
             else

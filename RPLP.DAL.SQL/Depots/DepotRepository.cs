@@ -158,13 +158,14 @@ namespace RPLP.DAL.SQL.Depots
                 RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotRepository - GetRepositoriesFromOrganisationName - p_organisationName passé en paramètre est vide", 0));
             }
-
-            RPLP.JOURNALISATION.Logging.Journal(new Log("Repository", $"DepotRepository - Method - GetRepositoriesFromOrganisationName(string p_organisationName) - Return List<Repository>"));
-
-            return this._context.Repositories
+            List<Repository> repositories = this._context.Repositories
                 .Where(repository => repository.Active && repository.OrganisationName == p_organisationName)
                 .Select(repository => repository.ToEntity())
                 .ToList();
+
+            RPLP.JOURNALISATION.Logging.Journal(new Log("Repository", $"DepotRepository - Method - GetRepositoriesFromOrganisationName(string p_organisationName) - Return List<Repository> {repositories[0].Name}"));
+
+            return repositories;
         }
     }
 }

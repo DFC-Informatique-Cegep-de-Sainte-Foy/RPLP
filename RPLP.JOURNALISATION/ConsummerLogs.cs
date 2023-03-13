@@ -98,7 +98,7 @@ namespace RPLP.JOURNALISATION
         {
             //À titre de démonstation
             //if (GetSizeOfFile() >= 20)
-            if (GetSizeOfFile() >= 0.00050)
+            if (GetSizeOfFile() >= 100)
             {
                 string nameOfZipLogsFile = $"{Guid.NewGuid()}_zip_logs";
 
