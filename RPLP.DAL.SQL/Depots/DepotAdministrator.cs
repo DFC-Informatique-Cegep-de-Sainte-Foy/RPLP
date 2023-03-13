@@ -121,8 +121,8 @@ namespace RPLP.DAL.SQL.Depots
                                                                            .FirstOrDefault(admin => admin.Id == p_id);
             if (adminResult == null)
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                               "DepotAdministrator -  GetAdministratorById(int p_id) - la liste adminResult de type Administrator_SQLDTO assignée à partir de this._context.Administrators.Where(admin => admin.Active).Include(admin => admin.Organisations.Where(organisation => organisation.Active)).FirstOrDefault(admin => admin.Id == p_id); est null", 0));
+                RPLP.JOURNALISATION.Logging.Journal(new Log("Administrators - Organisations", $"DepotAdministrator - Method - GetAdministratorById(int p_id) - Return Administrator - adminResult est null", 0));
+
                 return null;
             }
                 
@@ -161,8 +161,7 @@ namespace RPLP.DAL.SQL.Depots
 
             if (adminResult == null)
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                     "DepotAdministrator - GetAdministratorByEmail - la variable adminResult est null", 0));
+                RPLP.JOURNALISATION.Logging.Journal(new Log("Administrators - Organisations", $"DepotAdministrator - Method - GetAdministratorByEmail(string p_email) - Return Administrator - adminResult est null", 0));
 
                 return null;
             }
@@ -204,8 +203,8 @@ namespace RPLP.DAL.SQL.Depots
                                                                            .FirstOrDefault(admin => admin.Username == p_adminUsername);
             if (adminResult == null)
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                     "DepotAdministrator - GetAdministratorByUsername(string p_adminUsername) - la variable adminResult est null", 0));
+                RPLP.JOURNALISATION.Logging.Journal(new Log("Administrators - Organisations", $"DepotAdministrator - Method - GetAdministratorByUsername(string p_adminUsername) - Return Administrator - adminResult est null", 0));
+
                 return null;
             }
                 
@@ -262,8 +261,7 @@ namespace RPLP.DAL.SQL.Depots
             }
             else
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                     "DepotAdministrator - GetAdminOrganisations(string p_adminUsername) - la variable admin est null", 0));
+                RPLP.JOURNALISATION.Logging.Journal(new Log("Administrators - Organisations", $"DepotAdministrator - Method - GetAdminOrganisations(string p_adminUsername) - Return List<Organisation> - admin est null", 0));
             }
 
             return new List<Organisation>();
@@ -285,7 +283,7 @@ namespace RPLP.DAL.SQL.Depots
 
             Administrator_SQLDTO adminResult = this._context.Administrators.Include(admin => admin.Organisations.Where(organisation => organisation.Active))
                                                                            .FirstOrDefault(admin => admin.Username == p_adminUsername && admin.Active);
-            if (adminResult != null)
+            if ( != null)
             {
                 Organisation_SQLDTO organisationResult = this._context.Organisations.SingleOrDefault(organisation => organisation.Name == p_organisationName && organisation.Active);
 
@@ -305,8 +303,7 @@ namespace RPLP.DAL.SQL.Depots
             }
             else
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                    "DepotAdministrator - JoinOrganisation(string p_adminUsername, string p_organisationName) - la variable adminResult est null", 0));
+                RPLP.JOURNALISATION.Logging.Journal(new Log("Administrators - Organisations", $"DepotAdministrator - Method - JoinOrganisation(string p_adminUsername, string p_organisationName) - void - adminResult est null",0));
             }
         }
 
@@ -349,11 +346,8 @@ namespace RPLP.DAL.SQL.Depots
             }
             else
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                    "DepotAdministrator - LeaveOrganisation(string p_adminUsername, string p_organisationName) - la variable admin est null", 0));
+                RPLP.JOURNALISATION.Logging.Journal(new Log("Administrators - Organisations", $"DepotAdministrator - Method - LeaveOrganisation(string p_adminUsername, string p_organisationName) - void - adminResult est null",0));
             }
-
-            RPLP.JOURNALISATION.Logging.Journal(new Log("Administrators - Organisations", $"DepotAdministrator - Method - LeaveOrganisation(string p_adminUsername, string p_organisationName) - Void"));
         }
 
         public void UpsertAdministrator(Administrator p_administrator)
@@ -411,8 +405,7 @@ namespace RPLP.DAL.SQL.Depots
             }
             else
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                    "DepotAdministrator - UpsertAdministrator(Administrator p_administrator) - la variable adminResult est null", 0));
+                RPLP.JOURNALISATION.Logging.Journal(new Log("Administrators - Organisations", $"DepotAdministrator - Method - UpsertAdministrator(Administrator p_administrator) - void - Insert admin"));
 
                 InsertAdminDTO(p_administrator);
             }
@@ -439,8 +432,7 @@ namespace RPLP.DAL.SQL.Depots
             }
             else
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                   "DepotAdministrator - DeleteAdministrator(string p_adminUsername) - la variable adminResult est null", 0));
+                RPLP.JOURNALISATION.Logging.Journal(new Log("Administrators", $"DepotAdministrator - Method - DeleteAdministrator(string p_adminUsername) - Void - adminResult est null",0));
             }
 
             
@@ -467,8 +459,7 @@ namespace RPLP.DAL.SQL.Depots
             }
             else
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                   "DepotAdministrator - ReactivateAdministrator(string p_adminUsername) - la variable adminResult est null", 0));
+                RPLP.JOURNALISATION.Logging.Journal(new Log("Administrators", $"DepotAdministrator - Method - ReactivateAdministrator(string p_adminUsername) - Void - adminResult est null"));
             } 
         }
 
