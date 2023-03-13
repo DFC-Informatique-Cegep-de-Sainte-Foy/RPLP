@@ -66,8 +66,7 @@ namespace RPLP.DAL.SQL.Depots
 
             if (organisationResult == null)
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                       "DepotOrganisation - GetOrganisationById - organisationResult est null", 0));
+                RPLP.JOURNALISATION.Logging.Journal(new Log("Organisation", $"DepotOrganisation - Method - GetOrganisationById(int p_id) - Return Organisation - organisationResult est null",0));
 
                 return new Organisation();
             }
@@ -84,7 +83,7 @@ namespace RPLP.DAL.SQL.Depots
             else
             {
                 RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                       "DepotOrganisation - GetOrganisationById - organisationResult.Administrators.Count >= 1", 0));
+                       "DepotOrganisation - GetOrganisationById - organisationResult.Administrators.Count < 0", 0));
             }
 
             return organisation;
@@ -104,8 +103,7 @@ namespace RPLP.DAL.SQL.Depots
 
             if (organisationResult == null)
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                      "DepotOrganisation - GetOrganisationByName(string p_name) - organisationResult est null", 0));
+                RPLP.JOURNALISATION.Logging.Journal(new Log("Organisation - Administrator", $"DepotOrganisation - Method -  GetOrganisationByName(string p_name) - Return Organisation - organisationResult est null",0));
 
                 return new Organisation();
             }
@@ -123,7 +121,7 @@ namespace RPLP.DAL.SQL.Depots
             else
             {
                 RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                       "DepotOrganisation - GetOrganisationByName(string p_name) - organisationResult.Administrators.Count >= 1", 0));
+                       "DepotOrganisation - GetOrganisationByName(string p_name) - organisationResult.Administrators.Count < 0", 0));
             }
 
             return organisation;
@@ -141,8 +139,6 @@ namespace RPLP.DAL.SQL.Depots
                 .Include(organisation => organisation.Administrators.Where(a => a.Active))
                 .FirstOrDefault(organisation => organisation.Name == p_organisationName && organisation.Active);
 
-            
-
             if (organisationResult != null && organisationResult.Administrators.Count >= 1)
             {
                 RPLP.JOURNALISATION.Logging.Journal(new Log("Organisation - Administrator", $"DepotOrganisation - Method - GetAdministratorsByOrganisation(string p_organisationName) - Return List<Administrator>"));
@@ -151,7 +147,7 @@ namespace RPLP.DAL.SQL.Depots
             }
             else
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log("Organisation - Administrator", $"DepotOrganisation - Method - GetAdministratorsByOrganisation(string p_organisationName) - Return List<Administrator> - liste vide ou organisationResult null"));
+                RPLP.JOURNALISATION.Logging.Journal(new Log("Organisation - Administrator", $"DepotOrganisation - Method - GetAdministratorsByOrganisation(string p_organisationName) - Return List<Administrator> - liste vide ou organisationResult null",0));
             }
 
             return new List<Administrator>();
