@@ -283,7 +283,7 @@ namespace RPLP.DAL.SQL.Depots
 
             Administrator_SQLDTO adminResult = this._context.Administrators.Include(admin => admin.Organisations.Where(organisation => organisation.Active))
                                                                            .FirstOrDefault(admin => admin.Username == p_adminUsername && admin.Active);
-            if ( != null)
+            if (adminResult != null)
             {
                 Organisation_SQLDTO organisationResult = this._context.Organisations.SingleOrDefault(organisation => organisation.Name == p_organisationName && organisation.Active);
 
