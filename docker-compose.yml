@@ -52,6 +52,7 @@ services:
       - rplp.rabbitmq
     volumes:
       - rplpvolume_logs:/var/log/rplp/
+      - rplpvolume_logs_zip:/var/log/zip_rplp/
     restart: always
 
   rplp.db:
@@ -91,3 +92,5 @@ volumes:
     name: "rplpvolume"
   rplpvolume_logs:
     name: "rplpvolume_logs"
+  rplpvolume_logs_zip:
+    name: "rplpvolume_logs_zip"

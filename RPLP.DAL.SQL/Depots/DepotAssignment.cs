@@ -26,7 +26,7 @@ namespace RPLP.DAL.SQL.Depots
         {
             if (p_context == null)
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                                "DepotAssignment - DepotAssignment(RPLPDbContext p_context) - p_context de type RPLPDbContext passé en paramètre est null", 0));
             }
 
@@ -35,7 +35,7 @@ namespace RPLP.DAL.SQL.Depots
 
         public List<Assignment> GetAssignments()
         {
-            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Assignments", $"DepotAssignment - Method - GetAssignments() - Return List<Assignment>"));
+            RPLP.JOURNALISATION.Logging.Journal(new Log("Assignments", $"DepotAssignment - Method - GetAssignments() - Return List<Assignment>"));
             
             return this._context.Assignments.Where(assignment => assignment.Active)
                                             .Select(assignment => assignment.ToEntity()).ToList();
@@ -45,17 +45,23 @@ namespace RPLP.DAL.SQL.Depots
         {
             if (p_id < 0)
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                        "DepotAssignment - GetAssignmentById - p_id passé en paramêtre est hors des limites", 0));
             }
 
             Assignment assignment = this._context.Assignments.FirstOrDefault(assignment => assignment.Id == p_id && assignment.Active)
                                                              .ToEntity();
 
-            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Assignments", $"DepotAssignment - Method - GetAssignmentById(int p_id) - Return Assignment"));
-
             if (assignment == null)
+            {
+                RPLP.JOURNALISATION.Logging.Journal(new Log("Assignments", $"DepotAssignment - Method - GetAssignmentById(int p_id) - Return Assignment - assignment est null",0));
+
                 return new Assignment();
+            }
+            else
+            {
+                RPLP.JOURNALISATION.Logging.Journal(new Log("Assignments", $"DepotAssignment - Method - GetAssignmentById(int p_id) - Return Assignment - assignment != null"));
+            }
 
             return assignment;
         }
@@ -64,7 +70,7 @@ namespace RPLP.DAL.SQL.Depots
         {
             if (string.IsNullOrWhiteSpace(p_assignmentName))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotAssignment - GetAssignmentByName - p_assignmentName passé en paramètre est vide", 0));
             }
 
@@ -72,10 +78,16 @@ namespace RPLP.DAL.SQL.Depots
                                                 .FirstOrDefault(assignment => assignment.Name == p_assignmentName && assignment.Active)
                                                 .ToEntity();
 
-            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Assignments", $"DepotAssignment - Method - GetAssignmentByName(string p_assignmentName) - Return Assignment"));
-
             if (assignment == null)
+            {
+                RPLP.JOURNALISATION.Logging.Journal(new Log("Assignments", $"DepotAssignment - Method - GetAssignmentByName(string p_assignmentName) - Return Assignment - assignment est null",0));
+
                 return new Assignment();
+            }
+            else
+            {
+                RPLP.JOURNALISATION.Logging.Journal(new Log("Assignments", $"DepotAssignment - Method - GetAssignmentByName(string p_assignmentName) - Return Assignment - assignment != null"));
+            }
 
             return assignment;
         }
@@ -84,7 +96,7 @@ namespace RPLP.DAL.SQL.Depots
         {
             if (string.IsNullOrWhiteSpace(p_classroomName))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotAssignment - GetAssignmentsByClassroomName - p_classroomName passé en paramètre est vide", 0));
             }
 
@@ -93,8 +105,16 @@ namespace RPLP.DAL.SQL.Depots
                 .Select(s => s.ToEntity())
                 .ToList();
 
-            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Assignments", $"DepotAssignment - Method - GetAssignmentsByClassroomName(string p_classroomName) - Return List<Assignment>"));
-
+            if (assignments == null)
+            {
+                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                               "DepotAssignment - GetAssignmentsByClassroomName(string p_classroomName) - assignments est null", 0));
+            }
+            else
+            {
+                RPLP.JOURNALISATION.Logging.Journal(new Log("Assignments", $"DepotAssignment - Method - GetAssignmentsByClassroomName(string p_classroomName) - Return List<Assignment> {assignments[0].Name} - assignments != null"));
+            }
+            
             return assignments;
         }
 
@@ -102,7 +122,7 @@ namespace RPLP.DAL.SQL.Depots
         {
             if (p_assignment == null)
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotAssignment - UpsertAssignment - p_assignment passé en paramètre est null", 0));
             }
 
@@ -118,7 +138,7 @@ namespace RPLP.DAL.SQL.Depots
                 this._context.Update(assignmentResult);
                 this._context.SaveChanges();
 
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Assignments", $"DepotAssignment - Method - UpsertAssignment(Assignment p_assignment) - Void - Update Assignment"));
+                RPLP.JOURNALISATION.Logging.Journal(new Log("Assignments", $"DepotAssignment - Method - UpsertAssignment(Assignment p_assignment) - Void - Update Assignment"));
             }
             else
             {
@@ -133,7 +153,7 @@ namespace RPLP.DAL.SQL.Depots
                 this._context.Assignments.Add(assignmentDTO);
                 this._context.SaveChanges();
 
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Assignments", $"DepotAssignment - Method - UpsertAssignment(Assignment p_assignment) - Void - Add Assignment"));
+                RPLP.JOURNALISATION.Logging.Journal(new Log("Assignments", $"DepotAssignment - Method - UpsertAssignment(Assignment p_assignment) - Void - Add Assignment"));
             }
         }
 
@@ -141,7 +161,7 @@ namespace RPLP.DAL.SQL.Depots
         {
             if (string.IsNullOrWhiteSpace(p_assignmentName))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotAssignment - DeleteAssignment - p_assignmentName passé en paramètre est vide", 0));
             }
 
@@ -153,9 +173,14 @@ namespace RPLP.DAL.SQL.Depots
 
                 this._context.Update(assignmentResult);
                 this._context.SaveChanges();
-            }
 
-            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Assignments", $"DepotAssignment - Method - DeleteAssignment(string p_assignmentName) - Void"));
-        }
+                RPLP.JOURNALISATION.Logging.Journal(new Log("Assignments", $"DepotAssignment - Method - DeleteAssignment(string p_assignmentName) - Void - Delete Assignment"));
+            }
+            else
+            {
+                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    "DepotAssignment - DeleteAssignment(string p_assignmentName) - assignmentResult est null", 0));
+            }
+        }  
     }
 }

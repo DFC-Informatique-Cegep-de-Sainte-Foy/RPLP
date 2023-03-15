@@ -27,7 +27,7 @@ namespace RPLP.DAL.SQL.Depots
         {
             if (p_context == null)
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                                "DepotOrganisation - DepotOrganisation(RPLPDbContext p_context) - p_context de type RPLPDbContext passé en paramètre est null", 0));
             }
 
@@ -47,7 +47,7 @@ namespace RPLP.DAL.SQL.Depots
                     organisations[i].Administrators = organisationResult[i].Administrators.Select(organisation => organisation.ToEntityWithoutList()).ToList();
             }
 
-            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Organisation", $"DepotOrganisation - Method - GetOrganisations() - Return List<Organisation>"));
+            RPLP.JOURNALISATION.Logging.Journal(new Log("Organisation", $"DepotOrganisation - Method - GetOrganisations() - Return List<Organisation>"));
 
             return organisations;
         }
@@ -56,7 +56,7 @@ namespace RPLP.DAL.SQL.Depots
         {
             if (p_id < 0)
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                        "DepotOrganisation - GetOrganisationById - p_id passé en paramêtre est hors des limites", 0));
             }
 
@@ -64,10 +64,12 @@ namespace RPLP.DAL.SQL.Depots
                                                                            .Include(organisation => organisation.Administrators.Where(admin => admin.Active))
                                                                            .FirstOrDefault(organisation => organisation.Id == p_id);
 
-            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Organisation", $"DepotOrganisation - Method - GetOrganisationById(int p_id) - Return Organisation"));
-
             if (organisationResult == null)
+            {
+                RPLP.JOURNALISATION.Logging.Journal(new Log("Organisation", $"DepotOrganisation - Method - GetOrganisationById(int p_id) - Return Organisation - organisationResult est null",0));
+
                 return new Organisation();
+            }
 
             Organisation organisation = organisationResult.ToEntityWithoutList();
 
@@ -75,6 +77,13 @@ namespace RPLP.DAL.SQL.Depots
             {
                 List<Administrator> administrators = organisationResult.Administrators.Select(admin => admin.ToEntityWithoutList()).ToList();
                 organisation.Administrators = administrators;
+
+                RPLP.JOURNALISATION.Logging.Journal(new Log("Organisation", $"DepotOrganisation - Method - GetOrganisationById(int p_id) - Return Organisation"));
+            }
+            else
+            {
+                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                       "DepotOrganisation - GetOrganisationById - organisationResult.Administrators.Count < 0", 0));
             }
 
             return organisation;
@@ -84,7 +93,7 @@ namespace RPLP.DAL.SQL.Depots
         {
             if (string.IsNullOrWhiteSpace(p_name))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotOrganisation - GetOrganisationByName - p_name passé en paramètre est vide", 0));
             }
 
@@ -92,10 +101,13 @@ namespace RPLP.DAL.SQL.Depots
                                                                                 .Include(organisation => organisation.Administrators.Where(admin => admin.Active))
                                                                                 .FirstOrDefault(organisation => organisation.Name == p_name);
 
-            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Organisation - Administrator", $"DepotOrganisation - Method -  GetOrganisationByName(string p_name) - Return Organisation"));
-
             if (organisationResult == null)
+            {
+                RPLP.JOURNALISATION.Logging.Journal(new Log("Organisation - Administrator", $"DepotOrganisation - Method -  GetOrganisationByName(string p_name) - Return Organisation - organisationResult est null",0));
+
                 return new Organisation();
+            }
+               
 
             Organisation organisation = organisationResult.ToEntityWithoutList();
 
@@ -103,6 +115,13 @@ namespace RPLP.DAL.SQL.Depots
             {
                 List<Administrator> administrators = organisationResult.Administrators.Select(administrator => administrator.ToEntityWithoutList()).ToList();
                 organisation.Administrators = administrators;
+
+                RPLP.JOURNALISATION.Logging.Journal(new Log("Organisation - Administrator", $"DepotOrganisation - Method -  GetOrganisationByName(string p_name) - Return Organisation"));
+            }
+            else
+            {
+                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                       "DepotOrganisation - GetOrganisationByName(string p_name) - organisationResult.Administrators.Count < 0", 0));
             }
 
             return organisation;
@@ -112,7 +131,7 @@ namespace RPLP.DAL.SQL.Depots
         {
             if (string.IsNullOrWhiteSpace(p_organisationName))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotOrganisation - GetAdministratorsByOrganisation - p_organisationName passé en paramètre est vide", 0));
             }
 
@@ -120,10 +139,16 @@ namespace RPLP.DAL.SQL.Depots
                 .Include(organisation => organisation.Administrators.Where(a => a.Active))
                 .FirstOrDefault(organisation => organisation.Name == p_organisationName && organisation.Active);
 
-            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Organisation - Administrator", $"DepotOrganisation - Method - GetAdministratorsByOrganisation(string p_organisationName) - Return List<Administrator>"));
-
             if (organisationResult != null && organisationResult.Administrators.Count >= 1)
+            {
+                RPLP.JOURNALISATION.Logging.Journal(new Log("Organisation - Administrator", $"DepotOrganisation - Method - GetAdministratorsByOrganisation(string p_organisationName) - Return List<Administrator>"));
+
                 return organisationResult.Administrators.Select(administrator => administrator.ToEntityWithoutList()).ToList();
+            }
+            else
+            {
+                RPLP.JOURNALISATION.Logging.Journal(new Log("Organisation - Administrator", $"DepotOrganisation - Method - GetAdministratorsByOrganisation(string p_organisationName) - Return List<Administrator> - liste vide ou organisationResult null",0));
+            }
 
             return new List<Administrator>();
         }
@@ -132,12 +157,12 @@ namespace RPLP.DAL.SQL.Depots
         {
             if (string.IsNullOrWhiteSpace(p_organisationName))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotOrganisation - AddAdministratorToOrganisation - p_organisationName passé en paramètre est vide", 0));
             }
             if (string.IsNullOrWhiteSpace(p_adminUsername))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotOrganisation - AddAdministratorToOrganisation - p_adminUsername passé en paramètre est vide", 0));
             }
 
@@ -153,16 +178,16 @@ namespace RPLP.DAL.SQL.Depots
 
                     this._context.Update(organisationResult);
                     this._context.SaveChanges();
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Organisation - Administrator", $"DepotOrganisation - Method - AddAdministratorToOrganisation(string p_organisationName, string p_adminUsername) - Void"));
+                    RPLP.JOURNALISATION.Logging.Journal(new Log("Organisation - Administrator", $"DepotOrganisation - Method - AddAdministratorToOrganisation(string p_organisationName, string p_adminUsername) - Void"));
                 }
                 else
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Organisation - Administrator", $"DepotOrganisation - Method - la variable organisationResult est null", 0));
+                    RPLP.JOURNALISATION.Logging.Journal(new Log("Organisation - Administrator", $"DepotOrganisation - Method - AddAdministratorToOrganisation(string p_organisationName, string p_adminUsername) - la variable organisationResult est null", 0));
                 }
             }
             else
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Organisation - Administrator", $"DepotOrganisation - Method - la variable adminResult est null", 0));
+                RPLP.JOURNALISATION.Logging.Journal(new Log("Organisation - Administrator", $"DepotOrganisation - Method - AddAdministratorToOrganisation(string p_organisationName, string p_adminUsername) - la variable adminResult est null", 0));
             }
         }
 
@@ -170,12 +195,12 @@ namespace RPLP.DAL.SQL.Depots
         {
             if (string.IsNullOrWhiteSpace(p_organisationName))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotOrganisation - RemoveAdministratorFromOrganisation - p_organisationName passé en paramètre est vide", 0));
             }
             if (string.IsNullOrWhiteSpace(p_adminUsername))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotOrganisation - RemoveAdministratorFromOrganisation - p_adminUsername passé en paramètre est vide", 0));
             }
 
@@ -191,17 +216,25 @@ namespace RPLP.DAL.SQL.Depots
 
                     this._context.Update(organisationResult);
                     this._context.SaveChanges();
+
+                    RPLP.JOURNALISATION.Logging.Journal(new Log("Organisation - Administrator", $"DepotOrganisation - Method - RemoveAdministratorFromOrganisation(string p_organisationName, string p_adminUsername) - Void - remove admin organisation"));
+                }
+                else
+                {
+                    RPLP.JOURNALISATION.Logging.Journal(new Log("Organisation - Administrator", $"DepotOrganisation - Method - RemoveAdministratorFromOrganisation(string p_organisationName, string p_adminUsername) - la variable organisationResult est null", 0));
                 }
             }
-
-            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Organisation - Administrator", $"DepotOrganisation - Method - RemoveAdministratorFromOrganisation(string p_organisationName, string p_adminUsername) - Void"));
+            else
+            {
+                RPLP.JOURNALISATION.Logging.Journal(new Log("Organisation - Administrator", $"DepotOrganisation - Method - RemoveAdministratorFromOrganisation(string p_organisationName, string p_adminUsername) - la variable adminResult est null", 0));
+            }
         }
 
         public void UpsertOrganisation(Organisation p_organisation)
         {
             if(p_organisation == null)
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "DepotOrganisation - UpsertOrganisation - p_organisation passé en paramètre est null", 0));
             }
 
@@ -225,7 +258,7 @@ namespace RPLP.DAL.SQL.Depots
                 this._context.Update(organisationResult);
                 this._context.SaveChanges();
 
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Organisation - Administrator", $"DepotOrganisation - Method - UpsertOrganisation(Organisation p_organisation) - Void - Update Organisation"));
+                RPLP.JOURNALISATION.Logging.Journal(new Log("Organisation - Administrator", $"DepotOrganisation - Method - UpsertOrganisation(Organisation p_organisation) - Void - Update Organisation"));
             }
             else
             {
@@ -237,7 +270,7 @@ namespace RPLP.DAL.SQL.Depots
                 this._context.Organisations.Add(organisation);
                 this._context.SaveChanges();
 
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Organisation - Administrator", $"DepotOrganisation - Method - UpsertOrganisation(Organisation p_organisation) - Void - Add Organisation"));
+                RPLP.JOURNALISATION.Logging.Journal(new Log("Organisation - Administrator", $"DepotOrganisation - Method - UpsertOrganisation(Organisation p_organisation) - Void - Add Organisation"));
             }
         }
 
@@ -245,7 +278,7 @@ namespace RPLP.DAL.SQL.Depots
         {
             if (string.IsNullOrWhiteSpace(p_organisationName))
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotOrganisation - DeleteOrganisation - p_organisationName passé en paramètre est vide", 0));
             }
 
@@ -257,9 +290,14 @@ namespace RPLP.DAL.SQL.Depots
 
                 this._context.Update(organisationResult);
                 this._context.SaveChanges();
-            }
 
-            RPLP.JOURNALISATION.Journalisation.Journaliser(new Log("Organisation", $"DepotOrganisation - Method - DeleteOrganisation(string p_organisationName) - Void"));
+                RPLP.JOURNALISATION.Logging.Journal(new Log("Organisation", $"DepotOrganisation - Method - DeleteOrganisation(string p_organisationName) - Void - delete organisation"));
+            }
+            else
+            {
+                RPLP.JOURNALISATION.Logging.Journal(new Log("Organisation", $"DepotOrganisation - Method - DeleteOrganisation(string p_organisationName) - la variable organisationResult est null", 0));
+            }
+            
         }
     }
 }

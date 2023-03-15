@@ -17,7 +17,7 @@ namespace RPLP.API.Controllers
         {
             if (p_depot == null)
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                 "OrganisationController - Constructeur - p_depot passé en paramêtre est null", 0));
             }
 
@@ -29,7 +29,7 @@ namespace RPLP.API.Controllers
         {
             try
             {
-                Journalisation.Journaliser(new Log("api/Organisation", 200, "OrganisationController - GET méthode Get"));
+                Logging.Journal(new Log("api/Organisation", 200, "OrganisationController - GET méthode Get"));
 
                 return Ok(this._depot.GetOrganisations());
             }
@@ -46,11 +46,11 @@ namespace RPLP.API.Controllers
             {
                 if (id < 0)
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "OrganisationController - GetOrganisationById - id passé en paramêtre est hors limites", 0));
                 }
 
-                Journalisation.Journaliser(new Log($"api/Organisation/Id/{id}", 200, "OrganisationController - GET méthode GetOrganisationById"));
+                Logging.Journal(new Log($"api/Organisation/Id/{id}", 200, "OrganisationController - GET méthode GetOrganisationById"));
 
                 return Ok(this._depot.GetOrganisationById(id));
             }
@@ -67,11 +67,11 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(organisationName))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "OrganisationController - GetOrganisationByName - organisationName passé en paramêtre est vide", 0));
                 }
 
-                Journalisation.Journaliser(new Log($"api/Organisation/Name/{organisationName}", 200, "OrganisationController - GET méthode GetOrganisationByName"));
+                Logging.Journal(new Log($"api/Organisation/Name/{organisationName}", 200, "OrganisationController - GET méthode GetOrganisationByName"));
 
                 return Ok(this._depot.GetOrganisationByName(organisationName));
             }
@@ -88,11 +88,11 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(organisationName))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "OrganisationController - GetAdministratorsByOrganisation - organisationName passé en paramêtre est vide", 0));
                 }
 
-                Journalisation.Journaliser(new Log($"api/Organisation/Name/{organisationName}/Administrators", 200, "OrganisationController - GET méthode GetAdministratorsByOrganisation"));
+                Logging.Journal(new Log($"api/Organisation/Name/{organisationName}/Administrators", 200, "OrganisationController - GET méthode GetAdministratorsByOrganisation"));
 
                 return Ok(this._depot.GetAdministratorsByOrganisation(organisationName));
             }
@@ -109,7 +109,7 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(organisationName))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                        "OrganisationController - AddAdministratorToOrganisation - organisationName passé en paramêtre est vide", 0));
 
                     return BadRequest();
@@ -117,13 +117,13 @@ namespace RPLP.API.Controllers
 
                 if (string.IsNullOrWhiteSpace(adminUsername))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                        "OrganisationController - AddAdministratorToOrganisation - adminUsername passé en paramêtre est vide", 0));
 
                     return BadRequest();
                 }
 
-                Journalisation.Journaliser(new Log($"api/Organisation/Name/{organisationName}/Administrators/Add/{adminUsername}", 201, "OrganisationController - POST méthode AddAdministratorToOrganisation"));
+                Logging.Journal(new Log($"api/Organisation/Name/{organisationName}/Administrators/Add/{adminUsername}", 201, "OrganisationController - POST méthode AddAdministratorToOrganisation"));
 
                 this._depot.AddAdministratorToOrganisation(organisationName, adminUsername);
 
@@ -142,7 +142,7 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(organisationName))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                            "OrganisationController - RemoveAdministratorToOrganisation - organisationName passé en paramêtre est vide", 0));
 
                     return BadRequest();
@@ -150,13 +150,13 @@ namespace RPLP.API.Controllers
 
                 if (string.IsNullOrWhiteSpace(adminUsername))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                            "OrganisationController - RemoveAdministratorToOrganisation - adminUsername passé en paramêtre est vide", 0));
 
                     return BadRequest();
                 }
 
-                Journalisation.Journaliser(new Log($"api/Organisation/Name/{organisationName}/Administrators/Remove/{adminUsername}", 204, "OrganisationController - POST méthode RemoveAdministratorToOrganisation"));
+                Logging.Journal(new Log($"api/Organisation/Name/{organisationName}/Administrators/Remove/{adminUsername}", 204, "OrganisationController - POST méthode RemoveAdministratorToOrganisation"));
 
                 this._depot.RemoveAdministratorFromOrganisation(organisationName, adminUsername);
 
@@ -175,7 +175,7 @@ namespace RPLP.API.Controllers
             {
                 if (p_organisation == null)
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                                "OrganisationController - Post - p_organisation passé en paramêtre est vide", 0));
 
                     return BadRequest();
@@ -183,13 +183,13 @@ namespace RPLP.API.Controllers
 
                 if (!ModelState.IsValid)
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                                "OrganisationController - Post - p_organisation passé en paramêtre n'est pas un modèle valide", 0));
 
                     return BadRequest();
                 }
 
-                Journalisation.Journaliser(new Log($"api/Organisation", 201, "OrganisationController - POST méthode Post"));
+                Logging.Journal(new Log($"api/Organisation", 201, "OrganisationController - POST méthode Post"));
 
                 this._depot.UpsertOrganisation(p_organisation);
 
@@ -208,13 +208,13 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(organisationName))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                            "OrganisationController - DeleteOrganisation - organisationName passé en paramêtre est vide", 0));
 
                     return BadRequest();
                 }
 
-                Journalisation.Journaliser(new Log($"api/Organisation/Name/{organisationName}", 204, "OrganisationController - DELETE méthode DeleteOrganisation"));
+                Logging.Journal(new Log($"api/Organisation/Name/{organisationName}", 204, "OrganisationController - DELETE méthode DeleteOrganisation"));
 
                 this._depot.DeleteOrganisation(organisationName);
                 return NoContent();

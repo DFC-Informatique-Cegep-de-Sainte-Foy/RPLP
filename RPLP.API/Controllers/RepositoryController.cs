@@ -16,7 +16,7 @@ namespace RPLP.API.Controllers
         {
             if (p_depot == null)
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                 "RepositoryController - Constructeur - p_depot passé en paramêtre est null", 0));
             }
 
@@ -30,11 +30,11 @@ namespace RPLP.API.Controllers
             {
                 if(id < 0)
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "RepositoryController - GetRepositoryById - id passé en paramêtre est hors limites", 0));
                 }
 
-                Journalisation.Journaliser(new Log($"api/Repository/Id/{id}", 200, "RepositoryController - GET méthode GetRepositoryById"));
+                Logging.Journal(new Log($"api/Repository/Id/{id}", 200, "RepositoryController - GET méthode GetRepositoryById"));
 
                 return Ok(this._depot.GetRepositoryById(id));
             }
@@ -51,11 +51,11 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(repositoryName))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "RepositoryController - GetRepositoryByName - repositoryName passé en paramêtre est vide", 0));
                 }
 
-                Journalisation.Journaliser(new Log($"api/Repository/Name/{repositoryName}", 200, "RepositoryController - GET méthode GetRepositoryByName"));
+                Logging.Journal(new Log($"api/Repository/Name/{repositoryName}", 200, "RepositoryController - GET méthode GetRepositoryByName"));
 
                 return Ok(this._depot.GetRepositoryByName(repositoryName));
             }
@@ -72,7 +72,7 @@ namespace RPLP.API.Controllers
             {
                 if (p_repository == null)
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                        "RepositoryController - Post - p_repository passé en paramêtre est vide", 0));
 
                     return BadRequest();
@@ -80,13 +80,13 @@ namespace RPLP.API.Controllers
 
                 if (!ModelState.IsValid)
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                       "RepositoryController - Post - p_repository passé en paramêtre n'est pas un modèle valide", 0));
 
                     return BadRequest();
                 }
 
-                Journalisation.Journaliser(new Log($"api/Repository", 201, "RepositoryController - POST méthode Post"));
+                Logging.Journal(new Log($"api/Repository", 201, "RepositoryController - POST méthode Post"));
 
                 this._depot.UpsertRepository(p_repository);
 
@@ -106,11 +106,11 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(repositoryName))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "RepositoryController - DeleteRepository - repositoryName passé en paramêtre est vide", 0));
                 }
 
-                Journalisation.Journaliser(new Log($"api/Repository/Name/{repositoryName}", 204, "RepositoryController - DELETE méthode DeleteRepository"));
+                Logging.Journal(new Log($"api/Repository/Name/{repositoryName}", 204, "RepositoryController - DELETE méthode DeleteRepository"));
 
                 this._depot.DeleteRepository(repositoryName);
                 return NoContent();

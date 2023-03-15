@@ -16,7 +16,7 @@ namespace RPLP.API.Controllers
         {
             if (p_depot == null)
             {
-                RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                 "TeacherController - Constructeur - p_depot passé en paramêtre est null", 0));
             }
 
@@ -28,7 +28,7 @@ namespace RPLP.API.Controllers
         {
             try
             {
-                Journalisation.Journaliser(new Log("api/Teacher", 200, "TeacherController - GET méthode Get"));
+                Logging.Journal(new Log("api/Teacher", 200, "TeacherController - GET méthode Get"));
 
                 return Ok(this._depot.GetTeachers());
             }
@@ -43,7 +43,7 @@ namespace RPLP.API.Controllers
         {
             try
             {
-                Journalisation.Journaliser(new Log("api/Teacher/Deactivated", 200, "TeacherController - GET méthode GetDeactivated"));
+                Logging.Journal(new Log("api/Teacher/Deactivated", 200, "TeacherController - GET méthode GetDeactivated"));
 
                 return Ok(this._depot.GetDeactivatedTeachers());
             }
@@ -60,11 +60,11 @@ namespace RPLP.API.Controllers
             {
                 if (id < 0)
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "TeacherController - GetTeacherById - id passé en paramêtre hors limites", 0));
                 }
 
-                Journalisation.Journaliser(new Log($"api/Teacher/Id/{id}", 200, "TeacherController - GET méthode GetTeacherById"));
+                Logging.Journal(new Log($"api/Teacher/Id/{id}", 200, "TeacherController - GET méthode GetTeacherById"));
 
                 return Ok(this._depot.GetTeacherById(id));
             }
@@ -81,11 +81,11 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(teacherUsername))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "TeacherController - GetTeacherByUsername - teacherUsername passé en paramêtre est vide", 0));
                 }
 
-                Journalisation.Journaliser(new Log($"api/Teacher/Username/{teacherUsername}", 200, "TeacherController - GET méthode GetTeacherByUsername"));
+                Logging.Journal(new Log($"api/Teacher/Username/{teacherUsername}", 200, "TeacherController - GET méthode GetTeacherByUsername"));
 
                 return Ok(this._depot.GetTeacherByUsername(teacherUsername));
             }
@@ -102,11 +102,11 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(email))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "TeacherController - GetTeacherByEmail - email passé en paramêtre est vide", 0));
                 }
 
-                Journalisation.Journaliser(new Log($"api/Teacher/Email/{email}", 200, "TeacherController - GET méthode GetTeacherByEmail"));
+                Logging.Journal(new Log($"api/Teacher/Email/{email}", 200, "TeacherController - GET méthode GetTeacherByEmail"));
 
                 return Ok(this._depot.GetTeacherByEmail(email));
             }
@@ -123,11 +123,11 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(teacherUsername))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "TeacherController - GetTeacherClasses - teacherUsername passé en paramêtre est vide", 0));
                 }
 
-                Journalisation.Journaliser(new Log($"api/Teacher/Username/{teacherUsername}/Classrooms", 200, "TeacherController - GET méthode GetTeacherClasses"));
+                Logging.Journal(new Log($"api/Teacher/Username/{teacherUsername}/Classrooms", 200, "TeacherController - GET méthode GetTeacherClasses"));
 
                 return Ok(this._depot.GetTeacherClasses(teacherUsername));
             }
@@ -144,17 +144,17 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(email))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "TeacherController - GetTeacherOrganisationsByEmail - email passé en paramêtre est vide", 0));
                 }
 
-                Journalisation.Journaliser(new Log($"api/Teacher/Email/{email}/Organisations", 200, "TeacherController - GET méthode GetTeacherOrganisationsByEmail"));
+                Logging.Journal(new Log($"api/Teacher/Email/{email}/Organisations", 200, "TeacherController - GET méthode GetTeacherOrganisationsByEmail"));
 
                 string? username = this._depot.GetTeacherByEmail(email)?.Username;
 
                 if (string.IsNullOrWhiteSpace(username))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                    "TeacherController - GetTeacherOrganisationsByEmail - username assigné à partir de la méthode GetTeacherByEmail est vide", 0));
 
                     return BadRequest();
@@ -175,13 +175,13 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(username))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "TeacherController - GetTeacherOrganisationsByUsername - username passé en paramêtre est vide", 0));
 
                     return BadRequest();
                 }
 
-                Journalisation.Journaliser(new Log($"api/Teacher/Username/{username}/Organisations", 200, "TeacherController - GET méthode GetTeacherOrganisationsByUsername"));
+                Logging.Journal(new Log($"api/Teacher/Username/{username}/Organisations", 200, "TeacherController - GET méthode GetTeacherOrganisationsByUsername"));
 
                 return Ok(this._depot.GetTeacherOrganisations(username));
             }
@@ -198,17 +198,17 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(email))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "TeacherController - GetClassroomsOfTeacherInOrganisationByEmail - email passé en paramêtre est vide", 0));
                 }
 
                 if (string.IsNullOrWhiteSpace(organisationName))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "TeacherController - GetClassroomsOfTeacherInOrganisationByEmail - organisationName passé en paramêtre est vide", 0));
                 }
 
-                Journalisation.Journaliser(new Log($"api/Teacher/Email/{email}/Organisation/{organisationName}/Classrooms", 200, "TeacherController - GET méthode GetClassroomsOfTeacherInOrganisationByEmail"));
+                Logging.Journal(new Log($"api/Teacher/Email/{email}/Organisation/{organisationName}/Classrooms", 200, "TeacherController - GET méthode GetClassroomsOfTeacherInOrganisationByEmail"));
 
                 return Ok(this._depot.GetTeacherClassesInOrganisationByEmail(email, organisationName));
             }
@@ -225,7 +225,7 @@ namespace RPLP.API.Controllers
             {
                 if (p_teacher == null)
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                    "TeacherController - UpsertTeacher - p_teacher passé en paramêtre est null", 0));
 
                     return BadRequest();
@@ -233,7 +233,7 @@ namespace RPLP.API.Controllers
 
                 if(p_teacher.Id < 0)
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                    "TeacherController - UpsertTeacher - le ID du paramêtre p_teacher est hors limites", 0));
 
                     return BadRequest();
@@ -241,13 +241,13 @@ namespace RPLP.API.Controllers
 
                 if(!ModelState.IsValid)
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                    "TeacherController - UpsertTeacher - p_teacher passé en paramêtre n'est pas un modèle valide", 0));
 
                     return BadRequest();
                 }
 
-                Journalisation.Journaliser(new Log($"api/Teacher", 201, "TeacherController - POST méthode UpsertTeacher"));
+                Logging.Journal(new Log($"api/Teacher", 201, "TeacherController - POST méthode UpsertTeacher"));
 
                 this._depot.UpsertTeacher(p_teacher);
                 
@@ -266,11 +266,11 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(teacherUsername))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "TeacherController - DeleteTeacher - teacherUsername passé en paramêtre est vide", 0));
                 }
 
-                Journalisation.Journaliser(new Log($"api/Teacher/Username/{teacherUsername}", 204, "TeacherController - DELETE méthode DeleteTeacher"));
+                Logging.Journal(new Log($"api/Teacher/Username/{teacherUsername}", 204, "TeacherController - DELETE méthode DeleteTeacher"));
 
                 this._depot.DeleteTeacher(teacherUsername);
                 return NoContent();
@@ -288,11 +288,11 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(username))
                 {
-                    RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "TeacherController - ReactivateTeacher - username passé en paramêtre est vide", 0));
                 }
 
-                Journalisation.Journaliser(new Log($"api/Teacher/Reactivate/{username}", 204, "TeacherController - GET méthode ReactivateTeacher"));
+                Logging.Journal(new Log($"api/Teacher/Reactivate/{username}", 204, "TeacherController - GET méthode ReactivateTeacher"));
 
                 this._depot.ReactivateTeacher(username);
                 return NoContent();
