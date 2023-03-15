@@ -163,7 +163,7 @@ namespace RPLP.DAL.SQL.Depots
                 .Select(repository => repository.ToEntity())
                 .ToList();
 
-            RPLP.JOURNALISATION.Logging.Journal(new Log("Repository", $"DepotRepository - Method - GetRepositoriesFromOrganisationName(string p_organisationName) - Return List<Repository> {repositories[0].Name}"));
+            RPLP.JOURNALISATION.Logging.Journal(new Log("Repository", $"DepotRepository - Method - GetRepositoriesFromOrganisationName(string p_organisationName) - Return List<Repository> Count: {repositories.Count}"));
 
             return repositories;
         }
