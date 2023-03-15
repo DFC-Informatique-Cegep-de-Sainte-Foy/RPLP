@@ -539,7 +539,7 @@ namespace RPLP.SERVICES.Github.GithubReviewCommentFetcher
                     //Task<string> a = this._client.GetStringAsync($"/repos/{r.OrganisationName}/{r.Name}/pulls");
                     //a.Wait();
                     //// La donnée requêtes restantes n'est pas accessible avec cette requête puisque la méthode GetStringAsync renvoie un Task<string> et non un HttpResponseMessage (mis valeur bidon pour remaining)
-                    //RPLP.JOURNALISATION.Journalisation.Journaliser(new Log($"/repos/{r.OrganisationName}/{r.Name}/pulls", 0, 66666, "Requête GET pour le json d'une pull request d'un dépot"));
+                    //RPLP.JOURNALISATION.Logging.Journal(new Log($"/repos/{r.OrganisationName}/{r.Name}/pulls", 0, 66666, "Requête GET pour le json d'une pull request d'un dépot"));
                     //return a.Result;
                     Task<HttpResponseMessage> a = this._client.GetAsync($"/repos/{r.OrganisationName}/{r.Name}/pulls");
                     a.Wait();

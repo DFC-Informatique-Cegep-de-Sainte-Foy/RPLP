@@ -261,7 +261,7 @@ namespace RPLP.API.Controllers
             //{
             //    if (p_admin == null)
             //    {
-            //        RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+            //        RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
             //        "AdministratorController - UpsertAdmin - p_admin passé en paramêtre est null"));
 
             //        return BadRequest();
@@ -269,7 +269,7 @@ namespace RPLP.API.Controllers
 
             //    if (!ModelState.IsValid)
             //    {
-            //        RPLP.JOURNALISATION.Journalisation.Journaliser(new Log(new ArgumentException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+            //        RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
             //       "AdministratorController - UpsertAdmin - p_admin n'est pas un model valide"));
 
             //        return BadRequest();
