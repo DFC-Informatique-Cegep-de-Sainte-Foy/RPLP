@@ -112,7 +112,7 @@ namespace RPLP.DAL.SQL.Depots
             }
             else
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log("Assignments", $"DepotAssignment - Method - GetAssignmentsByClassroomName(string p_classroomName) - Return List<Assignment> {assignments[0].Name} - assignments != null"));
+                RPLP.JOURNALISATION.Logging.Journal(new Log("Assignments", $"DepotAssignment - Method - GetAssignmentsByClassroomName(string p_classroomName) - Return List<Assignment> COunt: {assignments.Count} - assignments != null"));
             }
             
             return assignments;

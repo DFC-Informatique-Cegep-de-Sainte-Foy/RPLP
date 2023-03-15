@@ -112,7 +112,7 @@ namespace RPLP.SERVICES.Github
             }
 
             studentDictionary = GetStudentDictionary(repositoriesToAssign);
-            RPLP.JOURNALISATION.Logging.Journal(new Log($"ScriptGithubRPLP - ScriptAssignStudentToAssignmentReview(string p_organisationName:{p_organisationName}, string p_classRoomName:{p_classRoomName}, string p_assignmentName:{p_assignmentName}, int p_reviewsPerRepository:{p_reviewsPerRepository} - studentDictionary:{studentDictionary[studentDictionary.Keys.First()]}:{studentDictionary.Count})"));
+            RPLP.JOURNALISATION.Logging.Journal(new Log($"ScriptGithubRPLP - ScriptAssignStudentToAssignmentReview(string p_organisationName:{p_organisationName}, string p_classRoomName:{p_classRoomName}, string p_assignmentName:{p_assignmentName}, int p_reviewsPerRepository:{p_reviewsPerRepository} - studentDictionary:{studentDictionary.Count})"));
             foreach (Repository repository in repositoriesToAssign)
             {
                 prepareRepositoryAndCreatePullRequest(p_organisationName, repository.Name, studentDictionary, p_reviewsPerRepository);
@@ -176,8 +176,10 @@ namespace RPLP.SERVICES.Github
         private void prepareRepositoryAndCreatePullRequest(string p_organisationName, string p_repositoryName, Dictionary<string, int> p_studentDictionary, int p_reviewsPerRepository)
         {
             Branch_JSONDTO branchDTO = new Branch_JSONDTO();
+            RPLP.JOURNALISATION.Logging.Journal(new Log($"ScriptGithubRPLP - prepareRepositoryAndCreatePullRequest(string p_organisationName: {p_organisationName}, string p_repositoryName:{p_repositoryName}, Dictionary<string, int> p_studentDictionary: {p_studentDictionary.Count}, int p_reviewsPerRepository: {p_reviewsPerRepository})"));
 
             List<Branch_JSONDTO> branchesResult = this._githubApiAction.GetRepositoryBranchesGithub(p_organisationName, p_repositoryName);
+            RPLP.JOURNALISATION.Logging.Journal(new Log($"ScriptGithubRPLP - branchesResult: {branchesResult.Count})"));
 
             if (branchesResult == null)
             {
@@ -186,8 +188,9 @@ namespace RPLP.SERVICES.Github
 
                 throw new ArgumentNullException($"Branch does not exist or wrong name was entered");
             }
-
             branchDTO = GetFeedbackBranchFromBranchList(branchesResult);
+            RPLP.JOURNALISATION.Logging.Journal(new Log($"ScriptGithubRPLP - branchDTO: {branchDTO.reference})"));
+
             AssignStudentReviewersToPullRequests(p_studentDictionary, p_organisationName, p_repositoryName, p_reviewsPerRepository, branchDTO);
         }
 
@@ -196,7 +199,7 @@ namespace RPLP.SERVICES.Github
             string newBranchName = $"Feedback-{p_username}";
 
             string resultCreateBranch = this._githubApiAction.CreateNewBranchForFeedbackGitHub(p_organisationName, p_repositoryName, p_sha, newBranchName);
-
+            RPLP.JOURNALISATION.Logging.Journal(new Log($"ScriptGithubRPLP - createPullRequestAndAssignUser - resultCreateBranch: {resultCreateBranch} - p_organisationName:{p_organisationName} - p_repositoryName:{p_repositoryName} - p_username: {p_username}"));
             if (resultCreateBranch != "Created")
             {
                 RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
@@ -206,6 +209,7 @@ namespace RPLP.SERVICES.Github
             }
 
             string resultCreatePR = this._githubApiAction.CreateNewPullRequestFeedbackGitHub(p_organisationName, p_repositoryName, newBranchName, newBranchName.ToLower(), "Voici où vous devez mettre vos commentaires");
+            RPLP.JOURNALISATION.Logging.Journal(new Log($"ScriptGithubRPLP - createPullRequestAndAssignUser - resultCreatePR: {resultCreatePR}"));
 
             if (resultCreatePR != "Created")
             {
@@ -217,6 +221,7 @@ namespace RPLP.SERVICES.Github
 
 
             string resultAddStudent = this._githubApiAction.AddStudentAsCollaboratorToPeerRepositoryGithub(p_organisationName, p_repositoryName, p_username);
+            RPLP.JOURNALISATION.Logging.Journal(new Log($"ScriptGithubRPLP - createPullRequestAndAssignUser - resultAddStudent: {resultAddStudent}"));
 
             if (resultAddStudent != "Created")
             {
@@ -230,7 +235,7 @@ namespace RPLP.SERVICES.Github
         private List<Repository> getRepositoriesToAssign(string p_organisationName, string p_classRoomName, string p_assignmentName, List<Student> p_students)
         {
             List<Assignment> assignmentsResult = _depotClassroom.GetAssignmentsByClassroomName(p_classRoomName);
-            RPLP.JOURNALISATION.Logging.Journal(new Log($"ScriptGithubRPLP - List<Assignment> assignmentsResult:{assignmentsResult[0].Name}:{assignmentsResult.Count})"));
+            RPLP.JOURNALISATION.Logging.Journal(new Log($"ScriptGithubRPLP - List<Assignment> assignmentsResult:{assignmentsResult.Count})"));
 
             if (assignmentsResult.Count < 1)
             {
@@ -254,7 +259,7 @@ namespace RPLP.SERVICES.Github
             List<Repository> repositories = new List<Repository>();
 
             List<Repository> repositoriesResult = this._depotRepository.GetRepositoriesFromOrganisationName(p_organisationName);
-            RPLP.JOURNALISATION.Logging.Journal(new Log($"ScriptGithubRPLP - List<Repository> repositoriesResult:{repositoriesResult[0].Name}:{repositoriesResult.Count})"));
+            RPLP.JOURNALISATION.Logging.Journal(new Log($"ScriptGithubRPLP - List<Repository> repositoriesResult:{repositoriesResult.Count})"));
             repositories = GetStudentsRepositoriesForAssignment(repositoriesResult, p_students, p_assignmentName);
 
             RPLP.JOURNALISATION.Logging.Journal(new Log($"ScriptGithubRPLP - getRepositoriesToAssign(string p_organisationName:{p_organisationName}, string p_classRoomName:{p_classRoomName}, string p_assignmentName:{p_assignmentName}, List<Student> p_students:{p_students.Count} - repositoriesResult:{repositoriesResult.Count} - repositories:{repositories.Count})"));
@@ -580,13 +585,16 @@ namespace RPLP.SERVICES.Github
         private Dictionary<string, int> GetStudentDictionary(List<Repository> p_repositories)
         {
             Dictionary<string, int> studentDictionary = new Dictionary<string, int>();
-
+            RPLP.JOURNALISATION.Logging.Journal(new Log($"ScriptGithubRPLP - GetStudentDictionary(List<Repository> p_repositories: {p_repositories.Count}) studentDictionary: {studentDictionary.Count}"));
             foreach (Repository repository in p_repositories)
             {
                 string[] splitRepository = repository.Name.Split('-');
-                string studentUsername = splitRepository[1];
-
-                studentDictionary[studentUsername] = 0;
+                if(splitRepository.Length > 1)
+                {
+                    string studentUsername = splitRepository[1];
+                    studentDictionary[studentUsername] = 0;
+                }
+                
             }
 
             return studentDictionary;
@@ -615,18 +623,23 @@ namespace RPLP.SERVICES.Github
         {
             int numberStudentAdded = 0;
             string[] splitRepository = p_repositoryName.Split('-');
+            RPLP.JOURNALISATION.Logging.Journal(new Log($"ScriptGitHubRPLP - AssignStudentReviewersToPullRequests(Dictionary<string, int> p_studentDictionary: {p_studentDictionary.Count}, string p_organisationName: {p_organisationName},string p_repositoryName: {p_repositoryName}, int p_reviewsPerRepository: {p_reviewsPerRepository}, Branch_JSONDTO branchDTO: {branchDTO.reference})"));
 
-            do
+            if (splitRepository.Length > 1)
             {
-                string username = p_studentDictionary.Where(dictionary => dictionary.Key.ToLower() != splitRepository[1].ToLower())
+                do
+                {
+                    string username = p_studentDictionary.Where(dictionary => dictionary.Key.ToLower() != splitRepository[1].ToLower())
                                                      .FirstOrDefault(dictionary => dictionary.Value == p_studentDictionary.Values.Min()).Key;
+                    RPLP.JOURNALISATION.Logging.Journal(new Log($"ScriptGitHubRPLP - AssignStudentReviewersToPullRequests - username: {username}"));
 
-                createPullRequestAndAssignUser(p_organisationName, p_repositoryName, branchDTO.gitObject.sha, username);
+                    createPullRequestAndAssignUser(p_organisationName, p_repositoryName, branchDTO.gitObject.sha, username);
 
-                p_studentDictionary[username] = p_studentDictionary[username]++;
-                numberStudentAdded++;
+                    p_studentDictionary[username] = p_studentDictionary[username]++;
+                    numberStudentAdded++;
 
-            } while (numberStudentAdded < p_reviewsPerRepository);
+                } while (numberStudentAdded < p_reviewsPerRepository); 
+            }
         }
 
         private List<Repository> GetStudentsRepositoriesForAssignment(List<Repository> p_repositories, List<Student> p_students, string assignmentName)
@@ -636,21 +649,21 @@ namespace RPLP.SERVICES.Github
             for (int i = 0; i < p_repositories.Count; i++)
             {
                 string[] splitRepository = p_repositories[i].Name.Split('-');
-                RPLP.JOURNALISATION.Logging.Journal(new Log($"RPLPController - repository:{p_repositories[i].Name}:{p_repositories.Count} - splitRepository[0]:{splitRepository[0]} assignmentName:{assignmentName} Student:{p_students.Count}"));
+                RPLP.JOURNALISATION.Logging.Journal(new Log($"ScriptGitHubRPLP - GetStudentsRepositoriesForAssignment - repository:{p_repositories[i].Name}:{p_repositories.Count} - splitRepository[0]:{splitRepository[0]} assignmentName:{assignmentName} Student:{p_students.Count}"));
 
                 if (splitRepository.Length > 1)
                 {
                     if (splitRepository[0].ToLower() == assignmentName.ToLower())
                     {
-                        RPLP.JOURNALISATION.Logging.Journal(new Log($"RPLPController - bool:{splitRepository[0].ToLower() == assignmentName.ToLower()}"));
+                        RPLP.JOURNALISATION.Logging.Journal(new Log($"ScriptGitHubRPLP - GetStudentsRepositoriesForAssignment - bool:{splitRepository[0].ToLower() == assignmentName.ToLower()}"));
 
                         for (int y = 0; y < p_students.Count; y++)
                         {
-                            RPLP.JOURNALISATION.Logging.Journal(new Log($"RPLPController -  {splitRepository[1]}:{p_students[y].Username}"));
+                            RPLP.JOURNALISATION.Logging.Journal(new Log($"ScriptGitHubRPLP - GetStudentsRepositoriesForAssignment - {splitRepository[1]}:{p_students[y].Username}"));
 
                             if (splitRepository[1].ToLower() == p_students[y].Username.ToLower())
                             {
-                                RPLP.JOURNALISATION.Logging.Journal(new Log($"RPLPController - repository:{p_repositories[i].Name} - splitRepository[1]:{splitRepository[1]} student:{p_students[y]}"));
+                                RPLP.JOURNALISATION.Logging.Journal(new Log($"ScriptGitHubRPLP - GetStudentsRepositoriesForAssignment - repository:{p_repositories[i].Name} - splitRepository[1]:{splitRepository[1]} student:{p_students[y].Username}"));
                                 repositories.Add(p_repositories[i]);
                                 break;
                             }
@@ -658,7 +671,7 @@ namespace RPLP.SERVICES.Github
                     }
                 }
             }
-            RPLP.JOURNALISATION.Logging.Journal(new Log($"RPLPController - repositories:{repositories.Count}"));
+            RPLP.JOURNALISATION.Logging.Journal(new Log($"ScriptGitHubRPLP - GetStudentsRepositoriesForAssignment(List<Repository> p_repositories, List<Student> p_students, string assignmentName) repositories:{repositories.Count}"));
 
             return repositories;
         }
