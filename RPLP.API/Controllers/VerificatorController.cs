@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using RPLP.DAL.SQL.Depots;
 using RPLP.JOURNALISATION;
+using RPLP.SERVICES.InterfacesDepots;
 using System.Diagnostics;
 
 namespace RPLP.API.Controllers
@@ -10,10 +11,15 @@ namespace RPLP.API.Controllers
     [ApiController]
     public class VerificatorController : ControllerBase
     {
-        private readonly VerificatorForDepot _verificator;
-        public VerificatorController()
+        private readonly IVerificatorForDepot _verificator;
+        public VerificatorController(IVerificatorForDepot verificatorForDepot)
         {
-            this._verificator = new VerificatorForDepot();
+            if (verificatorForDepot == null)
+            {
+                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                "VerificatorController - Constructeur - verificatorForDepot passé en paramêtre est null", 0));
+            }
+            this._verificator = verificatorForDepot;
         }
 
         [HttpGet("UserType/{email}")]

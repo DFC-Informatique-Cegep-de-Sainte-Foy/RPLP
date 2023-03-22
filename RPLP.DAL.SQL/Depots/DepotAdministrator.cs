@@ -19,10 +19,10 @@ namespace RPLP.DAL.SQL.Depots
     {
         private readonly RPLPDbContext _context;
 
-        public DepotAdministrator()
-        {
-            this._context = new RPLPDbContext();
-        }
+        //public DepotAdministrator()
+        //{
+        //    
+        //}
 
         public DepotAdministrator(RPLPDbContext p_context)
         {

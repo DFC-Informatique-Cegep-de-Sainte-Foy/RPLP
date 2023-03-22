@@ -1,5 +1,6 @@
 ﻿using RPLP.ENTITES;
 using RPLP.JOURNALISATION;
+using RPLP.SERVICES.InterfacesDepots;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,14 +10,14 @@ using System.Threading.Tasks;
 
 namespace RPLP.DAL.SQL.Depots
 {
-    public class VerificatorForDepot
+    public class VerificatorForDepot : IVerificatorForDepot
     {
         private readonly RPLPDbContext _context;
 
-        public VerificatorForDepot()
-        {
-            this._context = new RPLPDbContext();
-        }
+        //public VerificatorForDepot()
+        //{
+        //    this._context = new RPLPDbContext();
+        //}
 
 
         public VerificatorForDepot(RPLPDbContext p_context)

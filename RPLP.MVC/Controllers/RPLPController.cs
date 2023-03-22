@@ -26,7 +26,7 @@ namespace RPLP.MVC.Controllers
         private readonly ScriptGithubRPLP _scriptGithub;
         private object classroomName;
 
-        public RPLPController(IConfiguration configuration)
+        public RPLPController(IConfiguration configuration,IDepotClassroom depotClassroom, IDepotRepository depotRepository, IDepotOrganisation depotOrganisation)
         {
             if (configuration == null)
             {
@@ -36,7 +36,7 @@ namespace RPLP.MVC.Controllers
 
             string token = configuration.GetValue<string>("Token");
             GithubApiAction _githubAction = new GithubApiAction(token);
-            _scriptGithub = new ScriptGithubRPLP(new DepotClassroom(), new DepotRepository(), new DepotOrganisation(), token);
+            _scriptGithub = new ScriptGithubRPLP(depotClassroom,depotRepository, depotOrganisation, token);
 
             this._httpClient = new HttpClient();
             this._httpClient.BaseAddress = new Uri("http://rplp.api/api/");
