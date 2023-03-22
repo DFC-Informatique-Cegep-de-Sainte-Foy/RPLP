@@ -17,8 +17,6 @@ try
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
 
-
-    //options => options.UseSqlServer("Server=localhost,1433; Database=RPLP; User Id=sa; password=Cad3pend86!"));
     builder.Services.AddDbContext<RPLPDbContext>(
     options => options.UseSqlServer(connectionString));
 

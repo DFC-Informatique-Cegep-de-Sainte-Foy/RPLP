@@ -5,26 +5,12 @@ namespace RPLP.DAL.SQL
 {
     public class RPLPDbContext : DbContext
     {
-        //public RPLPDbContext()
-        //{
-        //    Database.Migrate();
-        //}
 
         public RPLPDbContext(DbContextOptions<RPLPDbContext> options) :
             base(options)
         {
             Database.Migrate();
         }
-
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    if (!optionsBuilder.IsConfigured)
-        //    {
-        //        optionsBuilder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))); 
-        //        //optionsBuilder.UseSqlServer("Server=rplp.db; Database=RPLP; User Id=sa; password=Cad3pend86!");
-        //        //optionsBuilder.UseSqlServer("Server=localhost,1433;Database=RPLP;User Id=sa;password=Cad3pend86!");
-        //    }
-        //}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

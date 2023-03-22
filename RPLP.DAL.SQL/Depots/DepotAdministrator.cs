@@ -18,12 +18,6 @@ namespace RPLP.DAL.SQL.Depots
     public class DepotAdministrator : IDepotAdministrator
     {
         private readonly RPLPDbContext _context;
-
-        //public DepotAdministrator()
-        //{
-        //    
-        //}
-
         public DepotAdministrator(RPLPDbContext p_context)
         {
             if (p_context == null)

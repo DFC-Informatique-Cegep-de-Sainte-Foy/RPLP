@@ -15,11 +15,6 @@ namespace RPLP.DAL.SQL.Depots
     {
         private readonly RPLPDbContext _context;
 
-        //public DepotComment()
-        //{
-        //    this._context = new RPLPDbContext();
-        //}
-
         public DepotComment(RPLPDbContext p_context)
         {
             if (p_context == null)
