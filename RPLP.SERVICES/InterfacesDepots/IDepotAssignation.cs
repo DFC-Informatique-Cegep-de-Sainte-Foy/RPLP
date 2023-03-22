@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace RPLP.SERVICES.InterfacesDepots
 {
-    internal interface IDepotAssignation
+    public interface IDepotAssignation
     {
         public List<Assignation> GetAssignations();
         public List<Assignation> GetAssignationsByStudentId(int p_studentId);
