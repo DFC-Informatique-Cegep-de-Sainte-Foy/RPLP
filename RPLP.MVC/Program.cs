@@ -11,6 +11,7 @@ using System.Net;
 try
 {
     var builder = WebApplication.CreateBuilder(args);
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
     // Add services to the container.
     builder.Services.AddControllersWithViews();
@@ -25,9 +26,21 @@ try
         options.ClientId = builder.Configuration["Auth0:ClientId"];
         options.Scope = "openid profile email";
     });
+    builder.Services.AddDbContext<RPLPDbContext>(
+    options => options.UseSqlServer(connectionString));
 
+    builder.Services.AddScoped<IDepotClassroom, DepotClassroom>();
+    builder.Services.AddScoped<IDepotAdministrator, DepotAdministrator>();
+    builder.Services.AddScoped<IDepotAssignment, DepotAssignment>();
+    builder.Services.AddScoped<IDepotComment, DepotComment>();
+    builder.Services.AddScoped<IDepotOrganisation, DepotOrganisation>();
+    builder.Services.AddScoped<IDepotRepository, DepotRepository>();
+    builder.Services.AddScoped<IDepotStudent, DepotStudent>();
+    builder.Services.AddScoped<IDepotTeacher, DepotTeacher>();
+    builder.Services.AddScoped<IVerificatorForDepot, VerificatorForDepot>();
     builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 
+    
 
     var app = builder.Build();
 
