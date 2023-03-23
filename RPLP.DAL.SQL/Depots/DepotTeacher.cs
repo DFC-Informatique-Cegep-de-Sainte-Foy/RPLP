@@ -16,11 +16,6 @@ namespace RPLP.DAL.SQL.Depots
     {
         private readonly RPLPDbContext _context;
 
-        public DepotTeacher()
-        {
-            this._context = new RPLPDbContext();
-        }
-
         public DepotTeacher(RPLPDbContext p_context)
         {
             if (p_context == null)

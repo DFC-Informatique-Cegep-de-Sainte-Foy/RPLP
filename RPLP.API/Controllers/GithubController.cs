@@ -7,6 +7,7 @@ using RPLP.DAL.SQL.Depots;
 using RPLP.JOURNALISATION;
 using RPLP.SERVICES.Github;
 using RPLP.SERVICES.Github.GithubReviewCommentFetcher;
+using RPLP.SERVICES.InterfacesDepots;
 using System.Diagnostics;
 using System.Text;
 
@@ -20,7 +21,7 @@ namespace RPLP.API.Controllers
         private GithubPRCommentFetcher _githubPRCommentFetcher;
         private ScriptGithubRPLP _scriptGithub;
 
-        public GithubController(IConfiguration configuration)
+        public GithubController(IConfiguration configuration, IDepotClassroom depotClassroom, IDepotRepository depotRepository, IDepotOrganisation depotOrganisation)
         {
             if (configuration == null)
             {
@@ -31,8 +32,8 @@ namespace RPLP.API.Controllers
             string token = configuration.GetValue<string>("Token");
 
             _githubAction = new GithubApiAction(token);
-            _githubPRCommentFetcher = new GithubPRCommentFetcher(token, new DepotClassroom(), new DepotRepository());
-            _scriptGithub = new ScriptGithubRPLP(new DepotClassroom(), new DepotRepository(), new DepotOrganisation(), token);
+            _githubPRCommentFetcher = new GithubPRCommentFetcher(token, depotClassroom, depotRepository);
+            _scriptGithub = new ScriptGithubRPLP(depotClassroom, depotRepository, depotOrganisation, token);
         }
 
         [HttpGet("/test/{organisationName}/{classroomName}/{assignmentName}/{numberOfReviews}")]
