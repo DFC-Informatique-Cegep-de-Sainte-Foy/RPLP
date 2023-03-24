@@ -182,7 +182,7 @@ namespace RPLP.DAL.SQL.Depots
                 this._context.Update(assignationResult);
                 this._context.SaveChanges();
 
-                .Logging.Journal(new Log("Assignation", $"DepotAssignation - Method - DeleteAssignation(Assignation p_assignation) - Void - delete Assignation"));
+                Logging.Journal(new Log("Assignation", $"DepotAssignation - Method - DeleteAssignation(Assignation p_assignation) - Void - delete Assignation"));
             }
             else
             {
