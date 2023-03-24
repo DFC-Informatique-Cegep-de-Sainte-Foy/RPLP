@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using RPLP.DAL.DTO.Sql;
+using RPLP.ENTITES;
 using RPLP.JOURNALISATION;
 using RPLP.SERVICES.InterfacesDepots;
 using System;
@@ -14,11 +16,6 @@ namespace RPLP.DAL.SQL.Depots
     {
         private readonly RPLPDbContext _context;
 
-        public DepotAssignation()
-        {
-            this._context = new RPLPDbContext(new DbContextOptionsBuilder<RPLPDbContext>().UseSqlServer("Server=rplp.db; Database=RPLP; User Id=sa; password=Cad3pend86!").Options);
-        }
-
         public DepotAssignation(RPLPDbContext p_context)
         {
             if (p_context == null)
@@ -32,22 +29,78 @@ namespace RPLP.DAL.SQL.Depots
 
         public List<Assignation> GetAssignations()
         {
-            throw new NotImplementedException();
+            List<Assignation_SQLDTO> assignationsResult = this._context.Assignation.Where(assignation => assignation.Status > 0).ToList();
+
+            List<Assignation> assignations = assignationsResult.Select(assignation => assignation.ToEntity()).ToList();
+
+            Logging.Journal(new Log("Assignation", $"DepotAssignation - Method - GetAssignations() - Return List<Assignation>"));
+
+            return assignations;
         }
 
         public List<Assignation> GetAssignationsByStudentId(int p_studentId)
         {
-            throw new NotImplementedException();
+            if (p_studentId < 0)
+            {
+                Logging.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                       "DepotAssignation - GetAssignationsByStudentId - p_studentId passé en paramêtre est hors des limites", 0));
+            }
+
+            List<Assignation_SQLDTO> assignationsResult = this._context.Assignation.Where(assignation => assignation.Status > 0 && assignation.StudentId == p_studentId).ToList();
+
+            List<Assignation> assignations = assignationsResult.Select(assignation => assignation.ToEntity()).ToList();
+
+            Logging.Journal(new Log("Assignation", $"DepotAssignation - Method - GetAssignationsByStudentId() - Return List<Assignation>"));
+
+            return assignations;
         }
 
         public List<Assignation> GetAssignationsByRepositoryID(int p_repositoryId)
         {
-            throw new NotImplementedException();
+            if (p_repositoryId < 0)
+            {
+                Logging.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                       "DepotAssignation - GetAssignationsByRepositoryID - p_repositoryId passé en paramêtre est hors des limites", 0));
+            }
+
+            List<Assignation_SQLDTO> assignationsResult = this._context.Assignation.Where(assignation => assignation.Status > 0 && assignation.RepositoryId == p_repositoryId).ToList();
+
+            List<Assignation> assignations = assignationsResult.Select(assignation => assignation.ToEntity()).ToList();
+
+            Logging.Journal(new Log("Assignation", $"DepotAssignation - Method - GetAssignationsByRepositoryID() - Return List<Assignation>"));
+
+            return assignations;
         }
 
         public Assignation GetAssignationByStudentAndRepositoryIDs(int p_studentId, int p_repositoryId)
         {
-            throw new NotImplementedException();
+            if (p_studentId < 0)
+            {
+                Logging.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                       "DepotAssignation - GetAssignationByStudentAndRepositoryIDs - p_studentId passé en paramêtre est hors des limites", 0));
+            }
+
+            if (p_repositoryId < 0)
+            {
+                Logging.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                       "DepotAssignation - GetAssignationByStudentAndRepositoryIDs - p_repositoryId passé en paramêtre est hors des limites", 0));
+            }
+
+            Assignation_SQLDTO assignationResult = this._context.Assignation.
+                FirstOrDefault(assignation => assignation.Status > 0 && assignation.StudentId == p_studentId && assignation.RepositoryId == p_repositoryId);
+
+            if (assignationResult == null)
+            {
+                Logging.Journal(new Log("Assignation", $"DepotAssignation - Method -  GetAssignationByStudentAndRepositoryIDs - Return Assignation - assignationResult est null", 0));
+
+                return null;
+            }
+
+            Assignation assignation = assignationResult.ToEntity();
+
+            Logging.Journal(new Log("Assignation", $"DepotAssignation - Method - GetAssignationByStudentAndRepositoryIDs() - Return List<Assignation>"));
+
+            return assignation;
         }
 
         public List<Assignation> GetAssignationsByAssignmentID(int p_assignmentId)
@@ -77,12 +130,64 @@ namespace RPLP.DAL.SQL.Depots
 
         public void UpsertAssignation(Assignation p_assignation)
         {
-            throw new NotImplementedException();
+            if (p_assignation == null)
+            {
+                Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                     "DepotAssignation - UpsertAssignation - p_assignation passé en paramètre est null", 0));
+            }
+
+            Assignation_SQLDTO assignationResult = this._context.Assignation.
+                SingleOrDefault(assignation => assignation.Status > 0 && assignation.StudentId == p_assignation.StudentId && assignation.RepositoryId == p_assignation.RepositoryId);
+
+            if (assignationResult != null)
+            {
+                assignationResult.StudentId = p_assignation.StudentId;
+                assignationResult.RepositoryId = p_assignation.RepositoryId;
+                assignationResult.Status = p_assignation.Status;
+
+                this._context.Update(assignationResult);
+                this._context.SaveChanges();
+
+                Logging.Journal(new Log("Assignation", $"DepotAssignation - Method - UpsertAssignation(Assignation p_assignation) - Void - Update Assignation"));
+            }
+            else
+            {
+                Assignation_SQLDTO assignation = new Repository_SQLDTO();
+                assignation.StudentId = p_assignation.StudentId;
+                assignation.RepositoryId = p_assignation.RepositoryId;
+                assignation.Status = p_assignation.Status; ;
+
+                this._context.Assignations.Add(assignation);
+                this._context.SaveChanges();
+
+                Logging.Journal(new Log("Assignation", $"DepotAssignation - Method - UpsertAssignation(Assignation p_assignation) - Void - Add Assignation"));
+            }
         }
 
         public void DeleteAssignation(Assignation p_assignation)
         {
-            throw new NotImplementedException();
+            if (p_assignation == null)
+            {
+                Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                     "DepotAssignation - DeleteAssignation - p_assignation passé en paramètre est null", 0));
+            }
+
+            Assignation_SQLDTO assignationResult = this._context.Assignation.
+                SingleOrDefault(assignation => assignation.Status > 0 && assignation.StudentId == p_assignation.StudentId && assignation.RepositoryId == p_assignation.RepositoryId);
+
+            if (assignationResult != null)
+            {
+                assignationResult.Status = 0;
+
+                this._context.Update(assignationResult);
+                this._context.SaveChanges();
+
+                .Logging.Journal(new Log("Assignation", $"DepotAssignation - Method - DeleteAssignation(Assignation p_assignation) - Void - delete Assignation"));
+            }
+            else
+            {
+                Logging.Journal(new Log("Assignation", $"DepotAssignation - Method - DeleteAssignation(Assignation p_assignation) - Void - assignationResult est null", 0));
+            }
         }
     }
 }
