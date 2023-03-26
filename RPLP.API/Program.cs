@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using RPLP.DAL.SQL;
 using RPLP.DAL.SQL.Depots;
 using RPLP.JOURNALISATION;
-using RPLP.SERVICES.InterfacesDepots;
+using RPLP.ENTITES.InterfacesDepots;
 using Microsoft.Extensions.Configuration;
 using System.Diagnostics;
 

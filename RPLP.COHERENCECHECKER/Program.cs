@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 using RPLP.DAL.SQL;
 using RPLP.DAL.SQL.Depots;
 using RPLP.SERVICES.Github;
-using RPLP.SERVICES.InterfacesDepots;
+using RPLP.ENTITES.InterfacesDepots;
 using System.Timers;
 using Unity;
 using Unity.Injection;

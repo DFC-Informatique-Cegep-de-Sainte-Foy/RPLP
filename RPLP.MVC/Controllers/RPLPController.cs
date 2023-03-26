@@ -6,7 +6,7 @@ using RPLP.DAL.SQL.Depots;
 using RPLP.ENTITES;
 using RPLP.MVC.Models;
 using RPLP.SERVICES.Github;
-using RPLP.SERVICES.InterfacesDepots;
+using RPLP.ENTITES.InterfacesDepots;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Text;

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RPLP.SERVICES.InterfacesDepots
+namespace RPLP.ENTITES.InterfacesDepots
 {
     public interface IVerificatorForDepot
     {

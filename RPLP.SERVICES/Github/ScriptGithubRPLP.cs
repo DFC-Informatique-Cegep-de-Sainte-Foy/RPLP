@@ -3,7 +3,7 @@ using RPLP.DAL.DTO.Json;
 using RPLP.DAL.DTO.Sql;
 using RPLP.ENTITES;
 using RPLP.JOURNALISATION;
-using RPLP.SERVICES.InterfacesDepots;
+using RPLP.ENTITES.InterfacesDepots;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -98,9 +98,9 @@ namespace RPLP.SERVICES.Github
                 throw new ArgumentException("Number of students inferior to number of reviews");
             }
 
-            RPLP.JOURNALISATION.Logging.Journal(new Log($"ScriptGithubRPLP - Avant List<Repository> repositoriesToAssign)"));
+            //RPLP.JOURNALISATION.Logging.Journal(new Log($"ScriptGithubRPLP - Avant List<Repository> repositoriesToAssign)"));
             List<Repository> repositoriesToAssign = getRepositoriesToAssign(p_organisationName, p_classRoomName, p_assignmentName, students);
-            RPLP.JOURNALISATION.Logging.Journal(new Log($"ScriptGithubRPLP - Après List<Repository> repositoriesToAssign"));
+            //RPLP.JOURNALISATION.Logging.Journal(new Log($"ScriptGithubRPLP - Après List<Repository> repositoriesToAssign"));
             Dictionary<string, int> studentDictionary = new Dictionary<string, int>();
 
             if (repositoriesToAssign == null)

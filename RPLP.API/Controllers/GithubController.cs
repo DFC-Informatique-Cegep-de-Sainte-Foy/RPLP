@@ -7,7 +7,7 @@ using RPLP.DAL.SQL.Depots;
 using RPLP.JOURNALISATION;
 using RPLP.SERVICES.Github;
 using RPLP.SERVICES.Github.GithubReviewCommentFetcher;
-using RPLP.SERVICES.InterfacesDepots;
+using RPLP.ENTITES.InterfacesDepots;
 using System.Diagnostics;
 using System.Text;
 
