@@ -69,9 +69,9 @@ namespace RPLP.SERVICES.Github
             this._activeClassroom.Name = p_classRoomName;
             this._activeClassroom.OrganisationName = p_organisationName;
             this._activeClassroom.Teachers = _depotClassroom.GetTeachersByClassroomName(this._activeClassroom.Name);
-            this._activeClassroom.Assignments =
-                _depotClassroom.GetAssignmentsByClassroomName(this._activeClassroom.Name);
+            this._activeClassroom.Assignments = _depotClassroom.GetAssignmentsByClassroomName(this._activeClassroom.Name);
             this._activeClassroom.Students = _depotClassroom.GetStudentsByClassroomName(this._activeClassroom.Name);
+            this._activeClassroom.UpdateActiveAssignment(p_assignmentName);
         }
 
         public void ScriptAssignStudentToAssignmentReview(string p_organisationName, string p_classRoomName,
@@ -232,10 +232,11 @@ namespace RPLP.SERVICES.Github
         {
             Branch_JSONDTO branchDTO = new Branch_JSONDTO();
             RPLP.JOURNALISATION.Logging.Journal(new Log(
-                $"ScriptGithubRPLP - prepareRepositoryAndCreatePullRequest(string p_organisationName: {p_organisationName}, string p_repositoryName:{p_repositoryName}, Dictionary<string, int> p_studentDictionary: {p_studentDictionary.Count}, int p_reviewsPerRepository: {p_reviewsPerRepository})"));
+                $"ScriptGithubRPLP - prepareRepositoryAndCreatePullRequest(string p_organisationName: {p_organisationName}," +
+                $" string p_repositoryName:{p_repositoryName}, Dictionary<string, int> p_studentDictionary: {p_studentDictionary.Count}, " +
+                $"int p_reviewsPerRepository: {p_reviewsPerRepository})"));
 
-            List<Branch_JSONDTO> branchesResult =
-                this._githubApiAction.GetRepositoryBranchesGithub(p_organisationName, p_repositoryName);
+            List<Branch_JSONDTO> branchesResult = this._githubApiAction.GetRepositoryBranchesGithub(p_organisationName, p_repositoryName);
             RPLP.JOURNALISATION.Logging.Journal(new Log($"ScriptGithubRPLP - branchesResult: {branchesResult.Count})"));
 
             if (branchesResult == null)
@@ -321,13 +322,11 @@ namespace RPLP.SERVICES.Github
 
                 throw new ArgumentException($"No assignment in {this._activeClassroom.Name}");
             }
-
-            Assignment assignmentToReview =
-                this._activeClassroom.Assignments.SingleOrDefault(assignment => assignment.Name == p_assignmentName);
+            
 
             RPLP.JOURNALISATION.Logging.Journal(
-                new Log($"ScriptGithubRPLP - Assignment assignment:{assignmentToReview})"));
-            if (assignmentToReview == null)
+                new Log($"ScriptGithubRPLP - Assignment assignment:{this._activeClassroom.ActiveAssignment})"));
+            if (this._activeClassroom.ActiveAssignment == null)
             {
                 RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(),
                     new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
@@ -344,10 +343,13 @@ namespace RPLP.SERVICES.Github
             RPLP.JOURNALISATION.Logging.Journal(new Log(
                 $"ScriptGithubRPLP - List<Repository> repositoriesResult:{repositoriesFromDBForActiveClassroom.Count})"));
             repositoriesToThisAssignment =
-                GetStudentsRepositoriesForAssignment(repositoriesFromDBForActiveClassroom, assignmentToReview);
+                GetStudentsRepositoriesForAssignment(repositoriesFromDBForActiveClassroom, this._activeClassroom.ActiveAssignment);
 
             RPLP.JOURNALISATION.Logging.Journal(new Log(
-                $"ScriptGithubRPLP - getRepositoriesToAssign(string p_organisationName:{this._activeClassroom.OrganisationName}, string p_classRoomName:{this._activeClassroom.Name}, string p_assignmentName:{p_assignmentName}, List<Student> p_students:{this._activeClassroom.Students.Count} - repositoriesResult:{repositoriesFromDBForActiveClassroom.Count} - repositories:{repositoriesToThisAssignment.Count})"));
+                $"ScriptGithubRPLP - getRepositoriesToAssign(string p_organisationName:" +
+                $"{this._activeClassroom.OrganisationName}, string p_classRoomName:{this._activeClassroom.Name}, string p_assignmentName:" +
+                $"{p_assignmentName}, List<Student> p_students:{this._activeClassroom.Students.Count} - repositoriesResult:" +
+                $"{repositoriesFromDBForActiveClassroom.Count} - repositories:{repositoriesToThisAssignment.Count})"));
 
             return repositoriesToThisAssignment;
         }
