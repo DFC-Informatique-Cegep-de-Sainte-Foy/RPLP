@@ -8,7 +8,7 @@ namespace RPLP.ENTITES
 {
     public class Allocations
     {
-        public List<Allocation> Pairs { get; set; }
+        public List<Allocation> Pairs { get; private set; }
         public int Status { 
             get
             {
