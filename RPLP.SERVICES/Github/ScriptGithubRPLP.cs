@@ -21,6 +21,7 @@ namespace RPLP.SERVICES.Github
         private readonly IDepotOrganisation _depotOrganisation;
         private readonly GithubApiAction _githubApiAction;
         private Classroom _activeClassroom;
+        private Allocations _allocations;
 
         public ScriptGithubRPLP(IDepotClassroom p_depotClassroom, IDepotRepository p_depotRepository,
             IDepotOrganisation p_depotOrganisation, string p_token)
@@ -69,9 +70,16 @@ namespace RPLP.SERVICES.Github
             this._activeClassroom.Name = p_classRoomName;
             this._activeClassroom.OrganisationName = p_organisationName;
             this._activeClassroom.Teachers = _depotClassroom.GetTeachersByClassroomName(this._activeClassroom.Name);
-            this._activeClassroom.Assignments = _depotClassroom.GetAssignmentsByClassroomName(this._activeClassroom.Name);
+            this._activeClassroom.Assignments =
+                _depotClassroom.GetAssignmentsByClassroomName(this._activeClassroom.Name);
             this._activeClassroom.Students = _depotClassroom.GetStudentsByClassroomName(this._activeClassroom.Name);
             this._activeClassroom.UpdateActiveAssignment(p_assignmentName);
+        }
+
+        private void CreateOrUpdateAllocations(List<Repository> p_repositories)
+        {
+            if (this._allocations is null)
+                this._allocations = new Allocations(p_repositories, this._activeClassroom);
         }
 
         public void ScriptAssignStudentToAssignmentReview(string p_organisationName, string p_classRoomName,
@@ -118,9 +126,7 @@ namespace RPLP.SERVICES.Github
             }
 
             CreateOrUpdateActiveClassroom(p_organisationName, p_classRoomName, p_assignmentName);
-
-            RPLP.JOURNALISATION.Logging.Journal(new Log(
-                $"ScriptGithubRPLP - List<Student> students : {this._activeClassroom.Students.Count} : {p_reviewsPerRepository + 1})"));
+            
             if (this._activeClassroom.Students.Count < p_reviewsPerRepository + 1)
             {
                 RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(),
@@ -131,12 +137,7 @@ namespace RPLP.SERVICES.Github
                 throw new ArgumentException("Number of students inferior to number of reviews");
             }
 
-            RPLP.JOURNALISATION.Logging.Journal(
-                new Log($"ScriptGithubRPLP - Avant List<Repository> repositoriesToAssign)"));
-
             List<Repository> repositoriesToAssign = getRepositoriesToAssign(p_assignmentName);
-            RPLP.JOURNALISATION.Logging.Journal(
-                new Log($"ScriptGithubRPLP - Après List<Repository> repositoriesToAssign"));
 
             if (repositoriesToAssign == null)
             {
@@ -148,15 +149,18 @@ namespace RPLP.SERVICES.Github
                 throw new ArgumentNullException($"No repositories to assign in {p_classRoomName}");
             }
 
-            Dictionary<string, int> studentDictionary = GetStudentDictionary(repositoriesToAssign, p_assignmentName);
-            RPLP.JOURNALISATION.Logging.Journal(new Log(
-                $"ScriptGithubRPLP - ScriptAssignStudentToAssignmentReview(string p_organisationName:{p_organisationName}, string p_classRoomName:{p_classRoomName}, string p_assignmentName:{p_assignmentName}, int p_reviewsPerRepository:{p_reviewsPerRepository} - studentDictionary:{studentDictionary.Count})"));
+            // Dictionary<string, int> studentDictionary = GetStudentDictionary(repositoriesToAssign, p_assignmentName);
+            // RPLP.JOURNALISATION.Logging.Journal(new Log(
+            //     $"ScriptGithubRPLP - ScriptAssignStudentToAssignmentReview(string p_organisationName:" +
+            //     $"{p_organisationName}, string p_classRoomName:{p_classRoomName}, string p_assignmentName:{p_assignmentName}, " +
+            //     $"int p_reviewsPerRepository:{p_reviewsPerRepository} - studentDictionary:{studentDictionary.Count})"));
 
-            foreach (Repository repository in repositoriesToAssign)
-            {
-                Thread.Sleep(20000); // arbitrary sleep to avoid forbiden 403 from GH - a revenir
-                prepareRepositoryAndCreatePullRequest(p_organisationName, repository.Name, studentDictionary, p_reviewsPerRepository);
-            }
+            // foreach (Repository repository in repositoriesToAssign)
+            // {
+            //     Thread.Sleep(20000); // arbitrary sleep to avoid forbiden 403 from GH - a revenir
+            //     prepareRepositoryAndCreatePullRequest(p_organisationName, repository.Name, studentDictionary,
+            //         p_reviewsPerRepository);
+            // }
             // Passer la liste de Repos a la classe Allocations 
             // Envoyer la liste de allocations a bd
             // Prepare Repository and Create pull request
@@ -164,6 +168,10 @@ namespace RPLP.SERVICES.Github
             // -    c'est a changer par une liste d'allocation
             // AssignStudentReviewersToPullRequests
             // -    c'est aussi a changer pour une liste d'allocation
+
+            CreateOrUpdateAllocations(repositoriesToAssign);
+            this._allocations.CreateRandomReviewsAllocation(p_reviewsPerRepository);
+            prepareRepositoryAndCreatePullRequestV2();
         }
 
         public void ScriptRemoveStudentCollaboratorsFromAssignment(string p_organisationName, string p_classRoomName,
@@ -242,7 +250,8 @@ namespace RPLP.SERVICES.Github
                 $" string p_repositoryName:{p_repositoryName}, Dictionary<string, int> p_studentDictionary: {p_studentDictionary.Count}, " +
                 $"int p_reviewsPerRepository: {p_reviewsPerRepository})"));
 
-            List<Branch_JSONDTO> branchesResult = this._githubApiAction.GetRepositoryBranchesGithub(p_organisationName, p_repositoryName);
+            List<Branch_JSONDTO> branchesResult =
+                this._githubApiAction.GetRepositoryBranchesGithub(p_organisationName, p_repositoryName);
             RPLP.JOURNALISATION.Logging.Journal(new Log($"ScriptGithubRPLP - branchesResult: {branchesResult.Count})"));
 
             if (branchesResult == null)
@@ -260,6 +269,53 @@ namespace RPLP.SERVICES.Github
 
             AssignStudentReviewersToPullRequests(p_studentDictionary, p_organisationName, p_repositoryName,
                 p_reviewsPerRepository, branchDTO);
+        }
+
+        private void prepareRepositoryAndCreatePullRequestV2()
+        {
+            RPLP.JOURNALISATION.Logging.Journal(
+                new Log($"ScriptGithubRPLP - prepareRepositoryAndCreatePullRequestV2()" +
+                        $"this._allocations.Pairs.Count={this._allocations.Pairs.Count}"));
+
+            // This is yet the old way of doing things
+            // as a proof of concept. Here we iterate over all 'allocations' in the allocation list
+            // we will later pass this responsability to the newly created service console project
+            foreach (Allocation allocation in this._allocations.Pairs)
+            {
+                string p_organisationName = this._activeClassroom.OrganisationName;
+                string p_repositoryName = this._depotRepository.GetRepositoryById(allocation.RepositoryId).Name;
+                string p_reviewerName = this._activeClassroom.Students
+                    .FirstOrDefault(reviewer => reviewer.Id == allocation.StudentId).Username;
+                
+                RPLP.JOURNALISATION.Logging.Journal(
+                    new Log($"ScriptGithubRPLP - foreach (Allocation allocation in this._allocations.Pairs)" +
+                            $"p_organisationName = {p_organisationName}" +
+                            $"p_repositoryName = {p_repositoryName}" +
+                            $"p_reviewerName = {p_reviewerName}"));
+                
+                List<Branch_JSONDTO> getAllAvailableBranchesInRepository =
+                    this._githubApiAction.GetRepositoryBranchesGithub(p_organisationName, p_repositoryName);
+                RPLP.JOURNALISATION.Logging.Journal(
+                    new Log($"ScriptGithubRPLP - branchesResult: {getAllAvailableBranchesInRepository.Count})"));
+
+                if (getAllAvailableBranchesInRepository == null)
+                {
+                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(),
+                        new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                        "ScriptGithubRPLP - prepareRepositoryAndCreatePullRequest - la liste branchesResult assignée à partir de la méthode this._githubApiAction.GetRepositoryBranchesGithub(p_organisationName, p_repositoryName)  est null",
+                        0));
+
+                    throw new ArgumentNullException($"Branch does not exist or wrong name was entered");
+                }
+
+                Branch_JSONDTO feedbackBranch = GetFeedbackBranchFromBranchList(getAllAvailableBranchesInRepository);
+                RPLP.JOURNALISATION.Logging.Journal(
+                    new Log($"ScriptGithubRPLP - branchDTO: {feedbackBranch.reference})"));
+                
+                Thread.Sleep(30000);
+                createPullRequestAndAssignUser(p_organisationName, p_repositoryName, feedbackBranch.gitObject.sha,
+                    p_reviewerName);
+            }
         }
 
         private void createPullRequestAndAssignUser(string p_organisationName, string p_repositoryName, string p_sha,
@@ -328,7 +384,7 @@ namespace RPLP.SERVICES.Github
 
                 throw new ArgumentException($"No assignment in {this._activeClassroom.Name}");
             }
-            
+
 
             RPLP.JOURNALISATION.Logging.Journal(
                 new Log($"ScriptGithubRPLP - Assignment assignment:{this._activeClassroom.ActiveAssignment})"));
@@ -349,7 +405,8 @@ namespace RPLP.SERVICES.Github
             RPLP.JOURNALISATION.Logging.Journal(new Log(
                 $"ScriptGithubRPLP - List<Repository> repositoriesResult:{repositoriesFromDBForActiveClassroom.Count})"));
             repositoriesToThisAssignment =
-                GetStudentsRepositoriesForAssignment(repositoriesFromDBForActiveClassroom, this._activeClassroom.ActiveAssignment);
+                GetStudentsRepositoriesForAssignment(repositoriesFromDBForActiveClassroom,
+                    this._activeClassroom.ActiveAssignment);
 
             RPLP.JOURNALISATION.Logging.Journal(new Log(
                 $"ScriptGithubRPLP - getRepositoriesToAssign(string p_organisationName:" +
@@ -807,7 +864,8 @@ namespace RPLP.SERVICES.Github
                     p_studentDictionary[username]++;
                     numberStudentAdded++;
 
-                    createPullRequestAndAssignUser(p_organisationName, p_repositoryName, branchDTO.gitObject.sha, username);
+                    createPullRequestAndAssignUser(p_organisationName, p_repositoryName, branchDTO.gitObject.sha,
+                        username);
                 }
             } while (numberStudentAdded < p_reviewsPerRepository);
         }

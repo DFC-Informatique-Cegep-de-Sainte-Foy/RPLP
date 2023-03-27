@@ -47,6 +47,12 @@ namespace RPLP.ENTITES
 
         public void CreateRandomReviewsAllocation(int p_numberOfReviews)
         {
+            // RPLP.JOURNALISATION.Logging.Journal(
+            //     new Log($"Allocations.cs - CreateRandomReviewsAllocation(int p_numberOfReviews)" +
+            //             $"p_numberOfReviews={p_numberOfReviews}" +
+            //             $"this._repositories.Count={this._repositories.Count}" +
+            //             $"this.Pairs={this.Pairs.Count}"));
+
             if (p_numberOfReviews > 0 && p_numberOfReviews < this._repositories.Count - 1)
             {
                 List<string> usernamesFromCurrentRepos = ExtractUsernameFromRepoName();
@@ -55,10 +61,15 @@ namespace RPLP.ENTITES
                 {
                     for (int j = 0; j < p_numberOfReviews; j++)
                     {
-                        this.Pairs.Add(new Allocation(_repositories[i].Id,
+                        int repoId = _repositories[i].Id;
+                        int reviewerId =
                             GetReviewerIdParUsername(
-                                usernamesFromCurrentRepos[(i + j + 1) % usernamesFromCurrentRepos.Count]),
-                            1));
+                                usernamesFromCurrentRepos[(i + j + 1) % usernamesFromCurrentRepos.Count]);
+                        // RPLP.JOURNALISATION.Logging.Journal(
+                        //     new Log($"Allocations.cs - CreateRandomReviewsAllocation(int p_numberOfReviews)" +
+                        //             $"i={i} repoId={repoId}" +
+                        //             $"j={j} reviewerId={reviewerId}"));
+                        this.Pairs.Add(new Allocation(repoId, reviewerId, 1));
                     }
                 }
             }
@@ -83,8 +94,14 @@ namespace RPLP.ENTITES
 
         private int GetReviewerIdParUsername(string reviewerUsername)
         {
-            return this._classroom.Students.Where(reviewer => reviewer.Username == reviewerUsername).FirstOrDefault()
+            int reviewerId = this._classroom.Students.Where(reviewer => reviewer.Username.ToLower() == reviewerUsername.ToLower()).FirstOrDefault()
                 .Id;
+            
+            // RPLP.JOURNALISATION.Logging.Journal(
+            //     new Log($"Allocations.cs - GetReviewerIdParUsername(string reviewerUsername)" +
+            //             $"reviewerUsername={reviewerUsername}" +
+            //             $"reviewerId={reviewerId}"));
+            return reviewerId;
         }
 
         public List<Allocation> GetAllocationsByStudentId(int p_studentId)
