@@ -3,7 +3,7 @@ using Newtonsoft.Json.Linq;
 using RPLP.DAL.DTO.Json;
 using RPLP.ENTITES;
 using RPLP.JOURNALISATION;
-using RPLP.SERVICES.InterfacesDepots;
+using RPLP.ENTITES.InterfacesDepots;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

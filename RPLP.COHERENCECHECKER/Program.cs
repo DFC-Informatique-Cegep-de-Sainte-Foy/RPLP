@@ -4,6 +4,8 @@ using Microsoft.Extensions.Configuration;
 using RPLP.DAL.SQL;
 using RPLP.DAL.SQL.Depots;
 using RPLP.SERVICES.Github;
+using RPLP.ENTITES.InterfacesDepots;
+using System.Timers;
 using RPLP.SERVICES.InterfacesDepots;
 using Unity;
 using Unity.Injection;
@@ -23,7 +25,7 @@ configuration = builder.Build();
 var connectionString = configuration.GetConnectionString("DefaultConnection");
 var token = configuration.GetSection("Token");
 
-DbContextOptionsBuilder <RPLPDbContext> optionsBuilder =
+DbContextOptionsBuilder<RPLPDbContext> optionsBuilder =
     new DbContextOptionsBuilder<RPLPDbContext>().UseSqlServer(connectionString);
 
 container.RegisterType<RPLPDbContext>(TypeLifetime.Singleton, new InjectionConstructor(new object[]
@@ -36,7 +38,7 @@ container.RegisterType<IDepotRepository, DepotRepository>(TypeLifetime.Scoped);
 
 ScriptGithubRPLP scripts = new ScriptGithubRPLP(container.Resolve<IDepotClassroom>(), container.Resolve<IDepotRepository>(), container.Resolve<IDepotOrganisation>(), token.ToString());
 
-while(true)
+while (true)
 {
     scripts.EnsureOrganisationRepositoriesAreInDB();
     Console.WriteLine("Interval");

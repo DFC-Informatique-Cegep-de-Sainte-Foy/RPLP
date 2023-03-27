@@ -11,7 +11,7 @@ namespace RPLP.ENTITES
         public int Id { get; set; }
         public string Name { get; set; }
         public List<Administrator> Administrators { get; set; }
-
+        
         public Organisation()
         {
             this.Administrators = new List<Administrator>();

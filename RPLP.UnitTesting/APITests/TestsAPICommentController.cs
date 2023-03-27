@@ -3,7 +3,7 @@ using Moq;
 using RPLP.API.Controllers;
 using RPLP.DAL.SQL.Depots;
 using RPLP.ENTITES;
-using RPLP.SERVICES.InterfacesDepots;
+using RPLP.ENTITES.InterfacesDepots;
 using System;
 using System.Collections.Generic;
 using System.Linq;

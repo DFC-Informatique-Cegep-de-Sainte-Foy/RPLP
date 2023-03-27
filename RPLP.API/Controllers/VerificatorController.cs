@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using RPLP.DAL.SQL.Depots;
 using RPLP.JOURNALISATION;
-using RPLP.SERVICES.InterfacesDepots;
+using RPLP.ENTITES.InterfacesDepots;
 using System.Diagnostics;
 
 namespace RPLP.API.Controllers
