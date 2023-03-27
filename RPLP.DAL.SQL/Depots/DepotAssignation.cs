@@ -18,7 +18,7 @@ namespace RPLP.DAL.SQL.Depots
 
         public DepotAssignation(RPLPDbContext p_context)
         {
-            if (p_context == null)
+            if (p_context is null)
             {
                 Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                                "DepotAssignation - DepotAssignation(RPLPDbContext p_context) - p_context de type RPLPDbContext passé en paramètre est null", 0));
@@ -86,10 +86,10 @@ namespace RPLP.DAL.SQL.Depots
                        "DepotAssignation - GetAssignationByStudentAndRepositoryIDs - p_repositoryId passé en paramêtre est hors des limites", 0));
             }
 
-            Assignation_SQLDTO assignationResult = this._context.Assignation.
+            Assignation_SQLDTO? assignationResult = this._context.Assignation.
                 SingleOrDefault(assignation => assignation.Status > 0 && assignation.StudentId == p_studentId && assignation.RepositoryId == p_repositoryId);
 
-            if (assignationResult == null)
+            if (assignationResult is null)
             {
                 Logging.Journal(new Log("Assignation", $"DepotAssignation - Method -  GetAssignationByStudentAndRepositoryIDs - Return Assignation - assignationResult est null", 0));
 
@@ -105,7 +105,7 @@ namespace RPLP.DAL.SQL.Depots
 
         public List<Assignation> GetAssignationsByAssignmentID(int p_assignmentId)
         {
-            if (p_id < 0)
+            if (p_assignmentId < 0)
             {
                 Logging.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                        "DepotAssignation - GetAssignationsByAssignmentID - p_assignmentId passé en paramêtre est hors des limites", 0));
@@ -161,7 +161,7 @@ namespace RPLP.DAL.SQL.Depots
 
             Student_SQLDTO? studentResult = this._context.Students.SingleOrDefault(student => student.Username == p_studentUsername);
 
-            if (studentResult == null)
+            if (studentResult is null)
             {
                 Logging.Journal(new Log("Assignation", $"DepotAssignation - Method - GetAssignationsByStudentUsername(string p_studentUsername) - List<Assignation> - studentResult est null", 0));
             }
@@ -187,7 +187,7 @@ namespace RPLP.DAL.SQL.Depots
 
             Repository_SQLDTO? repositoryResult = this._context.Repository.SingleOrDefault(repository => repository.Name == p_repositoryName);
 
-            if (studentResult == null)
+            if (repositoryResult is null)
             {
                 Logging.Journal(new Log("Assignation", $"DepotAssignation - Method - GetAssignationsByRepositoryName(string p_repositoryName) - List<Assignation> - repositoryResult est null", 0));
             }
@@ -215,10 +215,10 @@ namespace RPLP.DAL.SQL.Depots
                        "DepotAssignation - GetAssignationByStudentAndRepositoryNames - p_repositoryName passé en paramêtre vide", 0));
             }
 
-            Assignation_SQLDTO assignationResult = this._context.Assignation.
+            Assignation_SQLDTO? assignationResult = this._context.Assignation.
                 SingleOrDefault(assignation => assignation.Status > 0 && assignation.Username == p_studentUsername && assignation.Name == p_repositoryName);
 
-            if (assignationResult == null)
+            if (assignationResult is null)
             {
                 Logging.Journal(new Log("Assignation", $"DepotAssignation - Method -  GetAssignationByStudentAndRepositoryNames - Return Assignation - assignationResult est null", 0));
 
@@ -258,16 +258,16 @@ namespace RPLP.DAL.SQL.Depots
 
         public void UpsertAssignation(Assignation p_assignation)
         {
-            if (p_assignation == null)
+            if (p_assignation is null)
             {
                 Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotAssignation - UpsertAssignation - p_assignation passé en paramètre est null", 0));
             }
 
-            Assignation_SQLDTO assignationResult = this._context.Assignation.
+            Assignation_SQLDTO? assignationResult = this._context.Assignation.
                 SingleOrDefault(assignation => assignation.Status > 0 && assignation.StudentId == p_assignation.StudentId && assignation.RepositoryId == p_assignation.RepositoryId);
 
-            if (assignationResult != null)
+            if (assignationResult is not null)
             {
                 assignationResult.StudentId = p_assignation.StudentId;
                 assignationResult.RepositoryId = p_assignation.RepositoryId;
@@ -294,16 +294,16 @@ namespace RPLP.DAL.SQL.Depots
 
         public void DeleteAssignation(Assignation p_assignation)
         {
-            if (p_assignation == null)
+            if (p_assignation is null)
             {
                 Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotAssignation - DeleteAssignation - p_assignation passé en paramètre est null", 0));
             }
 
-            Assignation_SQLDTO assignationResult = this._context.Assignation.
+            Assignation_SQLDTO? assignationResult = this._context.Assignation.
                 SingleOrDefault(assignation => assignation.Status > 0 && assignation.StudentId == p_assignation.StudentId && assignation.RepositoryId == p_assignation.RepositoryId);
 
-            if (assignationResult != null)
+            if (assignationResult is not null)
             {
                 assignationResult.Status = 0;
 
