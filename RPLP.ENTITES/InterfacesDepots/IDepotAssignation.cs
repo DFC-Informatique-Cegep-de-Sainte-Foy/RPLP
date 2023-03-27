@@ -7,18 +7,18 @@ using System.Threading.Tasks;
 
 namespace RPLP.SERVICES.InterfacesDepots
 {
-    public interface IDepotAssignation
+    public interface IDepotAllocation
     {
-        public List<Assignation> GetAssignations();
-        public List<Assignation> GetAssignationsByStudentId(int p_studentId);
-        public List<Assignation> GetAssignationsByRepositoryID(int p_repositoryId);
-        public Assignation GetAssignationByStudentAndRepositoryIDs(int p_studentId, int p_repositoryId);
-        public List<Assignation> GetAssignationsByAssignmentID(int p_assignmentId);
-        public List<Assignation> GetAssignationsByStudentUsername(string p_studentUsername);
-        public List<Assignation> GetAssignationsByRepositoryName(string p_repositoryName);
-        public Assignation GetAssignationByStudentAndRepositoryNames(string p_studentUsername, string p_repositoryName);
-        public List<Assignation> GetAssignationsByAssignmentName(string p_assignmentName);
-        public void UpsertAssignation(Assignation p_assignation);
-        public void DeleteAssignation(Assignation p_assignation);
+        public List<Allocation> GetAllocations();
+        public List<Allocation> GetAllocationsByStudentId(int p_studentId);
+        public List<Allocation> GetAllocationsByRepositoryID(int p_repositoryId);
+        public Allocation GetAllocationByStudentAndRepositoryIDs(int p_studentId, int p_repositoryId);
+        public List<Allocation> GetAllocationsByAssignmentID(int p_assignmentId);
+        public List<Allocation> GetAllocationsByStudentUsername(string p_studentUsername);
+        public List<Allocation> GetAllocationsByRepositoryName(string p_repositoryName);
+        public Allocation GetAllocationByStudentAndRepositoryNames(string p_studentUsername, string p_repositoryName);
+        public List<Allocation> GetAllocationsByAssignmentName(string p_assignmentName);
+        public void UpsertAllocation(Allocation p_allocation);
+        public void DeleteAllocation(Allocation p_allocation);
     }
 }
