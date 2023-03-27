@@ -42,7 +42,7 @@ namespace RPLP.DAL.SQL
         public DbSet<Classroom_SQLDTO> Classrooms { get; set; }
         public DbSet<Administrator_SQLDTO> Administrators { get; set; }
         public DbSet<Assignment_SQLDTO> Assignments { get; set; }
-        public DbSet<Assignment_SQLDTO> Allocations { get; set; }
+        public DbSet<Allocation_SQLDTO> Allocations { get; set; }
         public DbSet<Comment_SQLDTO> Comments { get; set; }
         public DbSet<Organisation_SQLDTO> Organisations { get; set; }
         public DbSet<Repository_SQLDTO> Repositories { get; set; }
