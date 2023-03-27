@@ -37,6 +37,9 @@ namespace RPLP.DAL.SQL
             modelBuilder.Entity<Teacher_SQLDTO>()
                 .HasIndex(a => a.Username)
                 .IsUnique();
+
+            modelBuilder.Entity<Allocation_SQLDTO>()
+                .HasNoKey();
         }
 
         public DbSet<Classroom_SQLDTO> Classrooms { get; set; }
