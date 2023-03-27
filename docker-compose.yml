@@ -66,6 +66,7 @@ services:
       ACCEPT_EULA: "Y"
     volumes:
       - rplpvolume:/var/opt/mssql/data
+#      - C:\mssql:/tmp
 #      - /home/casio/data:/tmp
     restart: always
 

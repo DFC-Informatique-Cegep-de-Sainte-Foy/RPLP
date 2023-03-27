@@ -228,6 +228,30 @@ namespace RPLP.DAL.SQL.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+            migrationBuilder.CreateTable(
+                name: "Allocation",
+                columns: table => new
+                {
+                    RepositoryId = table.Column<int>(type: "int", nullable: false),
+                    StudentId = table.Column<int>(type: "int", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Allocation", x => new { x.RepositoryId, x.StudentId });
+                    table.ForeignKey(
+                        name: "FK_Allocation_RepositoryId",
+                        column: x => x.RepositoryId,
+                        principalTable: "Repositories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Allocation_StudentId",
+                        column: x => x.StudentId,
+                        principalTable: "Students",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Administrator_SQLDTOOrganisation_SQLDTO_OrganisationsId",
@@ -257,6 +281,9 @@ namespace RPLP.DAL.SQL.Migrations
 
             migrationBuilder.DropTable(
                 name: "Assignments");
+
+            migrationBuilder.DropTable(
+               name: "Allocation");
 
             migrationBuilder.DropTable(
                 name: "Classroom_SQLDTOStudent_SQLDTO");
