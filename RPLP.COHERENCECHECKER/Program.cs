@@ -1,15 +1,11 @@
 ﻿// See https://aka.ms/new-console-template for more information
-using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using RPLP.DAL.SQL;
 using RPLP.DAL.SQL.Depots;
 using RPLP.SERVICES.Github;
 using RPLP.SERVICES.InterfacesDepots;
-using System.Data;
-using System.Timers;
 using Unity;
-using Unity.Builder;
 using Unity.Injection;
 
 // à supprimer après test
