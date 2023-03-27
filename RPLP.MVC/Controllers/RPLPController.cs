@@ -1323,7 +1323,6 @@ namespace RPLP.MVC.Controllers
                 RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "RPLPController - RemoveCollaboratorsFromAssignmentRepositories - assignmentName passé en paramètre est vide", 0));
             }
-
             Logging.Journal(new Log("api", 0, $"RPLPController - GET méthode RemoveCollaboratorsFromAssignmentRepositories(string organisationName = {organisationName}, string classroomName = {classroomName}, string assignmentName = {assignmentName})"));
 
             _scriptGithub.ScriptRemoveStudentCollaboratorsFromAssignment(organisationName, classroomName, assignmentName);
