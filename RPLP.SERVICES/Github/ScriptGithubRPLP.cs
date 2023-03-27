@@ -155,9 +155,15 @@ namespace RPLP.SERVICES.Github
             foreach (Repository repository in repositoriesToAssign)
             {
                 Thread.Sleep(20000); // arbitrary sleep to avoid forbiden 403 from GH - a revenir
-                prepareRepositoryAndCreatePullRequest(p_organisationName, repository.Name, studentDictionary,
-                    p_reviewsPerRepository, p_assignmentName);
+                prepareRepositoryAndCreatePullRequest(p_organisationName, repository.Name, studentDictionary, p_reviewsPerRepository);
             }
+            // Passer la liste de Repos a la classe Allocations 
+            // Envoyer la liste de allocations a bd
+            // Prepare Repository and Create pull request
+            // -    pour l'instant c'est fait par repo
+            // -    c'est a changer par une liste d'allocation
+            // AssignStudentReviewersToPullRequests
+            // -    c'est aussi a changer pour une liste d'allocation
         }
 
         public void ScriptRemoveStudentCollaboratorsFromAssignment(string p_organisationName, string p_classRoomName,
@@ -228,7 +234,7 @@ namespace RPLP.SERVICES.Github
         }
 
         private void prepareRepositoryAndCreatePullRequest(string p_organisationName, string p_repositoryName,
-            Dictionary<string, int> p_studentDictionary, int p_reviewsPerRepository, string p_assignmentName)
+            Dictionary<string, int> p_studentDictionary, int p_reviewsPerRepository)
         {
             Branch_JSONDTO branchDTO = new Branch_JSONDTO();
             RPLP.JOURNALISATION.Logging.Journal(new Log(
@@ -253,7 +259,7 @@ namespace RPLP.SERVICES.Github
             RPLP.JOURNALISATION.Logging.Journal(new Log($"ScriptGithubRPLP - branchDTO: {branchDTO.reference})"));
 
             AssignStudentReviewersToPullRequests(p_studentDictionary, p_organisationName, p_repositoryName,
-                p_reviewsPerRepository, branchDTO, p_assignmentName);
+                p_reviewsPerRepository, branchDTO);
         }
 
         private void createPullRequestAndAssignUser(string p_organisationName, string p_repositoryName, string p_sha,
@@ -769,11 +775,10 @@ namespace RPLP.SERVICES.Github
         }
 
         private void AssignStudentReviewersToPullRequests(Dictionary<string, int> p_studentDictionary,
-            string p_organisationName, string p_repositoryName, int p_reviewsPerRepository, Branch_JSONDTO branchDTO,
-            string p_assignment)
+            string p_organisationName, string p_repositoryName, int p_reviewsPerRepository, Branch_JSONDTO branchDTO)
         {
             int numberStudentAdded = 0;
-            string substringContainingTheAssingnmentName = p_assignment + '-';
+            string substringContainingTheAssingnmentName = this._activeClassroom.ActiveAssignment.Name + '-';
             string repositoryNameLessAssignmentName = p_repositoryName.ToLower()
                 .Replace(substringContainingTheAssingnmentName.ToLower(), "");
 
@@ -802,8 +807,7 @@ namespace RPLP.SERVICES.Github
                     p_studentDictionary[username]++;
                     numberStudentAdded++;
 
-                    createPullRequestAndAssignUser(p_organisationName, p_repositoryName, branchDTO.gitObject.sha,
-                        username);
+                    createPullRequestAndAssignUser(p_organisationName, p_repositoryName, branchDTO.gitObject.sha, username);
                 }
             } while (numberStudentAdded < p_reviewsPerRepository);
         }

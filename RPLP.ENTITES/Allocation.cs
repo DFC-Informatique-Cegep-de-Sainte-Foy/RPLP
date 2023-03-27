@@ -18,6 +18,5 @@ namespace RPLP.ENTITES
             StudentId = studentId;
             Status = status;
         }
-
     }
 }
