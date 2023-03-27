@@ -7,25 +7,25 @@ using System.Threading.Tasks;
 
 namespace RPLP.DAL.DTO.Sql
 {
-    public class Assignation_SQLDTO
+    public class Allocation_SQLDTO
     {
         public int RepositoryId { get; set; }
         public int StudentId { get; set; }
         public int Status { get; set; }
 
-        public Assignation_SQLDTO()
+        public Allocation_SQLDTO()
         {
             ;
         }
-        public Assignation_SQLDTO(Assignation assignation)
+        public Allocation_SQLDTO(Allocation assignation)
         { 
             RepositoryId = assignation.RepositoryId;
             StudentId = assignation.StudentId;
             Status = assignation.Status;
         }
-        public Assignation ToEntity()
+        public Allocation ToEntity()
         {
-            return new Assignation(this.RepositoryId, this.StudentId, this.Status);
+            return new Allocation(this.RepositoryId, this.StudentId, this.Status);
         }
     }
 }

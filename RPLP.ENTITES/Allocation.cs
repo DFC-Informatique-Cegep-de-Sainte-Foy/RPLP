@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace RPLP.ENTITES
 {
-    public class Assignation
+    public class Allocation
     {
         public int RepositoryId { get; set; }
         public int StudentId { get; set; }
         public int Status { get; set; }
 
-        public Assignation(int repositoryId, int studentId, int status)
+        public Allocation(int repositoryId, int studentId, int status)
         {
             RepositoryId = repositoryId;
             StudentId = studentId;
