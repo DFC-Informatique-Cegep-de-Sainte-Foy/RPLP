@@ -19,6 +19,8 @@ namespace RPLP.SERVICES.InterfacesDepots
         public Allocation GetAllocationByStudentAndRepositoryNames(string p_studentUsername, string p_repositoryName);
         public List<Allocation> GetAllocationsByAssignmentName(string p_assignmentName);
         public void UpsertAllocation(Allocation p_allocation);
+        public void UpsertAllocationsBatch(List<Allocation> p_allocations);
         public void DeleteAllocation(Allocation p_allocation);
+        public void DeleteAllocationsBatch(List<Allocation> p_allocations);
     }
 }
