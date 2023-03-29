@@ -5,7 +5,6 @@ namespace RPLP.DAL.SQL
 {
     public class RPLPDbContext : DbContext
     {
-
         public RPLPDbContext(DbContextOptions<RPLPDbContext> options) :
             base(options)
         {
