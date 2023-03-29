@@ -22,6 +22,7 @@ namespace RPLP.DAL.SQL.Depots
             {
                 Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                                "DepotAllocation - DepotAllocation(RPLPDbContext p_context) - p_context de type RPLPDbContext passé en paramètre est null", 0));
+                throw new ArgumentNullException(nameof(p_context));
             }
 
             _context = p_context;
@@ -256,6 +257,8 @@ namespace RPLP.DAL.SQL.Depots
             {
                 Logging.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                        "DepotAllocation - GetAllocationsByAssignmentName - p_assignmentName passé en paramêtre est vide", 0));
+
+                throw new ArgumentNullException(nameof(p_assignmentName));
             }
 
             List<Allocation> allocations = new List<Allocation>();
@@ -280,6 +283,8 @@ namespace RPLP.DAL.SQL.Depots
             {
                 Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotAllocation - UpsertAllocation - p_allocation passé en paramètre est null", 0));
+
+                throw new ArgumentNullException(nameof(p_allocation));
             }
 
             Allocation_SQLDTO? allocationResult = this._context.Allocations.
@@ -316,6 +321,8 @@ namespace RPLP.DAL.SQL.Depots
             {
                 Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotAllocation - DeleteAllocation - p_allocation passé en paramètre est null", 0));
+
+                throw new ArgumentNullException(nameof(p_allocation));
             }
 
             Allocation_SQLDTO? allocationResult = this._context.Allocations.
@@ -334,6 +341,80 @@ namespace RPLP.DAL.SQL.Depots
             {
                 Logging.Journal(new Log("Allocation", $"DepotAllocation - Method - DeleteAllocation(Allocation p_allocation) - Void - allocationResult est null", 0));
             }
+        }
+
+        public void UpsertAllocationsBatch(List<Allocation> p_allocations)
+        {
+            if (p_allocations is null)
+            {
+                Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                     "DepotAllocation - UpsertAllocationsBatch - p_allocations passé en paramètre est null", 0));
+
+                throw new ArgumentNullException(nameof(p_allocations));
+            }
+
+            foreach (Allocation a in p_allocations)
+            {
+                Allocation_SQLDTO? allocationResult = this._context.Allocations.
+                        SingleOrDefault(allocation => allocation.Status > 0 && allocation.StudentId == a.StudentId && allocation.RepositoryId == a.RepositoryId);
+
+                if (allocationResult is not null)
+                {
+                    allocationResult.StudentId = a.StudentId;
+                    allocationResult.RepositoryId = a.RepositoryId;
+                    allocationResult.Status = a.Status;
+
+                    this._context.Update(allocationResult);
+
+                    Logging.Journal(new Log("Allocation", $"DepotAllocation - Method - UpsertAllocationsBatch(List<Allocation> p_allocations) - Void - Update Allocations"));
+                }
+                else
+                {
+                    Allocation_SQLDTO allocation = new Allocation_SQLDTO();
+                    allocation.StudentId = a.StudentId;
+                    allocation.RepositoryId = a.RepositoryId;
+                    allocation.Status = a.Status; ;
+
+                    this._context.Allocations.Add(allocation);
+
+                    Logging.Journal(new Log("Allocation", $"DepotAllocation - Method - UpsertAllocationsBatch(List<Allocation> p_allocations) - Void - Add Allocations"));
+                } 
+            }
+
+            this._context.SaveChanges();
+
+        }
+
+        public void DeleteAllocationsBatch(List<Allocation> p_allocations)
+        {
+            if (p_allocations is null)
+            {
+                Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                     "DepotAllocation - DeleteAllocationsBatch - p_allocations passé en paramètre est null", 0));
+
+                throw new ArgumentNullException(nameof(p_allocations));
+            }
+
+            foreach (Allocation a in p_allocations)
+            {
+                Allocation_SQLDTO? allocationResult = this._context.Allocations.
+                        SingleOrDefault(allocation => allocation.Status > 0 && allocation.StudentId == a.StudentId && allocation.RepositoryId == a.RepositoryId);
+
+                if (allocationResult is not null)
+                {
+                    allocationResult.Status = 0;
+
+                    this._context.Update(allocationResult);
+
+                    Logging.Journal(new Log("Allocation", $"DepotAllocation - Method - DeleteAllocationsBatch(List<Allocation> p_allocations) - Void - delete Allocations"));
+                }
+                else
+                {
+                    Logging.Journal(new Log("Allocation", $"DepotAllocation - Method - DeleteAllocationsBatch(List<Allocation> p_allocations) - Void - allocationResult est null", 0));
+                } 
+            }
+
+            this._context.SaveChanges();
         }
     }
 }
