@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Moq.EntityFrameworkCore;
 using Moq;
 using RPLP.DAL.DTO.Sql;
 using RPLP.DAL.SQL;
@@ -19,7 +20,7 @@ namespace RPLP.UnitTesting.DepotTests
         [Fact]
         public void Test_GetAdministrators_CountIsGood()
         {
-            var administrators1 = new List<Administrator_SQLDTO>
+            List<Administrator_SQLDTO>administrators1 = new List<Administrator_SQLDTO>
             {
                 new Administrator_SQLDTO
                 {
@@ -54,13 +55,10 @@ namespace RPLP.UnitTesting.DepotTests
                     Organisations = {},
                     Active = false
                 }
-            }.AsQueryable();
-
-            Mock<DbSet<Administrator_SQLDTO>> mock = new Mock<DbSet<Administrator_SQLDTO>>();
-            mock.As<IQueryable<Administrator_SQLDTO>>().Setup(m => m.GetEnumerator()).Returns(() => administrators1.GetEnumerator());
-
+            };
+            
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
-            context.Setup(c => c.Administrators).Returns(mock.Object);
+            context.Setup(x => x.Administrators).ReturnsDbSet(administrators1);
 
             DepotAdministrator depot = new DepotAdministrator(context.Object);
             List<Administrator> administrators = depot.GetAdministrators();

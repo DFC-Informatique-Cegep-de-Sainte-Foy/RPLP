@@ -5,6 +5,10 @@ namespace RPLP.DAL.SQL
 {
     public class RPLPDbContext : DbContext
     {
+        public RPLPDbContext()
+        {
+            ;
+        }
         public RPLPDbContext(DbContextOptions<RPLPDbContext> options) :
             base(options)
         {
@@ -41,14 +45,14 @@ namespace RPLP.DAL.SQL
                 .HasNoKey();
         }
 
-        public DbSet<Classroom_SQLDTO> Classrooms { get; set; }
-        public DbSet<Administrator_SQLDTO> Administrators { get; set; }
-        public DbSet<Assignment_SQLDTO> Assignments { get; set; }
-        public DbSet<Allocation_SQLDTO> Allocations { get; set; }
-        public DbSet<Comment_SQLDTO> Comments { get; set; }
-        public DbSet<Organisation_SQLDTO> Organisations { get; set; }
-        public DbSet<Repository_SQLDTO> Repositories { get; set; }
-        public DbSet<Student_SQLDTO> Students { get; set; }
-        public DbSet<Teacher_SQLDTO> Teachers { get; set; }
+        public virtual DbSet<Classroom_SQLDTO> Classrooms { get; set; }
+        public virtual DbSet<Administrator_SQLDTO> Administrators { get; set; }
+        public virtual DbSet<Assignment_SQLDTO> Assignments { get; set; }
+        public virtual DbSet<Allocation_SQLDTO> Allocations { get; set; }
+        public virtual DbSet<Comment_SQLDTO> Comments { get; set; }
+        public virtual DbSet<Organisation_SQLDTO> Organisations { get; set; }
+        public virtual DbSet<Repository_SQLDTO> Repositories { get; set; }
+        public virtual DbSet<Student_SQLDTO> Students { get; set; }
+        public virtual DbSet<Teacher_SQLDTO> Teachers { get; set; }
     }
 }
