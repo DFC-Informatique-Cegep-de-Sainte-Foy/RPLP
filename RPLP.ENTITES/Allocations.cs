@@ -69,7 +69,7 @@ namespace RPLP.ENTITES
                         //     new Log($"Allocations.cs - CreateRandomReviewsAllocation(int p_numberOfReviews)" +
                         //             $"i={i} repoId={repoId}" +
                         //             $"j={j} reviewerId={reviewerId}"));
-                        this.Pairs.Add(new Allocation(repoId, reviewerId, 1));
+                        this.Pairs.Add(new Allocation($"r{repoId}s{reviewerId}t0",repoId, reviewerId,null, 1));
                     }
                 }
             }

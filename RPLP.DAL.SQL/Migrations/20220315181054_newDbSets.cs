@@ -232,13 +232,15 @@ namespace RPLP.DAL.SQL.Migrations
                 name: "Allocation",
                 columns: table => new
                 {
+                    Id = table.Column<string>(type: "nvarchar(100)", nullable: false),
                     RepositoryId = table.Column<int>(type: "int", nullable: false),
-                    StudentId = table.Column<int>(type: "int", nullable: false),
+                    StudentId = table.Column<int>(type: "int", nullable: true),
+                    TeacherId = table.Column<int>(type: "int", nullable: true),
                     Status = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Allocation", x => new { x.RepositoryId, x.StudentId });
+                    table.PrimaryKey("PK_Allocation", x => new { x.Id });
                     table.ForeignKey(
                         name: "FK_Allocation_RepositoryId",
                         column: x => x.RepositoryId,
@@ -249,6 +251,12 @@ namespace RPLP.DAL.SQL.Migrations
                         name: "FK_Allocation_StudentId",
                         column: x => x.StudentId,
                         principalTable: "Students",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Allocation_TeacherId",
+                        column: x => x.TeacherId,
+                        principalTable: "Teachers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
