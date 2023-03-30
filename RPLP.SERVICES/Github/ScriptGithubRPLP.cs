@@ -333,7 +333,8 @@ namespace RPLP.SERVICES.Github
                 // RPLP.JOURNALISATION.Logging.Journal(
                 //     new Log($"ScriptGithubRPLP - branchDTO: {feedbackBranch.reference})"));
 
-                Branch_JSONDTO feedbackBranch = GetBranchFromBranchesPerBranchType(p_organisationName, p_repositoryName);
+                Branch_JSONDTO feedbackBranch =
+                    GetBranchFromBranchesPerBranchType(p_organisationName, p_repositoryName);
 
                 Thread.Sleep(10000);
                 createPullRequestAndAssignUser(p_organisationName, p_repositoryName, feedbackBranch.gitObject.sha,
@@ -561,7 +562,12 @@ namespace RPLP.SERVICES.Github
                     // branchFeedback = GetFeedbackBranchFromBranchList(getAllAvailableBranchesInRepository);
                     // //branchFeedback = GetMainBranchFromBranchList(getAllAvailableBranchesInRepository);     <---- originale (main!!) :: a revoir plus tard
 
-                    Branch_JSONDTO branchMain = GetBranchFromBranchesPerBranchType(p_organisationName, p_repositoryName);
+                    
+                    // ici c'est important : 
+                    // on veut tu duppliquer la branche main 
+                    // ou la branche feedback ?????? <------ a voir avec le client
+                    Branch_JSONDTO branchMain =
+                        GetBranchFromBranchesPerBranchType(p_organisationName, p_repositoryName, "main");
 
                     Thread.Sleep(10000);
                     CreatePullRequestAndAssignTeacher(p_organisationName, p_repositoryName,
@@ -601,7 +607,8 @@ namespace RPLP.SERVICES.Github
             string newBranchName = $"Feedback-{teacherUsername}";
 
             string resultCreateBranch =
-                this._githubApiAction.CreateNewBranchForFeedbackGitHub(p_organisationName, p_repositoryName, p_sha, newBranchName);
+                this._githubApiAction.CreateNewBranchForFeedbackGitHub(p_organisationName, p_repositoryName, p_sha,
+                    newBranchName);
 
             if (resultCreateBranch != "Created")
             {
@@ -613,12 +620,40 @@ namespace RPLP.SERVICES.Github
                 throw new ArgumentException($"Branch not created in {p_repositoryName}");
             }
 
-            this._githubApiAction.AddFileToContentsGitHub(p_organisationName, p_repositoryName, newBranchName,
-                p_newFileName, p_message, p_content);
+            // creer le fichier directement dans la branche main
+            // this._githubApiAction.AddFileToContentsGitHub(
+            //     p_organisationName,
+            //     p_repositoryName,
+            //     "main",
+            //     p_newFileName,
+            //     p_content,
+            //     p_message);
 
-            string resultCreatePR = this._githubApiAction.CreateNewPullRequestFeedbackGitHub(p_organisationName,
-                p_repositoryName, newBranchName, newBranchName.ToLower(),
-                "Voici où vous devez mettre vos commentaires");
+            //creer le fichier dans la nouvelle branche creer
+            this._githubApiAction.AddFileToContentsGitHub(
+                p_organisationName,
+                p_repositoryName,
+                newBranchName,
+                p_newFileName,
+                p_content,
+                p_message);
+
+            // requete originale --> PR de main vers feedback
+            // string resultCreatePR = this._githubApiAction.CreateNewPullRequestFeedbackGitHub(
+            //     p_organisationName,
+            //     p_repositoryName,
+            //     newBranchName,
+            //     newBranchName.ToLower(),
+            //     "Voici où vous devez mettre vos commentaires");
+
+            // requete changer --> PR de feedBack vers main
+            string resultCreatePR = this._githubApiAction.CreateNewPullRequestFeedbackGitHub(
+                p_organisationName,
+                p_repositoryName,
+                "main",
+                newBranchName.ToLower(),
+                "Voici où vous devez mettre vos commentaires",
+                newBranchName);
 
             if (resultCreatePR != "Created")
             {
