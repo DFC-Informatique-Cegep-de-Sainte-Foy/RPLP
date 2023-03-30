@@ -17,6 +17,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Xml.Linq;
 using RPLP.DAL.SQL.Migrations;
+using RPLP.SERVICES.InterfacesDepots;
 
 namespace RPLP.MVC.Controllers
 {
@@ -26,7 +27,7 @@ namespace RPLP.MVC.Controllers
         private readonly ScriptGithubRPLP _scriptGithub;
         private object classroomName;
 
-        public RPLPController(IConfiguration configuration,IDepotClassroom depotClassroom, IDepotRepository depotRepository, IDepotOrganisation depotOrganisation)
+        public RPLPController(IConfiguration configuration,IDepotClassroom depotClassroom, IDepotRepository depotRepository, IDepotOrganisation depotOrganisation, IDepotAllocation depotAllocation)
         {
             if (configuration == null)
             {
@@ -36,7 +37,7 @@ namespace RPLP.MVC.Controllers
 
             string token = configuration.GetValue<string>("Token");
             GithubApiAction _githubAction = new GithubApiAction(token);
-            _scriptGithub = new ScriptGithubRPLP(depotClassroom,depotRepository, depotOrganisation, token);
+            _scriptGithub = new ScriptGithubRPLP(depotClassroom,depotRepository, depotOrganisation, depotAllocation, token);
 
             this._httpClient = new HttpClient();
             this._httpClient.BaseAddress = new Uri("http://rplp.api/api/");

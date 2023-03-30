@@ -373,7 +373,7 @@ namespace RPLP.SERVICES.Github
             return response.StatusCode.ToString();
         }
 
-        public string CreateNewPullRequestFeedbackGitHub(string p_organisationName, string p_repositoryName, string p_BranchName, string p_title, string p_body)
+        public string CreateNewPullRequestFeedbackGitHub(string p_organisationName, string p_repositoryName, string p_BranchName, string p_title, string p_body, string p_fromBranch = "main")
         {
             if (string.IsNullOrWhiteSpace(p_organisationName))
             {
@@ -413,7 +413,7 @@ namespace RPLP.SERVICES.Github
                     "GithubApiAction - CreateNewPullRequestFeedbackGitHub - la variable fullPath assigné par la méthode _createPullRequestOnRepositoryBranchGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName) est vide", 0));
             }
 
-            Task<string> statusCode = NewPullRequestFeedbackGitHubApiRequest(fullPath, p_BranchName, p_title, p_body);
+            Task<string> statusCode = NewPullRequestFeedbackGitHubApiRequest(fullPath, p_BranchName, p_title, p_body, p_fromBranch);
             RPLP.JOURNALISATION.Logging.Journal(new Log($"GithubApiAction - CreateNewPullRequestFeedbackGitHub - statusCode: {statusCode.Result} - organisationName:{p_organisationName} - p_repositoryName:{p_repositoryName} - p_body: {p_body}"));
             statusCode.Wait();
             RPLP.JOURNALISATION.Logging.Journal(new Log($"GithubApiAction - CreateNewPullRequestFeedbackGitHub - statusCode: {statusCode.Result} - organisationName:{p_organisationName} - p_repositoryName:{p_repositoryName} - p_body: {p_body}"));
@@ -421,12 +421,12 @@ namespace RPLP.SERVICES.Github
             return statusCode.Result;
         }
 
-        private async Task<string> NewPullRequestFeedbackGitHubApiRequest(string p_githubLink, string p_BranchName, string p_title, string p_body)
+        private async Task<string> NewPullRequestFeedbackGitHubApiRequest(string p_githubLink, string p_BranchName, string p_title, string p_body, string p_fromBranch = "main")
         {
-            PullRequest_JSONRequest pullRequest_request = new PullRequest_JSONRequest { fromBranch = "main", targetBranch = p_BranchName, title = p_title, body = p_body };
+            PullRequest_JSONRequest pullRequest_request = new PullRequest_JSONRequest { fromBranch = p_fromBranch, targetBranch = p_BranchName, title = p_title, body = p_body };
             string pullRequest = JsonConvert.SerializeObject(pullRequest_request);
 
-            HttpResponseMessage response = await _httpClient.PostAsync(p_githubLink, new StringContent(pullRequest, Encoding.UTF8, "application/json"));
+            HttpResponseMessage response = await _httpClient.PostAsync(p_githubLink, new StringContent(pullRequest, Encoding.UTF8, "application/vnd.github+json"));
 
             RPLP.JOURNALISATION.Logging.Journal(new Log($"GithubApiAction - NewPullRequestFeedbackGitHubApiRequest - pullRequest: {pullRequest} - response: {response.StatusCode.ToString()}"));
 
@@ -684,7 +684,6 @@ namespace RPLP.SERVICES.Github
             return response.StatusCode.ToString();
         }
 
-
         public string AddFileToContentsGitHub(string p_organisationName, string p_repositoryName, string p_branchName, string p_newFileName, string p_content, string p_message)
         {
             if (string.IsNullOrWhiteSpace(p_organisationName))
@@ -733,7 +732,6 @@ namespace RPLP.SERVICES.Github
 
             Task<string> statusCode = addFileToContentsGithubApiRequest(fullPath, p_branchName, p_content, p_message);
             statusCode.Wait();
-
             return statusCode.Result;
         }
 
@@ -754,7 +752,7 @@ namespace RPLP.SERVICES.Github
                    "GithubApiAction - addFileToContentsGithubApiRequest - la chaine de caractères contentRequest assignée par la méthode JsonConvert.SerializeObject(content_request) est vide", 0));
             }
 
-            HttpResponseMessage response = await _httpClient.PutAsync(p_githubLink, new StringContent(contentRequest, Encoding.UTF8, "application/json"));
+            HttpResponseMessage response = await _httpClient.PutAsync(p_githubLink, new StringContent(contentRequest, Encoding.UTF8, "application/vnd.github+json"));
 
             HttpHeaders headers = response.Headers;
             int remaining = 0;

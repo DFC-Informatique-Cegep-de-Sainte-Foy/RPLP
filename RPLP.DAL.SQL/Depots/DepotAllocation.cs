@@ -130,7 +130,7 @@ namespace RPLP.DAL.SQL.Depots
                 }
                 else
                 {
-                    List<Repository_SQLDTO> repositoriesResult = this._context.Repositories.Where(repository => repository.OrganisationName == classroomResult.OrganisationName && repository.FullName.StartsWith(assignmentResult.Name)).ToList();
+                    List<Repository_SQLDTO> repositoriesResult = this._context.Repositories.Where(repository => repository.OrganisationName.ToLower() == classroomResult.OrganisationName.ToLower() && repository.Name.ToLower().StartsWith(assignmentResult.Name.ToLower())).ToList();
 
                     if (repositoriesResult is null)
                     {
@@ -146,7 +146,6 @@ namespace RPLP.DAL.SQL.Depots
                     }
                 }
             }
-
             return allocations;
         }
 
@@ -273,7 +272,8 @@ namespace RPLP.DAL.SQL.Depots
             {
                 allocations = this.GetAllocationsByAssignmentID(assignmentResult.Id);
             }
-
+            Logging.Journal(new Log($"GetAllocationsByAssignmentName(string p_assignmentName) {p_assignmentName}" +
+                                    $"allocations.Count: {allocations.Count}"));
             return allocations;
         }
 
@@ -352,37 +352,44 @@ namespace RPLP.DAL.SQL.Depots
 
                 throw new ArgumentNullException(nameof(p_allocations));
             }
-
+            
             foreach (Allocation a in p_allocations)
             {
                 Allocation_SQLDTO? allocationResult = this._context.Allocations.
-                        SingleOrDefault(allocation => allocation.Status > 0 && allocation.StudentId == a.StudentId && allocation.RepositoryId == a.RepositoryId);
-
+                        SingleOrDefault(allocation => allocation.Id == a.Id);
+                
                 if (allocationResult is not null)
                 {
-                    allocationResult.StudentId = a.StudentId;
-                    allocationResult.RepositoryId = a.RepositoryId;
                     allocationResult.Status = a.Status;
-
                     this._context.Update(allocationResult);
-
                     Logging.Journal(new Log("Allocation", $"DepotAllocation - Method - UpsertAllocationsBatch(List<Allocation> p_allocations) - Void - Update Allocations"));
                 }
                 else
                 {
-                    Allocation_SQLDTO allocation = new Allocation_SQLDTO();
-                    allocation.StudentId = a.StudentId;
-                    allocation.RepositoryId = a.RepositoryId;
-                    allocation.Status = a.Status; ;
+                    Allocation_SQLDTO allocation = new Allocation_SQLDTO()
+                    {
+                        Id = a.Id,
+                        RepositoryId = a.RepositoryId,
+                        StudentId = a.StudentId,
+                        TeacherId = a.TeacherId,
+                        Status = a.Status
+                    };
 
-                    this._context.Allocations.Add(allocation);
+                    try
+                    {
+                        this._context.Allocations.Add(allocation);
+                    }
+                    catch (Exception e)
+                    {
+                        Logging.Journal(new Log($"Exception e:{e.Message}"));
+                    }
+                    
 
                     Logging.Journal(new Log("Allocation", $"DepotAllocation - Method - UpsertAllocationsBatch(List<Allocation> p_allocations) - Void - Add Allocations"));
                 } 
             }
 
             this._context.SaveChanges();
-
         }
 
         public void DeleteAllocationsBatch(List<Allocation> p_allocations)

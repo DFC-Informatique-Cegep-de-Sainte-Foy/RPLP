@@ -7,6 +7,7 @@ using RPLP.ENTITES.InterfacesDepots;
 using System.Diagnostics;
 using System;
 using System.Net;
+using RPLP.SERVICES.InterfacesDepots;
 
 try
 {
@@ -27,13 +28,14 @@ try
         options.Scope = "openid profile email";
     });
     builder.Services.AddDbContext<RPLPDbContext>(
-    options => options.UseSqlServer(connectionString));
+    options => options.UseSqlServer(connectionString).UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
 
     builder.Services.AddScoped<IDepotClassroom, DepotClassroom>();
     builder.Services.AddScoped<IDepotAdministrator, DepotAdministrator>();
     builder.Services.AddScoped<IDepotAssignment, DepotAssignment>();
     builder.Services.AddScoped<IDepotComment, DepotComment>();
     builder.Services.AddScoped<IDepotOrganisation, DepotOrganisation>();
+    builder.Services.AddScoped<IDepotAllocation, DepotAllocation>();
     builder.Services.AddScoped<IDepotRepository, DepotRepository>();
     builder.Services.AddScoped<IDepotStudent, DepotStudent>();
     builder.Services.AddScoped<IDepotTeacher, DepotTeacher>();

@@ -11,6 +11,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RPLP.SERVICES.InterfacesDepots;
 
 namespace RPLP.SERVICES.Github
 {
@@ -19,12 +20,13 @@ namespace RPLP.SERVICES.Github
         private readonly IDepotClassroom _depotClassroom;
         private readonly IDepotRepository _depotRepository;
         private readonly IDepotOrganisation _depotOrganisation;
+        private readonly IDepotAllocation _depotAllocation;
         private readonly GithubApiAction _githubApiAction;
         private Classroom _activeClassroom;
         private Allocations _allocations;
 
         public ScriptGithubRPLP(IDepotClassroom p_depotClassroom, IDepotRepository p_depotRepository,
-            IDepotOrganisation p_depotOrganisation, string p_token)
+            IDepotOrganisation p_depotOrganisation, IDepotAllocation p_depotAllocation, string p_token)
         {
             if (p_depotClassroom == null)
             {
@@ -57,6 +59,7 @@ namespace RPLP.SERVICES.Github
             this._depotClassroom = p_depotClassroom;
             this._depotRepository = p_depotRepository;
             this._depotOrganisation = p_depotOrganisation;
+            this._depotAllocation = p_depotAllocation;
             this._githubApiAction = new GithubApiAction(p_token);
         }
 
@@ -79,7 +82,22 @@ namespace RPLP.SERVICES.Github
         private void CreateOrUpdateAllocations(List<Repository> p_repositories)
         {
             if (this._allocations is null)
-                this._allocations = new Allocations(p_repositories, this._activeClassroom);
+            {
+                List<Allocation> allocationsExistingInDb =
+                    this._depotAllocation.GetAllocationsByAssignmentName(this._activeClassroom.ActiveAssignment.Name);
+                if (allocationsExistingInDb.Count > 0)
+                {
+                    List<Repository> repositoriesDansBd = new List<Repository>();
+                    allocationsExistingInDb.ForEach(alloc =>
+                        repositoriesDansBd.Add(_depotRepository.GetRepositoryById(alloc.RepositoryId)));
+                    this._allocations =
+                        new Allocations(repositoriesDansBd, this._activeClassroom, allocationsExistingInDb);
+                }
+                else
+                {
+                    this._allocations = new Allocations(p_repositories, this._activeClassroom);
+                }
+            }
         }
 
         public void ScriptAssignStudentToAssignmentReview(string p_organisationName, string p_classRoomName,
@@ -126,7 +144,7 @@ namespace RPLP.SERVICES.Github
             }
 
             CreateOrUpdateActiveClassroom(p_organisationName, p_classRoomName, p_assignmentName);
-            
+
             if (this._activeClassroom.Students.Count < p_reviewsPerRepository + 1)
             {
                 RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(),
@@ -171,6 +189,7 @@ namespace RPLP.SERVICES.Github
 
             CreateOrUpdateAllocations(repositoriesToAssign);
             this._allocations.CreateRandomReviewsAllocation(p_reviewsPerRepository);
+            this._depotAllocation.UpsertAllocationsBatch(this._allocations.Pairs);
             prepareRepositoryAndCreatePullRequestV2();
         }
 
@@ -276,6 +295,8 @@ namespace RPLP.SERVICES.Github
             RPLP.JOURNALISATION.Logging.Journal(
                 new Log($"ScriptGithubRPLP - prepareRepositoryAndCreatePullRequestV2()" +
                         $"this._allocations.Pairs.Count={this._allocations.Pairs.Count}"));
+            List<Allocation> allocationsToAStudent =
+                this._allocations.Pairs.Where(alloc => alloc.StudentId is not null).ToList();
 
             // This is yet the old way of doing things
             // as a proof of concept. Here we iterate over all 'allocations' in the allocation list
@@ -286,33 +307,35 @@ namespace RPLP.SERVICES.Github
                 string p_repositoryName = this._depotRepository.GetRepositoryById(allocation.RepositoryId).Name;
                 string p_reviewerName = this._activeClassroom.Students
                     .FirstOrDefault(reviewer => reviewer.Id == allocation.StudentId).Username;
-                
+
                 RPLP.JOURNALISATION.Logging.Journal(
                     new Log($"ScriptGithubRPLP - foreach (Allocation allocation in this._allocations.Pairs)" +
                             $"p_organisationName = {p_organisationName}" +
                             $"p_repositoryName = {p_repositoryName}" +
                             $"p_reviewerName = {p_reviewerName}"));
-                
-                List<Branch_JSONDTO> getAllAvailableBranchesInRepository =
-                    this._githubApiAction.GetRepositoryBranchesGithub(p_organisationName, p_repositoryName);
-                RPLP.JOURNALISATION.Logging.Journal(
-                    new Log($"ScriptGithubRPLP - branchesResult: {getAllAvailableBranchesInRepository.Count})"));
 
-                if (getAllAvailableBranchesInRepository == null)
-                {
-                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(),
-                        new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                        "ScriptGithubRPLP - prepareRepositoryAndCreatePullRequest - la liste branchesResult assignée à partir de la méthode this._githubApiAction.GetRepositoryBranchesGithub(p_organisationName, p_repositoryName)  est null",
-                        0));
+                // List<Branch_JSONDTO> getAllAvailableBranchesInRepository =
+                //     this._githubApiAction.GetRepositoryBranchesGithub(p_organisationName, p_repositoryName);
+                // RPLP.JOURNALISATION.Logging.Journal(
+                //     new Log($"ScriptGithubRPLP - branchesResult: {getAllAvailableBranchesInRepository.Count})"));
+                //
+                // if (getAllAvailableBranchesInRepository == null)
+                // {
+                //     RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(),
+                //         new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                //         "ScriptGithubRPLP - prepareRepositoryAndCreatePullRequest - la liste branchesResult assignée à partir de la méthode this._githubApiAction.GetRepositoryBranchesGithub(p_organisationName, p_repositoryName)  est null",
+                //         0));
+                //
+                //     throw new ArgumentNullException($"Branch does not exist or wrong name was entered");
+                // }
 
-                    throw new ArgumentNullException($"Branch does not exist or wrong name was entered");
-                }
+                // Branch_JSONDTO feedbackBranch = GetFeedbackBranchFromBranchList(getAllAvailableBranchesInRepository);
+                // RPLP.JOURNALISATION.Logging.Journal(
+                //     new Log($"ScriptGithubRPLP - branchDTO: {feedbackBranch.reference})"));
 
-                Branch_JSONDTO feedbackBranch = GetFeedbackBranchFromBranchList(getAllAvailableBranchesInRepository);
-                RPLP.JOURNALISATION.Logging.Journal(
-                    new Log($"ScriptGithubRPLP - branchDTO: {feedbackBranch.reference})"));
-                
-                Thread.Sleep(30000);
+                Branch_JSONDTO feedbackBranch = GetBranchFromBranchesPerBranchType(p_organisationName, p_repositoryName);
+
+                Thread.Sleep(10000);
                 createPullRequestAndAssignUser(p_organisationName, p_repositoryName, feedbackBranch.gitObject.sha,
                     p_reviewerName);
             }
@@ -341,6 +364,7 @@ namespace RPLP.SERVICES.Github
             string resultCreatePR = this._githubApiAction.CreateNewPullRequestFeedbackGitHub(p_organisationName,
                 p_repositoryName, newBranchName, newBranchName.ToLower(),
                 "Voici où vous devez mettre vos commentaires");
+
             RPLP.JOURNALISATION.Logging.Journal(
                 new Log($"ScriptGithubRPLP - createPullRequestAndAssignUser - resultCreatePR: {resultCreatePR}"));
 
@@ -357,6 +381,7 @@ namespace RPLP.SERVICES.Github
             string resultAddStudent =
                 this._githubApiAction.AddStudentAsCollaboratorToPeerRepositoryGithub(p_organisationName,
                     p_repositoryName, p_username);
+
             RPLP.JOURNALISATION.Logging.Journal(
                 new Log($"ScriptGithubRPLP - createPullRequestAndAssignUser - resultAddStudent: {resultAddStudent}"));
 
@@ -494,10 +519,55 @@ namespace RPLP.SERVICES.Github
                 throw new ArgumentNullException($"No repositories to assign in {p_classRoomName}");
             }
 
-            foreach (Repository repository in repositoriesToAssign)
+            CreateOrUpdateAllocations(repositoriesToAssign);
+            this._allocations.CreateTeacherReviewsAllocation(teacherUsername);
+            this._depotAllocation.UpsertAllocationsBatch(this._allocations.Pairs);
+            createPullRequestForTeacherV2("FichierTexte.txt", "FeedbackTeacher",
+                "RmljaGllciB0ZXh0ZSBwb3VyIGNyw6nDqSBQUg==");
+        }
+
+        private void createPullRequestForTeacherV2(string p_newFileName, string p_message, string p_content)
+        {
+            // This is yet the old way of doing things
+            // as a proof of concept. Here we iterate over all 'allocations' in the allocation list
+            // we will later pass this responsability to the newly created service console project
+            List<Allocation> allocationsToATeacher =
+                this._allocations.Pairs.Where(alloc => alloc.TeacherId is not null).ToList();
+
+            if (allocationsToATeacher.Count > 0)
             {
-                createPullRequestForTeacher(p_organisationName, repository.Name, "FichierTexte.txt", "FeedbackTeacher",
-                    "RmljaGllciB0ZXh0ZSBwb3VyIGNyw6nDqSBQUg==", teacherUsername);
+                foreach (Allocation allocation in allocationsToATeacher)
+                {
+                    string p_organisationName = this._activeClassroom.OrganisationName;
+                    string p_repositoryName = this._depotRepository.GetRepositoryById(allocation.RepositoryId).Name;
+                    string p_teacherUsername = this._activeClassroom.Teachers
+                        .FirstOrDefault(teacher => teacher.Id == allocation.TeacherId).Username;
+
+                    // Branch_JSONDTO branchFeedback = new Branch_JSONDTO();
+                    //
+                    // List<Branch_JSONDTO> getAllAvailableBranchesInRepository =
+                    //     this._githubApiAction.GetRepositoryBranchesGithub(p_organisationName, p_repositoryName);
+                    //
+                    // if (getAllAvailableBranchesInRepository.Count <= 0)
+                    // {
+                    //     RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(),
+                    //         new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    //         "ScriptGithubRPLP - createPullRequestForTeacher - la liste branchesResult assignée à partir de this._githubApiAction.GetRepositoryBranchesGithub(p_organisationName, p_repositoryName); est vide",
+                    //         0));
+                    //
+                    //     throw new ArgumentNullException($"Branch does not exist or wrong name was entered");
+                    // }
+                    //
+                    // branchFeedback = GetFeedbackBranchFromBranchList(getAllAvailableBranchesInRepository);
+                    // //branchFeedback = GetMainBranchFromBranchList(getAllAvailableBranchesInRepository);     <---- originale (main!!) :: a revoir plus tard
+
+                    Branch_JSONDTO branchMain = GetBranchFromBranchesPerBranchType(p_organisationName, p_repositoryName);
+
+                    Thread.Sleep(10000);
+                    CreatePullRequestAndAssignTeacher(p_organisationName, p_repositoryName,
+                        branchMain.gitObject.sha,
+                        p_newFileName, p_message, p_content, p_teacherUsername);
+                }
             }
         }
 
@@ -528,11 +598,10 @@ namespace RPLP.SERVICES.Github
         private void CreatePullRequestAndAssignTeacher(string p_organisationName, string p_repositoryName, string p_sha,
             string p_newFileName, string p_message, string p_content, string teacherUsername)
         {
-            string newBranchName = $"feedback-{teacherUsername}";
+            string newBranchName = $"Feedback-{teacherUsername}";
 
             string resultCreateBranch =
-                this._githubApiAction.CreateNewBranchForFeedbackGitHub(p_organisationName, p_repositoryName, p_sha,
-                    newBranchName);
+                this._githubApiAction.CreateNewBranchForFeedbackGitHub(p_organisationName, p_repositoryName, p_sha, newBranchName);
 
             if (resultCreateBranch != "Created")
             {
@@ -548,13 +617,15 @@ namespace RPLP.SERVICES.Github
                 p_newFileName, p_message, p_content);
 
             string resultCreatePR = this._githubApiAction.CreateNewPullRequestFeedbackGitHub(p_organisationName,
-                p_repositoryName, newBranchName, "Feedback", "Voici où vous devez mettre vos commentaires");
+                p_repositoryName, newBranchName, newBranchName.ToLower(),
+                "Voici où vous devez mettre vos commentaires");
 
             if (resultCreatePR != "Created")
             {
                 RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(),
                     new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                    "ScriptGithubRPLP - CreatePullRequestAndAssignTeacher - la variable resultCreatePR indique que la requête de tirage n'as pas été créée à partir de la méthode  this._githubApiAction.CreateNewPullRequestFeedbackGitHub(p_organisationName, p_repositoryName, newBranchName, \"Feedback\", \"Voici où vous devez mettre vos commentaires\");",
+                    "ScriptGithubRPLP - CreatePullRequestAndAssignTeacher - la variable resultCreatePR indique que la requête de tirage n'as pas été créée à partir de la méthode  " +
+                    "this._githubApiAction.CreateNewPullRequestFeedbackGitHub(p_organisationName, p_repositoryName, newBranchName, \"Feedback\", \"Voici où vous devez mettre vos commentaires\");",
                     0));
 
                 throw new ArgumentException($"PullRequest not created in {p_repositoryName}");
@@ -801,24 +872,6 @@ namespace RPLP.SERVICES.Github
             return studentDictionary;
         }
 
-        private Branch_JSONDTO GetFeedbackBranchFromBranchList(List<Branch_JSONDTO> p_branches)
-        {
-            Branch_JSONDTO feedbackBranch = new Branch_JSONDTO();
-
-            foreach (Branch_JSONDTO branch in p_branches)
-            {
-                string[] branchName = branch.reference.Split("/");
-
-                if (branchName[2] == "feedback")
-                {
-                    feedbackBranch = branch;
-                    break;
-                }
-            }
-
-            return feedbackBranch;
-        }
-
         private void ShuffleListInPlace<T>(List<T> p_listToShuffle)
         {
             Random rnd = new Random();
@@ -908,6 +961,24 @@ namespace RPLP.SERVICES.Github
             return repositoriesToBeAddedToPeerReview;
         }
 
+        private Branch_JSONDTO GetFeedbackBranchFromBranchList(List<Branch_JSONDTO> p_branches)
+        {
+            Branch_JSONDTO feedbackBranch = new Branch_JSONDTO();
+
+            foreach (Branch_JSONDTO branch in p_branches)
+            {
+                string[] branchName = branch.reference.Split("/");
+
+                if (branchName[2] == "feedback")
+                {
+                    feedbackBranch = branch;
+                    break;
+                }
+            }
+
+            return feedbackBranch;
+        }
+
         private Branch_JSONDTO GetMainBranchFromBranchList(List<Branch_JSONDTO> branchesResult)
         {
             Branch_JSONDTO branchDTO = new Branch_JSONDTO();
@@ -924,6 +995,38 @@ namespace RPLP.SERVICES.Github
             }
 
             return branchDTO;
+        }
+
+        private Branch_JSONDTO GetBranchFromBranchesPerBranchType(string p_organisationName, string p_repositoryName,
+            string p_branchType = "feedback")
+        {
+            Branch_JSONDTO targetBranch = new Branch_JSONDTO();
+
+            List<Branch_JSONDTO> getAllAvailableBranchesInRepository =
+                this._githubApiAction.GetRepositoryBranchesGithub(p_organisationName, p_repositoryName);
+
+            if (getAllAvailableBranchesInRepository.Count <= 0)
+            {
+                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(),
+                    new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    "ScriptGithubRPLP - GetBranchFromBranchesPerRepository - la liste branchesResult assignée à partir de this._githubApiAction.GetRepositoryBranchesGithub(p_organisationName, p_repositoryName); est vide",
+                    0));
+
+                throw new ArgumentNullException($"Branch does not exist or wrong name was entered");
+            }
+
+            foreach (Branch_JSONDTO branch in getAllAvailableBranchesInRepository)
+            {
+                string[] branchName = branch.reference.Split("/");
+
+                if (branchName[2] == p_branchType)
+                {
+                    targetBranch = branch;
+                    break;
+                }
+            }
+
+            return targetBranch;
         }
 
         private void DeleteFilesAndDirectoriesForDownloads()

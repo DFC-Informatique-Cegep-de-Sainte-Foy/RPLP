@@ -39,7 +39,7 @@ namespace RPLP.DAL.SQL
                 .IsUnique();
 
             modelBuilder.Entity<Allocation_SQLDTO>()
-                .HasNoKey();
+                .HasKey(all => all.Id);
         }
 
         public DbSet<Classroom_SQLDTO> Classrooms { get; set; }
