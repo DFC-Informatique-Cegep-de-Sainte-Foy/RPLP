@@ -11,6 +11,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
+using RPLP.JOURNALISATION;
+using NSubstitute;
 
 namespace RPLP.UnitTesting.DepotTests
 {
@@ -20,7 +22,7 @@ namespace RPLP.UnitTesting.DepotTests
         [Fact]
         public void Test_GetAdministrators_CountIsGood()
         {
-            List<Administrator_SQLDTO>administrators1 = new List<Administrator_SQLDTO>
+            List<Administrator_SQLDTO> administrators1 = new List<Administrator_SQLDTO>
             {
                 new Administrator_SQLDTO
                 {
@@ -30,7 +32,12 @@ namespace RPLP.UnitTesting.DepotTests
                     LastName = "Paquet",
                     Email = "ThPaquet@hotmail.com",
                     Token = "token",
-                    Organisations = {},
+                    Organisations = {
+                    new Organisation_SQLDTO()
+                            {
+                                Name = "CEGEP Ste-Foy",
+                                Active = true
+                            }},
                     Active = true
                 },
                 new Administrator_SQLDTO
@@ -56,7 +63,11 @@ namespace RPLP.UnitTesting.DepotTests
                     Active = false
                 }
             };
-            
+
+            Logging.ManipulationLog = Substitute.For<IManipulationLogs>();
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.ManipulationLog = logMock.Object;
+
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Administrators).ReturnsDbSet(administrators1);
 
