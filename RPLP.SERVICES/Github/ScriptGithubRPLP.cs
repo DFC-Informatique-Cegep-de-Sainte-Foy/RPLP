@@ -336,13 +336,14 @@ namespace RPLP.SERVICES.Github
                 Branch_JSONDTO feedbackBranch =
                     GetBranchFromBranchesPerBranchType(p_organisationName, p_repositoryName);
 
-                Thread.Sleep(10000);
-                createPullRequestAndAssignUser(p_organisationName, p_repositoryName, feedbackBranch.gitObject.sha,
-                    p_reviewerName);
+                Producer.CallGitHubAPI(this._allocations, p_organisationName, p_repositoryName, feedbackBranch.gitObject.sha, p_reviewerName);
+                //Thread.Sleep(10000);
+                //createPullRequestAndAssignUser(p_organisationName, p_repositoryName, feedbackBranch.gitObject.sha,
+                //    p_reviewerName);
             }
         }
 
-        private void createPullRequestAndAssignUser(string p_organisationName, string p_repositoryName, string p_sha,
+        public void createPullRequestAndAssignUser(string p_organisationName, string p_repositoryName, string p_sha,
             string p_username)
         {
             string newBranchName = $"Feedback-{p_username}";

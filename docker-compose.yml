@@ -55,6 +55,16 @@ services:
       - rplpvolume_logs_zip:/var/log/zip_rplp/
     restart: always
 
+  rplp.validations:
+    container_name: rplp.validations
+    image: revueparlespairs/rplp-validations
+    build:
+      context: .
+      dockerfile: RPLP.VALIDATIONS/Dockerfile
+    depends_on:
+      - rplp.rabbitmq
+    restart: always
+
   rplp.db:
     container_name: rplp.db
     user: root

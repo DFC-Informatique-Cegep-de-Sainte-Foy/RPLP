@@ -16,6 +16,7 @@ namespace RPLP.ENTITES
         public string Matricule { get; set; }
         public List<Classroom> Classes { get; set; }
 
+
         public Student()
         {
             this.Classes = new List<Classroom>();
