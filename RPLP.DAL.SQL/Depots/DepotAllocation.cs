@@ -41,10 +41,11 @@ namespace RPLP.DAL.SQL.Depots
 
         public List<Allocation> GetAllocationsByStudentId(int p_studentId)
         {
-            if (p_studentId < 0)
+            if (p_studentId <= 0)
             {
                 Logging.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                        "DepotAllocation - GetAllocationsByStudentId - p_studentId passé en paramêtre est hors des limites", 0));
+                throw new ArgumentOutOfRangeException(nameof(p_studentId));
             }
 
             List<Allocation_SQLDTO> allocationsResult = this._context.Allocations.Where(allocation => allocation.Status > 0 && allocation.StudentId == p_studentId).ToList();
@@ -58,10 +59,11 @@ namespace RPLP.DAL.SQL.Depots
 
         public List<Allocation> GetAllocationsByRepositoryID(int p_repositoryId)
         {
-            if (p_repositoryId < 0)
+            if (p_repositoryId <= 0)
             {
                 Logging.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                        "DepotAllocation - GetAllocationsByRepositoryID - p_repositoryId passé en paramêtre est hors des limites", 0));
+                throw new ArgumentOutOfRangeException(nameof(p_repositoryId));
             }
 
             List<Allocation_SQLDTO> allocationsResult = this._context.Allocations.Where(allocation => allocation.Status > 0 && allocation.RepositoryId == p_repositoryId).ToList();
