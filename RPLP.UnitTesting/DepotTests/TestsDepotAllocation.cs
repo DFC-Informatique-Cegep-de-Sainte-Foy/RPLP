@@ -21,6 +21,7 @@ namespace RPLP.UnitTesting.DepotTests
 {
     public class TestsDepotAllocation
     {
+        #region Ctor
         [Fact]
         public void Ctor_DbContextNull_ExceptionThrownAndLoggingCalled()
         {
@@ -53,7 +54,9 @@ namespace RPLP.UnitTesting.DepotTests
             // Assert
             logMock.VerifyNoOtherCalls();
         }
+        #endregion
 
+        #region GetAllocations
         [Fact]
         public void GetAllocations_List3Active1Not_ReturnsListOf3()
         {
@@ -169,7 +172,9 @@ namespace RPLP.UnitTesting.DepotTests
             logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
             logMock.VerifyNoOtherCalls();
         }
+        #endregion
 
+        #region GetAllocationsByStudentId
         [Fact]
         public void GetAllocationsByStudentId_ParamNegativeInt_ExceptionThrown()
         {
@@ -457,5 +462,208 @@ namespace RPLP.UnitTesting.DepotTests
             logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
             logMock.VerifyNoOtherCalls();
         }
+        #endregion
+
+        #region GetAllocationsByRepositoryID
+        [Fact]
+        public void GetAllocationsByRepositoryID_ParamNegativeInt_ExceptionThrown()
+        {
+            // Arrange
+            Logging.ManipulationLog = Substitute.For<IManipulationLogs>();
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.ManipulationLog = logMock.Object;
+
+            Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            DepotAllocation da = new DepotAllocation(context.Object);
+
+            int repositoryId = -2;
+
+            // Act Assert
+            Assert.Throws<ArgumentOutOfRangeException>(() => { List<Allocation> la = da.GetAllocationsByRepositoryID(repositoryId); });
+            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
+            logMock.VerifyNoOtherCalls();
+        }
+
+        [Fact]
+        public void GetAllocationsByRepositoryID_Param0_ExceptionThrown()
+        {
+            // Arrange
+            Logging.ManipulationLog = Substitute.For<IManipulationLogs>();
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.ManipulationLog = logMock.Object;
+
+            Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            DepotAllocation da = new DepotAllocation(context.Object);
+
+            int repositoryId = 0;
+
+            // Act Assert
+            Assert.Throws<ArgumentOutOfRangeException>(() => { List<Allocation> la = da.GetAllocationsByRepositoryID(repositoryId); });
+            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
+            logMock.VerifyNoOtherCalls();
+        }
+
+        [Fact]
+        public void GetAllocationsByRepositoryID_List5With3SearchedRepository1Inactive_ReturnsListOf2()
+        {
+            // Arrange
+            List<Allocation_SQLDTO> allocationDTO = new List<Allocation_SQLDTO>
+            {
+                new Allocation_SQLDTO
+                {
+                    Id= "r1s2t0",
+                    RepositoryId = 1,
+                    StudentId = 2,
+                    TeacherId = null,
+                    Status = 3
+                },
+                new Allocation_SQLDTO
+                {
+                    Id= "r1s4t0",
+                    RepositoryId = 1,
+                    StudentId = 4,
+                    TeacherId = null,
+                    Status = 3
+                },
+                new Allocation_SQLDTO
+                {
+                    Id= "r1s0t1",
+                    RepositoryId = 2,
+                    StudentId = null,
+                    TeacherId = 1,
+                    Status = 3
+                },
+                new Allocation_SQLDTO
+                {
+                    Id= "r2s2t0",
+                    RepositoryId = 2,
+                    StudentId = 2,
+                    TeacherId = null,
+                    Status = 3
+                },
+                new Allocation_SQLDTO
+                {
+                    Id= "r1s1t0",
+                    RepositoryId = 1,
+                    StudentId = 1,
+                    TeacherId = null,
+                    Status = 0
+                }
+            };
+            Logging.ManipulationLog = Substitute.For<IManipulationLogs>();
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.ManipulationLog = logMock.Object;
+
+            Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Allocations).ReturnsDbSet(allocationDTO);
+            DepotAllocation da = new DepotAllocation(context.Object);
+
+            int repositoryId = 1;
+
+            // Act
+            List<Allocation> la = da.GetAllocationsByRepositoryID(repositoryId);
+
+            // Assert
+            Assert.NotNull(la);
+            Assert.Equal(2, la.Count);
+            Assert.Contains(la, a => a.Id == "r1s2t0");
+            Assert.Contains(la, a => a.Id == "r1s4t0");
+            Assert.DoesNotContain(la, a => a.Id == "r1s1t0");
+            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
+            logMock.VerifyNoOtherCalls();
+        }
+
+        [Fact]
+        public void GetAllocationsByRepositoryID_List4With0SearchedRepository_ReturnsEmptyList()
+        {
+            // Arrange
+            List<Allocation_SQLDTO> allocationDTO = new List<Allocation_SQLDTO>
+            {
+                new Allocation_SQLDTO
+                {
+                    Id= "r1s2t0",
+                    RepositoryId = 1,
+                    StudentId = 2,
+                    TeacherId = null,
+                    Status = 3
+                },
+                new Allocation_SQLDTO
+                {
+                    Id= "r1s4t0",
+                    RepositoryId = 1,
+                    StudentId = 4,
+                    TeacherId = null,
+                    Status = 3
+                },
+                new Allocation_SQLDTO
+                {
+                    Id= "r1s0t1",
+                    RepositoryId = 1,
+                    StudentId = null,
+                    TeacherId = 1,
+                    Status = 3
+                },
+                new Allocation_SQLDTO
+                {
+                    Id= "r2s2t0",
+                    RepositoryId = 2,
+                    StudentId = 2,
+                    TeacherId = null,
+                    Status = 3
+                },
+                new Allocation_SQLDTO
+                {
+                    Id= "r3s2t0",
+                    RepositoryId = 2,
+                    StudentId = 2,
+                    TeacherId = null,
+                    Status = 0
+                }
+            };
+            Logging.ManipulationLog = Substitute.For<IManipulationLogs>();
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.ManipulationLog = logMock.Object;
+
+            Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Allocations).ReturnsDbSet(allocationDTO);
+            DepotAllocation da = new DepotAllocation(context.Object);
+
+            int repositoryId = 5;
+
+            // Act
+            List<Allocation> la = da.GetAllocationsByRepositoryID(repositoryId);
+
+            // Assert
+            Assert.NotNull(la);
+            Assert.Empty(la);
+            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
+            logMock.VerifyNoOtherCalls();
+        }
+
+        [Fact]
+        public void GetAllocationsByRepositoryID_NoAllocationsDB_ReturnsEmptyList()
+        {
+            // Arrange
+            List<Allocation_SQLDTO> allocationDTO = new List<Allocation_SQLDTO>();
+            Logging.ManipulationLog = Substitute.For<IManipulationLogs>();
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.ManipulationLog = logMock.Object;
+
+            Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Allocations).ReturnsDbSet(allocationDTO);
+            DepotAllocation da = new DepotAllocation(context.Object);
+
+            int repositoryId = 5;
+
+            // Act
+            List<Allocation> la = da.GetAllocationsByRepositoryID(repositoryId);
+
+            // Assert
+            Assert.NotNull(la);
+            Assert.Empty(la);
+            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
+            logMock.VerifyNoOtherCalls();
+        }
+        #endregion
     }
 }
