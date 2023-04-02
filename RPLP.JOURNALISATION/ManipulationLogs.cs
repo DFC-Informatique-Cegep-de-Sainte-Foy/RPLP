@@ -67,10 +67,6 @@ namespace RPLP.JOURNALISATION
                     canalDeCommunication.BasicPublish(exchange: "", routingKey: "fdm_rplp_journalisation", body: body);
                 }
             }
-        }
-
-       
-
-        
+        }      
     }
 }

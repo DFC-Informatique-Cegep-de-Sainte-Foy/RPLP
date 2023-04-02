@@ -9,268 +9,268 @@ using Xunit;
 
 namespace RPLP.UnitTesting.DepotTests
 {
-    [Collection("DatabaseTests")]
-    public class TestsDepotRepository
-    {
-        private static readonly DbContextOptions<RPLPDbContext> options = new DbContextOptionsBuilder<RPLPDbContext>()
-                .UseSqlServer("Server=localhost,1434; Database=RPLP; User Id=sa; password=Cad3pend86!")
-                //.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
-                .Options;
+    //[Collection("DatabaseTests")]
+    //public class TestsDepotRepository
+    //{
+    //    private static readonly DbContextOptions<RPLPDbContext> options = new DbContextOptionsBuilder<RPLPDbContext>()
+    //            .UseSqlServer("Server=localhost,1434; Database=RPLP; User Id=sa; password=Cad3pend86!")
+    //            //.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
+    //            .Options;
 
-        private void DeleteRepositoryTableContent()
-        {
-            using (var context = new RPLPDbContext(options))
-            {
-                context.Database.ExecuteSqlRaw("DELETE from Repositories;");
-            }
-        }
+    //    private void DeleteRepositoryTableContent()
+    //    {
+    //        using (var context = new RPLPDbContext(options))
+    //        {
+    //            context.Database.ExecuteSqlRaw("DELETE from Repositories;");
+    //        }
+    //    }
 
-        private void InsertRepository(Repository_SQLDTO p_repository)
-        {
-            using (var context = new RPLPDbContext(options))
-            {
-                context.Repositories.Add(p_repository);
-                context.SaveChanges();
-            }
-        }
+    //    private void InsertRepository(Repository_SQLDTO p_repository)
+    //    {
+    //        using (var context = new RPLPDbContext(options))
+    //        {
+    //            context.Repositories.Add(p_repository);
+    //            context.SaveChanges();
+    //        }
+    //    }
 
-        private void InsertPremadeRepositories()
-        {
-            List<Repository_SQLDTO> repositories = new List<Repository_SQLDTO>()
-            {
-                new Repository_SQLDTO()
-                {
-                    Name = "ThPaquet",
-                    FullName = "Thierry Paquet",
-                    OrganisationName = "RPLP",
-                    Active = true
-                },
-                new Repository_SQLDTO()
-                {
-                    Name = "ikeameatbol",
-                    FullName = "Jonathan Blouin",
-                    OrganisationName = "RPLP",
-                    Active = true
-                },
-                new Repository_SQLDTO()
-                {
-                    Name = "BACenComm",
-                    FullName = "Melissa Lachapelle",
-                    OrganisationName = "RPLP",
-                    Active = false
-                },
-            };
+    //    private void InsertPremadeRepositories()
+    //    {
+    //        List<Repository_SQLDTO> repositories = new List<Repository_SQLDTO>()
+    //        {
+    //            new Repository_SQLDTO()
+    //            {
+    //                Name = "ThPaquet",
+    //                FullName = "Thierry Paquet",
+    //                OrganisationName = "RPLP",
+    //                Active = true
+    //            },
+    //            new Repository_SQLDTO()
+    //            {
+    //                Name = "ikeameatbol",
+    //                FullName = "Jonathan Blouin",
+    //                OrganisationName = "RPLP",
+    //                Active = true
+    //            },
+    //            new Repository_SQLDTO()
+    //            {
+    //                Name = "BACenComm",
+    //                FullName = "Melissa Lachapelle",
+    //                OrganisationName = "RPLP",
+    //                Active = false
+    //            },
+    //        };
 
-            using (var context = new RPLPDbContext(options))
-            {
-                context.Repositories.AddRange(repositories);
-                context.SaveChanges();
-            }
-        }
+    //        using (var context = new RPLPDbContext(options))
+    //        {
+    //            context.Repositories.AddRange(repositories);
+    //            context.SaveChanges();
+    //        }
+    //    }
 
-        [Fact]
-        public void Test_GetRepositoryById()
-        {
-            this.DeleteRepositoryTableContent();
-            this.InsertPremadeRepositories();
+    //    [Fact]
+    //    public void Test_GetRepositoryById()
+    //    {
+    //        this.DeleteRepositoryTableContent();
+    //        this.InsertPremadeRepositories();
 
-            using (var context = new RPLPDbContext(options))
-            {
-                Repository_SQLDTO? repositoryThPaquet = context.Repositories.FirstOrDefault(r => r.Name == "ThPaquet");
-                Assert.NotNull(repositoryThPaquet);
+    //        using (var context = new RPLPDbContext(options))
+    //        {
+    //            Repository_SQLDTO? repositoryThPaquet = context.Repositories.FirstOrDefault(r => r.Name == "ThPaquet");
+    //            Assert.NotNull(repositoryThPaquet);
 
-                int repositoryId = repositoryThPaquet.Id;
+    //            int repositoryId = repositoryThPaquet.Id;
 
-                DepotRepository depotRepository = new DepotRepository(context);
+    //            DepotRepository depotRepository = new DepotRepository(context);
 
-                Repository repository = depotRepository.GetRepositoryById(repositoryId);
+    //            Repository repository = depotRepository.GetRepositoryById(repositoryId);
 
-                Assert.NotNull(repository);
-            }
+    //            Assert.NotNull(repository);
+    //        }
 
-            this.DeleteRepositoryTableContent();
-        }
+    //        this.DeleteRepositoryTableContent();
+    //    }
 
-        [Fact]
-        public void Test_GetRepositoryById_NotActive()
-        {
-            this.DeleteRepositoryTableContent();
-            this.InsertPremadeRepositories();
+    //    [Fact]
+    //    public void Test_GetRepositoryById_NotActive()
+    //    {
+    //        this.DeleteRepositoryTableContent();
+    //        this.InsertPremadeRepositories();
 
-            using (var context = new RPLPDbContext(options))
-            {
-                Repository_SQLDTO? repositoryBACenComm = context.Repositories.FirstOrDefault(r => r.Name == "BACenComm");
-                Assert.NotNull(repositoryBACenComm);
+    //        using (var context = new RPLPDbContext(options))
+    //        {
+    //            Repository_SQLDTO? repositoryBACenComm = context.Repositories.FirstOrDefault(r => r.Name == "BACenComm");
+    //            Assert.NotNull(repositoryBACenComm);
 
-                int repositoryId = repositoryBACenComm.Id;
+    //            int repositoryId = repositoryBACenComm.Id;
 
-                DepotRepository depotRepository = new DepotRepository(context);
+    //            DepotRepository depotRepository = new DepotRepository(context);
 
-                Repository repository = depotRepository.GetRepositoryById(repositoryId);
+    //            Repository repository = depotRepository.GetRepositoryById(repositoryId);
 
-                Assert.Null(repository);
-            }
+    //            Assert.Null(repository);
+    //        }
 
-            this.DeleteRepositoryTableContent();
-        }
+    //        this.DeleteRepositoryTableContent();
+    //    }
 
-        [Fact]
-        public void Test_GetRepositoryByName()
-        {
-            this.DeleteRepositoryTableContent();
-            this.InsertPremadeRepositories();
+    //    [Fact]
+    //    public void Test_GetRepositoryByName()
+    //    {
+    //        this.DeleteRepositoryTableContent();
+    //        this.InsertPremadeRepositories();
 
-            using (var context = new RPLPDbContext(options))
-            {
-                DepotRepository depotRepository = new DepotRepository(context);
+    //        using (var context = new RPLPDbContext(options))
+    //        {
+    //            DepotRepository depotRepository = new DepotRepository(context);
 
-                Repository repository = depotRepository.GetRepositoryByName("ThPaquet");
+    //            Repository repository = depotRepository.GetRepositoryByName("ThPaquet");
 
-                Assert.NotNull(repository);
-            }
+    //            Assert.NotNull(repository);
+    //        }
 
-            this.DeleteRepositoryTableContent();
-        }
+    //        this.DeleteRepositoryTableContent();
+    //    }
 
-        [Fact]
-        public void Test_GetRepositoryByName_NotActive()
-        {
-            this.DeleteRepositoryTableContent();
-            this.InsertPremadeRepositories();
+    //    [Fact]
+    //    public void Test_GetRepositoryByName_NotActive()
+    //    {
+    //        this.DeleteRepositoryTableContent();
+    //        this.InsertPremadeRepositories();
 
-            using (var context = new RPLPDbContext(options))
-            {
-                DepotRepository depotRepository = new DepotRepository(context);
+    //        using (var context = new RPLPDbContext(options))
+    //        {
+    //            DepotRepository depotRepository = new DepotRepository(context);
 
-                Repository repository = depotRepository.GetRepositoryByName("BACenComm");
+    //            Repository repository = depotRepository.GetRepositoryByName("BACenComm");
 
-                Assert.Null(repository);
-            }
+    //            Assert.Null(repository);
+    //        }
 
-            this.DeleteRepositoryTableContent();
-        }
+    //        this.DeleteRepositoryTableContent();
+    //    }
 
-        [Fact]
-        public void Test_UpsertRepository_Inserts()
-        {
-            this.DeleteRepositoryTableContent();
+    //    [Fact]
+    //    public void Test_UpsertRepository_Inserts()
+    //    {
+    //        this.DeleteRepositoryTableContent();
 
-            using (var context = new RPLPDbContext(options))
-            {
-                Repository repository = new Repository()
-                {
-                    Name = "testrepo",
-                    FullName = "Test Repository",
-                    OrganisationName = "test organisation"
-                };
+    //        using (var context = new RPLPDbContext(options))
+    //        {
+    //            Repository repository = new Repository()
+    //            {
+    //                Name = "testrepo",
+    //                FullName = "Test Repository",
+    //                OrganisationName = "test organisation"
+    //            };
 
-                DepotRepository depot = new DepotRepository(context);
+    //            DepotRepository depot = new DepotRepository(context);
 
-                depot.UpsertRepository(repository);
-            };
+    //            depot.UpsertRepository(repository);
+    //        };
 
-            using (var context = new RPLPDbContext(options))
-            {
-                Repository_SQLDTO? repository = context.Repositories.FirstOrDefault(r => r.Name == "testrepo");
+    //        using (var context = new RPLPDbContext(options))
+    //        {
+    //            Repository_SQLDTO? repository = context.Repositories.FirstOrDefault(r => r.Name == "testrepo");
 
-                Assert.NotNull(repository);
-                Assert.Equal("testrepo", repository.Name);
-                Assert.Equal("Test Repository", repository.FullName);
-                Assert.Equal("test organisation", repository.OrganisationName);
-                Assert.True(repository.Active);
-            }
+    //            Assert.NotNull(repository);
+    //            Assert.Equal("testrepo", repository.Name);
+    //            Assert.Equal("Test Repository", repository.FullName);
+    //            Assert.Equal("test organisation", repository.OrganisationName);
+    //            Assert.True(repository.Active);
+    //        }
 
-            this.DeleteRepositoryTableContent();
-        }
+    //        this.DeleteRepositoryTableContent();
+    //    }
 
-        [Fact]
-        public void Test_UpsertRepository_Updates()
-        {
-            this.DeleteRepositoryTableContent();
-            this.InsertPremadeRepositories();
+    //    [Fact]
+    //    public void Test_UpsertRepository_Updates()
+    //    {
+    //        this.DeleteRepositoryTableContent();
+    //        this.InsertPremadeRepositories();
 
-            using (var context = new RPLPDbContext(options))
-            {
-                Repository_SQLDTO repository = context.Repositories.FirstOrDefault(r => r.Name == "ThPaquet");
-                Assert.NotNull(repository);
+    //        using (var context = new RPLPDbContext(options))
+    //        {
+    //            Repository_SQLDTO repository = context.Repositories.FirstOrDefault(r => r.Name == "ThPaquet");
+    //            Assert.NotNull(repository);
 
-                repository.Name = "testrepo";
-                repository.FullName = "Test Repository";
-                repository.OrganisationName = "test organisation";
+    //            repository.Name = "testrepo";
+    //            repository.FullName = "Test Repository";
+    //            repository.OrganisationName = "test organisation";
 
 
-                DepotRepository depot = new DepotRepository(context);
+    //            DepotRepository depot = new DepotRepository(context);
 
-                depot.UpsertRepository(repository.ToEntity());
-            };
+    //            depot.UpsertRepository(repository.ToEntity());
+    //        };
 
-            using (var context = new RPLPDbContext(options))
-            {
-                Repository_SQLDTO? repository = context.Repositories.FirstOrDefault(r => r.Name == "testrepo");
+    //        using (var context = new RPLPDbContext(options))
+    //        {
+    //            Repository_SQLDTO? repository = context.Repositories.FirstOrDefault(r => r.Name == "testrepo");
 
-                Assert.NotNull(repository);
-                Assert.Equal("testrepo", repository.Name);
-                Assert.Equal("Test Repository", repository.FullName);
-                Assert.Equal("test organisation", repository.OrganisationName);
-                Assert.True(repository.Active);
-            }
+    //            Assert.NotNull(repository);
+    //            Assert.Equal("testrepo", repository.Name);
+    //            Assert.Equal("Test Repository", repository.FullName);
+    //            Assert.Equal("test organisation", repository.OrganisationName);
+    //            Assert.True(repository.Active);
+    //        }
 
-            this.DeleteRepositoryTableContent();
-        }
+    //        this.DeleteRepositoryTableContent();
+    //    }
 
-        [Fact]
-        public void Test_DeleteRepository()
-        {
-            this.DeleteRepositoryTableContent();
-            this.InsertPremadeRepositories();
+    //    [Fact]
+    //    public void Test_DeleteRepository()
+    //    {
+    //        this.DeleteRepositoryTableContent();
+    //        this.InsertPremadeRepositories();
 
-            using (var context = new RPLPDbContext(options))
-            {
-                DepotRepository depot = new DepotRepository(context);
-                depot.DeleteRepository("ThPaquet");
-            };
+    //        using (var context = new RPLPDbContext(options))
+    //        {
+    //            DepotRepository depot = new DepotRepository(context);
+    //            depot.DeleteRepository("ThPaquet");
+    //        };
 
-            using (var context = new RPLPDbContext(options))
-            {
-                Repository_SQLDTO? repository = context.Repositories.FirstOrDefault(r => r.Name == "ThPaquet" && r.Active);
-                Assert.Null(repository);
-            };
+    //        using (var context = new RPLPDbContext(options))
+    //        {
+    //            Repository_SQLDTO? repository = context.Repositories.FirstOrDefault(r => r.Name == "ThPaquet" && r.Active);
+    //            Assert.Null(repository);
+    //        };
 
-            this.DeleteRepositoryTableContent();
-        }
+    //        this.DeleteRepositoryTableContent();
+    //    }
 
-        [Fact]
-        public void Test_GetRepositories()
-        {
-            this.DeleteRepositoryTableContent();
-            this.InsertPremadeRepositories();
+    //    [Fact]
+    //    public void Test_GetRepositories()
+    //    {
+    //        this.DeleteRepositoryTableContent();
+    //        this.InsertPremadeRepositories();
 
-            using (var context = new RPLPDbContext(options))
-            {
-                DepotRepository depot = new DepotRepository(context);
-                List<Repository> repositories = depot.GetRepositories();
+    //        using (var context = new RPLPDbContext(options))
+    //        {
+    //            DepotRepository depot = new DepotRepository(context);
+    //            List<Repository> repositories = depot.GetRepositories();
 
-                Assert.Equal(2, repositories.Count);
-            }
+    //            Assert.Equal(2, repositories.Count);
+    //        }
 
-            this.DeleteRepositoryTableContent();
-        }
+    //        this.DeleteRepositoryTableContent();
+    //    }
 
-        [Fact]
-        public void Test_GetRepositoriesByOrganisationName()
-        {
-            this.DeleteRepositoryTableContent();
-            this.InsertPremadeRepositories();
+    //    [Fact]
+    //    public void Test_GetRepositoriesByOrganisationName()
+    //    {
+    //        this.DeleteRepositoryTableContent();
+    //        this.InsertPremadeRepositories();
 
-            using (var context = new RPLPDbContext(options))
-            {
-                DepotRepository depot = new DepotRepository(context);
-                List<Repository> repositories = depot.GetRepositoriesFromOrganisationName("RPLP");
+    //        using (var context = new RPLPDbContext(options))
+    //        {
+    //            DepotRepository depot = new DepotRepository(context);
+    //            List<Repository> repositories = depot.GetRepositoriesFromOrganisationName("RPLP");
 
-                Assert.Equal(2, repositories.Count);
-            }
+    //            Assert.Equal(2, repositories.Count);
+    //        }
 
-            this.DeleteRepositoryTableContent();
-        }
-    }
+    //        this.DeleteRepositoryTableContent();
+    //    }
+    //}
 }

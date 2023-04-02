@@ -191,7 +191,7 @@ namespace RPLP.DAL.SQL.Depots
                 RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotAdministrator - GetAdministratorByUsername - p_adminUsername passé en paramètre est vide", 0));
             }
-
+                                                                                                                                                                                                                                     
             Administrator_SQLDTO adminResult = this._context.Administrators.Where(admin => admin.Active)
                                                                            .Include(admin => admin.Organisations.Where(organisation => organisation.Active))
                                                                            .FirstOrDefault(admin => admin.Username == p_adminUsername);
