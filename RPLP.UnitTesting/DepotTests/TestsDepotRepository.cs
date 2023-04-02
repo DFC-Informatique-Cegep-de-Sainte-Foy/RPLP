@@ -1,276 +1,461 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Moq;
+using Moq.EntityFrameworkCore;
 using RPLP.DAL.DTO.Sql;
 using RPLP.DAL.SQL;
 using RPLP.DAL.SQL.Depots;
 using RPLP.ENTITES;
+using RPLP.JOURNALISATION;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
 namespace RPLP.UnitTesting.DepotTests
 {
-    //[Collection("DatabaseTests")]
-    //public class TestsDepotRepository
-    //{
-    //    private static readonly DbContextOptions<RPLPDbContext> options = new DbContextOptionsBuilder<RPLPDbContext>()
-    //            .UseSqlServer("Server=localhost,1434; Database=RPLP; User Id=sa; password=Cad3pend86!")
-    //            //.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
-    //            .Options;
+    public class TestsDepotRepository
+    {
+        [Fact]
+        public void Test_GetRepositoryById()
+        {
+            List<Repository_SQLDTO> repositoriesDB = new List<Repository_SQLDTO>()
+                {
+                    new Repository_SQLDTO()
+                    {
+                        Id= 1,
+                        Name = "ThPaquet",
+                        FullName = "Thierry Paquet",
+                        OrganisationName = "RPLP",
+                        Active = true
+                    },
+                    new Repository_SQLDTO()
+                    {
+                        Id= 2,
+                        Name = "ikeameatbol",
+                        FullName = "Jonathan Blouin",
+                        OrganisationName = "RPLP",
+                        Active = true
+                    },
+                    new Repository_SQLDTO()
+                    {
+                        Id= 3,
+                        Name = "BACenComm",
+                        FullName = "Melissa Lachapelle",
+                        OrganisationName = "RPLP",
+                        Active = false
+                    },
+                };
 
-    //    private void DeleteRepositoryTableContent()
-    //    {
-    //        using (var context = new RPLPDbContext(options))
-    //        {
-    //            context.Database.ExecuteSqlRaw("DELETE from Repositories;");
-    //        }
-    //    }
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.ManipulationLog = logMock.Object;
 
-    //    private void InsertRepository(Repository_SQLDTO p_repository)
-    //    {
-    //        using (var context = new RPLPDbContext(options))
-    //        {
-    //            context.Repositories.Add(p_repository);
-    //            context.SaveChanges();
-    //        }
-    //    }
+            Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Repositories).ReturnsDbSet(repositoriesDB);
+            DepotRepository depot = new DepotRepository(context.Object);
 
-    //    private void InsertPremadeRepositories()
-    //    {
-    //        List<Repository_SQLDTO> repositories = new List<Repository_SQLDTO>()
-    //        {
-    //            new Repository_SQLDTO()
-    //            {
-    //                Name = "ThPaquet",
-    //                FullName = "Thierry Paquet",
-    //                OrganisationName = "RPLP",
-    //                Active = true
-    //            },
-    //            new Repository_SQLDTO()
-    //            {
-    //                Name = "ikeameatbol",
-    //                FullName = "Jonathan Blouin",
-    //                OrganisationName = "RPLP",
-    //                Active = true
-    //            },
-    //            new Repository_SQLDTO()
-    //            {
-    //                Name = "BACenComm",
-    //                FullName = "Melissa Lachapelle",
-    //                OrganisationName = "RPLP",
-    //                Active = false
-    //            },
-    //        };
+            Repository_SQLDTO? repositoryThPaquet = repositoriesDB.FirstOrDefault(r => r.Name == "ThPaquet");
+            Assert.NotNull(repositoryThPaquet);
 
-    //        using (var context = new RPLPDbContext(options))
-    //        {
-    //            context.Repositories.AddRange(repositories);
-    //            context.SaveChanges();
-    //        }
-    //    }
+            int repositoryId = repositoryThPaquet.Id;
 
-    //    [Fact]
-    //    public void Test_GetRepositoryById()
-    //    {
-    //        this.DeleteRepositoryTableContent();
-    //        this.InsertPremadeRepositories();
+            Repository repository = depot.GetRepositoryById(repositoryId);
 
-    //        using (var context = new RPLPDbContext(options))
-    //        {
-    //            Repository_SQLDTO? repositoryThPaquet = context.Repositories.FirstOrDefault(r => r.Name == "ThPaquet");
-    //            Assert.NotNull(repositoryThPaquet);
+            Assert.NotNull(repository);
+            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
+            logMock.VerifyNoOtherCalls();
+        }
 
-    //            int repositoryId = repositoryThPaquet.Id;
+        [Fact]
+        public void Test_GetRepositoryById_NotActive()
+        {
+            List<Repository_SQLDTO> repositoriesDB = new List<Repository_SQLDTO>()
+                {
+                    new Repository_SQLDTO()
+                    {
+                        Id = 1,
+                        Name = "ThPaquet",
+                        FullName = "Thierry Paquet",
+                        OrganisationName = "RPLP",
+                        Active = true
+                    },
+                    new Repository_SQLDTO()
+                    {
+                        Id = 2,
+                        Name = "ikeameatbol",
+                        FullName = "Jonathan Blouin",
+                        OrganisationName = "RPLP",
+                        Active = true
+                    },
+                    new Repository_SQLDTO()
+                    {
+                        Id = 3,
+                        Name = "BACenComm",
+                        FullName = "Melissa Lachapelle",
+                        OrganisationName = "RPLP",
+                        Active = false
+                    },
+                };
 
-    //            DepotRepository depotRepository = new DepotRepository(context);
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.ManipulationLog = logMock.Object;
 
-    //            Repository repository = depotRepository.GetRepositoryById(repositoryId);
+            Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Repositories).ReturnsDbSet(repositoriesDB);
+            DepotRepository depot = new DepotRepository(context.Object);
 
-    //            Assert.NotNull(repository);
-    //        }
+            Repository_SQLDTO? repositoryBACenComm = repositoriesDB.FirstOrDefault(r => r.Name == "BACenComm");
+            Assert.NotNull(repositoryBACenComm);
 
-    //        this.DeleteRepositoryTableContent();
-    //    }
+            int repositoryId = repositoryBACenComm.Id;
 
-    //    [Fact]
-    //    public void Test_GetRepositoryById_NotActive()
-    //    {
-    //        this.DeleteRepositoryTableContent();
-    //        this.InsertPremadeRepositories();
+            Repository repository = depot.GetRepositoryById(repositoryId);
 
-    //        using (var context = new RPLPDbContext(options))
-    //        {
-    //            Repository_SQLDTO? repositoryBACenComm = context.Repositories.FirstOrDefault(r => r.Name == "BACenComm");
-    //            Assert.NotNull(repositoryBACenComm);
+            Assert.Null(repository);
+            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
+            logMock.VerifyNoOtherCalls();
+        }
 
-    //            int repositoryId = repositoryBACenComm.Id;
+        [Fact]
+        public void Test_GetRepositoryByName()
+        {
+            List<Repository_SQLDTO> repositoriesDB = new List<Repository_SQLDTO>()
+                {
+                    new Repository_SQLDTO()
+                    {
+                        Id= 1,
+                        Name = "ThPaquet",
+                        FullName = "Thierry Paquet",
+                        OrganisationName = "RPLP",
+                        Active = true
+                    },
+                    new Repository_SQLDTO()
+                    {
+                        Id= 2,
+                        Name = "ikeameatbol",
+                        FullName = "Jonathan Blouin",
+                        OrganisationName = "RPLP",
+                        Active = true
+                    },
+                    new Repository_SQLDTO()
+                    {
+                        Id= 3,
+                        Name = "BACenComm",
+                        FullName = "Melissa Lachapelle",
+                        OrganisationName = "RPLP",
+                        Active = false
+                    },
+                };
 
-    //            DepotRepository depotRepository = new DepotRepository(context);
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.ManipulationLog = logMock.Object;
 
-    //            Repository repository = depotRepository.GetRepositoryById(repositoryId);
+            Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Repositories).ReturnsDbSet(repositoriesDB);
+            DepotRepository depot = new DepotRepository(context.Object);
 
-    //            Assert.Null(repository);
-    //        }
+            Repository repository = depot.GetRepositoryByName("ThPaquet");
 
-    //        this.DeleteRepositoryTableContent();
-    //    }
+            Assert.NotNull(repository);
+            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
+            logMock.VerifyNoOtherCalls();
+        }
 
-    //    [Fact]
-    //    public void Test_GetRepositoryByName()
-    //    {
-    //        this.DeleteRepositoryTableContent();
-    //        this.InsertPremadeRepositories();
+        [Fact]
+        public void Test_GetRepositoryByName_NotActive()
+        {
+            List<Repository_SQLDTO> repositoriesDB = new List<Repository_SQLDTO>()
+                {
+                    new Repository_SQLDTO()
+                    {
+                        Id=1,
+                        Name = "ThPaquet",
+                        FullName = "Thierry Paquet",
+                        OrganisationName = "RPLP",
+                        Active = true
+                    },
+                    new Repository_SQLDTO()
+                    {
+                        Id=2,
+                        Name = "ikeameatbol",
+                        FullName = "Jonathan Blouin",
+                        OrganisationName = "RPLP",
+                        Active = true
+                    },
+                    new Repository_SQLDTO()
+                    {
+                        Id=3,
+                        Name = "BACenComm",
+                        FullName = "Melissa Lachapelle",
+                        OrganisationName = "RPLP",
+                        Active = false
+                    },
+                };
 
-    //        using (var context = new RPLPDbContext(options))
-    //        {
-    //            DepotRepository depotRepository = new DepotRepository(context);
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.ManipulationLog = logMock.Object;
 
-    //            Repository repository = depotRepository.GetRepositoryByName("ThPaquet");
+            Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Repositories).ReturnsDbSet(repositoriesDB);
+            DepotRepository depot = new DepotRepository(context.Object);
 
-    //            Assert.NotNull(repository);
-    //        }
+            Repository repository = depot.GetRepositoryByName("BACenComm");
 
-    //        this.DeleteRepositoryTableContent();
-    //    }
+            Assert.Null(repository);
+            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
+            logMock.VerifyNoOtherCalls();
+        }
 
-    //    [Fact]
-    //    public void Test_GetRepositoryByName_NotActive()
-    //    {
-    //        this.DeleteRepositoryTableContent();
-    //        this.InsertPremadeRepositories();
+        [Fact]
+        public void Test_UpsertRepository_Inserts()
+        {
+            List<Repository_SQLDTO> repositoriesDB = new List<Repository_SQLDTO>()
+                {
+                    new Repository_SQLDTO()
+                    {
+                        Id=1,
+                        Name = "ThPaquet",
+                        FullName = "Thierry Paquet",
+                        OrganisationName = "RPLP",
+                        Active = true
+                    },
+                    new Repository_SQLDTO()
+                    {
+                        Id=2,
+                        Name = "ikeameatbol",
+                        FullName = "Jonathan Blouin",
+                        OrganisationName = "RPLP",
+                        Active = true
+                    },
+                    new Repository_SQLDTO()
+                    {
+                        Id=3,
+                        Name = "BACenComm",
+                        FullName = "Melissa Lachapelle",
+                        OrganisationName = "RPLP",
+                        Active = false
+                    },
+                };
 
-    //        using (var context = new RPLPDbContext(options))
-    //        {
-    //            DepotRepository depotRepository = new DepotRepository(context);
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.ManipulationLog = logMock.Object;
 
-    //            Repository repository = depotRepository.GetRepositoryByName("BACenComm");
+            Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Repositories).ReturnsDbSet(repositoriesDB);
+            context.Setup(m => m.Repositories.Add(It.IsAny<Repository_SQLDTO>())).Callback<Repository_SQLDTO>(repositoriesDB.Add);
+            DepotRepository depot = new DepotRepository(context.Object);
 
-    //            Assert.Null(repository);
-    //        }
+            Repository repository = new Repository()
+            {
+                Name = "testrepo",
+                FullName = "Test Repository",
+                OrganisationName = "test organisation"
+            };
 
-    //        this.DeleteRepositoryTableContent();
-    //    }
+            depot.UpsertRepository(repository);
 
-    //    [Fact]
-    //    public void Test_UpsertRepository_Inserts()
-    //    {
-    //        this.DeleteRepositoryTableContent();
+            Repository_SQLDTO? repositorySQL = repositoriesDB.FirstOrDefault(r => r.Name == "testrepo");
 
-    //        using (var context = new RPLPDbContext(options))
-    //        {
-    //            Repository repository = new Repository()
-    //            {
-    //                Name = "testrepo",
-    //                FullName = "Test Repository",
-    //                OrganisationName = "test organisation"
-    //            };
+            Assert.NotNull(repositorySQL);
+            Assert.Equal("testrepo", repositorySQL.Name);
+            Assert.Equal("Test Repository", repositorySQL.FullName);
+            Assert.Equal("test organisation", repositorySQL.OrganisationName);
+            Assert.True(repositorySQL.Active);
+            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
+            logMock.VerifyNoOtherCalls();
+        }
 
-    //            DepotRepository depot = new DepotRepository(context);
+        [Fact]
+        public void Test_UpsertRepository_Updates()
+        {
+            List<Repository_SQLDTO> repositoriesDB = new List<Repository_SQLDTO>()
+                {
+                    new Repository_SQLDTO()
+                    {
+                        Id=1,
+                        Name = "ThPaquet",
+                        FullName = "Thierry Paquet",
+                        OrganisationName = "RPLP",
+                        Active = true
+                    },
+                    new Repository_SQLDTO()
+                    {
+                        Id=2,
+                        Name = "ikeameatbol",
+                        FullName = "Jonathan Blouin",
+                        OrganisationName = "RPLP",
+                        Active = true
+                    },
+                    new Repository_SQLDTO()
+                    {
+                        Id=3,
+                        Name = "BACenComm",
+                        FullName = "Melissa Lachapelle",
+                        OrganisationName = "RPLP",
+                        Active = false
+                    },
+                };
 
-    //            depot.UpsertRepository(repository);
-    //        };
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.ManipulationLog = logMock.Object;
 
-    //        using (var context = new RPLPDbContext(options))
-    //        {
-    //            Repository_SQLDTO? repository = context.Repositories.FirstOrDefault(r => r.Name == "testrepo");
+            Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Repositories).ReturnsDbSet(repositoriesDB);
+            DepotRepository depot = new DepotRepository(context.Object);
 
-    //            Assert.NotNull(repository);
-    //            Assert.Equal("testrepo", repository.Name);
-    //            Assert.Equal("Test Repository", repository.FullName);
-    //            Assert.Equal("test organisation", repository.OrganisationName);
-    //            Assert.True(repository.Active);
-    //        }
+            Repository? repository = repositoriesDB.FirstOrDefault(r => r.Name == "ThPaquet").ToEntity();
+            Assert.NotNull(repository);
 
-    //        this.DeleteRepositoryTableContent();
-    //    }
+            repository.Name = "testrepo";
+            repository.FullName = "Test Repository";
+            repository.OrganisationName = "test organisation";
 
-    //    [Fact]
-    //    public void Test_UpsertRepository_Updates()
-    //    {
-    //        this.DeleteRepositoryTableContent();
-    //        this.InsertPremadeRepositories();
+            depot.UpsertRepository(repository);
 
-    //        using (var context = new RPLPDbContext(options))
-    //        {
-    //            Repository_SQLDTO repository = context.Repositories.FirstOrDefault(r => r.Name == "ThPaquet");
-    //            Assert.NotNull(repository);
+            Repository_SQLDTO? repositorySQL = repositoriesDB.FirstOrDefault(r => r.Name == "testrepo");
 
-    //            repository.Name = "testrepo";
-    //            repository.FullName = "Test Repository";
-    //            repository.OrganisationName = "test organisation";
+            Assert.NotNull(repositorySQL);
+            Assert.Equal("testrepo", repositorySQL.Name);
+            Assert.Equal("Test Repository", repositorySQL.FullName);
+            Assert.Equal("test organisation", repositorySQL.OrganisationName);
+            Assert.True(repositorySQL.Active);
+            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
+            logMock.VerifyNoOtherCalls();
+        }
 
+        [Fact]
+        public void Test_DeleteRepository()
+        {
+            List<Repository_SQLDTO> repositoriesDB = new List<Repository_SQLDTO>()
+                {
+                    new Repository_SQLDTO()
+                    {
+                        Id=1,
+                        Name = "ThPaquet",
+                        FullName = "Thierry Paquet",
+                        OrganisationName = "RPLP",
+                        Active = true
+                    },
+                    new Repository_SQLDTO()
+                    {
+                        Id=2,
+                        Name = "ikeameatbol",
+                        FullName = "Jonathan Blouin",
+                        OrganisationName = "RPLP",
+                        Active = true
+                    },
+                    new Repository_SQLDTO()
+                    {
+                        Id=3,
+                        Name = "BACenComm",
+                        FullName = "Melissa Lachapelle",
+                        OrganisationName = "RPLP",
+                        Active = false
+                    },
+                };
 
-    //            DepotRepository depot = new DepotRepository(context);
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.ManipulationLog = logMock.Object;
 
-    //            depot.UpsertRepository(repository.ToEntity());
-    //        };
+            Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Repositories).ReturnsDbSet(repositoriesDB);
+            DepotRepository depot = new DepotRepository(context.Object);
 
-    //        using (var context = new RPLPDbContext(options))
-    //        {
-    //            Repository_SQLDTO? repository = context.Repositories.FirstOrDefault(r => r.Name == "testrepo");
+            depot.DeleteRepository("ThPaquet");
 
-    //            Assert.NotNull(repository);
-    //            Assert.Equal("testrepo", repository.Name);
-    //            Assert.Equal("Test Repository", repository.FullName);
-    //            Assert.Equal("test organisation", repository.OrganisationName);
-    //            Assert.True(repository.Active);
-    //        }
+            Repository_SQLDTO? repository = repositoriesDB.FirstOrDefault(r => r.Name == "ThPaquet" && r.Active);
+            Assert.Null(repository);
+            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
+            logMock.VerifyNoOtherCalls();
+        }
 
-    //        this.DeleteRepositoryTableContent();
-    //    }
+        [Fact]
+        public void Test_GetRepositories()
+        {
+            List<Repository_SQLDTO> repositoriesDB = new List<Repository_SQLDTO>()
+                {
+                    new Repository_SQLDTO()
+                    {
+                        Id=1,
+                        Name = "ThPaquet",
+                        FullName = "Thierry Paquet",
+                        OrganisationName = "RPLP",
+                        Active = true
+                    },
+                    new Repository_SQLDTO()
+                    {
+                        Id=2,
+                        Name = "ikeameatbol",
+                        FullName = "Jonathan Blouin",
+                        OrganisationName = "RPLP",
+                        Active = true
+                    },
+                    new Repository_SQLDTO()
+                    {
+                        Id=3,
+                        Name = "BACenComm",
+                        FullName = "Melissa Lachapelle",
+                        OrganisationName = "RPLP",
+                        Active = false
+                    },
+                };
 
-    //    [Fact]
-    //    public void Test_DeleteRepository()
-    //    {
-    //        this.DeleteRepositoryTableContent();
-    //        this.InsertPremadeRepositories();
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.ManipulationLog = logMock.Object;
 
-    //        using (var context = new RPLPDbContext(options))
-    //        {
-    //            DepotRepository depot = new DepotRepository(context);
-    //            depot.DeleteRepository("ThPaquet");
-    //        };
+            Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Repositories).ReturnsDbSet(repositoriesDB);
+            DepotRepository depot = new DepotRepository(context.Object);
 
-    //        using (var context = new RPLPDbContext(options))
-    //        {
-    //            Repository_SQLDTO? repository = context.Repositories.FirstOrDefault(r => r.Name == "ThPaquet" && r.Active);
-    //            Assert.Null(repository);
-    //        };
+            List<Repository> repositories = depot.GetRepositories();
 
-    //        this.DeleteRepositoryTableContent();
-    //    }
+            Assert.Equal(2, repositories.Count);
+            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
+            logMock.VerifyNoOtherCalls();
+        }
 
-    //    [Fact]
-    //    public void Test_GetRepositories()
-    //    {
-    //        this.DeleteRepositoryTableContent();
-    //        this.InsertPremadeRepositories();
+        [Fact]
+        public void Test_GetRepositoriesByOrganisationName()
+        {
+            List<Repository_SQLDTO> repositoriesDB = new List<Repository_SQLDTO>()
+                {
+                    new Repository_SQLDTO()
+                    {
+                        Id=1,
+                        Name = "ThPaquet",
+                        FullName = "Thierry Paquet",
+                        OrganisationName = "RPLP",
+                        Active = true
+                    },
+                    new Repository_SQLDTO()
+                    {
+                        Id=2,
+                        Name = "ikeameatbol",
+                        FullName = "Jonathan Blouin",
+                        OrganisationName = "RPLP",
+                        Active = true
+                    },
+                    new Repository_SQLDTO()
+                    {
+                        Id=3,
+                        Name = "BACenComm",
+                        FullName = "Melissa Lachapelle",
+                        OrganisationName = "RPLP",
+                        Active = false
+                    },
+                };
 
-    //        using (var context = new RPLPDbContext(options))
-    //        {
-    //            DepotRepository depot = new DepotRepository(context);
-    //            List<Repository> repositories = depot.GetRepositories();
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.ManipulationLog = logMock.Object;
 
-    //            Assert.Equal(2, repositories.Count);
-    //        }
+            Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Repositories).ReturnsDbSet(repositoriesDB);
+            DepotRepository depot = new DepotRepository(context.Object);
 
-    //        this.DeleteRepositoryTableContent();
-    //    }
+            List<Repository> repositories = depot.GetRepositoriesFromOrganisationName("RPLP");
 
-    //    [Fact]
-    //    public void Test_GetRepositoriesByOrganisationName()
-    //    {
-    //        this.DeleteRepositoryTableContent();
-    //        this.InsertPremadeRepositories();
-
-    //        using (var context = new RPLPDbContext(options))
-    //        {
-    //            DepotRepository depot = new DepotRepository(context);
-    //            List<Repository> repositories = depot.GetRepositoriesFromOrganisationName("RPLP");
-
-    //            Assert.Equal(2, repositories.Count);
-    //        }
-
-    //        this.DeleteRepositoryTableContent();
-    //    }
-    //}
+            Assert.Equal(2, repositories.Count);
+            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
+            logMock.VerifyNoOtherCalls();
+        }
+    }
 }
+
