@@ -1,242 +1,316 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Moq;
+using Moq.EntityFrameworkCore;
 using RPLP.DAL.DTO.Sql;
 using RPLP.DAL.SQL;
 using RPLP.DAL.SQL.Depots;
 using RPLP.ENTITES;
+using RPLP.JOURNALISATION;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
 namespace RPLP.UnitTesting.DepotTests
 {
-    //[Collection("DatabaseTests")]
-    //public class TestsDepotAssignment
-    //{
-    //    private static readonly DbContextOptions<RPLPDbContext> options = new DbContextOptionsBuilder<RPLPDbContext>()
-    //            .UseSqlServer("Server=localhost,1434; Database=RPLP; User Id=sa; password=Cad3pend86!")
-    //            //.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
-    //            .Options;
+    public class TestsDepotAssignment
+    {
+        [Fact]
+        public void Test_GetAssignments()
+        {
+            List<Assignment_SQLDTO> assignmentsBD = new List<Assignment_SQLDTO>()
+            {
+                new Assignment_SQLDTO()
+                {
+                    Name = "Review",
+                    ClassroomName = "RPLP",
+                    DistributionDate = System.DateTime.Now,
+                    Description = "Review a partner\'s code",
+                    DeliveryDeadline = System.DateTime.Now.AddDays(1),
+                    Active = true
+                },
+                new Assignment_SQLDTO()
+                {
+                    Name = "AnotherOne",
+                    ClassroomName = "RPLP",
+                    DistributionDate = System.DateTime.Now,
+                    Description = "Review another partner\'s code",
+                    DeliveryDeadline = System.DateTime.Now.AddDays(1),
+                    Active = true
+                }
+            };
 
-    //    private void DeleteAssignmentAndRelatedTablesContent()
-    //    {
-    //        using (var context = new RPLPDbContext(options))
-    //        {
-    //            context.Database.ExecuteSqlRaw("DELETE from Assignments;");
-    //            context.Database.ExecuteSqlRaw("DELETE from Classrooms;");
-    //        }
-    //    }
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.ManipulationLog = logMock.Object;
 
-    //    private void InsertAssignment(Assignment_SQLDTO p_assignment)
-    //    {
-    //        using (var context = new RPLPDbContext(options))
-    //        {
-    //            context.Assignments.Add(p_assignment);
-    //            context.SaveChanges();
-    //        }
-    //    }
+            Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Assignments).ReturnsDbSet(assignmentsBD);
+            DepotAssignment depot = new DepotAssignment(context.Object);
 
-    //    private void InsertAssignments(IEnumerable<Assignment_SQLDTO> p_assignments)
-    //    {
-    //        using (var context = new RPLPDbContext(options))
-    //        {
-    //            context.Assignments.AddRange(p_assignments);
-    //            context.SaveChanges();
-    //        }
-    //    }
+            List<Assignment> fetchedAssignments = depot.GetAssignments();
 
-    //    private void InsertReviewAssignment()
-    //    {
-    //        InsertAssignment(new Assignment_SQLDTO()
-    //        {
-    //            Name = "Review",
-    //            ClassroomName = "RPLP",
-    //            DistributionDate = System.DateTime.Now,
-    //            Description = "Review a partner\'s code",
-    //            DeliveryDeadline = System.DateTime.Now.AddDays(1),
-    //            Active = true
-    //        });
-    //    }
+            Assert.Contains(fetchedAssignments, f => f.Name == "Review");
+            Assert.Contains(fetchedAssignments, f => f.Name == "AnotherOne");
+            Assert.Equal(2, fetchedAssignments.Count);
+            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
+            logMock.VerifyNoOtherCalls();
+        }
 
-    //    [Fact]
-    //    public void Test_GetAssignments()
-    //    {
-    //        this.DeleteAssignmentAndRelatedTablesContent();
+        [Fact]
+        public void Test_GetAssignmentById()
+        {
+            List<Assignment_SQLDTO> assignmentsBD = new List<Assignment_SQLDTO>()
+            {
+                new Assignment_SQLDTO()
+                {
+                    Name = "Review",
+                    ClassroomName = "RPLP",
+                    DistributionDate = System.DateTime.Now,
+                    Description = "Review a partner\'s code",
+                    DeliveryDeadline = System.DateTime.Now.AddDays(1),
+                    Active = true
+                },
+                new Assignment_SQLDTO()
+                {
+                    Name = "AnotherOne",
+                    ClassroomName = "RPLP",
+                    DistributionDate = System.DateTime.Now,
+                    Description = "Review another partner\'s code",
+                    DeliveryDeadline = System.DateTime.Now.AddDays(1),
+                    Active = true
+                }
+            };
 
-    //        List<Assignment_SQLDTO> assignments = new List<Assignment_SQLDTO>()
-    //        {
-    //            new Assignment_SQLDTO()
-    //            {
-    //                Name = "Review",
-    //                ClassroomName = "RPLP",
-    //                DistributionDate = System.DateTime.Now,
-    //                Description = "Review a partner\'s code",
-    //                DeliveryDeadline = System.DateTime.Now.AddDays(1),
-    //                Active = true
-    //            },
-    //            new Assignment_SQLDTO()
-    //            {
-    //                Name = "AnotherOne",
-    //                ClassroomName = "RPLP",
-    //                DistributionDate = System.DateTime.Now,
-    //                Description = "Review another partner\'s code",
-    //                DeliveryDeadline = System.DateTime.Now.AddDays(1),
-    //                Active = true
-    //            }
-    //        };
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.ManipulationLog = logMock.Object;
 
-    //        this.InsertAssignments(assignments);
+            Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Assignments).ReturnsDbSet(assignmentsBD);
+            DepotAssignment depot = new DepotAssignment(context.Object);
 
-    //        using (var context = new RPLPDbContext(options))
-    //        {
-    //            DepotAssignment depot = new DepotAssignment(context);
-    //            List<Assignment> fetchedAssignments = depot.GetAssignments();
+            int assignmentId = assignmentsBD.FirstOrDefault(a => a.Name == "Review").Id;
+            Assignment assignment = depot.GetAssignmentById(assignmentId);
 
-    //            Assert.Contains(fetchedAssignments, f => f.Name == "Review");
-    //            Assert.Contains(fetchedAssignments, f => f.Name == "AnotherOne");
-    //            Assert.Equal(2, fetchedAssignments.Count);
-    //        }
+            Assert.NotNull(assignment);
+            Assert.Equal("Review", assignment.Name);
+            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
+            logMock.VerifyNoOtherCalls();
+        }
 
-    //        this.DeleteAssignmentAndRelatedTablesContent();
-    //    }
+        [Fact]
+        public void Test_GetAssignmentByName()
+        {
+            List<Assignment_SQLDTO> assignmentsBD = new List<Assignment_SQLDTO>()
+            {
+                new Assignment_SQLDTO()
+                {
+                    Name = "Review",
+                    ClassroomName = "RPLP",
+                    DistributionDate = System.DateTime.Now,
+                    Description = "Review a partner\'s code",
+                    DeliveryDeadline = System.DateTime.Now.AddDays(1),
+                    Active = true
+                },
+                new Assignment_SQLDTO()
+                {
+                    Name = "AnotherOne",
+                    ClassroomName = "RPLP",
+                    DistributionDate = System.DateTime.Now,
+                    Description = "Review another partner\'s code",
+                    DeliveryDeadline = System.DateTime.Now.AddDays(1),
+                    Active = true
+                }
+            };
 
-    //    [Fact]
-    //    public void Test_GetAssignmentById()
-    //    {
-    //        this.DeleteAssignmentAndRelatedTablesContent();
-    //        this.InsertReviewAssignment();
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.ManipulationLog = logMock.Object;
 
-    //        using (var context = new RPLPDbContext(options))
-    //        {
-    //            DepotAssignment depot = new DepotAssignment(context);
-    //            int assignmentId = context.Assignments
-    //                .FirstOrDefault(a => a.Name == "Review").Id;
-    //            Assignment assignment = depot.GetAssignmentById(assignmentId);
+            Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Assignments).ReturnsDbSet(assignmentsBD);
+            DepotAssignment depot = new DepotAssignment(context.Object);
 
-    //            Assert.NotNull(assignment);
-    //            Assert.Equal("Review", assignment.Name);
-    //        }
+            Assignment assignment = depot.GetAssignmentByName("Review");
 
-    //        this.DeleteAssignmentAndRelatedTablesContent();
-    //    }
+            Assert.NotNull(assignment);
+            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
+            logMock.VerifyNoOtherCalls();
+        }
 
-    //    [Fact]
-    //    public void Test_GetAssignmentByName()
-    //    {
-    //        this.DeleteAssignmentAndRelatedTablesContent();
-    //        this.InsertReviewAssignment();
+        [Fact]
+        public void Test_GetAssignmentsByClassroomName()
+        {
+            List<Assignment_SQLDTO> assignmentsBD = new List<Assignment_SQLDTO>()
+            {
+                new Assignment_SQLDTO()
+                {
+                    Name = "Review",
+                    ClassroomName = "RPLP",
+                    DistributionDate = System.DateTime.Now,
+                    Description = "Review a partner\'s code",
+                    DeliveryDeadline = System.DateTime.Now.AddDays(1),
+                    Active = true
+                },
+                new Assignment_SQLDTO()
+                {
+                    Name = "AnotherOne",
+                    ClassroomName = "RPLP",
+                    DistributionDate = System.DateTime.Now,
+                    Description = "Review another partner\'s code",
+                    DeliveryDeadline = System.DateTime.Now.AddDays(1),
+                    Active = true
+                }
+            };
 
-    //        using (var context = new RPLPDbContext(options))
-    //        {
-    //            DepotAssignment depot = new DepotAssignment(context);
-    //            Assignment assignment = depot.GetAssignmentByName("Review");
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.ManipulationLog = logMock.Object;
 
-    //            Assert.NotNull(assignment);
-    //        }
+            Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Assignments).ReturnsDbSet(assignmentsBD);
+            DepotAssignment depot = new DepotAssignment(context.Object);
 
-    //        this.DeleteAssignmentAndRelatedTablesContent();
-    //    }
+            List<Assignment> assignments = depot.GetAssignmentsByClassroomName("RPLP");
 
-    //    [Fact]
-    //    public void Test_GetAssignmentsByClassroomName()
-    //    {
-    //        this.DeleteAssignmentAndRelatedTablesContent();
-    //        this.InsertReviewAssignment();
+            Assert.True(assignments.Count == 2);
+            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
+            logMock.VerifyNoOtherCalls();
+        }
 
-    //        using (var context = new RPLPDbContext(options))
-    //        {
-    //            DepotAssignment depot = new DepotAssignment(context);
+        [Fact]
+        public void Test_UpsertAssignment_Inserts()
+        {
+            List<Assignment_SQLDTO> assignmentsBD = new List<Assignment_SQLDTO>()
+            {
+                new Assignment_SQLDTO()
+                {
+                    Name = "Review",
+                    ClassroomName = "RPLP",
+                    DistributionDate = System.DateTime.Now,
+                    Description = "Review a partner\'s code",
+                    DeliveryDeadline = System.DateTime.Now.AddDays(1),
+                    Active = true
+                },
+                new Assignment_SQLDTO()
+                {
+                    Name = "AnotherOne",
+                    ClassroomName = "RPLP",
+                    DistributionDate = System.DateTime.Now,
+                    Description = "Review another partner\'s code",
+                    DeliveryDeadline = System.DateTime.Now.AddDays(1),
+                    Active = true
+                }
+            };
 
-    //            List<Assignment> assignments = depot.GetAssignmentsByClassroomName("RPLP");
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.ManipulationLog = logMock.Object;
 
-    //            Assert.True(assignments.Count == 1);
+            Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Assignments).ReturnsDbSet(assignmentsBD);
+            DepotAssignment depot = new DepotAssignment(context.Object);
 
-    //        }
+            Assignment assignment = new Assignment()
+            {
+                Name = "Review",
+                ClassroomName = "RPLP",
+                DistributionDate = System.DateTime.Now,
+                Description = "Review a partner\'s code",
+                DeliveryDeadline = System.DateTime.Now.AddDays(1)
+            };
 
-    //        this.DeleteAssignmentAndRelatedTablesContent();
-    //    }
+            depot.UpsertAssignment(assignment);
 
-    //    [Fact]
-    //    public void Test_UpsertAssignment_Inserts()
-    //    {
-    //        this.DeleteAssignmentAndRelatedTablesContent();
+            Assignment_SQLDTO? assignmentSQL = assignmentsBD.FirstOrDefault(a => a.Name == "Review");
 
-    //        using (var context = new RPLPDbContext(options))
-    //        {
-    //            DepotAssignment depot = new DepotAssignment(context);
-    //            Assignment assignment = new Assignment()
-    //            {
-    //                Name = "Review",
-    //                ClassroomName = "RPLP",
-    //                DistributionDate = System.DateTime.Now,
-    //                Description = "Review a partner\'s code",
-    //                DeliveryDeadline = System.DateTime.Now.AddDays(1)
-    //            };
+            Assert.NotNull(assignmentSQL);
+            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
+            logMock.VerifyNoOtherCalls();
 
-    //            depot.UpsertAssignment(assignment);
-    //        }
+        }
 
-    //        using (var context = new RPLPDbContext(options))
-    //        {
-    //            Assignment_SQLDTO? assignment = context.Assignments
-    //                                            .FirstOrDefault(a => a.Name == "Review");
+        [Fact]
+        public void Test_UpsertAssignment_Updates()
+        {
+            List<Assignment_SQLDTO> assignmentsBD = new List<Assignment_SQLDTO>()
+            {
+                new Assignment_SQLDTO()
+                {
+                    Name = "Review",
+                    ClassroomName = "RPLP",
+                    DistributionDate = System.DateTime.Now,
+                    Description = "Review a partner\'s code",
+                    DeliveryDeadline = System.DateTime.Now.AddDays(1),
+                    Active = true
+                },
+                new Assignment_SQLDTO()
+                {
+                    Name = "AnotherOne",
+                    ClassroomName = "RPLP",
+                    DistributionDate = System.DateTime.Now,
+                    Description = "Review another partner\'s code",
+                    DeliveryDeadline = System.DateTime.Now.AddDays(1),
+                    Active = true
+                }
+            };
 
-    //            Assert.NotNull(assignment);
-    //        }
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.ManipulationLog = logMock.Object;
 
-    //        this.DeleteAssignmentAndRelatedTablesContent();
-    //    }
+            Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Assignments).ReturnsDbSet(assignmentsBD);
+            DepotAssignment depot = new DepotAssignment(context.Object);
 
-    //    [Fact]
-    //    public void Test_UpsertAssignment_Updates()
-    //    {
-    //        this.DeleteAssignmentAndRelatedTablesContent();
-    //        this.InsertReviewAssignment();
+            Assignment? assignment = assignmentsBD.FirstOrDefault(a => a.Name == "Review").ToEntity();
 
-    //        using (var context = new RPLPDbContext(options))
-    //        {
-    //            DepotAssignment depot = new DepotAssignment(context);
-    //            Assignment? assignment = context.Assignments.FirstOrDefault(a => a.Name == "Review").ToEntity();
+            assignment.Name = "Modified";
 
-    //            assignment.Name = "Modified";
+            depot.UpsertAssignment(assignment);
 
-    //            depot.UpsertAssignment(assignment);
-    //        }
+            Assignment_SQLDTO? nonModifiedAssignment = assignmentsBD.FirstOrDefault(a => a.Name == "Review");
+            Assignment_SQLDTO? modifiedAssignment = assignmentsBD.FirstOrDefault(a => a.Name == "Modified");
 
-    //        using (var context = new RPLPDbContext(options))
-    //        {
-    //            Assignment_SQLDTO? nonModifiedAssignment = context.Assignments
-    //                                            .FirstOrDefault(a => a.Name == "Review");
-    //            Assignment_SQLDTO? modifiedAssignment = context.Assignments
-    //                                            .FirstOrDefault(a => a.Name == "Modified");
+            Assert.Null(nonModifiedAssignment);
+            Assert.NotNull(modifiedAssignment);
+            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
+            logMock.VerifyNoOtherCalls();
+        }
 
-    //            Assert.Null(nonModifiedAssignment);
-    //            Assert.NotNull(modifiedAssignment);
-    //        }
+        [Fact]
+        public void Test_DeleteAssignment()
+        {
+            List<Assignment_SQLDTO> assignmentsBD = new List<Assignment_SQLDTO>()
+            {
+                new Assignment_SQLDTO()
+                {
+                    Name = "Review",
+                    ClassroomName = "RPLP",
+                    DistributionDate = System.DateTime.Now,
+                    Description = "Review a partner\'s code",
+                    DeliveryDeadline = System.DateTime.Now.AddDays(1),
+                    Active = true
+                },
+                new Assignment_SQLDTO()
+                {
+                    Name = "AnotherOne",
+                    ClassroomName = "RPLP",
+                    DistributionDate = System.DateTime.Now,
+                    Description = "Review another partner\'s code",
+                    DeliveryDeadline = System.DateTime.Now.AddDays(1),
+                    Active = true
+                }
+            };
 
-    //        this.DeleteAssignmentAndRelatedTablesContent();
-    //    }
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.ManipulationLog = logMock.Object;
 
-    //    [Fact]
-    //    public void Test_DeleteAssignment()
-    //    {
-    //        this.DeleteAssignmentAndRelatedTablesContent();
-    //        this.InsertReviewAssignment();
+            Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Assignments).ReturnsDbSet(assignmentsBD);
+            DepotAssignment depot = new DepotAssignment(context.Object);
 
-    //        using (var context = new RPLPDbContext(options))
-    //        {
-    //            DepotAssignment depot = new DepotAssignment(context);
+            Assert.NotNull(assignmentsBD.FirstOrDefault(a => a.Name == "Review" && a.Active == true));
 
-    //            Assert.NotNull(context.Assignments.FirstOrDefault(a => a.Name == "Review" && a.Active == true));
+            depot.DeleteAssignment("Review");
 
-    //            depot.DeleteAssignment("Review");
-    //        }
-
-    //        using (var context = new RPLPDbContext(options))
-    //        {
-    //            Assert.Null(context.Assignments.FirstOrDefault(a => a.Name == "Review" && a.Active == true));
-    //        }
-
-    //        this.DeleteAssignmentAndRelatedTablesContent();
-    //    }
-    //}
+            Assert.Null(assignmentsBD.FirstOrDefault(a => a.Name == "Review" && a.Active == true));
+            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
+            logMock.VerifyNoOtherCalls();
+        }
+    }
 }

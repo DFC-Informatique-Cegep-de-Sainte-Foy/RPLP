@@ -1196,22 +1196,13 @@ namespace RPLP.UnitTesting.DepotTests
             context.Setup(x => x.Administrators).ReturnsDbSet(administratorsBD);
             DepotAdministrator depot = new DepotAdministrator(context.Object);
 
-            Administrator_SQLDTO? admin = new Administrator_SQLDTO
-            {
-                Id = 2,
-                Username = "BACenComm",
-                FirstName = "Jonathan",
-                LastName = "Blouin",
-                Email = "ikeameatbol@hotmail.com",
-                Token = "token",
-                Organisations = { },
-                Active = true
-            };
+            Administrator? admin = administratorsBD.FirstOrDefault(a => a.Username == "ikeameatbol").ToEntity();
+            admin.Username = "BACenComm";
 
             Assert.Throws<ArgumentException>(
                 () =>
                 {
-                    depot.UpsertAdministrator(admin.ToEntityWithoutList());
+                    depot.UpsertAdministrator(admin);
                 });
             logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
             logMock.VerifyNoOtherCalls();
@@ -1543,22 +1534,13 @@ namespace RPLP.UnitTesting.DepotTests
             context.Setup(x => x.Administrators).ReturnsDbSet(administratorsBD);
             DepotAdministrator depot = new DepotAdministrator(context.Object);
 
-            Administrator_SQLDTO? admin = new Administrator_SQLDTO
-            {
-                Id = 2,
-                Username = "ikeameatbol",
-                FirstName = "Jonathan",
-                LastName = "Blouin",
-                Email = "BACenComm@hotmail.com",
-                Token = "token",
-                Organisations = { },
-                Active = true
-            };
+            Administrator? admin = administratorsBD.FirstOrDefault(a => a.Email == "ikeameatbol@hotmail.com").ToEntity();
+            admin.Email = "BACenComm@hotmail.com";
 
             Assert.Throws<ArgumentException>(
                 () =>
                 {
-                    depot.UpsertAdministrator(admin.ToEntityWithoutList());
+                    depot.UpsertAdministrator(admin);
                 });
             logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
             logMock.VerifyNoOtherCalls();
