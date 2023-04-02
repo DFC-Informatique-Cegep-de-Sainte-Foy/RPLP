@@ -39,7 +39,12 @@ services:
       context: .
       dockerfile: RPLP.COHERENCECHECKER/Dockerfile
     depends_on:
-      - rplp.db
+        rplp.db:
+            condition: service_healthy
+        rplp.rabbitmq:
+            condition: service_healthy
+    links: 
+        - rplp.rabbitmq
     restart: always
 
   rplp.journalisation:
@@ -49,7 +54,10 @@ services:
       context: .
       dockerfile: RPLP.JOURNALISATION/Dockerfile
     depends_on:
-      - rplp.rabbitmq
+        rplp.rabbitmq:
+            condition: service_healthy
+    links: 
+        - rplp.rabbitmq
     volumes:
       - rplpvolume_logs:/var/log/rplp/
       - rplpvolume_logs_zip:/var/log/zip_rplp/
@@ -62,7 +70,11 @@ services:
       context: .
       dockerfile: RPLP.VALIDATIONS/Dockerfile
     depends_on:
-      - rplp.rabbitmq
+        rplp.rabbitmq:
+            condition: service_healthy
+    links: 
+        - rplp.rabbitmq
+      
     restart: always
 
   rplp.db:
@@ -74,6 +86,11 @@ services:
     environment:
       SA_PASSWORD: "Cad3pend86!"
       ACCEPT_EULA: "Y"
+    healthcheck:
+      test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-U", "sa", "-P", "Cad3pend86!", "-Q", "select 1", "-b", "-o", "/dev/null"]
+      interval: 30s
+      timeout: 30s
+      retries: 3
     volumes:
       - rplpvolume:/var/opt/mssql/data
 #      - C:\mssql:/tmp
@@ -97,6 +114,14 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+      - "25672:25672"
+    volumes:
+      - rplpvolume_rabbitmq:/var/lib/rabbitmq/
+    healthcheck:
+      test: rabbitmq-diagnostics check_port_connectivity
+      interval: 30s
+      timeout: 30s
+      retries: 2
     restart: always
 
 volumes:
@@ -106,3 +131,5 @@ volumes:
     name: "rplpvolume_logs"
   rplpvolume_logs_zip:
     name: "rplpvolume_logs_zip"
+  rplpvolume_rabbitmq:
+    name: "rplpvolume_rabbitmq"

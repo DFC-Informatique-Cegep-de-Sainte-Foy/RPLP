@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using RabbitMQ.Client;
+using RPLP.DAL.DTO.Json;
 using RPLP.ENTITES;
 using RPLP.JOURNALISATION;
 using RPLP.SERVICES.Github;
@@ -15,16 +16,14 @@ namespace RPLP.SERVICES
     {
         private static ConnectionFactory ConnexionFactory = new ConnectionFactory() { HostName = "rplp.rabbitmq" };
 
-        public static void CallGitHubAPI(Allocations allocations, string p_organisationName, string p_repositoryName, string p_sha, string p_username)
+        public static void CallGitHubAPI(Allocations allocations)
         {
-            RPLP.JOURNALISATION.Logging.Journal(new Log("Producer 1"));
+            RPLP.JOURNALISATION.Logging.Journal(new Log("Le Producteur à été appelé"));
 
             using (IConnection connexion = ConnexionFactory.CreateConnection())
             {
                 using (IModel canalDeCommunication = connexion.CreateModel())
                 {
-                    RPLP.JOURNALISATION.Logging.Journal(new Log("Producer 2"));
-
                     canalDeCommunication.ExchangeDeclare(
                         exchange: "rplp-message-thread",
                         type: "topic",
@@ -32,11 +31,11 @@ namespace RPLP.SERVICES
                         autoDelete: false
                     );
 
-                    RPLP.JOURNALISATION.Logging.Journal(new Log("Producer 3"));
-
                     string sujet = $"rplp.assignations.students";
 
-                    MessageGitHubAPI message = new MessageGitHubAPI(Guid.NewGuid(), allocations, p_organisationName, p_repositoryName, p_sha, p_username);
+                    MessageGitHubAPI message = new MessageGitHubAPI(Guid.NewGuid(), new Allocations_JSONDTO(allocations));
+
+                    RPLP.JOURNALISATION.Logging.Journal(new Log($"Le Producteur à envoyer le message {message.MessageID}"));
 
                     JsonSerializerSettings parametres = new JsonSerializerSettings() { TypeNameHandling = TypeNameHandling.Auto, Formatting = Formatting.Indented };
 
@@ -49,8 +48,6 @@ namespace RPLP.SERVICES
                         routingKey: sujet,
                         basicProperties: null,
                         body: body);
-
-                    RPLP.JOURNALISATION.Logging.Journal(new Log("Producer 4"));
                 }
             }
         }

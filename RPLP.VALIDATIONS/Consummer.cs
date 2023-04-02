@@ -2,6 +2,8 @@
 using Newtonsoft.Json.Linq;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using RPLP.DAL.DTO.Json;
+using RPLP.ENTITES;
 using RPLP.JOURNALISATION;
 using RPLP.SERVICES;
 using RPLP.SERVICES.Github;
@@ -19,11 +21,13 @@ namespace RPLP.VALIDATIONS
         private ManualResetEvent faireAttendreProgrammePrincipal = new ManualResetEvent(false);
         private ConnectionFactory ConnexionFactory = new ConnectionFactory() { HostName = "rplp.rabbitmq" };
         private ScriptGithubRPLP Script;
+        private Allocations_JSONDTO allocations;
 
         private string[] subject = { "rplp.assignations.students" };
         public Consummer(ScriptGithubRPLP script)
         {
             this.Script = script;
+            this.allocations = new Allocations_JSONDTO();
         }
 
         public void DeclareExchange()
@@ -52,11 +56,11 @@ namespace RPLP.VALIDATIONS
 
         public void Listen()
         {
+
             using (IConnection connexion = ConnexionFactory.CreateConnection())
             {
                 using (IModel canalDeCommunication = connexion.CreateModel())
                 {
-
                     foreach (string sujet in subject)
                     {
                         canalDeCommunication.QueueBind(
@@ -64,7 +68,6 @@ namespace RPLP.VALIDATIONS
                             exchange: "rplp-message-thread",
                             routingKey: sujet);
                     }
-
 
                     EventingBasicConsumer consommateurServeur = new EventingBasicConsumer(canalDeCommunication);
 
@@ -76,25 +79,42 @@ namespace RPLP.VALIDATIONS
 
                         MessageGitHubAPI message = JsonConvert.DeserializeObject<MessageGitHubAPI>(messageNonConvertit);
 
-                        if (message.Allocations.Status == 1)
+                        this.allocations = message.Allocations;
+
+                        foreach (Allocation allocation in this.allocations.Pairs)
                         {
-                            this.Script.createPullRequestAndAssignUser(message.OrganisationName, message.RepositoryName, message.SHA, message.Username);
+                            string p_organisationName = message.Allocations._classroom.OrganisationName;
+
+                            string p_repositoryName = this.Script.getNameOfRepository(allocation.RepositoryId);
+
+                            string p_reviewerName = message.Allocations._classroom.Students.FirstOrDefault(reviewer => reviewer.Id == allocation.StudentId).Username;
+
+                            if (allocation.Status == 2)
+                            {
+                                RPLP.JOURNALISATION.Logging.Journal(new Log($"Assignation effectuée au 10 secondes :" +
+                                                $" organisationName : {p_organisationName} - repositoryName : {p_repositoryName} - NomDuReviewer : {p_reviewerName}"));
+                                Thread.Sleep(10000);
+                                this.Script.createPullRequestAndAssignUser(p_organisationName, p_repositoryName, p_reviewerName);
+                                this.Script.SetAllocationAfterAssignation(allocation);
+                            }
                         }
 
-                        //if (message.Allocations.Status == 2)
-                        //{
-                        //   this.Script.createPullRequestAndAssignUser(message.OrganisationName, message.RepositoryName, message.SHA, message.Username);
-                        //}
+                        this.allocations.Pairs = this.Script.GetAllocationBySelectedAllocationID(message.Allocations.Pairs);
 
+                        if (this.allocations.Status == 3)
+                        {
+                            RPLP.JOURNALISATION.Logging.Journal(new Log($"Assignations complétées avec succès - Message ID : {message.MessageID}"));
+
+                            canalDeCommunication.BasicAck(argumentEvenement.DeliveryTag, false);
+                        }
                     };
 
                     canalDeCommunication.BasicConsume(queue: "rplp-message-thread-assignation-students",
-                        autoAck: true,
-                        consumerTag: "rplp-message-thread-assignation-students",
-                        consumer: consommateurServeur);
+                                        autoAck: false,
+                                        consumerTag: "rplp-message-thread-assignation-students",
+                                        consumer: consommateurServeur);
 
-                    //Ne pas ajouter sinon ça bloque le programme
-                    //faireAttendreProgrammePrincipal.WaitOne();
+                    faireAttendreProgrammePrincipal.WaitOne();
                 }
             }
         }

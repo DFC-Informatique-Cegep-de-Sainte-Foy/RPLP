@@ -10,11 +10,9 @@ namespace RPLP.ENTITES
 {
     public class Allocations
     {
-        public List<Allocation> Pairs { get; set; }
-
-        private Classroom _classroom;
-
-        private List<Repository> _repositories;
+        public List<Allocation> Pairs { get; }
+        public Classroom _classroom { get; }
+        public List<Repository> _repositories { get; }
 
         public int Status
         {

@@ -249,7 +249,7 @@ namespace RPLP.DAL.SQL.Depots
 
             return allocation;
         }
-        
+
         public List<Allocation> GetAllocationsByAssignmentName(string p_assignmentName)
         {
             if (string.IsNullOrWhiteSpace(p_assignmentName))
@@ -296,13 +296,13 @@ namespace RPLP.DAL.SQL.Depots
                 allocationResult.RepositoryId = p_allocation.RepositoryId;
                 allocationResult.Status = p_allocation.Status;
 
-                this._context.Update(allocationResult);
                 this._context.SaveChanges();
 
                 Logging.Journal(new Log("Allocation", $"DepotAllocation - Method - UpsertAllocation(Allocation p_allocation) - Void - Update Allocation"));
             }
             else
             {
+                Logging.Journal(new Log("UpsertAllocation - 4 "));
                 Allocation_SQLDTO allocation = new Allocation_SQLDTO();
                 allocation.StudentId = p_allocation.StudentId;
                 allocation.RepositoryId = p_allocation.RepositoryId;
@@ -332,7 +332,7 @@ namespace RPLP.DAL.SQL.Depots
             {
                 allocationResult.Status = 0;
 
-                this._context.Update(allocationResult);
+                //this._context.Update(allocationResult);
                 this._context.SaveChanges();
 
                 Logging.Journal(new Log("Allocation", $"DepotAllocation - Method - DeleteAllocation(Allocation p_allocation) - Void - delete Allocation"));
@@ -352,16 +352,16 @@ namespace RPLP.DAL.SQL.Depots
 
                 throw new ArgumentNullException(nameof(p_allocations));
             }
-            
+
             foreach (Allocation a in p_allocations)
             {
                 Allocation_SQLDTO? allocationResult = this._context.Allocations.
                         SingleOrDefault(allocation => allocation.Id == a.Id);
-                
+
                 if (allocationResult is not null)
                 {
                     allocationResult.Status = a.Status;
-                    this._context.Update(allocationResult);
+                    //this._context.Update(allocationResult);
                     Logging.Journal(new Log("Allocation", $"DepotAllocation - Method - UpsertAllocationsBatch(List<Allocation> p_allocations) - Void - Update Allocations"));
                 }
                 else
@@ -383,13 +383,70 @@ namespace RPLP.DAL.SQL.Depots
                     {
                         Logging.Journal(new Log($"Exception e:{e.Message}"));
                     }
-                    
+
 
                     Logging.Journal(new Log("Allocation", $"DepotAllocation - Method - UpsertAllocationsBatch(List<Allocation> p_allocations) - Void - Add Allocations"));
-                } 
+                }
             }
 
             this._context.SaveChanges();
+
+
+            if(VerificationOfAllocationInDB(p_allocations))
+            {
+                SetAllocationAfterVerification(p_allocations);
+            }
+        }
+
+        private bool VerificationOfAllocationInDB(List<Allocation> p_allocations)
+        {
+            foreach (Allocation allocation in p_allocations)
+            {
+                if (!GetAllocations().Select(p => p).Where(m => m.Id == allocation.Id).Any())
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private void SetAllocationAfterVerification(List<Allocation> p_allocations)
+        {
+            Logging.Journal(new Log($"{p_allocations.Count()}"));
+
+            foreach (Allocation allocation in p_allocations)
+            {
+                Logging.Journal(new Log(allocation.Id));
+
+                allocation.Status = 2;
+                UpsertAllocation(allocation);
+            }
+
+        }
+
+        public void SetAllocationAfterCreation(Allocation p_allocation)
+        {
+                p_allocation.Status = 3;
+                UpsertAllocation(p_allocation);
+        }
+
+        public List<Allocation> GetSelectedAllocationsByAllocationID(List<Allocation> p_allocations)
+        {
+            List<Allocation> allocationsResult = new List<Allocation>();
+
+            foreach (Allocation allocation in p_allocations)
+            {
+                foreach (Allocation allocationDB in GetAllocations())
+                {
+                    if(allocation.Id == allocationDB.Id)
+                    {
+                        allocationsResult.Add(allocationDB);
+                    }
+                }
+            }
+
+            return allocationsResult;
         }
 
         public void DeleteAllocationsBatch(List<Allocation> p_allocations)
@@ -411,14 +468,14 @@ namespace RPLP.DAL.SQL.Depots
                 {
                     allocationResult.Status = 0;
 
-                    this._context.Update(allocationResult);
+                   //this._context.Update(allocationResult);
 
                     Logging.Journal(new Log("Allocation", $"DepotAllocation - Method - DeleteAllocationsBatch(List<Allocation> p_allocations) - Void - delete Allocations"));
                 }
                 else
                 {
                     Logging.Journal(new Log("Allocation", $"DepotAllocation - Method - DeleteAllocationsBatch(List<Allocation> p_allocations) - Void - allocationResult est null", 0));
-                } 
+                }
             }
 
             this._context.SaveChanges();

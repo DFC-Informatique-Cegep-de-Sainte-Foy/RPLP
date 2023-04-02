@@ -51,6 +51,7 @@ consummer.DeclareExchange();
 
 while (true)
 {
+    Thread.Sleep(100);
     consummer.Listen();
 }
 
