@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "RPLP.VALIDATIONS": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}

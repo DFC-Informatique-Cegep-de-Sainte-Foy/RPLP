@@ -10,6 +10,7 @@
         public List<Assignment> Assignments { get; set; }
         public Assignment ActiveAssignment { get; set; }
 
+
         public Classroom()
         {
             this.Students = new List<Student>();
