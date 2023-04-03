@@ -75,35 +75,46 @@ namespace RPLP.DAL.SQL.Depots
             return allocations;
         }
 
-        public Allocation GetAllocationByStudentAndRepositoryIDs(int p_studentId, int p_repositoryId)
+        public Allocation? GetAllocationByStudentAndRepositoryIDs(int p_studentId, int p_repositoryId)
         {
-            if (p_studentId < 0)
+            if (p_studentId <= 0)
             {
                 Logging.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                        "DepotAllocation - GetAllocationByStudentAndRepositoryIDs - p_studentId passé en paramêtre est hors des limites", 0));
+                throw new ArgumentOutOfRangeException(nameof(p_studentId));
             }
 
-            if (p_repositoryId < 0)
+            if (p_repositoryId <= 0)
             {
                 Logging.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                        "DepotAllocation - GetAllocationByStudentAndRepositoryIDs - p_repositoryId passé en paramêtre est hors des limites", 0));
+                throw new ArgumentOutOfRangeException(nameof(p_repositoryId));
             }
 
-            Allocation_SQLDTO? allocationResult = this._context.Allocations.
-                SingleOrDefault(allocation => allocation.Status > 0 && allocation.StudentId == p_studentId && allocation.RepositoryId == p_repositoryId);
-
-            if (allocationResult is null)
+            try
             {
-                Logging.Journal(new Log("Allocation", $"DepotAllocation - Method -  GetAllocationByStudentAndRepositoryIDs - Return Allocation - allocationResult est null", 0));
+                Allocation_SQLDTO? allocationResult = this._context.Allocations.
+                        SingleOrDefault(allocation => allocation.Status > 0 && allocation.StudentId == p_studentId && allocation.RepositoryId == p_repositoryId);
 
+                if (allocationResult is null)
+                {
+                    Logging.Journal(new Log("Allocation", $"DepotAllocation - Method -  GetAllocationByStudentAndRepositoryIDs - Return Allocation - allocationResult est null", 0));
+
+                    return null;
+                }
+
+                Allocation allocation = allocationResult.ToEntity();
+
+                Logging.Journal(new Log("Allocation", $"DepotAllocation - Method - GetAllocationByStudentAndRepositoryIDs() - Return List<Allocation>"));
+
+                return allocation;
+            }
+            catch (InvalidOperationException e)
+            {
+                Logging.Journal(new Log(e.ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                       "DepotAllocation - GetAllocationByStudentAndRepositoryIDs - _context.Allocations.SingleOrDefault trouve plus qu'un élément", 0));
                 return null;
             }
-
-            Allocation allocation = allocationResult.ToEntity();
-
-            Logging.Journal(new Log("Allocation", $"DepotAllocation - Method - GetAllocationByStudentAndRepositoryIDs() - Return List<Allocation>"));
-
-            return allocation;
         }
 
         public List<Allocation> GetAllocationsByAssignmentID(int p_assignmentId)
@@ -112,6 +123,7 @@ namespace RPLP.DAL.SQL.Depots
             {
                 Logging.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                        "DepotAllocation - GetAllocationsByAssignmentID - p_assignmentId passé en paramêtre est hors des limites", 0));
+                throw new ArgumentOutOfRangeException(nameof(p_assignmentId));
             }
 
             List<Allocation> allocations = new List<Allocation>();
@@ -132,7 +144,7 @@ namespace RPLP.DAL.SQL.Depots
                 }
                 else
                 {
-                    List<Repository_SQLDTO> repositoriesResult = this._context.Repositories.Where(repository => repository.OrganisationName == classroomResult.OrganisationName && repository.FullName.StartsWith(assignmentResult.Name)).ToList();
+                    List<Repository_SQLDTO> repositoriesResult = this._context.Repositories.Where(repository => repository.OrganisationName == classroomResult.OrganisationName && repository.Active && repository.Name.StartsWith(assignmentResult.Name)).ToList();
 
                     if (repositoriesResult is null)
                     {
@@ -168,10 +180,12 @@ namespace RPLP.DAL.SQL.Depots
             {
                 Logging.Journal(new Log("Allocation", $"DepotAllocation - Method - GetAllocationsByStudentUsername(string p_studentUsername) - List<Allocation> - studentResult est null", 0));
             }
+            else
+            {
+                List<Allocation_SQLDTO> allocationsResult = this._context.Allocations.Where(allocation => allocation.Status > 0 && allocation.StudentId == studentResult.Id).ToList();
 
-            List<Allocation_SQLDTO> allocationsResult = this._context.Allocations.Where(allocation => allocation.Status > 0 && allocation.StudentId == studentResult.Id).ToList();
-
-            allocations = allocationsResult.Select(allocation => allocation.ToEntity()).ToList();
+                allocations = allocationsResult.Select(allocation => allocation.ToEntity()).ToList(); 
+            }
 
             Logging.Journal(new Log("Allocation", $"DepotAllocation - Method - GetAllocationsByStudentUsername() - Return List<Allocation>"));
 
@@ -194,17 +208,19 @@ namespace RPLP.DAL.SQL.Depots
             {
                 Logging.Journal(new Log("Allocation", $"DepotAllocation - Method - GetAllocationsByRepositoryName(string p_repositoryName) - List<Allocation> - repositoryResult est null", 0));
             }
+            else
+            {
+                List<Allocation_SQLDTO> allocationsResult = this._context.Allocations.Where(allocation => allocation.Status > 0 && allocation.RepositoryId == repositoryResult.Id).ToList();
 
-            List<Allocation_SQLDTO> allocationsResult = this._context.Allocations.Where(allocation => allocation.Status > 0 && allocation.RepositoryId == repositoryResult.Id).ToList();
-
-            allocations = allocationsResult.Select(allocation => allocation.ToEntity()).ToList();
+                allocations = allocationsResult.Select(allocation => allocation.ToEntity()).ToList(); 
+            }
 
             Logging.Journal(new Log("Allocation", $"DepotAllocation - Method - GetAllocationsByRepositoryName() - Return List<Allocation>"));
 
             return allocations;
         }
 
-        public Allocation GetAllocationByStudentAndRepositoryNames(string p_studentUsername, string p_repositoryName)
+        public Allocation? GetAllocationByStudentAndRepositoryNames(string p_studentUsername, string p_repositoryName)
         {
             if (string.IsNullOrWhiteSpace(p_studentUsername))
             {
