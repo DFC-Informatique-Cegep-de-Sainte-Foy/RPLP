@@ -70,7 +70,7 @@ try
 }
 catch (Exception exception)
 {
-    RPLP.JOURNALISATION.Logging.Journal(new Log(exception.ToString(), exception.StackTrace.ToString().Replace(System.Environment.NewLine, "."),
+    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(exception.ToString(), exception.StackTrace.ToString().Replace(System.Environment.NewLine, "."),
          "Projet - RPLP.MVC - Erreur récupérer dans le try/catch central", 0));
 }
 

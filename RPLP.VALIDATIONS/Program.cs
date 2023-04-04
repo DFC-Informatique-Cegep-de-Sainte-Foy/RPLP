@@ -27,7 +27,7 @@ configuration = builder.Build();
 
 var connectionString = "Server=rplp.db; Database=RPLP; User Id=sa; password=Cad3pend86!";
 
-//RPLP.JOURNALISATION.Logging.Journal(new Log(connectionString));
+//RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(connectionString));
 
 //var token = configuration.GetSection("Token");
 

@@ -53,7 +53,7 @@ namespace RPLP.ENTITES
 
         public void CreateRandomReviewsAllocation(int p_numberOfReviews)
         {
-            // RPLP.JOURNALISATION.Logging.Journal(
+            // RPLP.JOURNALISATION.Logging.Instance.Journal(
             //     new Log($"Allocations.cs - CreateRandomReviewsAllocation(int p_numberOfReviews)" +
             //             $"p_numberOfReviews={p_numberOfReviews}" +
             //             $"this._repositories.Count={this._repositories.Count}" +
@@ -72,7 +72,7 @@ namespace RPLP.ENTITES
                             GetReviewerIdParUsername(
                                 usernamesFromCurrentRepos[(i + j + 1) % usernamesFromCurrentRepos.Count]);
                         string thisAllocationUniqueId = $"r{repoId}s{reviewerId}t0";
-                        // RPLP.JOURNALISATION.Logging.Journal(
+                        // RPLP.JOURNALISATION.Logging.Instance.Journal(
                         //     new Log($"Allocations.cs - CreateRandomReviewsAllocation(int p_numberOfReviews)" +
                         //             $"i={i} repoId={repoId}" +
                         //             $"j={j} reviewerId={reviewerId}"));
@@ -89,7 +89,7 @@ namespace RPLP.ENTITES
 
         public void CreateTeacherReviewsAllocation(string p_teacherUsername)
         {
-            RPLP.JOURNALISATION.Logging.Journal(
+            RPLP.JOURNALISATION.Logging.Instance.Journal(
                 new Log($"Allocations.cs - CreateTeacherReviewsAllocation(string p_teacherUsername)" +
                         $"p_teacherUsername={p_teacherUsername}"));
 
@@ -99,7 +99,7 @@ namespace RPLP.ENTITES
                     .Where(teacher => teacher.Username.ToLower() == p_teacherUsername.ToLower()).FirstOrDefault().Id;
 
 
-                RPLP.JOURNALISATION.Logging.Journal(
+                RPLP.JOURNALISATION.Logging.Instance.Journal(
                     new Log($"Allocations.cs - CreateTeacherReviewsAllocation(string p_teacherUsername)" +
                             $"teacherId={teacherId}"));
                 List<Allocation> TeacherAllocationToBeAdded = new List<Allocation>();
@@ -108,7 +108,7 @@ namespace RPLP.ENTITES
                 {
                     int repoId = allocation.RepositoryId;
                     string thisAllocationUniqueId = $"r{repoId}s0t{teacherId}";
-                    RPLP.JOURNALISATION.Logging.Journal(
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(
                         new Log($"Allocations.cs - CreateTeacherReviewsAllocation(string p_teacherUsername)" +
                                 $"repoId={repoId}" +
                                 $"teacherId={teacherId}" +
@@ -121,7 +121,7 @@ namespace RPLP.ENTITES
                     }
                     catch (Exception e)
                     {
-                        RPLP.JOURNALISATION.Logging.Journal(
+                        RPLP.JOURNALISATION.Logging.Instance.Journal(
                             new Log($"error ! ={e.Message}"));
                     }
                 }
@@ -152,7 +152,7 @@ namespace RPLP.ENTITES
                 .Where(reviewer => reviewer.Username.ToLower() == reviewerUsername.ToLower()).FirstOrDefault()
                 .Id;
 
-            // RPLP.JOURNALISATION.Logging.Journal(
+            // RPLP.JOURNALISATION.Logging.Instance.Journal(
             //     new Log($"Allocations.cs - GetReviewerIdParUsername(string reviewerUsername)" +
             //             $"reviewerUsername={reviewerUsername}" +
             //             $"reviewerId={reviewerId}"));
