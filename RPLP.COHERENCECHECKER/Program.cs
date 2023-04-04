@@ -26,7 +26,7 @@ var connectionString = configuration.GetConnectionString("DefaultConnection");
 var token = configuration.GetSection("Token");
 
 DbContextOptionsBuilder<RPLPDbContext> optionsBuilder =
-    new DbContextOptionsBuilder<RPLPDbContext>().UseSqlServer(connectionString);
+    new DbContextOptionsBuilder<RPLPDbContext>().UseSqlServer(connectionString).UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 
 container.RegisterType<RPLPDbContext>(TypeLifetime.Singleton, new InjectionConstructor(new object[]
     { optionsBuilder.Options }));
@@ -34,9 +34,15 @@ container.RegisterType<RPLPDbContext>(TypeLifetime.Singleton, new InjectionConst
 container.RegisterType<IDepotClassroom, DepotClassroom>(TypeLifetime.Scoped);
 container.RegisterType<IDepotOrganisation, DepotOrganisation>(TypeLifetime.Scoped);
 container.RegisterType<IDepotRepository, DepotRepository>(TypeLifetime.Scoped);
+container.RegisterType<IDepotAllocation, DepotAllocation>(TypeLifetime.Scoped);
 
 
-ScriptGithubRPLP scripts = new ScriptGithubRPLP(container.Resolve<IDepotClassroom>(), container.Resolve<IDepotRepository>(), container.Resolve<IDepotOrganisation>(), token.ToString());
+ScriptGithubRPLP scripts = new ScriptGithubRPLP(
+    container.Resolve<IDepotClassroom>(), 
+    container.Resolve<IDepotRepository>(), 
+    container.Resolve<IDepotOrganisation>(), 
+    container.Resolve<IDepotAllocation>(),
+    token.ToString());
 
 while (true)
 {

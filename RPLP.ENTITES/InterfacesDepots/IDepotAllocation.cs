@@ -22,5 +22,7 @@ namespace RPLP.SERVICES.InterfacesDepots
         public void UpsertAllocationsBatch(List<Allocation> p_allocations);
         public void DeleteAllocation(Allocation p_allocation);
         public void DeleteAllocationsBatch(List<Allocation> p_allocations);
+        public void SetAllocationAfterCreation(Allocation p_allocation);
+        public List<Allocation> GetSelectedAllocationsByAllocationID(List<Allocation> p_allocations);
     }
 }

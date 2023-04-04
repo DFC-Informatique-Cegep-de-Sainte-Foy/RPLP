@@ -229,7 +229,7 @@ namespace RPLP.DAL.SQL.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
             migrationBuilder.CreateTable(
-                name: "Allocation",
+                name: "Allocations",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(100)", nullable: false),
@@ -240,21 +240,21 @@ namespace RPLP.DAL.SQL.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Allocation", x => new { x.Id });
+                    table.PrimaryKey("PK_Allocations", x => new { x.Id });
                     table.ForeignKey(
-                        name: "FK_Allocation_RepositoryId",
+                        name: "FK_Allocations_RepositoryId",
                         column: x => x.RepositoryId,
                         principalTable: "Repositories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Allocation_StudentId",
+                        name: "FK_Allocations_StudentId",
                         column: x => x.StudentId,
                         principalTable: "Students",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Allocation_TeacherId",
+                        name: "FK_Allocations_TeacherId",
                         column: x => x.TeacherId,
                         principalTable: "Teachers",
                         principalColumn: "Id",
@@ -291,7 +291,7 @@ namespace RPLP.DAL.SQL.Migrations
                 name: "Assignments");
 
             migrationBuilder.DropTable(
-               name: "Allocation");
+               name: "Allocations");
 
             migrationBuilder.DropTable(
                 name: "Classroom_SQLDTOStudent_SQLDTO");
