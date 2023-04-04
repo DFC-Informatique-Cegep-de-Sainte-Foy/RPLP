@@ -91,7 +91,7 @@ namespace RPLP.VALIDATIONS
 
                             if (allocation.Status == 2)
                             {
-                                RPLP.JOURNALISATION.Logging.Journal(new Log($"Assignation effectuée au 10 secondes :" +
+                                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"Assignation effectuée au 10 secondes :" +
                                                 $" organisationName : {p_organisationName} - repositoryName : {p_repositoryName} - NomDuReviewer : {p_reviewerName}"));
                                 Thread.Sleep(10000);
                                 this.Script.createPullRequestAndAssignUser(p_organisationName, p_repositoryName, p_reviewerName);
@@ -103,7 +103,7 @@ namespace RPLP.VALIDATIONS
 
                         if (this.allocations.Status == 3)
                         {
-                            RPLP.JOURNALISATION.Logging.Journal(new Log($"Assignations complétées avec succès - Message ID : {message.MessageID}"));
+                            RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"Assignations complétées avec succès - Message ID : {message.MessageID}"));
 
                             canalDeCommunication.BasicAck(argumentEvenement.DeliveryTag, false);
                         }

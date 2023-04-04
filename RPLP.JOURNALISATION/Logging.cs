@@ -10,21 +10,44 @@ using System.Threading.Tasks;
 
 namespace RPLP.JOURNALISATION
 {
-    public static class Logging
+    public class Logging
     {
-        private static ConnectionFactory ConnexionFactory = new ConnectionFactory() { HostName = "rplp.rabbitmq" };
+        private ConnectionFactory ConnexionFactory = new ConnectionFactory() { HostName = "rplp.rabbitmq" };
 
-        public static void Journal(Log log)
+        private static Logging instance;
+
+        private static object _lock = new object();
+
+        public void Journal(Log log)
         {
             AddLog(log);
         }
 
-        public static void ClearLogs()
+        public void ClearLogs()
         {
             ClearAllLogs();
         }
 
-        private static void AddLog(Log log)
+        public static Logging Instance
+        {
+            get
+            {
+                if (instance is null)
+                {
+                    lock (_lock)
+                    {
+                        if (instance == null)
+                        {
+                            instance = new Logging();
+                        }
+                    }
+                }
+
+                return instance;
+            }
+        }
+
+        private void AddLog(Log log)
         {
             using (IConnection connexion = ConnexionFactory.CreateConnection())
             {
@@ -49,7 +72,7 @@ namespace RPLP.JOURNALISATION
             }
         }
 
-        private static void ClearAllLogs()
+        private void ClearAllLogs()
         {
             using (IConnection connexion = ConnexionFactory.CreateConnection())
             {

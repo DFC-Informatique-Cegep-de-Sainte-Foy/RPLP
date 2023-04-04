@@ -18,7 +18,7 @@ namespace RPLP.SERVICES
 
         public static void CallGitHubAPI(Allocations allocations)
         {
-            RPLP.JOURNALISATION.Logging.Journal(new Log("Le Producteur à été appelé"));
+            RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Le Producteur à été appelé"));
 
             using (IConnection connexion = ConnexionFactory.CreateConnection())
             {
@@ -35,7 +35,7 @@ namespace RPLP.SERVICES
 
                     MessageGitHubAPI message = new MessageGitHubAPI(Guid.NewGuid(), new Allocations_JSONDTO(allocations));
 
-                    RPLP.JOURNALISATION.Logging.Journal(new Log($"Le Producteur à envoyer le message {message.MessageID}"));
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"Le Producteur à envoyer le message {message.MessageID}"));
 
                     JsonSerializerSettings parametres = new JsonSerializerSettings() { TypeNameHandling = TypeNameHandling.Auto, Formatting = Formatting.Indented };
 

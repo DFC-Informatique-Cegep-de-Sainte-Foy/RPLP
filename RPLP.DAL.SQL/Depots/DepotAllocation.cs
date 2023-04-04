@@ -20,7 +20,7 @@ namespace RPLP.DAL.SQL.Depots
         {
             if (p_context is null)
             {
-                Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                                "DepotAllocation - DepotAllocation(RPLPDbContext p_context) - p_context de type RPLPDbContext passé en paramètre est null", 0));
                 throw new ArgumentNullException(nameof(p_context));
             }
@@ -34,7 +34,7 @@ namespace RPLP.DAL.SQL.Depots
 
             List<Allocation> allocations = allocationsResult.Select(allocation => allocation.ToEntity()).ToList();
 
-            Logging.Journal(new Log("Allocation", $"DepotAllocation - Method - GetAllocations() - Return List<Allocation>"));
+            Logging.Instance.Journal(new Log("Allocation", $"DepotAllocation - Method - GetAllocations() - Return List<Allocation>"));
 
             return allocations;
         }
@@ -43,7 +43,7 @@ namespace RPLP.DAL.SQL.Depots
         {
             if (p_studentId < 0)
             {
-                Logging.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                Logging.Instance.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                        "DepotAllocation - GetAllocationsByStudentId - p_studentId passé en paramêtre est hors des limites", 0));
             }
 
@@ -51,7 +51,7 @@ namespace RPLP.DAL.SQL.Depots
 
             List<Allocation> allocations = allocationsResult.Select(allocation => allocation.ToEntity()).ToList();
 
-            Logging.Journal(new Log("Allocation", $"DepotAllocation - Method - GetAllocationsByStudentId() - Return List<Allocation>"));
+            Logging.Instance.Journal(new Log("Allocation", $"DepotAllocation - Method - GetAllocationsByStudentId() - Return List<Allocation>"));
 
             return allocations;
         }
@@ -60,7 +60,7 @@ namespace RPLP.DAL.SQL.Depots
         {
             if (p_repositoryId < 0)
             {
-                Logging.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                Logging.Instance.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                        "DepotAllocation - GetAllocationsByRepositoryID - p_repositoryId passé en paramêtre est hors des limites", 0));
             }
 
@@ -68,7 +68,7 @@ namespace RPLP.DAL.SQL.Depots
 
             List<Allocation> allocations = allocationsResult.Select(allocation => allocation.ToEntity()).ToList();
 
-            Logging.Journal(new Log("Allocation", $"DepotAllocation - Method - GetAllocationsByRepositoryID() - Return List<Allocation>"));
+            Logging.Instance.Journal(new Log("Allocation", $"DepotAllocation - Method - GetAllocationsByRepositoryID() - Return List<Allocation>"));
 
             return allocations;
         }
@@ -77,13 +77,13 @@ namespace RPLP.DAL.SQL.Depots
         {
             if (p_studentId < 0)
             {
-                Logging.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                Logging.Instance.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                        "DepotAllocation - GetAllocationByStudentAndRepositoryIDs - p_studentId passé en paramêtre est hors des limites", 0));
             }
 
             if (p_repositoryId < 0)
             {
-                Logging.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                Logging.Instance.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                        "DepotAllocation - GetAllocationByStudentAndRepositoryIDs - p_repositoryId passé en paramêtre est hors des limites", 0));
             }
 
@@ -92,14 +92,14 @@ namespace RPLP.DAL.SQL.Depots
 
             if (allocationResult is null)
             {
-                Logging.Journal(new Log("Allocation", $"DepotAllocation - Method -  GetAllocationByStudentAndRepositoryIDs - Return Allocation - allocationResult est null", 0));
+                Logging.Instance.Journal(new Log("Allocation", $"DepotAllocation - Method -  GetAllocationByStudentAndRepositoryIDs - Return Allocation - allocationResult est null", 0));
 
                 return null;
             }
 
             Allocation allocation = allocationResult.ToEntity();
 
-            Logging.Journal(new Log("Allocation", $"DepotAllocation - Method - GetAllocationByStudentAndRepositoryIDs() - Return List<Allocation>"));
+            Logging.Instance.Journal(new Log("Allocation", $"DepotAllocation - Method - GetAllocationByStudentAndRepositoryIDs() - Return List<Allocation>"));
 
             return allocation;
         }
@@ -108,7 +108,7 @@ namespace RPLP.DAL.SQL.Depots
         {
             if (p_assignmentId < 0)
             {
-                Logging.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                Logging.Instance.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                        "DepotAllocation - GetAllocationsByAssignmentID - p_assignmentId passé en paramêtre est hors des limites", 0));
             }
 
@@ -118,7 +118,7 @@ namespace RPLP.DAL.SQL.Depots
 
             if (assignmentResult is null)
             {
-                Logging.Journal(new Log("Allocations", $"DepotAllocation - Method - GetAllocationsByAssignmentID(int p_assignmentId) - Return List<Allocation> - assignmentResult est null", 0));
+                Logging.Instance.Journal(new Log("Allocations", $"DepotAllocation - Method - GetAllocationsByAssignmentID(int p_assignmentId) - Return List<Allocation> - assignmentResult est null", 0));
             }
             else
             {
@@ -126,7 +126,7 @@ namespace RPLP.DAL.SQL.Depots
 
                 if (classroomResult is null)
                 {
-                    Logging.Journal(new Log("Allocations", $"DepotAllocation - Method - GetAllocationsByAssignmentID(int p_assignmentId) - Return List<Allocation> - classroomResult est null", 0));
+                    Logging.Instance.Journal(new Log("Allocations", $"DepotAllocation - Method - GetAllocationsByAssignmentID(int p_assignmentId) - Return List<Allocation> - classroomResult est null", 0));
                 }
                 else
                 {
@@ -134,7 +134,7 @@ namespace RPLP.DAL.SQL.Depots
 
                     if (repositoriesResult is null)
                     {
-                        Logging.Journal(new Log("Allocations", $"DepotAllocation - Method - GetAllocationsByAssignmentID(int p_assignmentId) - Return List<Allocation> - repositoriesResult est null", 0));
+                        Logging.Instance.Journal(new Log("Allocations", $"DepotAllocation - Method - GetAllocationsByAssignmentID(int p_assignmentId) - Return List<Allocation> - repositoriesResult est null", 0));
                     }
                     else
                     {
@@ -153,7 +153,7 @@ namespace RPLP.DAL.SQL.Depots
         {
             if (string.IsNullOrWhiteSpace(p_studentUsername))
             {
-                Logging.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                Logging.Instance.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                        "DepotAllocation - GetAllocationsByStudentUsername - p_studentUsername passé en paramêtre est vide", 0));
             }
 
@@ -163,14 +163,14 @@ namespace RPLP.DAL.SQL.Depots
 
             if (studentResult is null)
             {
-                Logging.Journal(new Log("Allocation", $"DepotAllocation - Method - GetAllocationsByStudentUsername(string p_studentUsername) - List<Allocation> - studentResult est null", 0));
+                Logging.Instance.Journal(new Log("Allocation", $"DepotAllocation - Method - GetAllocationsByStudentUsername(string p_studentUsername) - List<Allocation> - studentResult est null", 0));
             }
 
             List<Allocation_SQLDTO> allocationsResult = this._context.Allocations.Where(allocation => allocation.Status > 0 && allocation.StudentId == studentResult.Id).ToList();
 
             allocations = allocationsResult.Select(allocation => allocation.ToEntity()).ToList();
 
-            Logging.Journal(new Log("Allocation", $"DepotAllocation - Method - GetAllocationsByStudentUsername() - Return List<Allocation>"));
+            Logging.Instance.Journal(new Log("Allocation", $"DepotAllocation - Method - GetAllocationsByStudentUsername() - Return List<Allocation>"));
 
             return allocations;
         }
@@ -179,7 +179,7 @@ namespace RPLP.DAL.SQL.Depots
         {
             if (string.IsNullOrWhiteSpace(p_repositoryName))
             {
-                Logging.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                Logging.Instance.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                        "DepotAllocation - GetAllocationsByRepositoryName - p_repositoryName passé en paramêtre est vide", 0));
             }
 
@@ -189,14 +189,14 @@ namespace RPLP.DAL.SQL.Depots
 
             if (repositoryResult is null)
             {
-                Logging.Journal(new Log("Allocation", $"DepotAllocation - Method - GetAllocationsByRepositoryName(string p_repositoryName) - List<Allocation> - repositoryResult est null", 0));
+                Logging.Instance.Journal(new Log("Allocation", $"DepotAllocation - Method - GetAllocationsByRepositoryName(string p_repositoryName) - List<Allocation> - repositoryResult est null", 0));
             }
 
             List<Allocation_SQLDTO> allocationsResult = this._context.Allocations.Where(allocation => allocation.Status > 0 && allocation.RepositoryId == repositoryResult.Id).ToList();
 
             allocations = allocationsResult.Select(allocation => allocation.ToEntity()).ToList();
 
-            Logging.Journal(new Log("Allocation", $"DepotAllocation - Method - GetAllocationsByRepositoryName() - Return List<Allocation>"));
+            Logging.Instance.Journal(new Log("Allocation", $"DepotAllocation - Method - GetAllocationsByRepositoryName() - Return List<Allocation>"));
 
             return allocations;
         }
@@ -205,13 +205,13 @@ namespace RPLP.DAL.SQL.Depots
         {
             if (string.IsNullOrWhiteSpace(p_studentUsername))
             {
-                Logging.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                Logging.Instance.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                        "DepotAllocation - GetAllocationByStudentAndRepositoryNames - p_studentUsername passé en paramêtre est vide", 0));
             }
 
             if (string.IsNullOrWhiteSpace(p_repositoryName))
             {
-                Logging.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                Logging.Instance.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                        "DepotAllocation - GetAllocationByStudentAndRepositoryNames - p_repositoryName passé en paramêtre vide", 0));
             }
 
@@ -219,7 +219,7 @@ namespace RPLP.DAL.SQL.Depots
 
             if (repositoryResult is null)
             {
-                Logging.Journal(new Log("Allocation", $"DepotAllocation - Method -  GetAllocationByStudentAndRepositoryNames - Return Allocation - repositoryResult est null", 0));
+                Logging.Instance.Journal(new Log("Allocation", $"DepotAllocation - Method -  GetAllocationByStudentAndRepositoryNames - Return Allocation - repositoryResult est null", 0));
 
                 return null;
             }
@@ -228,7 +228,7 @@ namespace RPLP.DAL.SQL.Depots
 
             if (studentResult is null)
             {
-                Logging.Journal(new Log("Allocation", $"DepotAllocation - Method -  GetAllocationByStudentAndRepositoryNames - Return Allocation - studentResult est null", 0));
+                Logging.Instance.Journal(new Log("Allocation", $"DepotAllocation - Method -  GetAllocationByStudentAndRepositoryNames - Return Allocation - studentResult est null", 0));
 
                 return null;
             }
@@ -238,14 +238,14 @@ namespace RPLP.DAL.SQL.Depots
 
             if (allocationResult is null)
             {
-                Logging.Journal(new Log("Allocation", $"DepotAllocation - Method -  GetAllocationByStudentAndRepositoryNames - Return Allocation - allocationResult est null", 0));
+                Logging.Instance.Journal(new Log("Allocation", $"DepotAllocation - Method -  GetAllocationByStudentAndRepositoryNames - Return Allocation - allocationResult est null", 0));
 
                 return null;
             }
 
             Allocation allocation = allocationResult.ToEntity();
 
-            Logging.Journal(new Log("Allocation", $"DepotAllocation - Method - GetAllocationByStudentAndRepositoryNames() - Return Allocation"));
+            Logging.Instance.Journal(new Log("Allocation", $"DepotAllocation - Method - GetAllocationByStudentAndRepositoryNames() - Return Allocation"));
 
             return allocation;
         }
@@ -254,7 +254,7 @@ namespace RPLP.DAL.SQL.Depots
         {
             if (string.IsNullOrWhiteSpace(p_assignmentName))
             {
-                Logging.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                Logging.Instance.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                        "DepotAllocation - GetAllocationsByAssignmentName - p_assignmentName passé en paramêtre est vide", 0));
 
                 throw new ArgumentNullException(nameof(p_assignmentName));
@@ -266,13 +266,13 @@ namespace RPLP.DAL.SQL.Depots
 
             if (assignmentResult is null)
             {
-                Logging.Journal(new Log("Allocations", $"DepotAllocation - Method - GetAllocationsByAssignmentName(string p_assignmentName) - Return List<Allocation> - assignmentResult est null", 0));
+                Logging.Instance.Journal(new Log("Allocations", $"DepotAllocation - Method - GetAllocationsByAssignmentName(string p_assignmentName) - Return List<Allocation> - assignmentResult est null", 0));
             }
             else
             {
                 allocations = this.GetAllocationsByAssignmentID(assignmentResult.Id);
             }
-            Logging.Journal(new Log($"GetAllocationsByAssignmentName(string p_assignmentName) {p_assignmentName}" +
+            Logging.Instance.Journal(new Log($"GetAllocationsByAssignmentName(string p_assignmentName) {p_assignmentName}" +
                                     $"allocations.Count: {allocations.Count}"));
             return allocations;
         }
@@ -281,7 +281,7 @@ namespace RPLP.DAL.SQL.Depots
         {
             if (p_allocation is null)
             {
-                Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotAllocation - UpsertAllocation - p_allocation passé en paramètre est null", 0));
 
                 throw new ArgumentNullException(nameof(p_allocation));
@@ -298,11 +298,11 @@ namespace RPLP.DAL.SQL.Depots
 
                 this._context.SaveChanges();
 
-                Logging.Journal(new Log("Allocation", $"DepotAllocation - Method - UpsertAllocation(Allocation p_allocation) - Void - Update Allocation"));
+                Logging.Instance.Journal(new Log("Allocation", $"DepotAllocation - Method - UpsertAllocation(Allocation p_allocation) - Void - Update Allocation"));
             }
             else
             {
-                Logging.Journal(new Log("UpsertAllocation - 4 "));
+                Logging.Instance.Journal(new Log("UpsertAllocation - 4 "));
                 Allocation_SQLDTO allocation = new Allocation_SQLDTO();
                 allocation.StudentId = p_allocation.StudentId;
                 allocation.RepositoryId = p_allocation.RepositoryId;
@@ -311,7 +311,7 @@ namespace RPLP.DAL.SQL.Depots
                 this._context.Allocations.Add(allocation);
                 this._context.SaveChanges();
 
-                Logging.Journal(new Log("Allocation", $"DepotAllocation - Method - UpsertAllocation(Allocation p_allocation) - Void - Add Allocation"));
+                Logging.Instance.Journal(new Log("Allocation", $"DepotAllocation - Method - UpsertAllocation(Allocation p_allocation) - Void - Add Allocation"));
             }
         }
 
@@ -319,7 +319,7 @@ namespace RPLP.DAL.SQL.Depots
         {
             if (p_allocation is null)
             {
-                Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotAllocation - DeleteAllocation - p_allocation passé en paramètre est null", 0));
 
                 throw new ArgumentNullException(nameof(p_allocation));
@@ -335,11 +335,11 @@ namespace RPLP.DAL.SQL.Depots
                 //this._context.Update(allocationResult);
                 this._context.SaveChanges();
 
-                Logging.Journal(new Log("Allocation", $"DepotAllocation - Method - DeleteAllocation(Allocation p_allocation) - Void - delete Allocation"));
+                Logging.Instance.Journal(new Log("Allocation", $"DepotAllocation - Method - DeleteAllocation(Allocation p_allocation) - Void - delete Allocation"));
             }
             else
             {
-                Logging.Journal(new Log("Allocation", $"DepotAllocation - Method - DeleteAllocation(Allocation p_allocation) - Void - allocationResult est null", 0));
+                Logging.Instance.Journal(new Log("Allocation", $"DepotAllocation - Method - DeleteAllocation(Allocation p_allocation) - Void - allocationResult est null", 0));
             }
         }
 
@@ -347,7 +347,7 @@ namespace RPLP.DAL.SQL.Depots
         {
             if (p_allocations is null)
             {
-                Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotAllocation - UpsertAllocationsBatch - p_allocations passé en paramètre est null", 0));
 
                 throw new ArgumentNullException(nameof(p_allocations));
@@ -362,7 +362,7 @@ namespace RPLP.DAL.SQL.Depots
                 {
                     allocationResult.Status = a.Status;
                     //this._context.Update(allocationResult);
-                    Logging.Journal(new Log("Allocation", $"DepotAllocation - Method - UpsertAllocationsBatch(List<Allocation> p_allocations) - Void - Update Allocations"));
+                    Logging.Instance.Journal(new Log("Allocation", $"DepotAllocation - Method - UpsertAllocationsBatch(List<Allocation> p_allocations) - Void - Update Allocations"));
                 }
                 else
                 {
@@ -381,11 +381,11 @@ namespace RPLP.DAL.SQL.Depots
                     }
                     catch (Exception e)
                     {
-                        Logging.Journal(new Log($"Exception e:{e.Message}"));
+                        Logging.Instance.Journal(new Log($"Exception e:{e.Message}"));
                     }
 
 
-                    Logging.Journal(new Log("Allocation", $"DepotAllocation - Method - UpsertAllocationsBatch(List<Allocation> p_allocations) - Void - Add Allocations"));
+                    Logging.Instance.Journal(new Log("Allocation", $"DepotAllocation - Method - UpsertAllocationsBatch(List<Allocation> p_allocations) - Void - Add Allocations"));
                 }
             }
 
@@ -413,11 +413,11 @@ namespace RPLP.DAL.SQL.Depots
 
         private void SetAllocationAfterVerification(List<Allocation> p_allocations)
         {
-            Logging.Journal(new Log($"{p_allocations.Count()}"));
+            Logging.Instance.Journal(new Log($"{p_allocations.Count()}"));
 
             foreach (Allocation allocation in p_allocations)
             {
-                Logging.Journal(new Log(allocation.Id));
+                Logging.Instance.Journal(new Log(allocation.Id));
 
                 allocation.Status = 2;
                 UpsertAllocation(allocation);
@@ -453,7 +453,7 @@ namespace RPLP.DAL.SQL.Depots
         {
             if (p_allocations is null)
             {
-                Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotAllocation - DeleteAllocationsBatch - p_allocations passé en paramètre est null", 0));
 
                 throw new ArgumentNullException(nameof(p_allocations));
@@ -470,11 +470,11 @@ namespace RPLP.DAL.SQL.Depots
 
                    //this._context.Update(allocationResult);
 
-                    Logging.Journal(new Log("Allocation", $"DepotAllocation - Method - DeleteAllocationsBatch(List<Allocation> p_allocations) - Void - delete Allocations"));
+                    Logging.Instance.Journal(new Log("Allocation", $"DepotAllocation - Method - DeleteAllocationsBatch(List<Allocation> p_allocations) - Void - delete Allocations"));
                 }
                 else
                 {
-                    Logging.Journal(new Log("Allocation", $"DepotAllocation - Method - DeleteAllocationsBatch(List<Allocation> p_allocations) - Void - allocationResult est null", 0));
+                    Logging.Instance.Journal(new Log("Allocation", $"DepotAllocation - Method - DeleteAllocationsBatch(List<Allocation> p_allocations) - Void - allocationResult est null", 0));
                 }
             }
 

@@ -19,7 +19,7 @@ namespace RPLP.MVC.Controllers
                 .Build();
 
             await HttpContext.ChallengeAsync(Auth0Constants.AuthenticationScheme, authenticationProperties);
-            RPLP.JOURNALISATION.Logging.Journal(new Log(User.Identity.Name, "undefined",
+            RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(User.Identity.Name, "undefined",
                 "Connexion a partir de AccountController.cs/Login"));
         }
 
@@ -32,14 +32,14 @@ namespace RPLP.MVC.Controllers
 
             await HttpContext.SignOutAsync(Auth0Constants.AuthenticationScheme, authenticationProperties);
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            RPLP.JOURNALISATION.Logging.Journal(new Log(User.Identity.Name, "undefined",
+            RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(User.Identity.Name, "undefined",
                 "Deconnexion a partir de AccountController.cs/Logout"));
         }
 
         [Authorize]
         public IActionResult Profile()
         {
-            RPLP.JOURNALISATION.Logging.Journal(new Log(User.Identity.Name, "undefined",
+            RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(User.Identity.Name, "undefined",
                 "Recuperation des donnees de client connecter a partir de AccountController.cs/Profile"));
             return View(new TeacherProfileViewModel()
             {
