@@ -187,7 +187,7 @@ namespace RPLP.UnitTesting.DepotTests
     //        using (var context = new RPLPDbContext(options))
     //        {
     //            VerificatorForDepot verificator = new VerificatorForDepot(context);
-    //            Teacher? teacher = context.Teachers.FirstOrDefault(a => a.Email == "BACenComm@hotmail.com")?.ToEntityWithoutList();
+    //            Teacher? teacher = teachersDB.FirstOrDefault(a => a.Email == "BACenComm@hotmail.com")?.ToEntityWithoutList();
     //            Assert.NotNull(teacher);
 
 

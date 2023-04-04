@@ -10,7 +10,7 @@ namespace RPLP.JOURNALISATION
 {
     public class ManipulationLogs : IManipulationLogs
     {
-        private static ConnectionFactory ConnexionFactory = new ConnectionFactory() { HostName = "rplp.rabbitmq" };
+        private ConnectionFactory ConnexionFactory = new ConnectionFactory() { HostName = "rplp.rabbitmq" };
         public void Journal(Log log)
         {
             AddLog(log);
