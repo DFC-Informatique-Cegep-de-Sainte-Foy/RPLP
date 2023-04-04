@@ -11,6 +11,7 @@ namespace RPLP.JOURNALISATION
     public class ManipulationLogs : IManipulationLogs
     {
         private ConnectionFactory ConnexionFactory = new ConnectionFactory() { HostName = "rplp.rabbitmq" };
+
         public void Journal(Log log)
         {
             AddLog(log);
@@ -67,6 +68,6 @@ namespace RPLP.JOURNALISATION
                     canalDeCommunication.BasicPublish(exchange: "", routingKey: "fdm_rplp_journalisation", body: body);
                 }
             }
-        }      
+        }
     }
 }
