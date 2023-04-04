@@ -111,7 +111,7 @@ namespace RPLP.DAL.SQL.Depots
             }
             catch (InvalidOperationException e)
             {
-                Logging.Journal(new Log(e.ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                Logging.Instance.Journal(new Log(e.ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                        "DepotAllocation - GetAllocationByStudentAndRepositoryIDs - _context.Allocations.SingleOrDefault trouve plus qu'un élément", 0));
                 return null;
             }
@@ -144,7 +144,7 @@ namespace RPLP.DAL.SQL.Depots
                 }
                 else
                 {
-                    List<Repository_SQLDTO> repositoriesResult = this._context.Repositories.Where(repository => repository.OrganisationName.ToLower() == classroomResult.OrganisationName.ToLower() && repository.Name.ToLower().StartsWith(assignmentResult.Name.ToLower())).ToList();
+                    List<Repository_SQLDTO> repositoriesResult = this._context.Repositories.Where(repository => repository.OrganisationName == classroomResult.OrganisationName && repository.Active && repository.Name.StartsWith(assignmentResult.Name)).ToList();
 
                     if (repositoriesResult is null)
                     {
@@ -160,6 +160,7 @@ namespace RPLP.DAL.SQL.Depots
                     }
                 }
             }
+
             return allocations;
         }
 
@@ -239,284 +240,301 @@ namespace RPLP.DAL.SQL.Depots
 
                 if (repositoryResult is null)
                 {
-                    Logging.Journal(new Log("Allocation", $"DepotAllocation - Method -  GetAllocationByStudentAndRepositoryNames - Return Allocation - repositoryResult est null", 0));
-                    if (repositoryResult is null)
-                    {
-                        Logging.Instance.Journal(new Log("Allocation", $"DepotAllocation - Method -  GetAllocationByStudentAndRepositoryNames - Return Allocation - repositoryResult est null", 0));
+                    Logging.Instance.Journal(new Log("Allocation", $"DepotAllocation - Method -  GetAllocationByStudentAndRepositoryNames - Return Allocation - repositoryResult est null", 0));
 
-                        return null;
-                    }
+                    return null;
+                }
 
-                    Student_SQLDTO? studentResult = this._context.Students.FirstOrDefault(student => student.Username == p_studentUsername && student.Active);
+                Student_SQLDTO? studentResult = this._context.Students.FirstOrDefault(student => student.Username == p_studentUsername && student.Active);
 
-                    if (studentResult is null)
-                    {
-                        Logging.Journal(new Log("Allocation", $"DepotAllocation - Method -  GetAllocationByStudentAndRepositoryNames - Return Allocation - studentResult est null", 0));
-                        if (studentResult is null)
-                        {
-                            Logging.Instance.Journal(new Log("Allocation", $"DepotAllocation - Method -  GetAllocationByStudentAndRepositoryNames - Return Allocation - studentResult est null", 0));
+                if (studentResult is null)
+                {
+                    Logging.Instance.Journal(new Log("Allocation", $"DepotAllocation - Method -  GetAllocationByStudentAndRepositoryNames - Return Allocation - studentResult est null", 0));
 
-                            return null;
-                        }
+                    return null;
+                }
 
-                        Allocation_SQLDTO? allocationResult = this._context.Allocations.
-                            SingleOrDefault(allocation => allocation.Status > 0 && allocation.StudentId == studentResult.Id && allocation.RepositoryId == repositoryResult.Id);
+                Allocation_SQLDTO? allocationResult = this._context.Allocations.
+                    SingleOrDefault(allocation => allocation.Status > 0 && allocation.StudentId == studentResult.Id && allocation.RepositoryId == repositoryResult.Id);
 
-                        if (allocationResult is null)
-                        {
-                            Logging.Journal(new Log("Allocation", $"DepotAllocation - Method -  GetAllocationByStudentAndRepositoryNames - Return Allocation - allocationResult est null", 0));
-                            if (allocationResult is null)
-                            {
-                                Logging.Instance.Journal(new Log("Allocation", $"DepotAllocation - Method -  GetAllocationByStudentAndRepositoryNames - Return Allocation - allocationResult est null", 0));
+                if (allocationResult is null)
+                {
+                    Logging.Instance.Journal(new Log("Allocation", $"DepotAllocation - Method -  GetAllocationByStudentAndRepositoryNames - Return Allocation - allocationResult est null", 0));
 
-                                return null;
-                            }
+                    return null;
+                }
 
-                            Allocation allocation = allocationResult.ToEntity();
+                Allocation allocation = allocationResult.ToEntity();
 
-                            Logging.Journal(new Log("Allocation", $"DepotAllocation - Method - GetAllocationByStudentAndRepositoryNames() - Return Allocation"));
-                            Logging.Instance.Journal(new Log("Allocation", $"DepotAllocation - Method - GetAllocationByStudentAndRepositoryNames() - Return Allocation"));
+                Logging.Instance.Journal(new Log("Allocation", $"DepotAllocation - Method - GetAllocationByStudentAndRepositoryNames() - Return Allocation"));
 
-                            return allocation;
-                        }
+                return allocation;
+            }
+            catch (InvalidOperationException e)
+            {
+                Logging.Instance.Journal(new Log(e.ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                       "DepotAllocation - GetAllocationByStudentAndRepositoryIDs - _context.<DbSet>.SingleOrDefault trouve plus qu'un élément", 0));
+                return null;
+            }
+        }
 
+        public List<Allocation> GetAllocationsByAssignmentName(string p_assignmentName)
+        {
+            if (string.IsNullOrWhiteSpace(p_assignmentName))
+            {
+                Logging.Instance.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                       "DepotAllocation - GetAllocationsByAssignmentName - p_assignmentName passé en paramêtre est vide", 0));
 
-                        public List<Allocation> GetAllocationsByAssignmentName(string p_assignmentName)
-                        {
-                            if (string.IsNullOrWhiteSpace(p_assignmentName))
-                            {
-                                Logging.Instance.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                                       "DepotAllocation - GetAllocationsByAssignmentName - p_assignmentName passé en paramêtre est vide", 0));
+                throw new ArgumentNullException(nameof(p_assignmentName));
+            }
 
-                                throw new ArgumentNullException(nameof(p_assignmentName));
-                            }
+            List<Allocation> allocations = new List<Allocation>();
 
-                            List<Allocation> allocations = new List<Allocation>();
+            try
+            {
+                Assignment_SQLDTO? assignmentResult = this._context.Assignments.SingleOrDefault(assignment => assignment.Name == p_assignmentName && assignment.Active);
 
-                            try
-                            {
-                                Assignment_SQLDTO? assignmentResult = this._context.Assignments.SingleOrDefault(assignment => assignment.Name == p_assignmentName && assignment.Active);
+                if (assignmentResult is null)
+                {
+                    Logging.Instance.Journal(new Log("Allocations", $"DepotAllocation - Method - GetAllocationsByAssignmentName(string p_assignmentName) - Return List<Allocation> - assignmentResult est null", 0));
+                }
+                else
+                {
+                    allocations = this.GetAllocationsByAssignmentID(assignmentResult.Id);
+                }
+            }
+            catch (InvalidOperationException e)
+            {
+                Logging.Instance.Journal(new Log(e.ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                       "DepotAllocation - GetAllocationsByAssignmentName - _context.Assignments.SingleOrDefault trouve plus qu'un élément", 0));
+            }
 
-                                if (assignmentResult is null)
-                                {
-                                    Logging.Journal(new Log("Allocations", $"DepotAllocation - Method - GetAllocationsByAssignmentName(string p_assignmentName) - Return List<Allocation> - assignmentResult est null", 0));
-                                }
-                                else
-                                {
-                                    allocations = this.GetAllocationsByAssignmentID(assignmentResult.Id);
-                                }
-
-                                return allocations;
-                            }
+            return allocations;
+        }
 
         public void UpsertAllocation(Allocation p_allocation)
-                            {
-                                if (p_allocation is null)
-                                {
-                                    Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                                         "DepotAllocation - UpsertAllocation - p_allocation passé en paramètre est null", 0));
+        {
+            if (p_allocation is null)
+            {
+                Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                     "DepotAllocation - UpsertAllocation - p_allocation passé en paramètre est null", 0));
 
-                                    throw new ArgumentNullException(nameof(p_allocation));
-                                }
+                throw new ArgumentNullException(nameof(p_allocation));
+            }
 
-                                try
-                                {
-                                    Allocation_SQLDTO? allocationResult = this._context.Allocations.
-                                            SingleOrDefault(allocation => allocation.Id == p_allocation.Id && allocation.StudentId == p_allocation.StudentId && allocation.RepositoryId == p_allocation.RepositoryId);
+            try
+            {
+                Allocation_SQLDTO? allocationResult = this._context.Allocations.
+                        SingleOrDefault(allocation => allocation.Id == p_allocation.Id && allocation.StudentId == p_allocation.StudentId && allocation.RepositoryId == p_allocation.RepositoryId);
 
-                                    if (allocationResult is not null)
-                                    {
-                                        allocationResult.StudentId = p_allocation.StudentId;
-                                        allocationResult.RepositoryId = p_allocation.RepositoryId;
-                                        allocationResult.Status = p_allocation.Status;
+                if (allocationResult is not null)
+                {
+                    allocationResult.StudentId = p_allocation.StudentId;
+                    allocationResult.RepositoryId = p_allocation.RepositoryId;
+                    allocationResult.Status = p_allocation.Status;
 
-                                        this._context.Update(allocationResult);
-                                        this._context.SaveChanges();
+                    this._context.Update(allocationResult);
+                    this._context.SaveChanges();
 
-                                        Logging.Journal(new Log("Allocation", $"DepotAllocation - Method - UpsertAllocation(Allocation p_allocation) - Void - Update Allocation"));
-                                    }
-                                    else
-                                    {
-                                        Allocation_SQLDTO allocation = new Allocation_SQLDTO();
-                                        allocation.StudentId = p_allocation.StudentId;
-                                        allocation.RepositoryId = p_allocation.RepositoryId;
-                                        allocation.Status = p_allocation.Status; ;
+                    Logging.Instance.Journal(new Log("Allocation", $"DepotAllocation - Method - UpsertAllocation(Allocation p_allocation) - Void - Update Allocation"));
+                }
+                else
+                {
+                    Allocation_SQLDTO allocation = new Allocation_SQLDTO();
+                    allocation.StudentId = p_allocation.StudentId;
+                    allocation.RepositoryId = p_allocation.RepositoryId;
+                    allocation.Status = p_allocation.Status; ;
 
-                                        this._context.Allocations.Add(allocation);
-                                        this._context.SaveChanges();
+                    this._context.Allocations.Add(allocation);
+                    this._context.SaveChanges();
 
-                                        Logging.Journal(new Log("Allocation", $"DepotAllocation - Method - UpsertAllocation(Allocation p_allocation) - Void - Add Allocation"));
-                                    }
-                                }
+                    Logging.Instance.Journal(new Log("Allocation", $"DepotAllocation - Method - UpsertAllocation(Allocation p_allocation) - Void - Add Allocation"));
+                }
+            }
+            catch (InvalidOperationException e)
+            {
+                Logging.Instance.Journal(new Log(e.ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                       "DepotAllocation - UpsertAllocation - _context.Allocations.SingleOrDefault trouve plus qu'un élément", 0));
+                throw e;
+            }
+        }
 
         public void DeleteAllocation(Allocation p_allocation)
-                                {
-                                    if (p_allocation is null)
-                                    {
-                                        Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                                             "DepotAllocation - DeleteAllocation - p_allocation passé en paramètre est null", 0));
+        {
+            if (p_allocation is null)
+            {
+                Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                     "DepotAllocation - DeleteAllocation - p_allocation passé en paramètre est null", 0));
 
-                                        throw new ArgumentNullException(nameof(p_allocation));
-                                    }
+                throw new ArgumentNullException(nameof(p_allocation));
+            }
 
-                                    try
-                                    {
-                                        Allocation_SQLDTO? allocationResult = this._context.Allocations.
-                                                SingleOrDefault(allocation => allocation.Id == p_allocation.Id && allocation.StudentId == p_allocation.StudentId && allocation.RepositoryId == p_allocation.RepositoryId);
+            try
+            {
+                Allocation_SQLDTO? allocationResult = this._context.Allocations.
+                        SingleOrDefault(allocation => allocation.Id == p_allocation.Id && allocation.StudentId == p_allocation.StudentId && allocation.RepositoryId == p_allocation.RepositoryId);
 
-                                        if (allocationResult is not null)
-                                        {
-                                            allocationResult.Status = 0;
+                if (allocationResult is not null)
+                {
+                    allocationResult.Status = 0;
 
-                                            this._context.Update(allocationResult);
-                                            this._context.SaveChanges();
+                    this._context.Update(allocationResult);
+                    this._context.SaveChanges();
 
-                                            Logging.Journal(new Log("Allocation", $"DepotAllocation - Method - DeleteAllocation(Allocation p_allocation) - Void - delete Allocation"));
-                                        }
-                                        else
-                                        {
-                                            Logging.Journal(new Log("Allocation", $"DepotAllocation - Method - DeleteAllocation(Allocation p_allocation) - Void - allocationResult est null", 0));
-                                        }
-                                    }
+                    Logging.Instance.Journal(new Log("Allocation", $"DepotAllocation - Method - DeleteAllocation(Allocation p_allocation) - Void - delete Allocation"));
+                }
+                else
+                {
+                    Logging.Instance.Journal(new Log("Allocation", $"DepotAllocation - Method - DeleteAllocation(Allocation p_allocation) - Void - allocationResult est null", 0));
+                }
+            }
+            catch (InvalidOperationException e)
+            {
+                Logging.Instance.Journal(new Log(e.ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                       "DepotAllocation - UpsertAllocation - _context.Allocations.SingleOrDefault trouve plus qu'un élément", 0));
+                throw e;
+            }
+        }
 
         public void UpsertAllocationsBatch(List<Allocation> p_allocations)
-                                    {
-                                        if (p_allocations is null)
-                                        {
-                                            Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                                                 "DepotAllocation - UpsertAllocationsBatch - p_allocations passé en paramètre est null", 0));
+        {
+            if (p_allocations is null)
+            {
+                Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                     "DepotAllocation - UpsertAllocationsBatch - p_allocations passé en paramètre est null", 0));
 
-                                            throw new ArgumentNullException(nameof(p_allocations));
-                                        }
+                throw new ArgumentNullException(nameof(p_allocations));
+            }
 
-                                        foreach (Allocation a in p_allocations)
-                                        {
-                                            Allocation_SQLDTO? allocationResult = this._context.Allocations.
-                                                    SingleOrDefault(allocation => allocation.Id == a.Id);
+            foreach (Allocation a in p_allocations)
+            {
+                if (a is null)
+                {
+                    Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                         "DepotAllocation - UpsertAllocationsBatch - un des éléments de p_allocations passé en paramètre est null", 0));
 
-                                            if (allocationResult is not null)
-                                            {
-                                                allocationResult.StudentId = a.StudentId;
-                                                allocationResult.RepositoryId = a.RepositoryId;
-                                                allocationResult.Status = a.Status;
-                                                //this._context.Update(allocationResult);
-                                                Logging.Instance.Journal(new Log("Allocation", $"DepotAllocation - Method - UpsertAllocationsBatch(List<Allocation> p_allocations) - Void - Update Allocations"));
-                                            }
-                                            else
-                                            {
-                                                Allocation_SQLDTO allocation = new Allocation_SQLDTO()
-                                                {
-                                                    Id = a.Id,
-                                                    RepositoryId = a.RepositoryId,
-                                                    StudentId = a.StudentId,
-                                                    TeacherId = a.TeacherId,
-                                                    Status = a.Status
-                                                };
+                    throw new ArgumentNullException(nameof(a));
+                }
 
-                                                try
-                                                {
-                                                    this._context.Allocations.Add(allocation);
-                                                }
-                                                catch (Exception e)
-                                                {
-                                                    Logging.Instance.Journal(new Log($"Exception e:{e.Message}"));
-                                                }
+                Allocation_SQLDTO? allocationResult = this._context.Allocations.
+                        SingleOrDefault(allocation => allocation.Id == a.Id && allocation.StudentId == a.StudentId && allocation.RepositoryId == a.RepositoryId);
 
+                if (allocationResult is not null)
+                {
+                    allocationResult.StudentId = a.StudentId;
+                    allocationResult.RepositoryId = a.RepositoryId;
+                    allocationResult.Status = a.Status;
 
-                                                Logging.Instance.Journal(new Log("Allocation", $"DepotAllocation - Method - UpsertAllocationsBatch(List<Allocation> p_allocations) - Void - Add Allocations"));
-                                            }
-                                        }
+                    this._context.Update(allocationResult);
 
-                                        this._context.SaveChanges();
+                    Logging.Instance.Journal(new Log("Allocation", $"DepotAllocation - Method - UpsertAllocationsBatch(List<Allocation> p_allocations) - Void - Update Allocations"));
+                }
+                else
+                {
+                    Allocation_SQLDTO allocation = new Allocation_SQLDTO();
+                    allocation.StudentId = a.StudentId;
+                    allocation.RepositoryId = a.RepositoryId;
+                    allocation.Status = a.Status; ;
 
+                    this._context.Allocations.Add(allocation);
 
-                                        if (VerificationOfAllocationInDB(p_allocations))
-                                        {
-                                            SetAllocationAfterVerification(p_allocations);
-                                        }
-                                    }
+                    Logging.Instance.Journal(new Log("Allocation", $"DepotAllocation - Method - UpsertAllocationsBatch(List<Allocation> p_allocations) - Void - Add Allocations"));
+                }
+            }
 
-                                    private bool VerificationOfAllocationInDB(List<Allocation> p_allocations)
-                                    {
-                                        foreach (Allocation allocation in p_allocations)
-                                        {
-                                            if (!GetAllocations().Select(p => p).Where(m => m.Id == allocation.Id).Any())
-                                            {
-                                                return false;
-                                            }
-                                        }
+            this._context.SaveChanges();
 
-                                        return true;
-                                    }
+            if (VerificationOfAllocationInDB(p_allocations))
+            {
+                SetAllocationAfterVerification(p_allocations);
+            }
+        }
 
-                                    private void SetAllocationAfterVerification(List<Allocation> p_allocations)
-                                    {
-                                        Logging.Instance.Journal(new Log($"{p_allocations.Count()}"));
+        public void DeleteAllocationsBatch(List<Allocation> p_allocations)
+        {
+            if (p_allocations is null)
+            {
+                Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                     "DepotAllocation - DeleteAllocationsBatch - p_allocations passé en paramètre est null", 0));
 
-                                        foreach (Allocation allocation in p_allocations)
-                                        {
-                                            Logging.Instance.Journal(new Log(allocation.Id));
+                throw new ArgumentNullException(nameof(p_allocations));
+            }
 
-                                            allocation.Status = 2;
-                                            UpsertAllocation(allocation);
-                                        }
+            foreach (Allocation a in p_allocations)
+            {
+                if (a is null)
+                {
+                    Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                         "DepotAllocation - DeleteAllocationsBatch - un des éléments de p_allocations passé en paramètre est null", 0));
 
-                                    }
+                    throw new ArgumentNullException(nameof(a));
+                }
 
-                                    public void SetAllocationAfterCreation(Allocation p_allocation)
-                                    {
-                                        p_allocation.Status = 3;
-                                        UpsertAllocation(p_allocation);
-                                    }
+                Allocation_SQLDTO? allocationResult = this._context.Allocations.
+                        SingleOrDefault(allocation => allocation.Id == a.Id && allocation.StudentId == a.StudentId && allocation.RepositoryId == a.RepositoryId);
 
-                                    public List<Allocation> GetSelectedAllocationsByAllocationID(List<Allocation> p_allocations)
-                                    {
-                                        List<Allocation> allocationsResult = new List<Allocation>();
+                if (allocationResult is not null)
+                {
+                    allocationResult.Status = 0;
 
-                                        foreach (Allocation allocation in p_allocations)
-                                        {
-                                            foreach (Allocation allocationDB in GetAllocations())
-                                            {
-                                                if (allocation.Id == allocationDB.Id)
-                                                {
-                                                    allocationsResult.Add(allocationDB);
-                                                }
-                                            }
-                                        }
+                    this._context.Update(allocationResult);
 
-                                        return allocationsResult;
-                                    }
+                    Logging.Instance.Journal(new Log("Allocation", $"DepotAllocation - Method - DeleteAllocationsBatch(List<Allocation> p_allocations) - Void - delete Allocations"));
+                }
+                else
+                {
+                    Logging.Instance.Journal(new Log("Allocation", $"DepotAllocation - Method - DeleteAllocationsBatch(List<Allocation> p_allocations) - Void - allocationResult est null", 0));
+                }
+            }
 
-                                    public void DeleteAllocationsBatch(List<Allocation> p_allocations)
-                                    {
-                                        if (p_allocations is null)
-                                        {
-                                            Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                                                 "DepotAllocation - DeleteAllocationsBatch - p_allocations passé en paramètre est null", 0));
+            this._context.SaveChanges();
+        }
 
-                                            throw new ArgumentNullException(nameof(p_allocations));
-                                        }
+        public void SetAllocationAfterCreation(Allocation p_allocation)
+        {
+            p_allocation.Status = 3;
+            UpsertAllocation(p_allocation);
+        }
 
-                                        foreach (Allocation a in p_allocations)
-                                        {
-                                            Allocation_SQLDTO? allocationResult = this._context.Allocations.
-                                                    SingleOrDefault(allocation => allocation.Status > 0 && allocation.StudentId == a.StudentId && allocation.RepositoryId == a.RepositoryId);
+        public List<Allocation> GetSelectedAllocationsByAllocationID(List<Allocation> p_allocations)
+        {
+            List<Allocation> allocationsResult = new List<Allocation>();
 
-                                            if (allocationResult is not null)
-                                            {
-                                                allocationResult.Status = 0;
+            foreach (Allocation allocation in p_allocations)
+            {
+                foreach (Allocation allocationDB in GetAllocations())
+                {
+                    if (allocation.Id == allocationDB.Id)
+                    {
+                        allocationsResult.Add(allocationDB);
+                    }
+                }
+            }
+            return allocationsResult;
+        }
 
-                                                //this._context.Update(allocationResult);
+        private void SetAllocationAfterVerification(List<Allocation> p_allocations)
+        {
+            Logging.Instance.Journal(new Log($"{p_allocations.Count()}"));
 
-                                                Logging.Journal(new Log("Allocation", $"DepotAllocation - Method - DeleteAllocationsBatch(List<Allocation> p_allocations) - Void - delete Allocations"));
-                                            }
-                                            else
-                                            {
-                                                Logging.Instance.Journal(new Log("Allocation", $"DepotAllocation - Method - DeleteAllocationsBatch(List<Allocation> p_allocations) - Void - allocationResult est null", 0));
-                                            }
-                                        }
+            foreach (Allocation allocation in p_allocations)
+            {
+                Logging.Instance.Journal(new Log(allocation.Id));
+                allocation.Status = 2;
+                UpsertAllocation(allocation);
+            }
+        }
 
-                                        this._context.SaveChanges();
-                                    }
-                                }
-                            }
+        private bool VerificationOfAllocationInDB(List<Allocation> p_allocations)
+        {
+            foreach (Allocation allocation in p_allocations)
+            {
+                if (!GetAllocations().Select(p => p).Where(m => m.Id == allocation.Id).Any())
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
+}
