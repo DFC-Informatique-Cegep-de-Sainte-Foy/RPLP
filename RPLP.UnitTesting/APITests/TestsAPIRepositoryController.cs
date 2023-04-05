@@ -3,6 +3,7 @@ using Moq;
 using RPLP.API.Controllers;
 using RPLP.ENTITES;
 using RPLP.ENTITES.InterfacesDepots;
+using RPLP.JOURNALISATION;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_GetRepositoryById()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotRepository> depot = new Mock<IDepotRepository>();
             RepositoryController controller = new RepositoryController(depot.Object);
 
@@ -41,6 +44,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_GetRepositoryByName()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotRepository> depot = new Mock<IDepotRepository>();
             RepositoryController controller = new RepositoryController(depot.Object);
 
@@ -65,6 +70,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_Post_RepositoryNull()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotRepository> depot = new Mock<IDepotRepository>();
             RepositoryController controller = new RepositoryController(depot.Object);
 
@@ -77,6 +84,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_Post_ModelStateNotValid()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotRepository> depot = new Mock<IDepotRepository>();
             RepositoryController controller = new RepositoryController(depot.Object);
             controller.ModelState.AddModelError("", "Mock Modelstate Not Valid");
@@ -90,6 +99,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_Post_NoContent()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotRepository> depot = new Mock<IDepotRepository>();
             RepositoryController controller = new RepositoryController(depot.Object);
             Repository repository = new Repository();
@@ -104,6 +115,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_DeleteRepository()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotRepository> depot = new Mock<IDepotRepository>();
             RepositoryController controller = new RepositoryController(depot.Object);
 

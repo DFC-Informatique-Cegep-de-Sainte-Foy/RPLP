@@ -7,6 +7,7 @@ using RPLP.DAL.SQL;
 using RPLP.DAL.SQL.Depots;
 using RPLP.ENTITES;
 using RPLP.ENTITES.InterfacesDepots;
+using RPLP.JOURNALISATION;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_Get()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotClassroom> depot = new Mock<IDepotClassroom>();
             ClassroomController controller = new ClassroomController(depot.Object);
             List<Classroom> classroomsInMockDepot = new List<Classroom>()
@@ -52,6 +55,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_GetClassroomById()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotClassroom> depot = new Mock<IDepotClassroom>();
             ClassroomController controller = new ClassroomController(depot.Object);
             Classroom classroomInMockDepot = new Classroom()
@@ -74,6 +79,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_GetClassroomByName()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotClassroom> depot = new Mock<IDepotClassroom>();
             ClassroomController controller = new ClassroomController(depot.Object);
             Classroom classroomInMockDepot = new Classroom()
@@ -96,6 +103,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_GetClassroomByClassroomName()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotClassroom> depot = new Mock<IDepotClassroom>();
             ClassroomController controller = new ClassroomController(depot.Object);
             List<Classroom> classroomsInMockDepot = new List<Classroom>()
@@ -129,6 +138,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_GetTeachers()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotClassroom> depot = new Mock<IDepotClassroom>();
             ClassroomController controller = new ClassroomController(depot.Object);
             List<Teacher> teachersInMockDepot = new List<Teacher>()
@@ -160,6 +171,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_GetStudents()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotClassroom> depot = new Mock<IDepotClassroom>();
             ClassroomController controller = new ClassroomController(depot.Object);
             List<Student> studentsInMockDepot = new List<Student>()
@@ -191,6 +204,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_GetAssignments()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotClassroom> depot = new Mock<IDepotClassroom>();
             ClassroomController controller = new ClassroomController(depot.Object);
             List<Assignment> assignmentsInMockDepot = new List<Assignment>()
@@ -222,6 +237,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_GetAssignmentsByClassroomName()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotClassroom> depot = new Mock<IDepotClassroom>();
             ClassroomController controller = new ClassroomController(depot.Object);
             List<Assignment> assignmentsInMockDepot = new List<Assignment>()
@@ -253,6 +270,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_AddTeacherToClassroom_NullOrWhitespaceClassroom()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotClassroom> depot = new Mock<IDepotClassroom>();
             ClassroomController controller = new ClassroomController(depot.Object);
 
@@ -264,6 +283,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_AddTeacherToClassroom_NullOrWhitespaceTeacher()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotClassroom> depot = new Mock<IDepotClassroom>();
             ClassroomController controller = new ClassroomController(depot.Object);
 
@@ -275,6 +296,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_AddTeacherToClassroom_Created()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotClassroom> depot = new Mock<IDepotClassroom>();
             ClassroomController controller = new ClassroomController(depot.Object);
 
@@ -288,6 +311,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_AddStudentToClassroom_NullOrWhitespaceClassroom()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotClassroom> depot = new Mock<IDepotClassroom>();
             ClassroomController controller = new ClassroomController(depot.Object);
 
@@ -299,6 +324,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_AddStudentToClassroom_NullOrWhitespaceTeacher()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotClassroom> depot = new Mock<IDepotClassroom>();
             ClassroomController controller = new ClassroomController(depot.Object);
 
@@ -310,6 +337,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_AddStudentToClassroom_Created()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotClassroom> depot = new Mock<IDepotClassroom>();
             ClassroomController controller = new ClassroomController(depot.Object);
 
@@ -323,6 +352,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_AddAssignmentToClassroom_NullOrWhitespaceClassroom()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotClassroom> depot = new Mock<IDepotClassroom>();
             ClassroomController controller = new ClassroomController(depot.Object);
 
@@ -334,6 +365,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_AddAssignmentToClassroom_NullOrWhitespaceAssignment()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotClassroom> depot = new Mock<IDepotClassroom>();
             ClassroomController controller = new ClassroomController(depot.Object);
 
@@ -345,6 +378,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_AddAssignmentToClassroom_Created()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotClassroom> depot = new Mock<IDepotClassroom>();
             ClassroomController controller = new ClassroomController(depot.Object);
 
@@ -358,6 +393,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_RemoveTeacherFromClassroom_NullOrWhitespaceClassroom()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotClassroom> depot = new Mock<IDepotClassroom>();
             ClassroomController controller = new ClassroomController(depot.Object);
 
@@ -369,6 +406,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_RemoveTeacherFromClassroom_NullOrWhitespaceTeacher()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotClassroom> depot = new Mock<IDepotClassroom>();
             ClassroomController controller = new ClassroomController(depot.Object);
 
@@ -380,6 +419,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_RemoveTeacherFromClassroom_NoContent()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotClassroom> depot = new Mock<IDepotClassroom>();
             ClassroomController controller = new ClassroomController(depot.Object);
 
@@ -393,6 +434,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_RemoveStudentFromClassroom_NullOrWhitespaceClassroom()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotClassroom> depot = new Mock<IDepotClassroom>();
             ClassroomController controller = new ClassroomController(depot.Object);
 
@@ -404,6 +447,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_RemoveStudentFromClassroom_NullOrWhitespaceTeacher()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotClassroom> depot = new Mock<IDepotClassroom>();
             ClassroomController controller = new ClassroomController(depot.Object);
 
@@ -415,6 +460,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_RemoveStudentFromClassroom_NoContent()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotClassroom> depot = new Mock<IDepotClassroom>();
             ClassroomController controller = new ClassroomController(depot.Object);
 
@@ -428,6 +475,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_RemoveAssignmentFromClassroom_NullOrWhitespaceClassroom()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotClassroom> depot = new Mock<IDepotClassroom>();
             ClassroomController controller = new ClassroomController(depot.Object);
 
@@ -439,6 +488,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_RemoveAssignmentFromClassroom_NullOrWhitespaceAssignment()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotClassroom> depot = new Mock<IDepotClassroom>();
             ClassroomController controller = new ClassroomController(depot.Object);
 
@@ -450,6 +501,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_RemoveAssignmentFromClassroom_NoContent()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotClassroom> depot = new Mock<IDepotClassroom>();
             ClassroomController controller = new ClassroomController(depot.Object);
 
@@ -463,6 +516,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_UpsertClassroom_NullClassroom()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotClassroom> depot = new Mock<IDepotClassroom>();
             ClassroomController controller = new ClassroomController(depot.Object);
 
@@ -474,6 +529,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_UpsertClassroom_ModelStateNotValid()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotClassroom> depot = new Mock<IDepotClassroom>();
             ClassroomController controller = new ClassroomController(depot.Object);
             Classroom classroom = new Classroom();
@@ -487,6 +544,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_UpsertClassroom_Created()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotClassroom> depot = new Mock<IDepotClassroom>();
             ClassroomController controller = new ClassroomController(depot.Object);
             Classroom classroom = new Classroom();
@@ -501,6 +560,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_DeleteClassroom_NoContent()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotClassroom> depot = new Mock<IDepotClassroom>();
             ClassroomController controller = new ClassroomController(depot.Object);
 

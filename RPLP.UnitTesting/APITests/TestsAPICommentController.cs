@@ -4,6 +4,7 @@ using RPLP.API.Controllers;
 using RPLP.DAL.SQL.Depots;
 using RPLP.ENTITES;
 using RPLP.ENTITES.InterfacesDepots;
+using RPLP.JOURNALISATION;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_Get()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotComment> depot = new Mock<IDepotComment>();
             CommentController controller = new CommentController(depot.Object);
 
@@ -50,6 +53,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_GetCommentById()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotComment> depot = new Mock<IDepotComment>();
             CommentController controller = new CommentController(depot.Object);
 
@@ -73,6 +78,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_Post_NullComment()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotComment> depot = new Mock<IDepotComment>();
             CommentController controller = new CommentController(depot.Object);
 
@@ -84,6 +91,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_Post_Created()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotComment> depot = new Mock<IDepotComment>();
             CommentController controller = new CommentController(depot.Object);
             Comment comment = new Comment();
@@ -98,6 +107,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_Delete()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotComment> depot = new Mock<IDepotComment>();
             CommentController controller = new CommentController(depot.Object);
 

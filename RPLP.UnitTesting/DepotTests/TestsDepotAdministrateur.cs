@@ -78,9 +78,7 @@ namespace RPLP.UnitTesting.DepotTests
             Assert.Equal(2, administrators.Count);
             Assert.Contains(administrators, a => a.Username == "ThPaquet");
             Assert.DoesNotContain(administrators, a => a.Username == "BACenComm");
-            Assert.NotEmpty(administrators.FirstOrDefault(a => a.Username == "ThPaquet").Organisations);
-           
-            
+            Assert.NotEmpty(administrators.FirstOrDefault(a => a.Username == "ThPaquet").Organisations);         
         }
 
         [Fact]

@@ -3,6 +3,7 @@ using Moq;
 using RPLP.API.Controllers;
 using RPLP.ENTITES;
 using RPLP.ENTITES.InterfacesDepots;
+using RPLP.JOURNALISATION;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_Get()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotOrganisation> depot = new Mock<IDepotOrganisation>();
             OrganisationController controller = new OrganisationController(depot.Object);
 
@@ -49,6 +52,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_GetOrganisationById()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotOrganisation> depot = new Mock<IDepotOrganisation>();
             OrganisationController controller = new OrganisationController(depot.Object);
 
@@ -72,6 +77,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_GetOrganisationByName()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotOrganisation> depot = new Mock<IDepotOrganisation>();
             OrganisationController controller = new OrganisationController(depot.Object);
 
@@ -95,6 +102,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_GetAdministratorsByOrganisation()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotOrganisation> depot = new Mock<IDepotOrganisation>();
             OrganisationController controller = new OrganisationController(depot.Object);
 
@@ -127,6 +136,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_AddAdministratorToOrganisation_OrganisationIsWhiteSpace()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotOrganisation> depot = new Mock<IDepotOrganisation>();
             OrganisationController controller = new OrganisationController(depot.Object);
 
@@ -138,6 +149,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_AddAdministratorToOrganisation_AdministratorIsWhiteSpace()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotOrganisation> depot = new Mock<IDepotOrganisation>();
             OrganisationController controller = new OrganisationController(depot.Object);
 
@@ -149,6 +162,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_AddAdministratorToOrganisation_Created()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotOrganisation> depot = new Mock<IDepotOrganisation>();
             OrganisationController controller = new OrganisationController(depot.Object);
 
@@ -162,6 +177,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_RemoveAdministratorFromOrganisation_OrganisationIsWhiteSpace()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotOrganisation> depot = new Mock<IDepotOrganisation>();
             OrganisationController controller = new OrganisationController(depot.Object);
 
@@ -173,6 +190,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_RemoveAdministratorFromOrganisation_AdministratorIsWhiteSpace()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotOrganisation> depot = new Mock<IDepotOrganisation>();
             OrganisationController controller = new OrganisationController(depot.Object);
 
@@ -184,6 +203,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_RemoveAdministratorFromOrganisation_NoContent()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotOrganisation> depot = new Mock<IDepotOrganisation>();
             OrganisationController controller = new OrganisationController(depot.Object);
 
@@ -197,6 +218,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_Post_Null()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotOrganisation> depot = new Mock<IDepotOrganisation>();
             OrganisationController controller = new OrganisationController(depot.Object);
 
@@ -209,6 +232,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_Post_ModelStateIsNotValid()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotOrganisation> depot = new Mock<IDepotOrganisation>();
             OrganisationController controller = new OrganisationController(depot.Object);
             controller.ModelState.AddModelError("", "Mock ModelState not valid");
@@ -221,6 +246,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_Post_Created()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotOrganisation> depot = new Mock<IDepotOrganisation>();
             OrganisationController controller = new OrganisationController(depot.Object);
             Organisation organisation = new Organisation();
@@ -235,6 +262,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_DeleteOrganisation()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotOrganisation> depot = new Mock<IDepotOrganisation>();
             OrganisationController controller = new OrganisationController(depot.Object);
 
