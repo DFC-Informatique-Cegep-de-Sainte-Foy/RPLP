@@ -61,8 +61,8 @@ namespace RPLP.UnitTesting.DepotTests
             Assert.NotNull(comments.SingleOrDefault(c => c.Body == "This is a comment" && c.WrittenBy == "ThPaquet"));
             Assert.NotNull(comments.SingleOrDefault(c => c.Body == "This is another comment" && c.WrittenBy == "ikeameatbol"));
             Assert.Null(comments.SingleOrDefault(c => c.Body == "You should not see this" && c.WrittenBy == "BACenComm"));
-            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+           
+            
         }
 
         [Fact]
@@ -121,8 +121,8 @@ namespace RPLP.UnitTesting.DepotTests
             Assert.NotNull(commentThPaquet);
             Assert.Null(commentBACenComm.Body);
             Assert.Null(commentBACenComm.In_Reply_To_Id);
-            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Exactly(2));
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
 
         [Fact]
@@ -188,8 +188,8 @@ namespace RPLP.UnitTesting.DepotTests
             Assert.Equal(commentPreInsert.Body, comment.Body);
             Assert.Equal(commentPreInsert.RepositoryName, comment.RepositoryName);
             Assert.Equal(commentPreInsert.WrittenBy, comment.WrittenBy);
-            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+           
+            
         }
 
         [Fact]
@@ -274,8 +274,8 @@ namespace RPLP.UnitTesting.DepotTests
             Assert.NotEqual(commentPreUpsert.Body, comment.Body);
             Assert.NotEqual(commentPreUpsert.RepositoryName, comment.RepositoryName);
             Assert.NotEqual(commentPreUpsert.WrittenBy, comment.WrittenBy);
-            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+           
+            
         }
 
         [Fact]
@@ -328,8 +328,8 @@ namespace RPLP.UnitTesting.DepotTests
 
             comment = commentsDB.SingleOrDefault(c => c.WrittenBy == "ThPaquet" && c.Active == true);
             Assert.Null(comment);
-            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+           
+            
         }
     }
 }

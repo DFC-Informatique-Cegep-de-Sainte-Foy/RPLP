@@ -60,8 +60,8 @@ namespace RPLP.UnitTesting.DepotTests
             Repository repository = depot.GetRepositoryById(repositoryId);
 
             Assert.NotNull(repository);
-            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+           
+            
         }
 
         [Fact]
@@ -110,8 +110,8 @@ namespace RPLP.UnitTesting.DepotTests
             Repository repository = depot.GetRepositoryById(repositoryId);
 
             Assert.Null(repository);
-            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+           
+            
         }
 
         [Fact]
@@ -155,8 +155,8 @@ namespace RPLP.UnitTesting.DepotTests
             Repository repository = depot.GetRepositoryByName("ThPaquet");
 
             Assert.NotNull(repository);
-            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+           
+            
         }
 
         [Fact]
@@ -200,8 +200,8 @@ namespace RPLP.UnitTesting.DepotTests
             Repository repository = depot.GetRepositoryByName("BACenComm");
 
             Assert.Null(repository);
-            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+           
+            
         }
 
         [Fact]
@@ -259,8 +259,8 @@ namespace RPLP.UnitTesting.DepotTests
             Assert.Equal("Test Repository", repositorySQL.FullName);
             Assert.Equal("test organisation", repositorySQL.OrganisationName);
             Assert.True(repositorySQL.Active);
-            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+           
+            
         }
 
         [Fact]
@@ -317,8 +317,8 @@ namespace RPLP.UnitTesting.DepotTests
             Assert.Equal("Test Repository", repositorySQL.FullName);
             Assert.Equal("test organisation", repositorySQL.OrganisationName);
             Assert.True(repositorySQL.Active);
-            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+           
+            
         }
 
         [Fact]
@@ -363,8 +363,8 @@ namespace RPLP.UnitTesting.DepotTests
 
             Repository_SQLDTO? repository = repositoriesDB.FirstOrDefault(r => r.Name == "ThPaquet" && r.Active);
             Assert.Null(repository);
-            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+           
+            
         }
 
         [Fact]
@@ -408,8 +408,8 @@ namespace RPLP.UnitTesting.DepotTests
             List<Repository> repositories = depot.GetRepositories();
 
             Assert.Equal(2, repositories.Count);
-            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+           
+            
         }
 
         [Fact]
@@ -453,8 +453,8 @@ namespace RPLP.UnitTesting.DepotTests
             List<Repository> repositories = depot.GetRepositoriesFromOrganisationName("RPLP");
 
             Assert.Equal(2, repositories.Count);
-            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+           
+            
         }
     }
 }

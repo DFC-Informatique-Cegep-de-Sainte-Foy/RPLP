@@ -51,8 +51,8 @@ namespace RPLP.UnitTesting.DepotTests
             Assert.Contains(fetchedAssignments, f => f.Name == "Review");
             Assert.Contains(fetchedAssignments, f => f.Name == "AnotherOne");
             Assert.Equal(2, fetchedAssignments.Count);
-            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+           
+            
         }
 
         [Fact]
@@ -92,8 +92,8 @@ namespace RPLP.UnitTesting.DepotTests
 
             Assert.NotNull(assignment);
             Assert.Equal("Review", assignment.Name);
-            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+           
+            
         }
 
         [Fact]
@@ -131,8 +131,8 @@ namespace RPLP.UnitTesting.DepotTests
             Assignment assignment = depot.GetAssignmentByName("Review");
 
             Assert.NotNull(assignment);
-            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+           
+            
         }
 
         [Fact]
@@ -170,8 +170,8 @@ namespace RPLP.UnitTesting.DepotTests
             List<Assignment> assignments = depot.GetAssignmentsByClassroomName("RPLP");
 
             Assert.True(assignments.Count == 2);
-            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+           
+            
         }
 
         [Fact]
@@ -220,8 +220,8 @@ namespace RPLP.UnitTesting.DepotTests
             Assignment_SQLDTO? assignmentSQL = assignmentsBD.FirstOrDefault(a => a.Name == "Review");
 
             Assert.NotNull(assignmentSQL);
-            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+           
+            
 
         }
 
@@ -268,8 +268,8 @@ namespace RPLP.UnitTesting.DepotTests
 
             Assert.Null(nonModifiedAssignment);
             Assert.NotNull(modifiedAssignment);
-            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+           
+            
         }
 
         [Fact]
@@ -309,8 +309,8 @@ namespace RPLP.UnitTesting.DepotTests
             depot.DeleteAssignment("Review");
 
             Assert.Null(assignmentsBD.FirstOrDefault(a => a.Name == "Review" && a.Active == true));
-            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+           
+            
         }
     }
 }

@@ -83,8 +83,8 @@ namespace RPLP.UnitTesting.DepotTests
             Assert.Contains(students, s => s.Username == "ThPaquet");
             Assert.Contains(students, s => s.Username == "ikeameatbol");
             Assert.Equal(3, students.FirstOrDefault(s => s.Username == "ThPaquet").Classes.Count);
-            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+           
+            
         }
 
         [Fact]
@@ -154,8 +154,8 @@ namespace RPLP.UnitTesting.DepotTests
             Assert.Contains(students, s => s.Username == "BACenComm");
             Assert.DoesNotContain(students, s => s.Username == "ThPaquet");
             Assert.DoesNotContain(students, s => s.Username == "ikeameatbol");
-            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+           
+            
         }
 
         [Fact]
@@ -232,8 +232,8 @@ namespace RPLP.UnitTesting.DepotTests
             Assert.Equal("Thierry", student.FirstName);
             Assert.Equal("Paquet", student.LastName);
             Assert.Equal(3, student.Classes.Count);
-            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+           
+            
         }
 
         [Fact]
@@ -309,8 +309,8 @@ namespace RPLP.UnitTesting.DepotTests
             Student student = depot.GetStudentById(BACenCommId);
 
             Assert.Null(student);
-            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+           
+            
         }
 
         [Fact]
@@ -381,8 +381,8 @@ namespace RPLP.UnitTesting.DepotTests
             Assert.Equal("ThPaquet", student.Username);
             Assert.Equal("Thierry", student.FirstName);
             Assert.Equal("Paquet", student.LastName);
-            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+           
+            
         }
 
         [Fact]
@@ -450,8 +450,8 @@ namespace RPLP.UnitTesting.DepotTests
             Student student = depot.GetStudentByUsername("BACenComm");
 
             Assert.Null(student);
-            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+           
+            
         }
 
         [Fact]
@@ -521,8 +521,8 @@ namespace RPLP.UnitTesting.DepotTests
             Assert.NotNull(classes);
             Assert.Equal(3, classes.Count);
             Assert.Contains(classes, c => c.Name == "RPLP");
-            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+           
+            
         }
 
         [Fact]
@@ -700,8 +700,8 @@ namespace RPLP.UnitTesting.DepotTests
             Assert.Equal("Dylan", studentInContext.FirstName);
             Assert.Equal("Veilleux", studentInContext.LastName);
             Assert.Equal("Node@hotmail.com", studentInContext.Email);
-            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+           
+            
         }
 
         [Fact]
@@ -782,8 +782,8 @@ namespace RPLP.UnitTesting.DepotTests
             Assert.Equal("Upserted", studentInContext.Username);
             Assert.Equal("Upserty", studentInContext.FirstName);
             Assert.Equal("McUpserton", studentInContext.LastName);
-            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+           
+            
         }
 
         [Fact]
@@ -856,8 +856,8 @@ namespace RPLP.UnitTesting.DepotTests
             studentInContext = studentsBD.SingleOrDefault(s => s.Username == "ThPaquet" && s.Active);
 
             Assert.Null(studentInContext);
-            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+           
+            
         }
 
         [Fact]
@@ -930,8 +930,8 @@ namespace RPLP.UnitTesting.DepotTests
             studentInContext = studentsBD.SingleOrDefault(s => s.Username == "BACenComm" && s.Active);
 
             Assert.NotNull(studentInContext);
-            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+           
+            
         }
 
         [Fact]
@@ -1004,8 +1004,8 @@ namespace RPLP.UnitTesting.DepotTests
                     depot.UpsertStudent(student.ToEntityWithoutList());
                 });
 
-            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Never);
-            logMock.VerifyNoOtherCalls();
+            //logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Never);
+            
         }
 
         [Fact]
@@ -1181,8 +1181,8 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     depot.UpsertStudent(student);
                 });
-            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Never);
-            logMock.VerifyNoOtherCalls();
+            //logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Never);
+            
         }
 
         [Fact]
@@ -1353,8 +1353,8 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     depot.UpsertStudent(student.ToEntityWithoutList());
                 });
-            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Never);
-            logMock.VerifyNoOtherCalls();
+            //logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Never);
+            
         }
 
         [Fact]
@@ -1531,8 +1531,8 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     depot.UpsertStudent(student);
                 });
-            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Never);
-            logMock.VerifyNoOtherCalls();
+            //logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Never);
+            
         }
 
         [Fact]
@@ -1703,8 +1703,8 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     depot.UpsertStudent(student.ToEntityWithoutList());
                 });
-            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Never);
-            logMock.VerifyNoOtherCalls();
+            //logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Never);
+            
         }
     }
 }

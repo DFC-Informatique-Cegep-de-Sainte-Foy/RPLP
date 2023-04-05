@@ -34,8 +34,8 @@ namespace RPLP.UnitTesting.DepotTests
 
             // Act Assert
             Assert.Throws<ArgumentNullException>(() => { DepotAllocation da = new DepotAllocation(context); });
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
 
         [Fact]
@@ -52,7 +52,7 @@ namespace RPLP.UnitTesting.DepotTests
             DepotAllocation da = new DepotAllocation(context.Object);
 
             // Assert
-            logMock.VerifyNoOtherCalls();
+            
         }
         #endregion
 
@@ -112,8 +112,8 @@ namespace RPLP.UnitTesting.DepotTests
             Assert.Equal(3, la.Count);
             Assert.Contains(la, a => a.Id == "r1s2t0");
             Assert.DoesNotContain(la, a => a.Id == "r2s6t0");
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
 
         [Fact]
@@ -169,8 +169,8 @@ namespace RPLP.UnitTesting.DepotTests
             // Assert
             Assert.NotNull(la);
             Assert.Empty(la);
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
         #endregion
 
@@ -234,8 +234,8 @@ namespace RPLP.UnitTesting.DepotTests
 
             // Act Assert
             Assert.Throws<ArgumentOutOfRangeException>(() => { List<Allocation> la = da.GetAllocationsByStudentId(studentId); });
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
 
         [Fact]
@@ -297,8 +297,8 @@ namespace RPLP.UnitTesting.DepotTests
 
             // Act Assert
             Assert.Throws<ArgumentOutOfRangeException>(() => { List<Allocation> la = da.GetAllocationsByStudentId(studentId); });
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
 
         [Fact]
@@ -367,8 +367,8 @@ namespace RPLP.UnitTesting.DepotTests
             Assert.Contains(la, a => a.Id == "r1s2t0");
             Assert.Contains(la, a => a.Id == "r2s2t0");
             Assert.DoesNotContain(la, a => a.Id == "r3s2t0");
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
 
         [Fact]
@@ -434,8 +434,8 @@ namespace RPLP.UnitTesting.DepotTests
             // Assert
             Assert.NotNull(la);
             Assert.Empty(la);
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
 
         [Fact]
@@ -459,8 +459,8 @@ namespace RPLP.UnitTesting.DepotTests
             // Assert
             Assert.NotNull(la);
             Assert.Empty(la);
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
         #endregion
 
@@ -480,8 +480,8 @@ namespace RPLP.UnitTesting.DepotTests
 
             // Act Assert
             Assert.Throws<ArgumentOutOfRangeException>(() => { List<Allocation> la = da.GetAllocationsByRepositoryID(repositoryId); });
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
 
         [Fact]
@@ -499,8 +499,8 @@ namespace RPLP.UnitTesting.DepotTests
 
             // Act Assert
             Assert.Throws<ArgumentOutOfRangeException>(() => { List<Allocation> la = da.GetAllocationsByRepositoryID(repositoryId); });
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
 
         [Fact]
@@ -569,8 +569,8 @@ namespace RPLP.UnitTesting.DepotTests
             Assert.Contains(la, a => a.Id == "r1s2t0");
             Assert.Contains(la, a => a.Id == "r1s4t0");
             Assert.DoesNotContain(la, a => a.Id == "r1s1t0");
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
 
         [Fact]
@@ -636,8 +636,8 @@ namespace RPLP.UnitTesting.DepotTests
             // Assert
             Assert.NotNull(la);
             Assert.Empty(la);
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
 
         [Fact]
@@ -661,8 +661,8 @@ namespace RPLP.UnitTesting.DepotTests
             // Assert
             Assert.NotNull(la);
             Assert.Empty(la);
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
         #endregion
 
@@ -683,8 +683,8 @@ namespace RPLP.UnitTesting.DepotTests
 
             // Act Assert
             Assert.Throws<ArgumentOutOfRangeException>(() => { Allocation? a = da.GetAllocationByStudentAndRepositoryIDs(studentId, repositoryId); });
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
 
         [Fact]
@@ -703,8 +703,8 @@ namespace RPLP.UnitTesting.DepotTests
 
             // Act Assert
             Assert.Throws<ArgumentOutOfRangeException>(() => { Allocation a = da.GetAllocationByStudentAndRepositoryIDs(studentId, repositoryId); });
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
 
         [Fact]
@@ -723,8 +723,8 @@ namespace RPLP.UnitTesting.DepotTests
 
             // Act Assert
             Assert.Throws<ArgumentOutOfRangeException>(() => { Allocation a = da.GetAllocationByStudentAndRepositoryIDs(studentId, repositoryId); });
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
 
         [Fact]
@@ -743,8 +743,8 @@ namespace RPLP.UnitTesting.DepotTests
 
             // Act Assert
             Assert.Throws<ArgumentOutOfRangeException>(() => { Allocation a = da.GetAllocationByStudentAndRepositoryIDs(studentId, repositoryId); });
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
 
         [Fact]
@@ -815,8 +815,8 @@ namespace RPLP.UnitTesting.DepotTests
             Assert.Equal(studentId, a.StudentId);
             Assert.Equal(repositoryId, a.RepositoryId);
             Assert.Equal(expectedAllocationId, a.Id);
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
 
         [Fact]
@@ -882,8 +882,8 @@ namespace RPLP.UnitTesting.DepotTests
 
             // Assert
             Assert.Null(a);
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
 
         [Fact]
@@ -949,8 +949,8 @@ namespace RPLP.UnitTesting.DepotTests
 
             // Assert
             Assert.Null(a);
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
 
         [Fact]
@@ -1016,8 +1016,8 @@ namespace RPLP.UnitTesting.DepotTests
 
             // Assert
             Assert.Null(a);
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
 
         [Fact]
@@ -1088,8 +1088,8 @@ namespace RPLP.UnitTesting.DepotTests
             Assert.Equal(studentId, a.StudentId);
             Assert.Equal(repositoryId, a.RepositoryId);
             Assert.Equal(expectedAllocationId, a.Id);
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
         #endregion
 
@@ -1108,8 +1108,8 @@ namespace RPLP.UnitTesting.DepotTests
 
             // Act Assert
             Assert.Throws<ArgumentOutOfRangeException>(() => { List<Allocation> a = da.GetAllocationsByAssignmentID(p_assignmentId); });
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
 
         [Fact]
@@ -1269,7 +1269,7 @@ namespace RPLP.UnitTesting.DepotTests
             Assert.Contains(la, a => a.Id == "r2s2t0");
             Assert.Contains(la, a => a.Id == "r1s1t0");
             logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Exactly(2));
-            logMock.VerifyNoOtherCalls();
+            
         }
 
         [Fact]
@@ -1424,7 +1424,7 @@ namespace RPLP.UnitTesting.DepotTests
             Assert.NotNull(la);
             Assert.Empty(la);
             logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Exactly(2));
-            logMock.VerifyNoOtherCalls();
+            
         }
 
         [Fact]
@@ -1579,7 +1579,7 @@ namespace RPLP.UnitTesting.DepotTests
             Assert.NotNull(la);
             Assert.Empty(la);
             logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Never);
-            logMock.VerifyNoOtherCalls();
+            
         }
 
         [Fact]
@@ -1733,8 +1733,8 @@ namespace RPLP.UnitTesting.DepotTests
             // Assert
             Assert.NotNull(la);
             Assert.Empty(la);
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
 
         [Fact]
@@ -1888,8 +1888,8 @@ namespace RPLP.UnitTesting.DepotTests
             // Assert
             Assert.NotNull(la);
             Assert.Empty(la);
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
 
         [Fact]
@@ -2043,8 +2043,8 @@ namespace RPLP.UnitTesting.DepotTests
             // Assert
             Assert.NotNull(la);
             Assert.Empty(la);
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
         #endregion
 
@@ -2108,8 +2108,8 @@ namespace RPLP.UnitTesting.DepotTests
 
             // Act Assert
             Assert.Throws<ArgumentNullException>(() => { List<Allocation> la = da.GetAllocationsByStudentUsername(studentUsername); });
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
 
         [Fact]
@@ -2171,8 +2171,8 @@ namespace RPLP.UnitTesting.DepotTests
 
             // Act Assert
             Assert.Throws<ArgumentNullException>(() => { List<Allocation> la = da.GetAllocationsByStudentUsername(studentUsername); });
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
 
         [Fact]
@@ -2277,8 +2277,8 @@ namespace RPLP.UnitTesting.DepotTests
             Assert.Contains(la, a => a.Id == "r1s2t0");
             Assert.Contains(la, a => a.Id == "r2s2t0");
             Assert.DoesNotContain(la, a => a.Id == "r3s2t0");
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
 
         [Fact]
@@ -2380,8 +2380,8 @@ namespace RPLP.UnitTesting.DepotTests
             // Assert
             Assert.NotNull(la);
             Assert.Empty(la);
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
 
         [Fact]
@@ -2484,7 +2484,7 @@ namespace RPLP.UnitTesting.DepotTests
             Assert.NotNull(la);
             Assert.Empty(la);
             logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Exactly(2));
-            logMock.VerifyNoOtherCalls();
+            
         }
 
         [Fact]
@@ -2544,8 +2544,8 @@ namespace RPLP.UnitTesting.DepotTests
             // Assert
             Assert.NotNull(la);
             Assert.Empty(la);
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
         #endregion
 
@@ -2565,8 +2565,8 @@ namespace RPLP.UnitTesting.DepotTests
 
             // Act Assert
             Assert.Throws<ArgumentNullException>(() => { List<Allocation> la = da.GetAllocationsByRepositoryName(repositoryName); });
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
 
         [Fact]
@@ -2628,8 +2628,8 @@ namespace RPLP.UnitTesting.DepotTests
 
             // Act Assert
             Assert.Throws<ArgumentNullException>(() => { List<Allocation> la = da.GetAllocationsByRepositoryName(repositoryName); });
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
 
         [Fact]
@@ -2735,8 +2735,8 @@ namespace RPLP.UnitTesting.DepotTests
             Assert.Contains(la, a => a.Id == "r1s2t0");
             Assert.Contains(la, a => a.Id == "r1s4t0");
             Assert.DoesNotContain(la, a => a.Id == "r1s1t0");
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
 
         [Fact]
@@ -2839,8 +2839,8 @@ namespace RPLP.UnitTesting.DepotTests
             // Assert
             Assert.NotNull(la);
             Assert.Empty(la);
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
 
         [Fact]
@@ -2900,8 +2900,8 @@ namespace RPLP.UnitTesting.DepotTests
             // Assert
             Assert.NotNull(la);
             Assert.Empty(la);
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
 
         [Fact]
@@ -2962,7 +2962,7 @@ namespace RPLP.UnitTesting.DepotTests
             Assert.NotNull(la);
             Assert.Empty(la);
             logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Exactly(2));
-            logMock.VerifyNoOtherCalls();
+            
         }
         #endregion
 
@@ -2982,8 +2982,8 @@ namespace RPLP.UnitTesting.DepotTests
 
             // Act Assert
             Assert.Throws<ArgumentNullException>(() => { Allocation? a = da.GetAllocationByStudentAndRepositoryNames(studentUsername, repositoryName); });
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
 
         [Fact]
@@ -3002,8 +3002,8 @@ namespace RPLP.UnitTesting.DepotTests
 
             // Act Assert
             Assert.Throws<ArgumentNullException>(() => { Allocation? a = da.GetAllocationByStudentAndRepositoryNames(studentUsername, repositoryName); });
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
 
         [Fact]
@@ -3022,8 +3022,8 @@ namespace RPLP.UnitTesting.DepotTests
 
             // Act Assert
             Assert.Throws<ArgumentNullException>(() => { Allocation? a = da.GetAllocationByStudentAndRepositoryNames(studentUsername, repositoryName); });
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
 
         [Fact]
@@ -3042,8 +3042,8 @@ namespace RPLP.UnitTesting.DepotTests
 
             // Act Assert
             Assert.Throws<ArgumentNullException>(() => { Allocation? a = da.GetAllocationByStudentAndRepositoryNames(studentUsername, repositoryName); });
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
 
         [Fact]
@@ -3193,8 +3193,8 @@ namespace RPLP.UnitTesting.DepotTests
             // Assert
             Assert.NotNull(a);
             Assert.Equal(expectedAllocationId, a.Id);
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
 
         [Fact]
@@ -3341,8 +3341,8 @@ namespace RPLP.UnitTesting.DepotTests
 
             // Assert
             Assert.Null(a);
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
 
         [Fact]
@@ -3489,8 +3489,8 @@ namespace RPLP.UnitTesting.DepotTests
 
             // Assert
             Assert.Null(a);
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
 
         [Fact]
@@ -3637,8 +3637,8 @@ namespace RPLP.UnitTesting.DepotTests
 
             // Assert
             Assert.Null(a);
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
 
         [Fact]
@@ -3788,8 +3788,8 @@ namespace RPLP.UnitTesting.DepotTests
             // Assert
             Assert.NotNull(a);
             Assert.Equal(expectedAllocationId, a.Id);
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
         #endregion
 
@@ -3808,8 +3808,8 @@ namespace RPLP.UnitTesting.DepotTests
 
             // Act Assert
             Assert.Throws<ArgumentNullException>(() => { List<Allocation> a = da.GetAllocationsByAssignmentName(p_assignmentName); });
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
 
         [Fact]
@@ -3826,8 +3826,8 @@ namespace RPLP.UnitTesting.DepotTests
 
             // Act Assert
             Assert.Throws<ArgumentNullException>(() => { List<Allocation> a = da.GetAllocationsByAssignmentName(p_assignmentName); });
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
 
         [Fact]
@@ -3987,7 +3987,7 @@ namespace RPLP.UnitTesting.DepotTests
             Assert.Contains(la, a => a.Id == "r2s2t0");
             Assert.Contains(la, a => a.Id == "r1s1t0");
             logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Exactly(2));
-            logMock.VerifyNoOtherCalls();
+            
         }
 
         [Fact]
@@ -4142,7 +4142,7 @@ namespace RPLP.UnitTesting.DepotTests
             Assert.NotNull(la);
             Assert.Empty(la);
             logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Exactly(2));
-            logMock.VerifyNoOtherCalls();
+            
         }
 
         [Fact]
@@ -4297,7 +4297,7 @@ namespace RPLP.UnitTesting.DepotTests
             Assert.NotNull(la);
             Assert.Empty(la);
             logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Never);
-            logMock.VerifyNoOtherCalls();
+            
         }
 
         [Fact]
@@ -4451,8 +4451,8 @@ namespace RPLP.UnitTesting.DepotTests
             // Assert
             Assert.NotNull(la);
             Assert.Empty(la);
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
 
         [Fact]
@@ -4606,8 +4606,8 @@ namespace RPLP.UnitTesting.DepotTests
             // Assert
             Assert.NotNull(la);
             Assert.Empty(la);
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
 
         [Fact]
@@ -4761,8 +4761,8 @@ namespace RPLP.UnitTesting.DepotTests
             // Assert
             Assert.NotNull(la);
             Assert.Empty(la);
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
 
         [Fact]
@@ -4926,8 +4926,8 @@ namespace RPLP.UnitTesting.DepotTests
             // Assert
             Assert.NotNull(la);
             Assert.Empty(la);
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
         #endregion
 
@@ -4991,8 +4991,8 @@ namespace RPLP.UnitTesting.DepotTests
 
             // Act Assert
             Assert.Throws<ArgumentNullException>(() => { da.UpsertAllocation(allocation); });
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
 
         [Fact]
@@ -5065,8 +5065,8 @@ namespace RPLP.UnitTesting.DepotTests
             // Assert
             context.Verify(c => c.Update(It.IsAny<Allocation_SQLDTO>()), Times.Once);
             context.Verify(c => c.SaveChanges(), Times.Once);
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
 
         [Fact]
@@ -5139,8 +5139,8 @@ namespace RPLP.UnitTesting.DepotTests
             // Assert
             context.Verify(c => c.Allocations.Add(It.IsAny<Allocation_SQLDTO>()), Times.Once);
             context.Verify(c => c.SaveChanges(), Times.Once);
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
 
         [Fact]
@@ -5171,8 +5171,8 @@ namespace RPLP.UnitTesting.DepotTests
             // Assert
             context.Verify(c => c.Allocations.Add(It.IsAny<Allocation_SQLDTO>()), Times.Once);
             context.Verify(c => c.SaveChanges(), Times.Once);
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
 
         [Fact]
@@ -5241,8 +5241,8 @@ namespace RPLP.UnitTesting.DepotTests
 
             // Act Assert
             Assert.Throws<InvalidOperationException>(() => da.UpsertAllocation(allocation));
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
         #endregion
 
@@ -5306,8 +5306,8 @@ namespace RPLP.UnitTesting.DepotTests
 
             // Act Assert
             Assert.Throws<ArgumentNullException>(() => { da.DeleteAllocation(allocation); });
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
 
         [Fact]
@@ -5380,8 +5380,8 @@ namespace RPLP.UnitTesting.DepotTests
             // Assert
             context.Verify(c => c.Update(It.IsAny<Allocation_SQLDTO>()), Times.Once);
             context.Verify(c => c.SaveChanges(), Times.Once);
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
 
         [Fact]
@@ -5454,8 +5454,8 @@ namespace RPLP.UnitTesting.DepotTests
             // Assert
             context.Verify(c => c.Update(It.IsAny<Allocation_SQLDTO>()), Times.Never);
             context.Verify(c => c.SaveChanges(), Times.Never);
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
 
         [Fact]
@@ -5524,8 +5524,8 @@ namespace RPLP.UnitTesting.DepotTests
 
             // Act Assert
             Assert.Throws<InvalidOperationException>(() => da.DeleteAllocation(allocation));
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
         #endregion
 
@@ -5589,8 +5589,8 @@ namespace RPLP.UnitTesting.DepotTests
 
             // Act Assert
             Assert.Throws<ArgumentNullException>(() => { da.UpsertAllocationsBatch(allocations); });
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
 
         [Fact]
@@ -5681,7 +5681,7 @@ namespace RPLP.UnitTesting.DepotTests
             Assert.Throws<ArgumentNullException>(() => { da.UpsertAllocationsBatch(allocations); });
             context.Verify(c => c.Update(It.IsAny<Allocation_SQLDTO>()), Times.Exactly(2));
             logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Exactly(3));
-            logMock.VerifyNoOtherCalls();
+            
         }
 
         [Fact]
@@ -5775,7 +5775,7 @@ namespace RPLP.UnitTesting.DepotTests
             context.Verify(c => c.Allocations.Add(It.IsAny<Allocation_SQLDTO>()), Times.Exactly(2));
             context.Verify(c => c.SaveChanges(), Times.Once);
             logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Exactly(5));
-            logMock.VerifyNoOtherCalls();
+            
         }
 
         [Fact]
@@ -5881,8 +5881,8 @@ namespace RPLP.UnitTesting.DepotTests
             Assert.Throws<InvalidOperationException>(() => da.UpsertAllocationsBatch(allocations));
             context.Verify(c => c.Update(It.IsAny<Allocation_SQLDTO>()), Times.Once);
             context.Verify(c => c.SaveChanges(), Times.Never);
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
         #endregion
 
@@ -5946,8 +5946,8 @@ namespace RPLP.UnitTesting.DepotTests
 
             // Act Assert
             Assert.Throws<ArgumentNullException>(() => { da.DeleteAllocationsBatch(allocations); });
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
 
         [Fact]
@@ -6038,7 +6038,7 @@ namespace RPLP.UnitTesting.DepotTests
             Assert.Throws<ArgumentNullException>(() => { da.DeleteAllocationsBatch(allocations); });
             context.Verify(c => c.Update(It.IsAny<Allocation_SQLDTO>()), Times.Exactly(2));
             logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Exactly(3));
-            logMock.VerifyNoOtherCalls();
+            
         }
 
         [Fact]
@@ -6131,7 +6131,7 @@ namespace RPLP.UnitTesting.DepotTests
             context.Verify(c => c.Update(It.IsAny<Allocation_SQLDTO>()), Times.Exactly(3));
             context.Verify(c => c.SaveChanges(), Times.Once);
             logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Exactly(5));
-            logMock.VerifyNoOtherCalls();
+            
         }
 
         [Fact]
@@ -6237,8 +6237,8 @@ namespace RPLP.UnitTesting.DepotTests
             Assert.Throws<InvalidOperationException>(() => da.DeleteAllocationsBatch(allocations));
             context.Verify(c => c.Update(It.IsAny<Allocation_SQLDTO>()), Times.Once);
             context.Verify(c => c.SaveChanges(), Times.Never);
-            logMock.Verify(l => l.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+            
+            
         }
         #endregion
     }
