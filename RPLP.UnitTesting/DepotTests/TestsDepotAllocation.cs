@@ -28,7 +28,7 @@ namespace RPLP.UnitTesting.DepotTests
             // Arrange
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             RPLPDbContext? context = null;
 
@@ -44,7 +44,7 @@ namespace RPLP.UnitTesting.DepotTests
             // Arrange
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
 
@@ -98,7 +98,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationDTO);
@@ -157,7 +157,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationDTO);
@@ -224,7 +224,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationDTO);
@@ -287,7 +287,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationDTO);
@@ -350,7 +350,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationDTO);
@@ -420,7 +420,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationDTO);
@@ -445,7 +445,7 @@ namespace RPLP.UnitTesting.DepotTests
             List<Allocation_SQLDTO> allocationDTO = new List<Allocation_SQLDTO>();
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationDTO);
@@ -471,7 +471,7 @@ namespace RPLP.UnitTesting.DepotTests
             // Arrange
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             DepotAllocation da = new DepotAllocation(context.Object);
@@ -490,7 +490,7 @@ namespace RPLP.UnitTesting.DepotTests
             // Arrange
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             DepotAllocation da = new DepotAllocation(context.Object);
@@ -552,7 +552,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationDTO);
@@ -622,7 +622,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationDTO);
@@ -647,7 +647,7 @@ namespace RPLP.UnitTesting.DepotTests
             List<Allocation_SQLDTO> allocationDTO = new List<Allocation_SQLDTO>();
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationDTO);
@@ -673,7 +673,7 @@ namespace RPLP.UnitTesting.DepotTests
             // Arrange
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             DepotAllocation da = new DepotAllocation(context.Object);
@@ -693,7 +693,7 @@ namespace RPLP.UnitTesting.DepotTests
             // Arrange
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             DepotAllocation da = new DepotAllocation(context.Object);
@@ -713,7 +713,7 @@ namespace RPLP.UnitTesting.DepotTests
             // Arrange
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             DepotAllocation da = new DepotAllocation(context.Object);
@@ -733,7 +733,7 @@ namespace RPLP.UnitTesting.DepotTests
             // Arrange
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             DepotAllocation da = new DepotAllocation(context.Object);
@@ -796,7 +796,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationDTO);
@@ -868,7 +868,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationDTO);
@@ -935,7 +935,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationDTO);
@@ -1002,7 +1002,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationDTO);
@@ -1069,7 +1069,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationDTO);
@@ -1099,7 +1099,7 @@ namespace RPLP.UnitTesting.DepotTests
         {
             // Arrange
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             DepotAllocation da = new DepotAllocation(context.Object);
@@ -1246,7 +1246,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationsDTO);
@@ -1406,7 +1406,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationsDTO);
@@ -1561,7 +1561,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationsDTO);
@@ -1716,7 +1716,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationsDTO);
@@ -1871,7 +1871,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationsDTO);
@@ -2026,7 +2026,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationsDTO);
@@ -2098,7 +2098,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationDTO);
@@ -2161,7 +2161,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationDTO);
@@ -2259,7 +2259,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationDTO);
@@ -2365,7 +2365,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationDTO);
@@ -2468,7 +2468,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationDTO);
@@ -2529,7 +2529,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationDTO);
@@ -2556,7 +2556,7 @@ namespace RPLP.UnitTesting.DepotTests
             // Arrange
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             DepotAllocation da = new DepotAllocation(context.Object);
@@ -2618,7 +2618,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationDTO);
@@ -2717,7 +2717,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationDTO);
@@ -2824,7 +2824,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationDTO);
@@ -2885,7 +2885,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationDTO);
@@ -2946,7 +2946,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationDTO);
@@ -2972,7 +2972,7 @@ namespace RPLP.UnitTesting.DepotTests
         {
             // Arrange
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             DepotAllocation da = new DepotAllocation(context.Object);
@@ -2992,7 +2992,7 @@ namespace RPLP.UnitTesting.DepotTests
             // Arrange
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             DepotAllocation da = new DepotAllocation(context.Object);
@@ -3012,7 +3012,7 @@ namespace RPLP.UnitTesting.DepotTests
             // Arrange
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             DepotAllocation da = new DepotAllocation(context.Object);
@@ -3032,7 +3032,7 @@ namespace RPLP.UnitTesting.DepotTests
             // Arrange
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             DepotAllocation da = new DepotAllocation(context.Object);
@@ -3174,7 +3174,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationDTO);
@@ -3325,7 +3325,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationDTO);
@@ -3473,7 +3473,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationDTO);
@@ -3621,7 +3621,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationDTO);
@@ -3769,7 +3769,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationDTO);
@@ -3799,7 +3799,7 @@ namespace RPLP.UnitTesting.DepotTests
         {
             // Arrange
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             DepotAllocation da = new DepotAllocation(context.Object);
@@ -3817,7 +3817,7 @@ namespace RPLP.UnitTesting.DepotTests
         {
             // Arrange
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             DepotAllocation da = new DepotAllocation(context.Object);
@@ -3964,7 +3964,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationsDTO);
@@ -4124,7 +4124,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationsDTO);
@@ -4279,7 +4279,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationsDTO);
@@ -4434,7 +4434,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationsDTO);
@@ -4589,7 +4589,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationsDTO);
@@ -4744,7 +4744,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationsDTO);
@@ -4909,7 +4909,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationsDTO);
@@ -4983,7 +4983,7 @@ namespace RPLP.UnitTesting.DepotTests
             Allocation allocation = null;
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationDTO);
@@ -5053,7 +5053,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationDTO);
@@ -5127,7 +5127,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationDTO);
@@ -5159,7 +5159,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationDTO);
@@ -5233,7 +5233,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationDTO);
@@ -5298,7 +5298,7 @@ namespace RPLP.UnitTesting.DepotTests
             Allocation allocation = null;
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationDTO);
@@ -5368,7 +5368,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationDTO);
@@ -5442,7 +5442,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationDTO);
@@ -5516,7 +5516,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationDTO);
@@ -5581,7 +5581,7 @@ namespace RPLP.UnitTesting.DepotTests
             List<Allocation> allocations = null;
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationDTO);
@@ -5671,7 +5671,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationDTO);
@@ -5761,7 +5761,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationDTO);
@@ -5871,7 +5871,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationDTO);
@@ -5938,7 +5938,7 @@ namespace RPLP.UnitTesting.DepotTests
             List<Allocation> allocations = null;
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationDTO);
@@ -6028,7 +6028,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationDTO);
@@ -6118,7 +6118,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationDTO);
@@ -6227,7 +6227,7 @@ namespace RPLP.UnitTesting.DepotTests
             };
 
             var logMock = new Mock<IManipulationLogs>();
-            Logging.ManipulationLog = logMock.Object;
+            Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Allocations).ReturnsDbSet(allocationDTO);
