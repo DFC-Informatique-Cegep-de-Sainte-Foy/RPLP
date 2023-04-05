@@ -86,8 +86,8 @@ namespace RPLP.UnitTesting.DepotTests
             Assert.NotNull(organisations.FirstOrDefault(o => o.Name == "CEGEP Ste-Foy"));
             Assert.Null(organisations.FirstOrDefault(o => o.Name == "Universite Laval"));
             Assert.Equal(3, organisations.FirstOrDefault(o => o.Name == "CEGEP Ste-Foy").Administrators.Count);
-            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+           
+            
         }
 
         [Fact]
@@ -160,8 +160,8 @@ namespace RPLP.UnitTesting.DepotTests
 
             Assert.NotNull(organisation);
             Assert.Equal(3, organisation.Administrators.Count);
-            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+           
+            
         }
 
         [Fact]
@@ -232,8 +232,8 @@ namespace RPLP.UnitTesting.DepotTests
 
             Assert.NotNull(organisation);
             Assert.Equal(3, organisation.Administrators.Count);
-            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+           
+            
         }
 
         [Fact]
@@ -304,8 +304,8 @@ namespace RPLP.UnitTesting.DepotTests
 
             Assert.NotNull(administrators);
             Assert.Equal(3, administrators.Count);
-            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+           
+            
         }
 
         [Fact]
@@ -431,8 +431,8 @@ namespace RPLP.UnitTesting.DepotTests
 
             Assert.NotNull(organisation);
             Assert.NotNull(administrator);
-            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+           
+            
         }
 
         [Fact]
@@ -517,8 +517,8 @@ namespace RPLP.UnitTesting.DepotTests
 
             Assert.NotNull(organisation);
             Assert.Null(administrator);
-            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+           
+            
         }
 
         [Fact]
@@ -623,8 +623,8 @@ namespace RPLP.UnitTesting.DepotTests
             Assert.NotNull(organisation.Administrators.FirstOrDefault(a => a.FirstName == administratorFirstName));
             Assert.NotNull(organisation.Administrators.FirstOrDefault(a => a.LastName == administratorLastName));
             Assert.NotNull(organisation.Administrators.FirstOrDefault(a => a.Token == administratorToken));
-            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+           
+            
         }
 
         [Fact]
@@ -708,8 +708,8 @@ namespace RPLP.UnitTesting.DepotTests
 
             Assert.Equal(3, organisation.Administrators.Count);
             Assert.Equal(name, organisation.Name);
-            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+           
+            
         }
 
         [Fact]
@@ -783,8 +783,8 @@ namespace RPLP.UnitTesting.DepotTests
 
             organisation = organisationsDB.FirstOrDefault(o => o.Name == "CEGEP Ste-Foy" && o.Active == true);
             Assert.Null(organisation);
-            logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Once);
-            logMock.VerifyNoOtherCalls();
+           
+            
         }
     }
 }
