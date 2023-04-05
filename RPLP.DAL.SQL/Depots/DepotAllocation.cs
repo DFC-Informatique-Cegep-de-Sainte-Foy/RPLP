@@ -496,16 +496,39 @@ namespace RPLP.DAL.SQL.Depots
 
         public void SetAllocationAfterCreation(Allocation p_allocation)
         {
+            if (p_allocation is null)
+            {
+                Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                     "DepotAllocation - SetAllocationAfterCreation - p_allocation passé en paramètre est null", 0));
+
+                throw new ArgumentNullException(nameof(p_allocation));
+            }
+
             p_allocation.Status = 3;
             UpsertAllocation(p_allocation);
         }
 
         public List<Allocation> GetSelectedAllocationsByAllocationID(List<Allocation> p_allocations)
         {
+            if (p_allocations is null)
+            {
+                Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                     "DepotAllocation - DeleteAllocationsBatch - p_allocations passé en paramètre est null", 0));
+
+                throw new ArgumentNullException(nameof(p_allocations));
+            }
+
             List<Allocation> allocationsResult = new List<Allocation>();
 
             foreach (Allocation allocation in p_allocations)
             {
+                if (allocation is null)
+                {
+                    Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                         "DepotAllocation - DeleteAllocationsBatch - un des éléments de p_allocations passé en paramètre est null", 0));
+
+                    throw new ArgumentNullException(nameof(allocation));
+                }
                 foreach (Allocation allocationDB in GetAllocations())
                 {
                     if (allocation.Id == allocationDB.Id)
