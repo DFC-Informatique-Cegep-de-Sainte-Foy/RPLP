@@ -13,8 +13,8 @@ public class LogsController : Controller
     [HttpGet]
     public ActionResult ClearLogs()
     {
-        RPLP.JOURNALISATION.Logging.ClearLogs();
-        RPLP.JOURNALISATION.Logging.Journal(new Log("Methode ClearLogs appeler"));
+        RPLP.JOURNALISATION.Logging.Instance.ClearLogs();
+        RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Methode ClearLogs appeler"));
         return Ok();
     }
     
@@ -35,13 +35,13 @@ public class LogsController : Controller
 
         if (string.IsNullOrWhiteSpace(filePath))
         {
-            RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+            RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                            "LogsController - Index - la variable filePath est null ou vide", 0));
         }
 
         if (!System.IO.File.Exists(filePath))
         {
-            RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+            RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                           "LogsController - Index - le fichier /var/log/rplp/Log_Revue_Par_Les_Paires.csv est introuvable ", 0));
         }
 

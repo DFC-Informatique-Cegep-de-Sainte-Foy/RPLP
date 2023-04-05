@@ -1,601 +1,2078 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Moq.EntityFrameworkCore;
+using Moq;
 using RPLP.DAL.DTO.Sql;
 using RPLP.DAL.SQL;
 using RPLP.DAL.SQL.Depots;
 using RPLP.ENTITES;
+using RPLP.ENTITES.InterfacesDepots;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
+using RPLP.JOURNALISATION;
+using NSubstitute;
+using System.Reflection.Metadata;
 
 namespace RPLP.UnitTesting.DepotTests
 {
-    [Collection("DatabaseTests")]
     public class TestsDepotAdministrateur
     {
-        private static readonly DbContextOptions<RPLPDbContext> options = new DbContextOptionsBuilder<RPLPDbContext>()
-                .UseSqlServer("Server=localhost,1434; Database=RPLP; User Id=sa; password=Cad3pend86!")
-                .Options;
-
-        private void DeleteAdministratorAndRelatedTablesContent()
-        {
-            using (var context = new RPLPDbContext(options))
-            {
-                context.Database.ExecuteSqlRaw("DELETE from Administrators;");
-                context.Database.ExecuteSqlRaw("DELETE from Organisations;");
-            }
-        }
-
-        private void InsertPremadeAdmins()
-        {
-            using (var context = new RPLPDbContext(options))
-            {
-                context.Administrators.AddRange(
-                    new Administrator_SQLDTO
-                    {
-                        Username = "ThPaquet",
-                        FirstName = "Thierry",
-                        LastName = "Paquet",
-                        Token = "token",
-                        Organisations = new List<Organisation_SQLDTO>()
-                        {
-                            new Organisation_SQLDTO()
-                            {
-                                Name = "CEGEP Ste-Foy",
-                                Active = true
-                            }
-                        },
-                        Email = "ThPaquet@hotmail.com",
-                        Active = true
-                    },
-                    new Administrator_SQLDTO
-                    {
-                        Username = "ikeameatbol",
-                        FirstName = "Jonathan",
-                        LastName = "Blouin",
-                        Token = "token",
-                        Email = "ikeameatbol@hotmail.com",
-                        Active = true
-                    },
-                    new Administrator_SQLDTO
-                    {
-                        Username = "BACenComm",
-                        FirstName = "Melissa",
-                        LastName = "Lachapelle",
-                        Token = "token",
-                        Email = "BACenComm@hotmail.com",
-                        Active = false
-                    }
-                );
-
-                context.SaveChanges();
-            }
-        }
-
 
         [Fact]
         public void Test_GetAdministrators_CountIsGood()
         {
-            this.DeleteAdministratorAndRelatedTablesContent();
-            this.InsertPremadeAdmins();
-
-
-            using (var context = new RPLPDbContext(options))
+            List<Administrator_SQLDTO> administratorsBD = new List<Administrator_SQLDTO>
             {
-                DepotAdministrator depot = new DepotAdministrator(context);
-                List<Administrator> administrators = depot.GetAdministrators();
+                new Administrator_SQLDTO
+                {
+                    Id= 1,
+                    Username = "ThPaquet",
+                    FirstName = "Thierry",
+                    LastName = "Paquet",
+                    Email = "ThPaquet@hotmail.com",
+                    Token = "token",
+                    Organisations = {
+                    new Organisation_SQLDTO()
+                            {
+                                Name = "CEGEP Ste-Foy",
+                                Active = true
+                            }},
+                    Active = true
+                },
+                new Administrator_SQLDTO
+                {
+                    Id= 2,
+                    Username = "ikeameatbol",
+                    FirstName = "Jonathan",
+                    LastName = "Blouin",
+                    Email = "ikeameatbol@hotmail.com",
+                    Token = "token",
+                    Organisations = {},
+                    Active = true
+                },
+                new Administrator_SQLDTO
+                {
+                    Id= 3,
+                    Username = "BACenComm",
+                    FirstName = "Melissa",
+                    LastName = "Lachapelle",
+                    Email = "BACenComm@hotmail.com",
+                    Token = "token",
+                    Organisations = {},
+                    Active = false
+                }
+            };
 
-                Assert.NotNull(administrators);
-                Assert.Equal(2, administrators.Count);
-                Assert.Contains(administrators, a => a.Username == "ThPaquet");
-                Assert.DoesNotContain(administrators, a => a.Username == "BACenComm");
-                Assert.NotEmpty(administrators.FirstOrDefault(a => a.Username == "ThPaquet").Organisations);
-            }
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
 
-            this.DeleteAdministratorAndRelatedTablesContent();
+            Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Administrators).ReturnsDbSet(administratorsBD);
+            DepotAdministrator depot = new DepotAdministrator(context.Object);
+
+            List<Administrator> administrators = depot.GetAdministrators();
+
+            Assert.NotNull(administrators);
+            Assert.Equal(2, administrators.Count);
+            Assert.Contains(administrators, a => a.Username == "ThPaquet");
+            Assert.DoesNotContain(administrators, a => a.Username == "BACenComm");
+            Assert.NotEmpty(administrators.FirstOrDefault(a => a.Username == "ThPaquet").Organisations);         
         }
 
         [Fact]
         public void Test_GetDeactivatedAdministrators()
         {
-            this.DeleteAdministratorAndRelatedTablesContent();
-            this.InsertPremadeAdmins();
-
-
-            using (var context = new RPLPDbContext(options))
+            List<Administrator_SQLDTO> administratorsBD = new List<Administrator_SQLDTO>
             {
-                DepotAdministrator depot = new DepotAdministrator(context);
-                List<Administrator> administrators = depot.GetDeactivatedAdministrators();
+                new Administrator_SQLDTO
+                {
+                    Id= 1,
+                    Username = "ThPaquet",
+                    FirstName = "Thierry",
+                    LastName = "Paquet",
+                    Email = "ThPaquet@hotmail.com",
+                    Token = "token",
+                    Organisations = {
+                    new Organisation_SQLDTO()
+                            {
+                                Name = "CEGEP Ste-Foy",
+                                Active = true
+                            }},
+                    Active = true
+                },
+                new Administrator_SQLDTO
+                {
+                    Id= 2,
+                    Username = "ikeameatbol",
+                    FirstName = "Jonathan",
+                    LastName = "Blouin",
+                    Email = "ikeameatbol@hotmail.com",
+                    Token = "token",
+                    Organisations = {},
+                    Active = true
+                },
+                new Administrator_SQLDTO
+                {
+                    Id= 3,
+                    Username = "BACenComm",
+                    FirstName = "Melissa",
+                    LastName = "Lachapelle",
+                    Email = "BACenComm@hotmail.com",
+                    Token = "token",
+                    Organisations = {},
+                    Active = false
+                }
+            };
 
-                Assert.NotNull(administrators);
-                Assert.Equal(1, administrators.Count);
-                Assert.Contains(administrators, a => a.Username == "BACenComm");
-            }
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
 
-            this.DeleteAdministratorAndRelatedTablesContent();
+            Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Administrators).ReturnsDbSet(administratorsBD);
+            DepotAdministrator depot = new DepotAdministrator(context.Object);
+
+            List<Administrator> administrators = depot.GetDeactivatedAdministrators();
+
+            Assert.NotNull(administrators);
+            Assert.Equal(1, administrators.Count);
+            Assert.Contains(administrators, a => a.Username == "BACenComm");
+            Assert.DoesNotContain(administrators, a => a.Username == "ikeameatbol");
+            Assert.DoesNotContain(administrators, a => a.Username == "ThPaquet");
+           
+            
         }
 
         [Fact]
-        public void Test_GetByName()
+        public void Test_GetByUsername()
         {
-            this.DeleteAdministratorAndRelatedTablesContent();
-            this.InsertPremadeAdmins();
-
-            using (var context = new RPLPDbContext(options))
+            List<Administrator_SQLDTO> administratorsBD = new List<Administrator_SQLDTO>
             {
-                DepotAdministrator depot = new DepotAdministrator(context);
-                Administrator administrator = depot.GetAdministratorByUsername("ThPaquet");
+                new Administrator_SQLDTO
+                {
+                    Id= 1,
+                    Username = "ThPaquet",
+                    FirstName = "Thierry",
+                    LastName = "Paquet",
+                    Email = "ThPaquet@hotmail.com",
+                    Token = "token",
+                    Organisations = {
+                    new Organisation_SQLDTO()
+                            {
+                                Name = "CEGEP Ste-Foy",
+                                Active = true
+                            }},
+                    Active = true
+                },
+                new Administrator_SQLDTO
+                {
+                    Id= 2,
+                    Username = "ikeameatbol",
+                    FirstName = "Jonathan",
+                    LastName = "Blouin",
+                    Email = "ikeameatbol@hotmail.com",
+                    Token = "token",
+                    Organisations = {},
+                    Active = true
+                },
+                new Administrator_SQLDTO
+                {
+                    Id= 3,
+                    Username = "BACenComm",
+                    FirstName = "Melissa",
+                    LastName = "Lachapelle",
+                    Email = "BACenComm@hotmail.com",
+                    Token = "token",
+                    Organisations = {},
+                    Active = false
+                }
+            };
 
-                Assert.NotNull(administrator);
-                Assert.Equal("Thierry", administrator.FirstName);
-                Assert.Equal("Paquet", administrator.LastName);
-                Assert.Equal("token", administrator.Token);
-                Assert.NotEmpty(administrator.Organisations);
-            }
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
 
-            this.DeleteAdministratorAndRelatedTablesContent();
+            Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Administrators).ReturnsDbSet(administratorsBD);
+            DepotAdministrator depot = new DepotAdministrator(context.Object);
+
+            Administrator administrator = depot.GetAdministratorByUsername("ThPaquet");
+
+            Assert.NotNull(administrator);
+            Assert.Equal("Thierry", administrator.FirstName);
+            Assert.Equal("Paquet", administrator.LastName);
+            Assert.Equal("token", administrator.Token);
+            Assert.NotEmpty(administrator.Organisations);
+           
+            
         }
 
         [Fact]
-        public void Test_GetByName_NotActive()
+        public void Test_GetByUsername_NotActive()
         {
-            this.DeleteAdministratorAndRelatedTablesContent();
-            this.InsertPremadeAdmins();
-
-            using (var context = new RPLPDbContext(options))
+            List<Administrator_SQLDTO> administratorsBD = new List<Administrator_SQLDTO>
             {
-                Administrator_SQLDTO adminInContext = context.Administrators.FirstOrDefault(a => a.Username == "BACenComm" && a.Active == false);
-                Assert.NotNull(adminInContext);
+                new Administrator_SQLDTO
+                {
+                    Id= 1,
+                    Username = "ThPaquet",
+                    FirstName = "Thierry",
+                    LastName = "Paquet",
+                    Email = "ThPaquet@hotmail.com",
+                    Token = "token",
+                    Organisations = {
+                    new Organisation_SQLDTO()
+                            {
+                                Name = "CEGEP Ste-Foy",
+                                Active = true
+                            }},
+                    Active = true
+                },
+                new Administrator_SQLDTO
+                {
+                    Id= 2,
+                    Username = "ikeameatbol",
+                    FirstName = "Jonathan",
+                    LastName = "Blouin",
+                    Email = "ikeameatbol@hotmail.com",
+                    Token = "token",
+                    Organisations = {},
+                    Active = true
+                },
+                new Administrator_SQLDTO
+                {
+                    Id= 3,
+                    Username = "BACenComm",
+                    FirstName = "Melissa",
+                    LastName = "Lachapelle",
+                    Email = "BACenComm@hotmail.com",
+                    Token = "token",
+                    Organisations = {},
+                    Active = false
+                }
+            };
 
-                DepotAdministrator depot = new DepotAdministrator(context);
-                Administrator administrator = depot.GetAdministratorByUsername("BACenComm");
-                Assert.Null(administrator);
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
 
-            }
+            Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Administrators).ReturnsDbSet(administratorsBD);
+            DepotAdministrator depot = new DepotAdministrator(context.Object);
 
-            this.DeleteAdministratorAndRelatedTablesContent();
+            Administrator_SQLDTO adminInContext = administratorsBD.FirstOrDefault(a => a.Username == "BACenComm" && a.Active == false);
+            Administrator administrator = depot.GetAdministratorByUsername("BACenComm");
+
+            Assert.NotNull(adminInContext);
+            Assert.Null(administrator);
+           
+            
         }
 
         [Fact]
         public void Test_GetById()
         {
-            this.DeleteAdministratorAndRelatedTablesContent();
-            this.InsertPremadeAdmins();
-
-            using (var context = new RPLPDbContext(options))
+            List<Administrator_SQLDTO> administratorsBD = new List<Administrator_SQLDTO>
             {
-                Administrator_SQLDTO? admin = context.Administrators
-                    .SingleOrDefaultAsync(a => a.Username == "ThPaquet")
-                    .Result;
+                new Administrator_SQLDTO
+                {
+                    Id= 1,
+                    Username = "ThPaquet",
+                    FirstName = "Thierry",
+                    LastName = "Paquet",
+                    Email = "ThPaquet@hotmail.com",
+                    Token = "token",
+                    Organisations = {
+                    new Organisation_SQLDTO()
+                            {
+                                Name = "CEGEP Ste-Foy",
+                                Active = true
+                            }},
+                    Active = true
+                },
+                new Administrator_SQLDTO
+                {
+                    Id= 2,
+                    Username = "ikeameatbol",
+                    FirstName = "Jonathan",
+                    LastName = "Blouin",
+                    Email = "ikeameatbol@hotmail.com",
+                    Token = "token",
+                    Organisations = {},
+                    Active = true
+                },
+                new Administrator_SQLDTO
+                {
+                    Id= 3,
+                    Username = "BACenComm",
+                    FirstName = "Melissa",
+                    LastName = "Lachapelle",
+                    Email = "BACenComm@hotmail.com",
+                    Token = "token",
+                    Organisations = {},
+                    Active = false
+                }
+            };
 
-                int id = admin.Id;
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
 
-                DepotAdministrator depot = new DepotAdministrator(context);
-                Administrator administrator = depot.GetAdministratorById(id);
+            Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Administrators).ReturnsDbSet(administratorsBD);
+            DepotAdministrator depot = new DepotAdministrator(context.Object);
 
-                Assert.NotNull(administrator);
-                Assert.Equal("Thierry", administrator.FirstName);
-                Assert.Equal("Paquet", administrator.LastName);
-                Assert.Equal("token", administrator.Token);
-                Assert.NotEmpty(administrator.Organisations);
-            }
+            Administrator_SQLDTO? admin = administratorsBD.SingleOrDefault(a => a.Username == "ThPaquet");
 
-            this.DeleteAdministratorAndRelatedTablesContent();
+            int id = admin.Id;
+
+            Administrator administrator = depot.GetAdministratorById(id);
+
+            Assert.NotNull(administrator);
+            Assert.Equal("Thierry", administrator.FirstName);
+            Assert.Equal("Paquet", administrator.LastName);
+            Assert.Equal("token", administrator.Token);
+            Assert.NotEmpty(administrator.Organisations);
+           
+            
         }
 
         [Fact]
         public void Test_GetById_NotActive()
         {
-            this.DeleteAdministratorAndRelatedTablesContent();
-            this.InsertPremadeAdmins();
-
-            using (var context = new RPLPDbContext(options))
+            List<Administrator_SQLDTO> administratorsBD = new List<Administrator_SQLDTO>
             {
-                Administrator_SQLDTO? adminInContext = context.Administrators
-                    .SingleOrDefault(a => a.Username == "BACenComm" && a.Active == false);
-                Assert.NotNull(adminInContext);
+                new Administrator_SQLDTO
+                {
+                    Id= 1,
+                    Username = "ThPaquet",
+                    FirstName = "Thierry",
+                    LastName = "Paquet",
+                    Email = "ThPaquet@hotmail.com",
+                    Token = "token",
+                    Organisations = {
+                    new Organisation_SQLDTO()
+                            {
+                                Name = "CEGEP Ste-Foy",
+                                Active = true
+                            }},
+                    Active = true
+                },
+                new Administrator_SQLDTO
+                {
+                    Id= 2,
+                    Username = "ikeameatbol",
+                    FirstName = "Jonathan",
+                    LastName = "Blouin",
+                    Email = "ikeameatbol@hotmail.com",
+                    Token = "token",
+                    Organisations = {},
+                    Active = true
+                },
+                new Administrator_SQLDTO
+                {
+                    Id= 3,
+                    Username = "BACenComm",
+                    FirstName = "Melissa",
+                    LastName = "Lachapelle",
+                    Email = "BACenComm@hotmail.com",
+                    Token = "token",
+                    Organisations = {},
+                    Active = false
+                }
+            };
 
-                int id = adminInContext.Id;
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
 
-                DepotAdministrator depot = new DepotAdministrator(context);
-                Administrator administrator = depot.GetAdministratorById(id);
+            Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Administrators).ReturnsDbSet(administratorsBD);
+            DepotAdministrator depot = new DepotAdministrator(context.Object);
 
-                Assert.Null(administrator);
-            }
+            Administrator_SQLDTO? adminInContext = administratorsBD.SingleOrDefault(a => a.Username == "BACenComm" && a.Active == false);
 
-            this.DeleteAdministratorAndRelatedTablesContent();
+            int id = adminInContext.Id;
+
+            Administrator administrator = depot.GetAdministratorById(id);
+
+            Assert.NotNull(adminInContext);
+            Assert.Null(administrator);
+           
+            
         }
 
         [Fact]
         public void Test_GetByEmail()
         {
-            this.DeleteAdministratorAndRelatedTablesContent();
-            this.InsertPremadeAdmins();
-
-            using (var context = new RPLPDbContext(options))
+            List<Administrator_SQLDTO> administratorsBD = new List<Administrator_SQLDTO>
             {
-                Administrator_SQLDTO? admin = context.Administrators
-                    .SingleOrDefault(a => a.Email == "ThPaquet@hotmail.com");
+                new Administrator_SQLDTO
+                {
+                    Id= 1,
+                    Username = "ThPaquet",
+                    FirstName = "Thierry",
+                    LastName = "Paquet",
+                    Email = "ThPaquet@hotmail.com",
+                    Token = "token",
+                    Organisations = {
+                    new Organisation_SQLDTO()
+                            {
+                                Name = "CEGEP Ste-Foy",
+                                Active = true
+                            }},
+                    Active = true
+                },
+                new Administrator_SQLDTO
+                {
+                    Id= 2,
+                    Username = "ikeameatbol",
+                    FirstName = "Jonathan",
+                    LastName = "Blouin",
+                    Email = "ikeameatbol@hotmail.com",
+                    Token = "token",
+                    Organisations = {},
+                    Active = true
+                },
+                new Administrator_SQLDTO
+                {
+                    Id= 3,
+                    Username = "BACenComm",
+                    FirstName = "Melissa",
+                    LastName = "Lachapelle",
+                    Email = "BACenComm@hotmail.com",
+                    Token = "token",
+                    Organisations = {},
+                    Active = false
+                }
+            };
 
-                DepotAdministrator depot = new DepotAdministrator(context);
-                Administrator administrator = depot.GetAdministratorByEmail("ThPaquet@hotmail.com");
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
 
-                Assert.NotNull(administrator);
-                Assert.Equal("Thierry", administrator.FirstName);
-                Assert.Equal("Paquet", administrator.LastName);
-                Assert.Equal("token", administrator.Token);
-                Assert.NotEmpty(administrator.Organisations);
-            }
+            Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Administrators).ReturnsDbSet(administratorsBD);
+            DepotAdministrator depot = new DepotAdministrator(context.Object);
 
-            this.DeleteAdministratorAndRelatedTablesContent();
+            Administrator_SQLDTO? admin = administratorsBD.SingleOrDefault(a => a.Email == "ThPaquet@hotmail.com");
+
+            Administrator administrator = depot.GetAdministratorByEmail("ThPaquet@hotmail.com");
+
+            Assert.NotNull(administrator);
+            Assert.Equal("Thierry", administrator.FirstName);
+            Assert.Equal("Paquet", administrator.LastName);
+            Assert.Equal("token", administrator.Token);
+            Assert.NotEmpty(administrator.Organisations);
+           
+            
         }
 
         [Fact]
         public void Test_GetByEmail_NotActive()
         {
-            this.DeleteAdministratorAndRelatedTablesContent();
-            this.InsertPremadeAdmins();
-
-            using (var context = new RPLPDbContext(options))
+            List<Administrator_SQLDTO> administratorsBD = new List<Administrator_SQLDTO>
             {
-                Administrator_SQLDTO? adminInContext = context.Administrators
-                    .SingleOrDefault(a => a.Email == "BACenComm@hotmail.com" && a.Active == false);
-                Assert.NotNull(adminInContext);
+                new Administrator_SQLDTO
+                {
+                    Id= 1,
+                    Username = "ThPaquet",
+                    FirstName = "Thierry",
+                    LastName = "Paquet",
+                    Email = "ThPaquet@hotmail.com",
+                    Token = "token",
+                    Organisations = {
+                    new Organisation_SQLDTO()
+                            {
+                                Name = "CEGEP Ste-Foy",
+                                Active = true
+                            }},
+                    Active = true
+                },
+                new Administrator_SQLDTO
+                {
+                    Id= 2,
+                    Username = "ikeameatbol",
+                    FirstName = "Jonathan",
+                    LastName = "Blouin",
+                    Email = "ikeameatbol@hotmail.com",
+                    Token = "token",
+                    Organisations = {},
+                    Active = true
+                },
+                new Administrator_SQLDTO
+                {
+                    Id= 3,
+                    Username = "BACenComm",
+                    FirstName = "Melissa",
+                    LastName = "Lachapelle",
+                    Email = "BACenComm@hotmail.com",
+                    Token = "token",
+                    Organisations = {},
+                    Active = false
+                }
+            };
 
-                DepotAdministrator depot = new DepotAdministrator(context);
-                Administrator administrator = depot.GetAdministratorByEmail("BACenComm@hotmail.com");
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
 
-                Assert.Null(administrator);
-            }
+            Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Administrators).ReturnsDbSet(administratorsBD);
+            DepotAdministrator depot = new DepotAdministrator(context.Object);
 
-            this.DeleteAdministratorAndRelatedTablesContent();
+            Administrator_SQLDTO? adminInContext = administratorsBD.SingleOrDefault(a => a.Email == "BACenComm@hotmail.com" && a.Active == false);
+
+            Administrator administrator = depot.GetAdministratorByEmail("BACenComm@hotmail.com");
+
+            Assert.NotNull(adminInContext);
+            Assert.Null(administrator);
+           
+            
         }
 
         [Fact]
         public void Test_UpsertAdministrator_Inserts()
         {
-            this.DeleteAdministratorAndRelatedTablesContent();
-
-            using (var context = new RPLPDbContext(options))
+            List<Administrator_SQLDTO> administratorsBD = new List<Administrator_SQLDTO>
             {
-                DepotAdministrator depot = new DepotAdministrator(context);
-
-                depot.UpsertAdministrator(new Administrator
+                new Administrator_SQLDTO
+                {
+                    Id= 1,
+                    Username = "ThPaquet",
+                    FirstName = "Thierry",
+                    LastName = "Paquet",
+                    Email = "ThPaquet@hotmail.com",
+                    Token = "token",
+                    Organisations = {
+                    new Organisation_SQLDTO()
+                            {
+                                Name = "CEGEP Ste-Foy",
+                                Active = true
+                            }},
+                    Active = true
+                },
+                new Administrator_SQLDTO
+                {
+                    Id= 2,
+                    Username = "ikeameatbol",
+                    FirstName = "Jonathan",
+                    LastName = "Blouin",
+                    Email = "ikeameatbol@hotmail.com",
+                    Token = "token",
+                    Organisations = {},
+                    Active = true
+                },
+                new Administrator_SQLDTO
+                {
+                    Id= 3,
+                    Username = "BACenComm",
+                    FirstName = "Melissa",
+                    LastName = "Lachapelle",
+                    Email = "BACenComm@hotmail.com",
+                    Token = "token",
+                    Organisations = {},
+                    Active = false
+                }
+            };
+            List<Student_SQLDTO> students = new List<Student_SQLDTO>()
+            {
+                new Student_SQLDTO()
                 {
                     Username = "ThPaquet",
                     FirstName = "Thierry",
                     LastName = "Paquet",
-                    Token = "token",
-                    Email = "ThPaquet@hotmail.com"
-                });
-            }
-
-            using (var context = new RPLPDbContext(options))
+                    Email = "ThPaquet@hotmail.com",
+                    Matricule = "1141200",
+                    Classes =
+                    {
+                        new Classroom_SQLDTO()
+                        {
+                            Name = "ProjetSynthese",
+                            OrganisationName = "CEGEP Ste-Foy",
+                            Active = true
+                        },
+                        new Classroom_SQLDTO()
+                        {
+                            Name = "RPLP",
+                            OrganisationName = "CEGEP Ste-Foy",
+                            Active = true
+                        },
+                        new Classroom_SQLDTO()
+                        {
+                            Name = "OOP",
+                            OrganisationName = "CEGEP Ste-Foy",
+                            Active = false
+                        }
+                    },
+                    Active = true
+                },
+                new Student_SQLDTO()
+                {
+                    Username = "ikeameatbol",
+                    FirstName = "Jonathan",
+                    LastName = "Blouin",
+                    Email = "ikeameatbol@hotmail.com",
+                    Matricule = "1122334",
+                    Active = true
+                },
+                new Student_SQLDTO()
+                {
+                    Username = "BACenComm",
+                    FirstName = "Melissa",
+                    LastName = "Lachapelle",
+                    Email = "BACenComm@hotmail.com",
+                    Matricule = "1324354",
+                    Active = false
+                }
+            };
+            List<Teacher_SQLDTO> teachers = new List<Teacher_SQLDTO>()
             {
-                Administrator_SQLDTO admin = context.Administrators
-                    .Include(a => a.Organisations)
-                    .SingleOrDefault(a => a.Username == "ThPaquet");
-                Assert.NotNull(admin);
-                Assert.Equal("Thierry", admin.FirstName);
-                Assert.Equal("Paquet", admin.LastName);
-                Assert.Equal("token", admin.Token);
-                Assert.Equal("ThPaquet@hotmail.com", admin.Email);
-            }
+                new Teacher_SQLDTO()
+                {
+                    Username = "ThPaquet",
+                    FirstName = "Thierry",
+                    LastName = "Paquet",
+                    Email = "ThPaquet@hotmail.com",
+                    Classes =
+                    {
+                        new Classroom_SQLDTO()
+                        {
+                            Name = "ProjetSynthese",
+                            OrganisationName = "CEGEP Ste-Foy",
+                            Active = true
+                        },
+                        new Classroom_SQLDTO()
+                        {
+                            Name = "RPLP",
+                            OrganisationName = "CEGEP Ste-Foy",
+                            Active = true
+                        },
+                        new Classroom_SQLDTO()
+                        {
+                            Name = "OOP",
+                            OrganisationName = "CEGEP Ste-Foy",
+                            Active = false
+                        }
+                    },
+                    Active = true
+                },
+                new Teacher_SQLDTO()
+                {
+                    Username = "ikeameatbol",
+                    FirstName = "Jonathan",
+                    LastName = "Blouin",
+                    Email = "ikeameatbol@hotmail.com",
+                    Active = true
+                },
+                new Teacher_SQLDTO()
+                {
+                    Username = "BACenComm",
+                    FirstName = "Melissa",
+                    LastName = "Lachapelle",
+                    Email = "BACenComm@hotmail.com",
+                    Active = false
+                }
+            };
 
-            this.DeleteAdministratorAndRelatedTablesContent();
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
+
+            Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Students).ReturnsDbSet(students);
+            context.Setup(x => x.Teachers).ReturnsDbSet(teachers);
+            context.Setup(x => x.Administrators).ReturnsDbSet(administratorsBD);
+            context.Setup(m => m.Administrators.Add(It.IsAny<Administrator_SQLDTO>())).Callback<Administrator_SQLDTO>(administratorsBD.Add);
+            DepotAdministrator depot = new DepotAdministrator(context.Object);
+
+            depot.UpsertAdministrator(new Administrator
+            {
+                Id = 4,
+                Username = "Node",
+                FirstName = "Dylan",
+                LastName = "Veilleux",
+                Token = "token",
+                Email = "node@hotmail.com"
+            });
+
+            Administrator_SQLDTO admin = administratorsBD.SingleOrDefault(x => x.Username == "Node");
+
+            Assert.NotNull(admin);
+            Assert.Equal("Dylan", admin.FirstName);
+            Assert.Equal("Veilleux", admin.LastName);
+            Assert.Equal("token", admin.Token);
+            Assert.Equal("node@hotmail.com", admin.Email);
+            //logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Exactly(4));
+            
         }
 
         [Fact]
         public void Test_UpsertAdministrator_Updates()
         {
-            this.DeleteAdministratorAndRelatedTablesContent();
-            this.InsertPremadeAdmins();
-
-            using (var context = new RPLPDbContext(options))
+            List<Administrator_SQLDTO> administratorsBD = new List<Administrator_SQLDTO>
             {
-                DepotAdministrator depot = new DepotAdministrator(context);
+                new Administrator_SQLDTO
+                {
+                    Id= 1,
+                    Username = "ThPaquet",
+                    FirstName = "Thierry",
+                    LastName = "Paquet",
+                    Email = "ThPaquet@hotmail.com",
+                    Token = "token",
+                    Organisations = {
+                    new Organisation_SQLDTO()
+                            {
+                                Name = "CEGEP Ste-Foy",
+                                Active = true
+                            }},
+                    Active = true
+                },
+                new Administrator_SQLDTO
+                {
+                    Id= 2,
+                    Username = "ikeameatbol",
+                    FirstName = "Jonathan",
+                    LastName = "Blouin",
+                    Email = "ikeameatbol@hotmail.com",
+                    Token = "token",
+                    Organisations = {},
+                    Active = true
+                },
+                new Administrator_SQLDTO
+                {
+                    Id= 3,
+                    Username = "BACenComm",
+                    FirstName = "Melissa",
+                    LastName = "Lachapelle",
+                    Email = "BACenComm@hotmail.com",
+                    Token = "token",
+                    Organisations = {},
+                    Active = false
+                }
+            };
+            List<Student_SQLDTO> students = new List<Student_SQLDTO>()
+            {
+                new Student_SQLDTO()
+                {
+                    Username = "ThPaquet",
+                    FirstName = "Thierry",
+                    LastName = "Paquet",
+                    Email = "ThPaquet@hotmail.com",
+                    Matricule = "1141200",
+                    Classes =
+                    {
+                        new Classroom_SQLDTO()
+                        {
+                            Name = "ProjetSynthese",
+                            OrganisationName = "CEGEP Ste-Foy",
+                            Active = true
+                        },
+                        new Classroom_SQLDTO()
+                        {
+                            Name = "RPLP",
+                            OrganisationName = "CEGEP Ste-Foy",
+                            Active = true
+                        },
+                        new Classroom_SQLDTO()
+                        {
+                            Name = "OOP",
+                            OrganisationName = "CEGEP Ste-Foy",
+                            Active = false
+                        }
+                    },
+                    Active = true
+                },
+                new Student_SQLDTO()
+                {
+                    Username = "ikeameatbol",
+                    FirstName = "Jonathan",
+                    LastName = "Blouin",
+                    Email = "ikeameatbol@hotmail.com",
+                    Matricule = "1122334",
+                    Active = true
+                },
+                new Student_SQLDTO()
+                {
+                    Username = "BACenComm",
+                    FirstName = "Melissa",
+                    LastName = "Lachapelle",
+                    Email = "BACenComm@hotmail.com",
+                    Matricule = "1324354",
+                    Active = false
+                }
+            };
+            List<Teacher_SQLDTO> teachers = new List<Teacher_SQLDTO>()
+            {
+                new Teacher_SQLDTO()
+                {
+                    Username = "ThPaquet",
+                    FirstName = "Thierry",
+                    LastName = "Paquet",
+                    Email = "ThPaquet@hotmail.com",
+                    Classes =
+                    {
+                        new Classroom_SQLDTO()
+                        {
+                            Name = "ProjetSynthese",
+                            OrganisationName = "CEGEP Ste-Foy",
+                            Active = true
+                        },
+                        new Classroom_SQLDTO()
+                        {
+                            Name = "RPLP",
+                            OrganisationName = "CEGEP Ste-Foy",
+                            Active = true
+                        },
+                        new Classroom_SQLDTO()
+                        {
+                            Name = "OOP",
+                            OrganisationName = "CEGEP Ste-Foy",
+                            Active = false
+                        }
+                    },
+                    Active = true
+                },
+                new Teacher_SQLDTO()
+                {
+                    Username = "ikeameatbol",
+                    FirstName = "Jonathan",
+                    LastName = "Blouin",
+                    Email = "ikeameatbol@hotmail.com",
+                    Active = true
+                },
+                new Teacher_SQLDTO()
+                {
+                    Username = "BACenComm",
+                    FirstName = "Melissa",
+                    LastName = "Lachapelle",
+                    Email = "BACenComm@hotmail.com",
+                    Active = false
+                }
+            };
 
-                Administrator_SQLDTO? admin = context.Administrators
-                    .AsNoTracking()
-                    .SingleOrDefault(a => a.Username == "ThPaquet");
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
 
-                admin.Username = "Upserted";
-                admin.FirstName = "Upserty";
-                admin.LastName = "McUpserton";
-                admin.Email = "Upserted@hotmail.com";
-                depot.UpsertAdministrator(admin.ToEntityWithoutList());
+            Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Students).ReturnsDbSet(students);
+            context.Setup(x => x.Teachers).ReturnsDbSet(teachers);
+            context.Setup(x => x.Administrators).ReturnsDbSet(administratorsBD);
+            context.Setup(m => m.Administrators.Add(It.IsAny<Administrator_SQLDTO>())).Callback<Administrator_SQLDTO>(administratorsBD.Add);
+            DepotAdministrator depot = new DepotAdministrator(context.Object);
 
-                admin = context.Administrators
-                    .AsNoTracking()
-                    .SingleOrDefault(a => a.Username == "ThPaquet");
-                Assert.Null(admin);
+            Administrator_SQLDTO? admin = administratorsBD.SingleOrDefault(a => a.Username == "ThPaquet");
 
-                admin = context.Administrators
-                    .AsNoTracking()
-                    .SingleOrDefault(a => a.Username == "Upserted");
+            admin.Username = "Upserted";
+            admin.FirstName = "Upserty";
+            admin.LastName = "McUpserton";
+            admin.Email = "Upserted@hotmail.com";
 
-                Assert.NotNull(admin);
-                Assert.Equal("Upserty", admin.FirstName);
-                Assert.Equal("McUpserton", admin.LastName);
-                Assert.Equal("Upserted@hotmail.com", admin.Email);
-            }
+            depot.UpsertAdministrator(admin.ToEntityWithoutList());
 
-            this.DeleteAdministratorAndRelatedTablesContent();
+            admin = administratorsBD.SingleOrDefault(a => a.Username == "ThPaquet");
+            Assert.Null(admin);
+
+            admin = administratorsBD.SingleOrDefault(a => a.Username == "Upserted");
+
+            Assert.NotNull(admin);
+            Assert.Equal("Upserty", admin.FirstName);
+            Assert.Equal("McUpserton", admin.LastName);
+            Assert.Equal("Upserted@hotmail.com", admin.Email);
+            
+            
         }
 
         [Fact]
         public void Test_UpsertAdministrator_ThrowUpdateDeletedAccount()
         {
-            this.DeleteAdministratorAndRelatedTablesContent();
-            this.InsertPremadeAdmins();
-
-            using (var context = new RPLPDbContext(options))
+            List<Administrator_SQLDTO> administratorsBD = new List<Administrator_SQLDTO>
             {
-                DepotAdministrator depot = new DepotAdministrator(context);
-
-                Administrator_SQLDTO? admin = context.Administrators.SingleOrDefault(a => a.Username == "BACenComm");
-
-                Assert.Throws<ArgumentException>(
-                    () =>
+                new Administrator_SQLDTO
+                {
+                    Id= 1,
+                    Username = "ThPaquet",
+                    FirstName = "Thierry",
+                    LastName = "Paquet",
+                    Email = "ThPaquet@hotmail.com",
+                    Token = "token",
+                    Organisations = {
+                    new Organisation_SQLDTO()
+                            {
+                                Name = "CEGEP Ste-Foy",
+                                Active = true
+                            }},
+                    Active = true
+                },
+                new Administrator_SQLDTO
+                {
+                    Id= 2,
+                    Username = "ikeameatbol",
+                    FirstName = "Jonathan",
+                    LastName = "Blouin",
+                    Email = "ikeameatbol@hotmail.com",
+                    Token = "token",
+                    Organisations = {},
+                    Active = true
+                },
+                new Administrator_SQLDTO
+                {
+                    Id= 3,
+                    Username = "BACenComm",
+                    FirstName = "Melissa",
+                    LastName = "Lachapelle",
+                    Email = "BACenComm@hotmail.com",
+                    Token = "token",
+                    Organisations = {},
+                    Active = false
+                }
+            };
+            List<Student_SQLDTO> students = new List<Student_SQLDTO>()
+            {
+                new Student_SQLDTO()
+                {
+                    Username = "ThPaquet",
+                    FirstName = "Thierry",
+                    LastName = "Paquet",
+                    Email = "ThPaquet@hotmail.com",
+                    Matricule = "1141200",
+                    Classes =
                     {
-                        depot.UpsertAdministrator(admin.ToEntityWithoutList());
-                    });
-            }
+                        new Classroom_SQLDTO()
+                        {
+                            Name = "ProjetSynthese",
+                            OrganisationName = "CEGEP Ste-Foy",
+                            Active = true
+                        },
+                        new Classroom_SQLDTO()
+                        {
+                            Name = "RPLP",
+                            OrganisationName = "CEGEP Ste-Foy",
+                            Active = true
+                        },
+                        new Classroom_SQLDTO()
+                        {
+                            Name = "OOP",
+                            OrganisationName = "CEGEP Ste-Foy",
+                            Active = false
+                        }
+                    },
+                    Active = true
+                },
+                new Student_SQLDTO()
+                {
+                    Username = "ikeameatbol",
+                    FirstName = "Jonathan",
+                    LastName = "Blouin",
+                    Email = "ikeameatbol@hotmail.com",
+                    Matricule = "1122334",
+                    Active = true
+                },
+                new Student_SQLDTO()
+                {
+                    Username = "BACenComm",
+                    FirstName = "Melissa",
+                    LastName = "Lachapelle",
+                    Email = "BACenComm@hotmail.com",
+                    Matricule = "1324354",
+                    Active = false
+                }
+            };
+            List<Teacher_SQLDTO> teachers = new List<Teacher_SQLDTO>()
+            {
+                new Teacher_SQLDTO()
+                {
+                    Username = "ThPaquet",
+                    FirstName = "Thierry",
+                    LastName = "Paquet",
+                    Email = "ThPaquet@hotmail.com",
+                    Classes =
+                    {
+                        new Classroom_SQLDTO()
+                        {
+                            Name = "ProjetSynthese",
+                            OrganisationName = "CEGEP Ste-Foy",
+                            Active = true
+                        },
+                        new Classroom_SQLDTO()
+                        {
+                            Name = "RPLP",
+                            OrganisationName = "CEGEP Ste-Foy",
+                            Active = true
+                        },
+                        new Classroom_SQLDTO()
+                        {
+                            Name = "OOP",
+                            OrganisationName = "CEGEP Ste-Foy",
+                            Active = false
+                        }
+                    },
+                    Active = true
+                },
+                new Teacher_SQLDTO()
+                {
+                    Username = "ikeameatbol",
+                    FirstName = "Jonathan",
+                    LastName = "Blouin",
+                    Email = "ikeameatbol@hotmail.com",
+                    Active = true
+                },
+                new Teacher_SQLDTO()
+                {
+                    Username = "BACenComm",
+                    FirstName = "Melissa",
+                    LastName = "Lachapelle",
+                    Email = "BACenComm@hotmail.com",
+                    Active = false
+                }
+            };
 
-            this.DeleteAdministratorAndRelatedTablesContent();
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
+
+            Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Students).ReturnsDbSet(students);
+            context.Setup(x => x.Teachers).ReturnsDbSet(teachers);
+            context.Setup(x => x.Administrators).ReturnsDbSet(administratorsBD);
+            DepotAdministrator depot = new DepotAdministrator(context.Object);
+
+            Administrator_SQLDTO? admin = administratorsBD.SingleOrDefault(a => a.Username == "BACenComm");
+
+            Assert.Throws<ArgumentException>(
+                () =>
+                {
+                    depot.UpsertAdministrator(admin.ToEntityWithoutList());
+                });
+            //logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Never);
+            
         }
 
         [Fact]
         public void Test_UpsertAdministrator_ThrowUsernameTaken_UsernameTakenNotActive()
         {
-            this.DeleteAdministratorAndRelatedTablesContent();
-            this.InsertPremadeAdmins();
-
-            using (var context = new RPLPDbContext(options))
+            List<Administrator_SQLDTO> administratorsBD = new List<Administrator_SQLDTO>
             {
-                DepotAdministrator depot = new DepotAdministrator(context);
-
-                Administrator_SQLDTO? admin = context.Administrators.SingleOrDefault(a => a.Username == "ikeameatbol");
-                Assert.NotNull(admin);
-
-                admin.Username = "BACenComm";
-
-                Assert.Throws<ArgumentException>(
-                    () =>
+                new Administrator_SQLDTO
+                {
+                    Id= 1,
+                    Username = "ThPaquet",
+                    FirstName = "Thierry",
+                    LastName = "Paquet",
+                    Email = "ThPaquet@hotmail.com",
+                    Token = "token",
+                    Organisations = {
+                    new Organisation_SQLDTO()
+                            {
+                                Name = "CEGEP Ste-Foy",
+                                Active = true
+                            }},
+                    Active = true
+                },
+                new Administrator_SQLDTO
+                {
+                    Id= 2,
+                    Username = "ikeameatbol",
+                    FirstName = "Jonathan",
+                    LastName = "Blouin",
+                    Email = "ikeameatbol@hotmail.com",
+                    Token = "token",
+                    Organisations = {},
+                    Active = true
+                },
+                new Administrator_SQLDTO
+                {
+                    Id= 3,
+                    Username = "BACenComm",
+                    FirstName = "Melissa",
+                    LastName = "Lachapelle",
+                    Email = "BACenComm@hotmail.com",
+                    Token = "token",
+                    Organisations = {},
+                    Active = false
+                }
+            };
+            List<Student_SQLDTO> students = new List<Student_SQLDTO>()
+            {
+                new Student_SQLDTO()
+                {
+                    Username = "ThPaquet",
+                    FirstName = "Thierry",
+                    LastName = "Paquet",
+                    Email = "ThPaquet@hotmail.com",
+                    Matricule = "1141200",
+                    Classes =
                     {
-                        depot.UpsertAdministrator(admin.ToEntityWithoutList());
-                    });
-            }
+                        new Classroom_SQLDTO()
+                        {
+                            Name = "ProjetSynthese",
+                            OrganisationName = "CEGEP Ste-Foy",
+                            Active = true
+                        },
+                        new Classroom_SQLDTO()
+                        {
+                            Name = "RPLP",
+                            OrganisationName = "CEGEP Ste-Foy",
+                            Active = true
+                        },
+                        new Classroom_SQLDTO()
+                        {
+                            Name = "OOP",
+                            OrganisationName = "CEGEP Ste-Foy",
+                            Active = false
+                        }
+                    },
+                    Active = true
+                },
+                new Student_SQLDTO()
+                {
+                    Username = "ikeameatbol",
+                    FirstName = "Jonathan",
+                    LastName = "Blouin",
+                    Email = "ikeameatbol@hotmail.com",
+                    Matricule = "1122334",
+                    Active = true
+                },
+                new Student_SQLDTO()
+                {
+                    Username = "BACenComm",
+                    FirstName = "Melissa",
+                    LastName = "Lachapelle",
+                    Email = "BACenComm@hotmail.com",
+                    Matricule = "1324354",
+                    Active = false
+                }
+            };
+            List<Teacher_SQLDTO> teachers = new List<Teacher_SQLDTO>()
+            {
+                new Teacher_SQLDTO()
+                {
+                    Username = "ThPaquet",
+                    FirstName = "Thierry",
+                    LastName = "Paquet",
+                    Email = "ThPaquet@hotmail.com",
+                    Classes =
+                    {
+                        new Classroom_SQLDTO()
+                        {
+                            Name = "ProjetSynthese",
+                            OrganisationName = "CEGEP Ste-Foy",
+                            Active = true
+                        },
+                        new Classroom_SQLDTO()
+                        {
+                            Name = "RPLP",
+                            OrganisationName = "CEGEP Ste-Foy",
+                            Active = true
+                        },
+                        new Classroom_SQLDTO()
+                        {
+                            Name = "OOP",
+                            OrganisationName = "CEGEP Ste-Foy",
+                            Active = false
+                        }
+                    },
+                    Active = true
+                },
+                new Teacher_SQLDTO()
+                {
+                    Username = "ikeameatbol",
+                    FirstName = "Jonathan",
+                    LastName = "Blouin",
+                    Email = "ikeameatbol@hotmail.com",
+                    Active = true
+                },
+                new Teacher_SQLDTO()
+                {
+                    Username = "BACenComm",
+                    FirstName = "Melissa",
+                    LastName = "Lachapelle",
+                    Email = "BACenComm@hotmail.com",
+                    Active = false
+                }
+            };
 
-            this.DeleteAdministratorAndRelatedTablesContent();
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
+
+            Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Students).ReturnsDbSet(students);
+            context.Setup(x => x.Teachers).ReturnsDbSet(teachers);
+            context.Setup(x => x.Administrators).ReturnsDbSet(administratorsBD);
+            DepotAdministrator depot = new DepotAdministrator(context.Object);
+
+            Administrator? admin = administratorsBD.FirstOrDefault(a => a.Username == "ikeameatbol").ToEntity();
+            admin.Username = "BACenComm";
+
+            Assert.Throws<ArgumentException>(
+                () =>
+                {
+                    depot.UpsertAdministrator(admin);
+                });
+           
+            
         }
 
         [Fact]
         public void Test_UpsertAdministrator_ThrowUsernameTaken_NewAdmin()
         {
-            this.DeleteAdministratorAndRelatedTablesContent();
-            this.InsertPremadeAdmins();
-
-            using (var context = new RPLPDbContext(options))
+            List<Administrator_SQLDTO> administratorsBD = new List<Administrator_SQLDTO>
             {
-                DepotAdministrator depot = new DepotAdministrator(context);
-
-                Administrator_SQLDTO admin = new Administrator_SQLDTO()
+                new Administrator_SQLDTO
+                {
+                    Id= 1,
+                    Username = "ThPaquet",
+                    FirstName = "Thierry",
+                    LastName = "Paquet",
+                    Email = "ThPaquet@hotmail.com",
+                    Token = "token",
+                    Organisations = {
+                    new Organisation_SQLDTO()
+                            {
+                                Name = "CEGEP Ste-Foy",
+                                Active = true
+                            }},
+                    Active = true
+                },
+                new Administrator_SQLDTO
+                {
+                    Id= 2,
+                    Username = "ikeameatbol",
+                    FirstName = "Jonathan",
+                    LastName = "Blouin",
+                    Email = "ikeameatbol@hotmail.com",
+                    Token = "token",
+                    Organisations = {},
+                    Active = true
+                },
+                new Administrator_SQLDTO
+                {
+                    Id= 3,
+                    Username = "BACenComm",
+                    FirstName = "Melissa",
+                    LastName = "Lachapelle",
+                    Email = "BACenComm@hotmail.com",
+                    Token = "token",
+                    Organisations = {},
+                    Active = false
+                }
+            };
+            List<Student_SQLDTO> students = new List<Student_SQLDTO>()
+            {
+                new Student_SQLDTO()
                 {
                     Username = "ThPaquet",
                     FirstName = "Thierry",
                     LastName = "Paquet",
-                    Token = "token",
-                    Organisations = new List<Organisation_SQLDTO>(),
-                    Email = "swerve@hotmail.com",
-                    Active = true
-                };
-
-                Assert.Throws<ArgumentException>(
-                    () =>
+                    Email = "ThPaquet@hotmail.com",
+                    Matricule = "1141200",
+                    Classes =
                     {
-                        depot.UpsertAdministrator(admin.ToEntityWithoutList());
-                    });
-            }
+                        new Classroom_SQLDTO()
+                        {
+                            Name = "ProjetSynthese",
+                            OrganisationName = "CEGEP Ste-Foy",
+                            Active = true
+                        },
+                        new Classroom_SQLDTO()
+                        {
+                            Name = "RPLP",
+                            OrganisationName = "CEGEP Ste-Foy",
+                            Active = true
+                        },
+                        new Classroom_SQLDTO()
+                        {
+                            Name = "OOP",
+                            OrganisationName = "CEGEP Ste-Foy",
+                            Active = false
+                        }
+                    },
+                    Active = true
+                },
+                new Student_SQLDTO()
+                {
+                    Username = "ikeameatbol",
+                    FirstName = "Jonathan",
+                    LastName = "Blouin",
+                    Email = "ikeameatbol@hotmail.com",
+                    Matricule = "1122334",
+                    Active = true
+                },
+                new Student_SQLDTO()
+                {
+                    Username = "BACenComm",
+                    FirstName = "Melissa",
+                    LastName = "Lachapelle",
+                    Email = "BACenComm@hotmail.com",
+                    Matricule = "1324354",
+                    Active = false
+                }
+            };
+            List<Teacher_SQLDTO> teachers = new List<Teacher_SQLDTO>()
+            {
+                new Teacher_SQLDTO()
+                {
+                    Username = "ThPaquet",
+                    FirstName = "Thierry",
+                    LastName = "Paquet",
+                    Email = "ThPaquet@hotmail.com",
+                    Classes =
+                    {
+                        new Classroom_SQLDTO()
+                        {
+                            Name = "ProjetSynthese",
+                            OrganisationName = "CEGEP Ste-Foy",
+                            Active = true
+                        },
+                        new Classroom_SQLDTO()
+                        {
+                            Name = "RPLP",
+                            OrganisationName = "CEGEP Ste-Foy",
+                            Active = true
+                        },
+                        new Classroom_SQLDTO()
+                        {
+                            Name = "OOP",
+                            OrganisationName = "CEGEP Ste-Foy",
+                            Active = false
+                        }
+                    },
+                    Active = true
+                },
+                new Teacher_SQLDTO()
+                {
+                    Username = "ikeameatbol",
+                    FirstName = "Jonathan",
+                    LastName = "Blouin",
+                    Email = "ikeameatbol@hotmail.com",
+                    Active = true
+                },
+                new Teacher_SQLDTO()
+                {
+                    Username = "BACenComm",
+                    FirstName = "Melissa",
+                    LastName = "Lachapelle",
+                    Email = "BACenComm@hotmail.com",
+                    Active = false
+                }
+            };
 
-            this.DeleteAdministratorAndRelatedTablesContent();
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
+
+            Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Students).ReturnsDbSet(students);
+            context.Setup(x => x.Teachers).ReturnsDbSet(teachers);
+            context.Setup(x => x.Administrators).ReturnsDbSet(administratorsBD);
+            DepotAdministrator depot = new DepotAdministrator(context.Object);
+
+            Administrator_SQLDTO admin = new Administrator_SQLDTO()
+            {
+                Username = "ThPaquet",
+                FirstName = "Thierry",
+                LastName = "Paquet",
+                Token = "token",
+                Organisations = new List<Organisation_SQLDTO>(),
+                Email = "swerve@hotmail.com",
+                Active = true
+            };
+
+            Assert.Throws<ArgumentException>(
+                () =>
+                {
+                    depot.UpsertAdministrator(admin.ToEntityWithoutList());
+                });
+            
+            
         }
 
         [Fact]
         public void Test_UpsertAdministrator_ThrowEmailTaken_EmailTakenNotActive()
         {
-            this.DeleteAdministratorAndRelatedTablesContent();
-            this.InsertPremadeAdmins();
-
-            using (var context = new RPLPDbContext(options))
+            List<Administrator_SQLDTO> administratorsBD = new List<Administrator_SQLDTO>
             {
-
-                DepotAdministrator depot = new DepotAdministrator(context);
-
-                Administrator_SQLDTO? admin = context.Administrators.SingleOrDefault(a => a.Email == "ikeameatbol@hotmail.com");
-                Assert.NotNull(admin);
-
-
-                admin.Email = "BACenComm@hotmail.com";
-
-                Assert.Throws<ArgumentException>(
-                    () =>
+                new Administrator_SQLDTO
+                {
+                    Id= 1,
+                    Username = "ThPaquet",
+                    FirstName = "Thierry",
+                    LastName = "Paquet",
+                    Email = "ThPaquet@hotmail.com",
+                    Token = "token",
+                    Organisations = {
+                    new Organisation_SQLDTO()
+                            {
+                                Name = "CEGEP Ste-Foy",
+                                Active = true
+                            }},
+                    Active = true
+                },
+                new Administrator_SQLDTO
+                {
+                    Id= 2,
+                    Username = "ikeameatbol",
+                    FirstName = "Jonathan",
+                    LastName = "Blouin",
+                    Email = "ikeameatbol@hotmail.com",
+                    Token = "token",
+                    Organisations = {},
+                    Active = true
+                },
+                new Administrator_SQLDTO
+                {
+                    Id= 3,
+                    Username = "BACenComm",
+                    FirstName = "Melissa",
+                    LastName = "Lachapelle",
+                    Email = "BACenComm@hotmail.com",
+                    Token = "token",
+                    Organisations = {},
+                    Active = false
+                }
+            };
+            List<Student_SQLDTO> students = new List<Student_SQLDTO>()
+            {
+                new Student_SQLDTO()
+                {
+                    Username = "ThPaquet",
+                    FirstName = "Thierry",
+                    LastName = "Paquet",
+                    Email = "ThPaquet@hotmail.com",
+                    Matricule = "1141200",
+                    Classes =
                     {
-                        depot.UpsertAdministrator(admin.ToEntityWithoutList());
-                    });
-            }
+                        new Classroom_SQLDTO()
+                        {
+                            Name = "ProjetSynthese",
+                            OrganisationName = "CEGEP Ste-Foy",
+                            Active = true
+                        },
+                        new Classroom_SQLDTO()
+                        {
+                            Name = "RPLP",
+                            OrganisationName = "CEGEP Ste-Foy",
+                            Active = true
+                        },
+                        new Classroom_SQLDTO()
+                        {
+                            Name = "OOP",
+                            OrganisationName = "CEGEP Ste-Foy",
+                            Active = false
+                        }
+                    },
+                    Active = true
+                },
+                new Student_SQLDTO()
+                {
+                    Username = "ikeameatbol",
+                    FirstName = "Jonathan",
+                    LastName = "Blouin",
+                    Email = "ikeameatbol@hotmail.com",
+                    Matricule = "1122334",
+                    Active = true
+                },
+                new Student_SQLDTO()
+                {
+                    Username = "BACenComm",
+                    FirstName = "Melissa",
+                    LastName = "Lachapelle",
+                    Email = "BACenComm@hotmail.com",
+                    Matricule = "1324354",
+                    Active = false
+                }
+            };
+            List<Teacher_SQLDTO> teachers = new List<Teacher_SQLDTO>()
+            {
+                new Teacher_SQLDTO()
+                {
+                    Username = "ThPaquet",
+                    FirstName = "Thierry",
+                    LastName = "Paquet",
+                    Email = "ThPaquet@hotmail.com",
+                    Classes =
+                    {
+                        new Classroom_SQLDTO()
+                        {
+                            Name = "ProjetSynthese",
+                            OrganisationName = "CEGEP Ste-Foy",
+                            Active = true
+                        },
+                        new Classroom_SQLDTO()
+                        {
+                            Name = "RPLP",
+                            OrganisationName = "CEGEP Ste-Foy",
+                            Active = true
+                        },
+                        new Classroom_SQLDTO()
+                        {
+                            Name = "OOP",
+                            OrganisationName = "CEGEP Ste-Foy",
+                            Active = false
+                        }
+                    },
+                    Active = true
+                },
+                new Teacher_SQLDTO()
+                {
+                    Username = "ikeameatbol",
+                    FirstName = "Jonathan",
+                    LastName = "Blouin",
+                    Email = "ikeameatbol@hotmail.com",
+                    Active = true
+                },
+                new Teacher_SQLDTO()
+                {
+                    Username = "BACenComm",
+                    FirstName = "Melissa",
+                    LastName = "Lachapelle",
+                    Email = "BACenComm@hotmail.com",
+                    Active = false
+                }
+            };
 
-            this.DeleteAdministratorAndRelatedTablesContent();
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
+
+            Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Students).ReturnsDbSet(students);
+            context.Setup(x => x.Teachers).ReturnsDbSet(teachers);
+            context.Setup(x => x.Administrators).ReturnsDbSet(administratorsBD);
+            DepotAdministrator depot = new DepotAdministrator(context.Object);
+
+            Administrator? admin = administratorsBD.FirstOrDefault(a => a.Email == "ikeameatbol@hotmail.com").ToEntity();
+            admin.Email = "BACenComm@hotmail.com";
+
+            Assert.Throws<ArgumentException>(
+                () =>
+                {
+                    depot.UpsertAdministrator(admin);
+                });
+           
+            
         }
 
         [Fact]
         public void Test_UpsertAdministrator_ThrowEmailTaken_NewAdmin()
         {
-            this.DeleteAdministratorAndRelatedTablesContent();
-            this.InsertPremadeAdmins();
-
-            using (var context = new RPLPDbContext(options))
+            List<Administrator_SQLDTO> administratorsBD = new List<Administrator_SQLDTO>
             {
-                DepotAdministrator depot = new DepotAdministrator(context);
-
-                Administrator_SQLDTO admin = new Administrator_SQLDTO()
+                new Administrator_SQLDTO
                 {
-                    Username = "Swerve",
+                    Id= 1,
+                    Username = "ThPaquet",
                     FirstName = "Thierry",
                     LastName = "Paquet",
-                    Token = "token",
-                    Organisations = new List<Organisation_SQLDTO>(),
                     Email = "ThPaquet@hotmail.com",
+                    Token = "token",
+                    Organisations = {
+                    new Organisation_SQLDTO()
+                            {
+                                Name = "CEGEP Ste-Foy",
+                                Active = true
+                            }},
                     Active = true
-                };
-
-                Assert.Throws<ArgumentException>(
-                    () =>
+                },
+                new Administrator_SQLDTO
+                {
+                    Id= 2,
+                    Username = "ikeameatbol",
+                    FirstName = "Jonathan",
+                    LastName = "Blouin",
+                    Email = "ikeameatbol@hotmail.com",
+                    Token = "token",
+                    Organisations = {},
+                    Active = true
+                },
+                new Administrator_SQLDTO
+                {
+                    Id= 3,
+                    Username = "BACenComm",
+                    FirstName = "Melissa",
+                    LastName = "Lachapelle",
+                    Email = "BACenComm@hotmail.com",
+                    Token = "token",
+                    Organisations = {},
+                    Active = false
+                }
+            };
+            List<Student_SQLDTO> students = new List<Student_SQLDTO>()
+            {
+                new Student_SQLDTO()
+                {
+                    Username = "ThPaquet",
+                    FirstName = "Thierry",
+                    LastName = "Paquet",
+                    Email = "ThPaquet@hotmail.com",
+                    Matricule = "1141200",
+                    Classes =
                     {
-                        depot.UpsertAdministrator(admin.ToEntityWithoutList());
-                    });
-            }
+                        new Classroom_SQLDTO()
+                        {
+                            Name = "ProjetSynthese",
+                            OrganisationName = "CEGEP Ste-Foy",
+                            Active = true
+                        },
+                        new Classroom_SQLDTO()
+                        {
+                            Name = "RPLP",
+                            OrganisationName = "CEGEP Ste-Foy",
+                            Active = true
+                        },
+                        new Classroom_SQLDTO()
+                        {
+                            Name = "OOP",
+                            OrganisationName = "CEGEP Ste-Foy",
+                            Active = false
+                        }
+                    },
+                    Active = true
+                },
+                new Student_SQLDTO()
+                {
+                    Username = "ikeameatbol",
+                    FirstName = "Jonathan",
+                    LastName = "Blouin",
+                    Email = "ikeameatbol@hotmail.com",
+                    Matricule = "1122334",
+                    Active = true
+                },
+                new Student_SQLDTO()
+                {
+                    Username = "BACenComm",
+                    FirstName = "Melissa",
+                    LastName = "Lachapelle",
+                    Email = "BACenComm@hotmail.com",
+                    Matricule = "1324354",
+                    Active = false
+                }
+            };
+            List<Teacher_SQLDTO> teachers = new List<Teacher_SQLDTO>()
+            {
+                new Teacher_SQLDTO()
+                {
+                    Username = "ThPaquet",
+                    FirstName = "Thierry",
+                    LastName = "Paquet",
+                    Email = "ThPaquet@hotmail.com",
+                    Classes =
+                    {
+                        new Classroom_SQLDTO()
+                        {
+                            Name = "ProjetSynthese",
+                            OrganisationName = "CEGEP Ste-Foy",
+                            Active = true
+                        },
+                        new Classroom_SQLDTO()
+                        {
+                            Name = "RPLP",
+                            OrganisationName = "CEGEP Ste-Foy",
+                            Active = true
+                        },
+                        new Classroom_SQLDTO()
+                        {
+                            Name = "OOP",
+                            OrganisationName = "CEGEP Ste-Foy",
+                            Active = false
+                        }
+                    },
+                    Active = true
+                },
+                new Teacher_SQLDTO()
+                {
+                    Username = "ikeameatbol",
+                    FirstName = "Jonathan",
+                    LastName = "Blouin",
+                    Email = "ikeameatbol@hotmail.com",
+                    Active = true
+                },
+                new Teacher_SQLDTO()
+                {
+                    Username = "BACenComm",
+                    FirstName = "Melissa",
+                    LastName = "Lachapelle",
+                    Email = "BACenComm@hotmail.com",
+                    Active = false
+                }
+            };
 
-            this.DeleteAdministratorAndRelatedTablesContent();
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
+
+            Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Students).ReturnsDbSet(students);
+            context.Setup(x => x.Teachers).ReturnsDbSet(teachers);
+            context.Setup(x => x.Administrators).ReturnsDbSet(administratorsBD);
+            DepotAdministrator depot = new DepotAdministrator(context.Object);
+
+            Administrator_SQLDTO admin = new Administrator_SQLDTO()
+            {
+                Username = "Swerve",
+                FirstName = "Thierry",
+                LastName = "Paquet",
+                Token = "token",
+                Organisations = new List<Organisation_SQLDTO>(),
+                Email = "ThPaquet@hotmail.com",
+                Active = true
+            };
+
+            Assert.Throws<ArgumentException>(
+                () =>
+                {
+                    depot.UpsertAdministrator(admin.ToEntityWithoutList());
+                });
+            //logMock.Verify(log => log.Journal(It.IsAny<Log>()), Times.Exactly(3));
+            
         }
 
         [Fact]
-
         public void Test_GetAdminOrganisations()
         {
-
-            this.DeleteAdministratorAndRelatedTablesContent();
-            this.InsertPremadeAdmins();
-
-            using (var context = new RPLPDbContext(options))
+            List<Administrator_SQLDTO> administratorsBD = new List<Administrator_SQLDTO>
             {
-                DepotAdministrator depot = new DepotAdministrator(context);
+                new Administrator_SQLDTO
+                {
+                    Id= 1,
+                    Username = "ThPaquet",
+                    FirstName = "Thierry",
+                    LastName = "Paquet",
+                    Email = "ThPaquet@hotmail.com",
+                    Token = "token",
+                    Organisations = {
+                    new Organisation_SQLDTO()
+                            {
+                                Name = "CEGEP Ste-Foy",
+                                Active = true
+                            }},
+                    Active = true
+                },
+                new Administrator_SQLDTO
+                {
+                    Id= 2,
+                    Username = "ikeameatbol",
+                    FirstName = "Jonathan",
+                    LastName = "Blouin",
+                    Email = "ikeameatbol@hotmail.com",
+                    Token = "token",
+                    Organisations = {},
+                    Active = true
+                },
+                new Administrator_SQLDTO
+                {
+                    Id= 3,
+                    Username = "BACenComm",
+                    FirstName = "Melissa",
+                    LastName = "Lachapelle",
+                    Email = "BACenComm@hotmail.com",
+                    Token = "token",
+                    Organisations = {},
+                    Active = false
+                }
+            };
 
-                List<Organisation> organisations = depot
-                    .GetAdminOrganisations("ThPaquet");
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
 
-                Assert.Equal(1, organisations.Count);
-                Assert.Contains(organisations, o => o.Name == "CEGEP Ste-Foy");
-            }
+            Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Administrators).ReturnsDbSet(administratorsBD);
+            DepotAdministrator depot = new DepotAdministrator(context.Object);
 
-            this.DeleteAdministratorAndRelatedTablesContent();
+            List<Organisation> organisations = depot.GetAdminOrganisations("ThPaquet");
+
+            Assert.Equal(1, organisations.Count);
+            Assert.Contains(organisations, o => o.Name == "CEGEP Ste-Foy");
+           
+            
         }
 
         [Fact]
         public void Test_JoinOrganisation()
         {
-            this.DeleteAdministratorAndRelatedTablesContent();
-            this.InsertPremadeAdmins();
-
-            using (var context = new RPLPDbContext(options))
+            List<Administrator_SQLDTO> administratorsBD = new List<Administrator_SQLDTO>
             {
-                context.Organisations.Add(new Organisation_SQLDTO
+                new Administrator_SQLDTO
                 {
-                    Name = "RPLP",
+                    Id= 1,
+                    Username = "ThPaquet",
+                    FirstName = "Thierry",
+                    LastName = "Paquet",
+                    Email = "ThPaquet@hotmail.com",
+                    Token = "token",
+                    Organisations = {
+                    new Organisation_SQLDTO()
+                            {
+                                Name = "CEGEP Ste-Foy",
+                                Active = true
+                            }},
                     Active = true
-                });
-
-                context.SaveChanges();
-            }
-
-            using (var context = new RPLPDbContext(options))
+                },
+                new Administrator_SQLDTO
+                {
+                    Id= 2,
+                    Username = "ikeameatbol",
+                    FirstName = "Jonathan",
+                    LastName = "Blouin",
+                    Email = "ikeameatbol@hotmail.com",
+                    Token = "token",
+                    Organisations = {},
+                    Active = true
+                },
+                new Administrator_SQLDTO
+                {
+                    Id= 3,
+                    Username = "BACenComm",
+                    FirstName = "Melissa",
+                    LastName = "Lachapelle",
+                    Email = "BACenComm@hotmail.com",
+                    Token = "token",
+                    Organisations = {},
+                    Active = false
+                }
+            };
+            List<Organisation_SQLDTO> organisations = new List<Organisation_SQLDTO>()
             {
-                DepotAdministrator depot = new DepotAdministrator(context);
-                Assert.Contains(context.Administrators, a => a.Username == "ikeameatbol" && a.Active);
-                depot.JoinOrganisation("ikeameatbol", "RPLP");
-            }
+                new Organisation_SQLDTO()
+                {
+                    Name = "CEGEP Ste-Foy",
+                    Administrators = administratorsBD,
+                    Active = true
+                },
+                new Organisation_SQLDTO()
+                {
+                    Name = "College Edouard-Montpetit",
+                    Administrators = administratorsBD,
+                    Active = true
+                },
+                new Organisation_SQLDTO()
+                {
+                    Name = "Universite Laval",
+                    Administrators = administratorsBD,
+                    Active = false
+                },
+            };
 
-            using (var context = new RPLPDbContext(options))
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
+
+            Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Administrators).ReturnsDbSet(administratorsBD);
+            context.Setup(x => x.Organisations).ReturnsDbSet(organisations);
+            DepotAdministrator depot = new DepotAdministrator(context.Object);
+
+            organisations.Add(new Organisation_SQLDTO
             {
+                Name = "RPLP",
+                Active = true
+            });
 
-                Administrator_SQLDTO? admin = context.Administrators
-                    .Include(a => a.Organisations)
-                    .FirstOrDefault(a => a.Username == "ikeameatbol");
+            Assert.Contains(administratorsBD, a => a.Username == "ikeameatbol" && a.Active);
+            depot.JoinOrganisation("ikeameatbol", "RPLP");
 
-                Assert.NotNull(admin);
-                Assert.Equal(1, admin.Organisations.Count);
-                Assert.Contains(admin.Organisations, o => o.Name == "RPLP");
-            }
+            Administrator_SQLDTO? admin = administratorsBD.FirstOrDefault(a => a.Username == "ikeameatbol");
 
-            this.DeleteAdministratorAndRelatedTablesContent();
+            Assert.NotNull(admin);
+            Assert.Equal(1, admin.Organisations.Count);
+            Assert.Contains(admin.Organisations, o => o.Name == "RPLP");
+           
+            
         }
 
         [Fact]
         public void Test_LeaveOrganisation()
         {
-            this.DeleteAdministratorAndRelatedTablesContent();
+            List<Administrator_SQLDTO> administratorsBD = new List<Administrator_SQLDTO>
+            {
+                new Administrator_SQLDTO
+                {
+                    Id= 1,
+                    Username = "ThPaquet",
+                    FirstName = "Thierry",
+                    LastName = "Paquet",
+                    Email = "ThPaquet@hotmail.com",
+                    Token = "token",
+                    Organisations = {},
+                    Active = true
+                },
+                new Administrator_SQLDTO
+                {
+                    Id= 2,
+                    Username = "ikeameatbol",
+                    FirstName = "Jonathan",
+                    LastName = "Blouin",
+                    Email = "ikeameatbol@hotmail.com",
+                    Token = "token",
+                    Organisations = {},
+                    Active = true
+                },
+                new Administrator_SQLDTO
+                {
+                    Id= 3,
+                    Username = "BACenComm",
+                    FirstName = "Melissa",
+                    LastName = "Lachapelle",
+                    Email = "BACenComm@hotmail.com",
+                    Token = "token",
+                    Organisations = {},
+                    Active = false
+                }
+            };
+            List<Organisation_SQLDTO> organisations = new List<Organisation_SQLDTO>()
+            {
+                new Organisation_SQLDTO()
+                {
+                    Name = "CEGEP Ste-Foy",
+                    Administrators = administratorsBD,
+                    Active = true
+                },
+                new Organisation_SQLDTO()
+                {
+                    Name = "College Edouard-Montpetit",
+                    Administrators = administratorsBD,
+                    Active = true
+                },
+                new Organisation_SQLDTO()
+                {
+                    Name = "Universite Laval",
+                    Administrators = administratorsBD,
+                    Active = false
+                },
+            };
+
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
+
+            Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Administrators).ReturnsDbSet(administratorsBD);
+            context.Setup(x => x.Organisations).ReturnsDbSet(organisations);
+            DepotAdministrator depot = new DepotAdministrator(context.Object);
 
             Administrator_SQLDTO? admin = null;
             Organisation_SQLDTO? organisation = null;
 
-            this.InsertPremadeAdmins();
+            admin = administratorsBD.FirstOrDefault(a => a.Username == "ThPaquet");
+            organisation = organisations.FirstOrDefault(o => o.Name == "CEGEP Ste-Foy");
 
-            using (var context = new RPLPDbContext(options))
-            {
-                admin = context.Administrators.Include(a => a.Organisations)
-                    .FirstOrDefault(a => a.Username == "ThPaquet");
-                organisation = admin.Organisations.FirstOrDefault(o => o.Name == "CEGEP Ste-Foy");
+            Assert.NotNull(admin);
+            Assert.NotNull(organisation);
 
-                Assert.NotNull(admin);
-                Assert.NotNull(organisation);
+            depot.JoinOrganisation("ThPaquet", "CEGEP Ste-Foy");
+            admin = administratorsBD.FirstOrDefault(a => a.Username == "ThPaquet");
+            organisation = admin.Organisations.FirstOrDefault(o => o.Name == "CEGEP Ste-Foy");
+            Assert.NotNull(admin);
+            Assert.NotNull(organisation);
 
-                DepotAdministrator depot = new DepotAdministrator(context);
+            depot.LeaveOrganisation("ThPaquet", "CEGEP Ste-Foy");
 
-                depot.LeaveOrganisation("ThPaquet", "CEGEP Ste-Foy");
+            admin = administratorsBD.FirstOrDefault(a => a.Username == "ThPaquet");
+            organisation = admin.Organisations.FirstOrDefault(o => o.Name == "CEGEP Ste-Foy");
 
-                admin = context.Administrators.FirstOrDefault(a => a.Username == "ThPaquet");
-                organisation = admin.Organisations.FirstOrDefault(o => o.Name == "CEGEP Ste-Foy");
-
-                Assert.Null(organisation);
-            }
-
-            this.DeleteAdministratorAndRelatedTablesContent();
+            Assert.Null(organisation);
+            
+            
         }
 
         [Fact]
         public void Test_DeleteAdministrator()
         {
-            this.DeleteAdministratorAndRelatedTablesContent();
-            this.InsertPremadeAdmins();
-
-            using (var context = new RPLPDbContext(options))
+            List<Administrator_SQLDTO> administratorsBD = new List<Administrator_SQLDTO>
             {
-                Assert.True(context.Administrators.Any(a => a.Username == "ikeameatbol" && a.Active));
+                new Administrator_SQLDTO
+                {
+                    Id= 1,
+                    Username = "ThPaquet",
+                    FirstName = "Thierry",
+                    LastName = "Paquet",
+                    Email = "ThPaquet@hotmail.com",
+                    Token = "token",
+                    Organisations = {},
+                    Active = true
+                },
+                new Administrator_SQLDTO
+                {
+                    Id= 2,
+                    Username = "ikeameatbol",
+                    FirstName = "Jonathan",
+                    LastName = "Blouin",
+                    Email = "ikeameatbol@hotmail.com",
+                    Token = "token",
+                    Organisations = {},
+                    Active = true
+                },
+                new Administrator_SQLDTO
+                {
+                    Id= 3,
+                    Username = "BACenComm",
+                    FirstName = "Melissa",
+                    LastName = "Lachapelle",
+                    Email = "BACenComm@hotmail.com",
+                    Token = "token",
+                    Organisations = {},
+                    Active = false
+                }
+            };
 
-                DepotAdministrator depot = new DepotAdministrator(context);
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
 
-                depot.DeleteAdministrator("ikeameatbol");
-            }
+            Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Administrators).ReturnsDbSet(administratorsBD);
+            DepotAdministrator depot = new DepotAdministrator(context.Object);
 
-            using (var context = new RPLPDbContext(options))
-            {
-                Assert.True(context.Administrators.Any(a => a.Username == "ikeameatbol" && !a.Active));
-            }
+            Assert.True(administratorsBD.Any(a => a.Username == "ikeameatbol" && a.Active));
 
-            this.DeleteAdministratorAndRelatedTablesContent();
+            depot.DeleteAdministrator("ikeameatbol");
+
+            Assert.True(administratorsBD.Any(a => a.Username == "ikeameatbol" && !a.Active));
+           
+            
         }
 
         [Fact]
         public void Test_ReactivateAdministrator()
         {
-            this.DeleteAdministratorAndRelatedTablesContent();
-            this.InsertPremadeAdmins();
-
-            using (var context = new RPLPDbContext(options))
+            List<Administrator_SQLDTO> administratorsBD = new List<Administrator_SQLDTO>
             {
-                Assert.True(context.Administrators.Any(a => a.Username == "BACenComm" && !a.Active));
+                new Administrator_SQLDTO
+                {
+                    Id= 1,
+                    Username = "ThPaquet",
+                    FirstName = "Thierry",
+                    LastName = "Paquet",
+                    Email = "ThPaquet@hotmail.com",
+                    Token = "token",
+                    Organisations = {},
+                    Active = true
+                },
+                new Administrator_SQLDTO
+                {
+                    Id= 2,
+                    Username = "ikeameatbol",
+                    FirstName = "Jonathan",
+                    LastName = "Blouin",
+                    Email = "ikeameatbol@hotmail.com",
+                    Token = "token",
+                    Organisations = {},
+                    Active = true
+                },
+                new Administrator_SQLDTO
+                {
+                    Id= 3,
+                    Username = "BACenComm",
+                    FirstName = "Melissa",
+                    LastName = "Lachapelle",
+                    Email = "BACenComm@hotmail.com",
+                    Token = "token",
+                    Organisations = {},
+                    Active = false
+                }
+            };
 
-                DepotAdministrator depot = new DepotAdministrator(context);
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
 
-                depot.ReactivateAdministrator("BACenComm");
-            }
+            Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Administrators).ReturnsDbSet(administratorsBD);
+            DepotAdministrator depot = new DepotAdministrator(context.Object);
 
-            using (var context = new RPLPDbContext(options))
-            {
-                Assert.True(context.Administrators.Any(a => a.Username == "BACenComm" && a.Active));
-            }
+            Assert.True(administratorsBD.Any(a => a.Username == "BACenComm" && !a.Active));
 
-            this.DeleteAdministratorAndRelatedTablesContent();
+            depot.ReactivateAdministrator("BACenComm");
+
+            Assert.True(administratorsBD.Any(a => a.Username == "BACenComm" && a.Active));
+           
+            
         }
     }
 }

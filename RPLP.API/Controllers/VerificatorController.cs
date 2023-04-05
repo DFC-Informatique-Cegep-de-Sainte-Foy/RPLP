@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using RPLP.DAL.SQL.Depots;
 using RPLP.JOURNALISATION;
-using RPLP.SERVICES.InterfacesDepots;
+using RPLP.ENTITES.InterfacesDepots;
 using System.Diagnostics;
 
 namespace RPLP.API.Controllers
@@ -16,7 +16,7 @@ namespace RPLP.API.Controllers
         {
             if (verificatorForDepot == null)
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                 "VerificatorController - Constructeur - verificatorForDepot passé en paramêtre est null", 0));
             }
             this._verificator = verificatorForDepot;
@@ -29,17 +29,17 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(email))
                 {
-                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "VerificatorForDepot - GetUserTypeByEmail - email passé en paramêtre est vide", 0));
                 }
 
-                Logging.Journal(new Log($"api/Verificator/UserType/{email}", 0, "VerificatorController - GET méthode GetUserTypeByEmail"));
+                Logging.Instance.Journal(new Log($"api/Verificator/UserType/{email}", 0, "VerificatorController - GET méthode GetUserTypeByEmail"));
 
                 Type type = this._verificator.GetUserTypeByEmail(email);
 
                 if (type == null)
                 {
-                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                    "VerificatorForDepot - GetUserTypeByEmail - variable type assigné par la méthode GetUserTypeByEmail est null", 0));
 
                     return BadRequest();
@@ -60,11 +60,11 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(username))
                 {
-                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "VerificatorForDepot - CheckUsernameTaken - username passé en paramêtre est vide", 0));
                 }
 
-                Logging.Journal(new Log($"api/Verificator/UsernameTaken/{username}", 0, "VerificatorController - GET méthode CheckUsernameTaken"));
+                Logging.Instance.Journal(new Log($"api/Verificator/UsernameTaken/{username}", 0, "VerificatorController - GET méthode CheckUsernameTaken"));
 
                 return this._verificator.CheckUsernameTaken(username);
             }
@@ -81,11 +81,11 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(email))
                 {
-                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "VerificatorForDepot - CheckEmailTaken - email passé en paramêtre est vide", 0));
                 }
 
-                Logging.Journal(new Log($"api/Verificator/EmailTaken/{email}", 0, "VerificatorController - GET méthode CheckEmailTaken"));
+                Logging.Instance.Journal(new Log($"api/Verificator/EmailTaken/{email}", 0, "VerificatorController - GET méthode CheckEmailTaken"));
 
                 return this._verificator.CheckEmailTaken(email);
             }

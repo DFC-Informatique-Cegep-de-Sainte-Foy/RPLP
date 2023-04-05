@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RPLP.ENTITES;
 using RPLP.JOURNALISATION;
-using RPLP.SERVICES.InterfacesDepots;
+using RPLP.ENTITES.InterfacesDepots;
 using System.Diagnostics;
 
 namespace RPLP.API.Controllers
@@ -16,7 +16,7 @@ namespace RPLP.API.Controllers
         {
             if (p_depotAdmin == null)
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "AdministratorController - Constructeur - Dépot passé en paramêtre null", 0));
             }
 
@@ -28,7 +28,7 @@ namespace RPLP.API.Controllers
         {
             try
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log("api/Administrator", 200, "AdministratorController - GET méthode Get"));
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("api/Administrator", 200, "AdministratorController - GET méthode Get"));
                 return Ok(this._depot.GetAdministrators());
             }
             catch (Exception)
@@ -42,7 +42,7 @@ namespace RPLP.API.Controllers
         {
             try
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log("api/Administrator/Deactivated", 200, "AdministratorController - GET méthode GetDeactivated"));
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("api/Administrator/Deactivated", 200, "AdministratorController - GET méthode GetDeactivated"));
                 return Ok(this._depot.GetDeactivatedAdministrators());
             }
             catch (Exception)
@@ -59,11 +59,11 @@ namespace RPLP.API.Controllers
             {
                 if (id < 0)
                 {
-                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                         "AdministratorController - GetAdministratorById - id passé en paramêtre n'est pas valide", 0));
                 }
 
-                RPLP.JOURNALISATION.Logging.Journal(new Log($"api/Administrator/Id/{id}", 200, "AdministratorController - GET méthode GetAdministratorById"));
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"api/Administrator/Id/{id}", 200, "AdministratorController - GET méthode GetAdministratorById"));
 
                 return Ok(this._depot.GetAdministratorById(id));
             }
@@ -80,11 +80,11 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(username))
                 {
-                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                         "AdministratorController - GetAdministratorByUsername - username passé en paramêtre vide", 0));
                 }
 
-                RPLP.JOURNALISATION.Logging.Journal(new Log($"api/Administrator/Username/{username}", 200, "AdministratorController - GET méthode GetAdministratorByUsername"));
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"api/Administrator/Username/{username}", 200, "AdministratorController - GET méthode GetAdministratorByUsername"));
 
                 return Ok(this._depot.GetAdministratorByUsername(username));
             }
@@ -101,11 +101,11 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(email))
                 {
-                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "AdministratorController - GetAdministratorByEmail - email passé en paramêtre vide", 0));
                 }
 
-                RPLP.JOURNALISATION.Logging.Journal(new Log($"api/Administrator/Email/{email}", 200, "AdministratorController - GET méthode GetAdministratorByEmail"));
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"api/Administrator/Email/{email}", 200, "AdministratorController - GET méthode GetAdministratorByEmail"));
 
                 return Ok(this._depot.GetAdministratorByEmail(email));
             }
@@ -122,11 +122,11 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(username))
                 {
-                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                    "AdministratorController - GetAdminOrganisations - username passé en paramêtre vide", 0));
                 }
 
-                RPLP.JOURNALISATION.Logging.Journal(new Log($"api/Administrator/Username/{username}/Organisations", 200, "AdministratorController - GET méthode GetAdminOrganisations"));
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"api/Administrator/Username/{username}/Organisations", 200, "AdministratorController - GET méthode GetAdminOrganisations"));
 
                 return Ok(this._depot.GetAdminOrganisations(username));
             }
@@ -143,17 +143,17 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(email))
                 {
-                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "AdministratorController - GetAdminOrganisationsByEmail - email passé en paramêtre vide", 0));
                 }
 
-                RPLP.JOURNALISATION.Logging.Journal(new Log($"api/Administrator/Email/{email}/Organisations", 200, "AdministratorController - GET méthode GetAdminOrganisationsByEmail"));
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"api/Administrator/Email/{email}/Organisations", 200, "AdministratorController - GET méthode GetAdminOrganisationsByEmail"));
 
                 string? username = this._depot.GetAdministratorByEmail(email)?.Username;
 
                 if (string.IsNullOrWhiteSpace(username))
                 {
-                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "AdministratorController - GetAdminOrganisationsByEmail - username récupéré à partir du email est vide", 0));
 
                     return BadRequest();
@@ -176,7 +176,7 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(adminUsername))
                 {
-                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                    "AdministratorController - AddAdminToOrganisation - adminUsername passé en paramêtre est vide", 0));
 
                     return BadRequest();
@@ -184,13 +184,13 @@ namespace RPLP.API.Controllers
 
                 if (string.IsNullOrWhiteSpace(organisationName))
                 {
-                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "AdministratorController - AddAdminToOrganisation - organisationName passé en paramêtre est vide", 0));
 
                     return BadRequest();
                 }
 
-                RPLP.JOURNALISATION.Logging.Journal(new Log($"api/Administrator/Username/{adminUsername}/Orgs/Add/{organisationName}", 201, "AdministratorController - POST méthode AddAdminToOrganisation"));
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"api/Administrator/Username/{adminUsername}/Orgs/Add/{organisationName}", 201, "AdministratorController - POST méthode AddAdminToOrganisation"));
 
                 this._depot.JoinOrganisation(adminUsername, organisationName);
 
@@ -209,7 +209,7 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(adminUsername))
                 {
-                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                   "AdministratorController - RemoveAdminFromOrganisation - adminUsername passé en paramêtre est vide", 0));
 
                     return BadRequest();
@@ -218,13 +218,13 @@ namespace RPLP.API.Controllers
 
                 if (string.IsNullOrWhiteSpace(organisationName))
                 {
-                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "AdministratorController - RemoveAdminFromOrganisation - organisationName passé en paramêtre est vide", 0));
 
                     return BadRequest();
                 }
 
-                RPLP.JOURNALISATION.Logging.Journal(new Log($"api/Administrator/Username/{adminUsername}/Orgs/Remove/{organisationName}", 204, "AdministratorController - POST méthode RemoveAdminFromOrganisation"));
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"api/Administrator/Username/{adminUsername}/Orgs/Remove/{organisationName}", 204, "AdministratorController - POST méthode RemoveAdminFromOrganisation"));
 
                 this._depot.LeaveOrganisation(adminUsername, organisationName);
 
@@ -246,7 +246,7 @@ namespace RPLP.API.Controllers
 
             try
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log($"api/Administrator/", 201, "AdministratorController - POST méthode UpsertAdmin"));
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"api/Administrator/", 201, "AdministratorController - POST méthode UpsertAdmin"));
 
                 this._depot.UpsertAdministrator(p_admin);
             }
@@ -261,7 +261,7 @@ namespace RPLP.API.Controllers
             //{
             //    if (p_admin == null)
             //    {
-            //        RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+            //        RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
             //        "AdministratorController - UpsertAdmin - p_admin passé en paramêtre est null"));
 
             //        return BadRequest();
@@ -269,7 +269,7 @@ namespace RPLP.API.Controllers
 
             //    if (!ModelState.IsValid)
             //    {
-            //        RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+            //        RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
             //       "AdministratorController - UpsertAdmin - p_admin n'est pas un model valide"));
 
             //        return BadRequest();
@@ -293,11 +293,11 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(username))
                 {
-                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                    "AdministratorController - DeleteAdmin - username passé en paramêtre vide", 0));
                 }
 
-                RPLP.JOURNALISATION.Logging.Journal(new Log($"api/Administrator/Username/{username}", 204, "AdministratorController - DELETE méthode DeleteAdmin"));
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"api/Administrator/Username/{username}", 204, "AdministratorController - DELETE méthode DeleteAdmin"));
 
                 this._depot.DeleteAdministrator(username);
                 return NoContent();
@@ -315,11 +315,11 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(username))
                 {
-                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "AdministratorController - ReactivateAdmin - username passé en paramêtre vide", 0));
                 }
 
-                RPLP.JOURNALISATION.Logging.Journal(new Log($"api/Administrator/Reactivate/{username}", 204, "AdministratorController - GET méthode ReactivateAdmin"));
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"api/Administrator/Reactivate/{username}", 204, "AdministratorController - GET méthode ReactivateAdmin"));
 
                 this._depot.ReactivateAdministrator(username);
                 return NoContent();

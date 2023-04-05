@@ -2,7 +2,7 @@
 using RPLP.DAL.DTO.Sql;
 using RPLP.ENTITES;
 using RPLP.JOURNALISATION;
-using RPLP.SERVICES.InterfacesDepots;
+using RPLP.ENTITES.InterfacesDepots;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -21,7 +21,7 @@ namespace RPLP.DAL.SQL.Depots
         {
             if (context == null)
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                                "DepotClassroom - DepotClassroom(RPLPDbContext context) - context de type RPLPDbContext passé en paramètre est null", 0));
             }
 
@@ -38,7 +38,7 @@ namespace RPLP.DAL.SQL.Depots
 
             if (classesResult.Count <= 0)
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                                "DepotClassroom - GetClassrooms() - classesResult.Count <= 0", 0));
 
                 return new List<Classroom>();
@@ -49,7 +49,7 @@ namespace RPLP.DAL.SQL.Depots
 
                 if (classes == null)
                 {
-                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                                    "DepotClassroom - GetClassrooms - la liste classes assignée à partir de classesResult.Select(classroom => classroom.ToEntityWithoutList()).ToList(); est null", 0));
                 }
 
@@ -76,7 +76,7 @@ namespace RPLP.DAL.SQL.Depots
                         }
                     }
                 }
-                RPLP.JOURNALISATION.Logging.Journal(new Log("Classroom - Student - Teacher - Assignment", $"DepotClassroom - Method - GetClassrooms() - Return List<Classroom>"));
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Classroom - Student - Teacher - Assignment", $"DepotClassroom - Method - GetClassrooms() - Return List<Classroom>"));
 
                 return classes;
             }
@@ -86,7 +86,7 @@ namespace RPLP.DAL.SQL.Depots
         {
             if (p_id < 0)
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                        "DepotClassroom - GetClassroomById - p_id passé en paramêtre est hors des limites", 0));
             }
 
@@ -98,7 +98,7 @@ namespace RPLP.DAL.SQL.Depots
 
             if (classroomResult == null)
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log("Classroom - Student - Teacher - Assignment", $"DepotClassroom - Method - GetClassroomById(int p_id) - Return Classroom - classroomResult est null", 0));
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Classroom - Student - Teacher - Assignment", $"DepotClassroom - Method - GetClassroomById(int p_id) - Return Classroom - classroomResult est null", 0));
 
                 return new Classroom();
             }
@@ -122,7 +122,7 @@ namespace RPLP.DAL.SQL.Depots
                 List<Assignment> assignments = classroomResult.Assignments.Select(assignment => assignment.ToEntity()).ToList();
                 classroom.Assignments = assignments;
             }
-            RPLP.JOURNALISATION.Logging.Journal(new Log("Classroom - Student - Teacher - Assignment", $"DepotClassroom - Method - GetClassroomById(int p_id) - Return Classroom"));
+            RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Classroom - Student - Teacher - Assignment", $"DepotClassroom - Method - GetClassroomById(int p_id) - Return Classroom"));
 
             return classroom;
         }
@@ -131,7 +131,7 @@ namespace RPLP.DAL.SQL.Depots
         {
             if (string.IsNullOrWhiteSpace(p_name))
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotClassroom - GetClassroomByName - p_name passé en paramètre est vide", 0));
             }
 
@@ -143,7 +143,7 @@ namespace RPLP.DAL.SQL.Depots
 
             if (classroomResult == null)
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log("Classroom - Student - Teacher - Assignment", $"DepotClassroom - Method - GetClassroomByName(string p_name) - Return Classroom - classroomResult est null", 0));
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Classroom - Student - Teacher - Assignment", $"DepotClassroom - Method - GetClassroomByName(string p_name) - Return Classroom - classroomResult est null", 0));
 
                 return new Classroom();
             }
@@ -167,7 +167,7 @@ namespace RPLP.DAL.SQL.Depots
                 List<Assignment> assignments = classroomResult.Assignments.Select(assignment => assignment.ToEntity()).ToList();
                 classroom.Assignments = assignments;
             }
-            RPLP.JOURNALISATION.Logging.Journal(new Log("Classroom - Student - Teacher - Assignment", $"DepotClassroom - Method - GetClassroomByName(string p_name) - Return Classroom"));
+            RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Classroom - Student - Teacher - Assignment", $"DepotClassroom - Method - GetClassroomByName(string p_name) - Return Classroom"));
 
             return classroom;
         }
@@ -176,7 +176,7 @@ namespace RPLP.DAL.SQL.Depots
         {
             if (string.IsNullOrWhiteSpace(p_classroomName))
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotClassroom - GetAssignmentsByClassroomName - p_classroomName passé en paramètre est vide", 0));
             }
 
@@ -186,12 +186,12 @@ namespace RPLP.DAL.SQL.Depots
 
             if (classroomResult != null && classroomResult.Assignments.Count >= 1)
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log("Classroom - Assignment", $"DepotClassroom - Method - GetAssignmentsByClassroomName(string p_classroomName) - Return List<Assignment> Count : {classroomResult.Assignments.Count}"));
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Classroom - Assignment", $"DepotClassroom - Method - GetAssignmentsByClassroomName(string p_classroomName) - Return List<Assignment> Count : {classroomResult.Assignments.Count}"));
                 return classroomResult.Assignments.Select(assignment => assignment.ToEntity()).ToList();
             }
             else
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log("Classroom - Assignment", $"DepotClassroom - Method - GetAssignmentsByClassroomName(string p_classroomName) - Return List<Assignment> - classroomResult == null || classroomResult.Assignments.Count < 0", 0));
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Classroom - Assignment", $"DepotClassroom - Method - GetAssignmentsByClassroomName(string p_classroomName) - Return List<Assignment> - classroomResult == null || classroomResult.Assignments.Count < 0", 0));
             }
 
             return new List<Assignment>();
@@ -201,7 +201,7 @@ namespace RPLP.DAL.SQL.Depots
         {
             if (string.IsNullOrWhiteSpace(p_classroomName))
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotClassroom - GetStudentsByClassroomName - p_classroomName passé en paramètre est vide", 0));
             }
 
@@ -211,12 +211,12 @@ namespace RPLP.DAL.SQL.Depots
 
             if (classroomResult != null && classroomResult.Students.Count >= 1)
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log("Classroom - Student", $"DepotClassroom - Method - GetStudentsByClassroomName(string p_classroomName) - Return List<Student> Count : {classroomResult.Students.Count}"));
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Classroom - Student", $"DepotClassroom - Method - GetStudentsByClassroomName(string p_classroomName) - Return List<Student> Count : {classroomResult.Students.Count}"));
                 return classroomResult.Students.Select(student => student.ToEntityWithoutList()).ToList();
             }
             else
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log("Classroom - Student", $"DepotClassroom - Method - GetStudentsByClassroomName(string p_classroomName) - Return List<Student> - classroomResult == null || classroomResult.Students.Count < 0", 0));
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Classroom - Student", $"DepotClassroom - Method - GetStudentsByClassroomName(string p_classroomName) - Return List<Student> - classroomResult == null || classroomResult.Students.Count < 0", 0));
             }
 
             return new List<Student>();
@@ -226,7 +226,7 @@ namespace RPLP.DAL.SQL.Depots
         {
             if (string.IsNullOrWhiteSpace(p_classroomName))
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotClassroom - GetTeachersByClassroomName - p_classroomName passé en paramètre est vide", 0));
             }
 
@@ -236,13 +236,13 @@ namespace RPLP.DAL.SQL.Depots
 
             if (classroomResult != null && classroomResult.Teachers.Count >= 1)
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log("Classroom - Teacher", $"DepotClassroom - Method - GetTeachersByClassroomName(string p_classroomName) - Return List<Teacher> - classroomResult != null && classroomResult.Teachers.Count >= 1"));
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Classroom - Teacher", $"DepotClassroom - Method - GetTeachersByClassroomName(string p_classroomName) - Return List<Teacher> - classroomResult != null && classroomResult.Teachers.Count >= 1"));
 
                 return classroomResult.Teachers.Select(teacher => teacher.ToEntityWithoutList()).ToList();
             }
             else
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log("Classroom - Teacher", $"DepotClassroom - Method - GetTeachersByClassroomName(string p_classroomName) - Return List<Teacher> - classroomResult == null && classroomResult.Teachers.Count < 0", 0));
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Classroom - Teacher", $"DepotClassroom - Method - GetTeachersByClassroomName(string p_classroomName) - Return List<Teacher> - classroomResult == null && classroomResult.Teachers.Count < 0", 0));
             }
 
             return new List<Teacher>();
@@ -252,12 +252,12 @@ namespace RPLP.DAL.SQL.Depots
         {
             if (string.IsNullOrWhiteSpace(p_classroomName))
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotClassroom - AddAssignmentToClassroom - p_classroomName passé en paramètre est vide", 0));
             }
             if (string.IsNullOrWhiteSpace(p_assignmentName))
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotClassroom - AddAssignmentToClassroom - p_assignmentName passé en paramètre est vide", 0));
             }
 
@@ -277,17 +277,17 @@ namespace RPLP.DAL.SQL.Depots
                     this._context.Update(classroomResult);
                     this._context.SaveChanges();
 
-                    RPLP.JOURNALISATION.Logging.Journal(new Log("Classroom - Assignments", $"DepotClassroom - Method - AddAssignmentToClassroom(string p_classroomName, string p_assignmentName) - Void - add Assignment to classroom"));
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Classroom - Assignments", $"DepotClassroom - Method - AddAssignmentToClassroom(string p_classroomName, string p_assignmentName) - Void - add Assignment to classroom"));
                 }
                 else
                 {
-                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                                     "DepotClassroom - AddAssignmentToClassroom(string p_classroomName, string p_assignmentName) - assignmentResult != null && !classroomResult.Assignments.Contains(assignmentResult) pas entree dans ce if", 0));
                 }
             }
             else
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log("Classroom - Assignments", $"DepotClassroom - Method - AddAssignmentToClassroom(string p_classroomName, string p_assignmentName) - Void - classroomResult est null", 0));
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Classroom - Assignments", $"DepotClassroom - Method - AddAssignmentToClassroom(string p_classroomName, string p_assignmentName) - Void - classroomResult est null", 0));
             }
         }
 
@@ -295,12 +295,12 @@ namespace RPLP.DAL.SQL.Depots
         {
             if (string.IsNullOrWhiteSpace(p_classroomName))
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotClassroom - AddStudentToClassroom - p_classroomName passé en paramètre est vide", 0));
             }
             if (string.IsNullOrWhiteSpace(p_studentUsername))
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotClassroom - AddStudentToClassroom - p_studentUsername passé en paramètre est vide", 0));
             }
 
@@ -318,17 +318,17 @@ namespace RPLP.DAL.SQL.Depots
                     this._context.Update(classroomResult);
                     this._context.SaveChanges();
 
-                    RPLP.JOURNALISATION.Logging.Journal(new Log("Classroom - Student", $"DepotClassroom - Method - AddStudentToClassroom(string p_classroomName, string p_studentUsername) - Void - add student classroom"));
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Classroom - Student", $"DepotClassroom - Method - AddStudentToClassroom(string p_classroomName, string p_studentUsername) - Void - add student classroom"));
                 }
                 else
                 {
-                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                                     "DepotClassroom - AddStudentToClassroom(string p_classroomName, string p_studentUsername) - studentResult != null && !classroomResult.Students.Contains(studentResult) pas entree dans ce if", 0));
                 }
             }
             else
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log("Classroom - Student", $"DepotClassroom - Method - AddStudentToClassroom(string p_classroomName, string p_studentUsername) - Void - classroomResult est null", 0));
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Classroom - Student", $"DepotClassroom - Method - AddStudentToClassroom(string p_classroomName, string p_studentUsername) - Void - classroomResult est null", 0));
             }
         }
 
@@ -336,12 +336,12 @@ namespace RPLP.DAL.SQL.Depots
         {
             if (string.IsNullOrWhiteSpace(p_classroomName))
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotClassroom - AddStudentToClassroomMatricule - p_classroomName passé en paramètre est vide", 0));
             }
             if (string.IsNullOrWhiteSpace(p_studentMatricule))
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotClassroom - AddStudentToClassroomMatricule - p_studentUsername passé en paramètre est vide", 0));
             }
 
@@ -359,17 +359,17 @@ namespace RPLP.DAL.SQL.Depots
                     this._context.Update(classroomResult);
                     this._context.SaveChanges();
 
-                    RPLP.JOURNALISATION.Logging.Journal(new Log("Classroom - Student", $"DepotClassroom - Method - AddStudentToClassroomMatricule(string p_classroomName, string p_studentMatricule) - Void - add student classroom avec matricule"));
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Classroom - Student", $"DepotClassroom - Method - AddStudentToClassroomMatricule(string p_classroomName, string p_studentMatricule) - Void - add student classroom avec matricule"));
                 }
                 else
                 {
-                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                                     "DepotClassroom - AddStudentToClassroomMatricule(string p_classroomName, string p_studentMatricule) - studentResult != null && !classroomResult.Students.Contains(studentResult) pas entree dans ce if", 0));
                 }
             }
             else
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log("Classroom - Student", $"DepotClassroom - Method - AddStudentToClassroomMatricule(string p_classroomName, string p_studentMatricule) - Void - classroomResult est null", 0));
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Classroom - Student", $"DepotClassroom - Method - AddStudentToClassroomMatricule(string p_classroomName, string p_studentMatricule) - Void - classroomResult est null", 0));
             }
         }
 
@@ -377,12 +377,12 @@ namespace RPLP.DAL.SQL.Depots
         {
             if (string.IsNullOrWhiteSpace(p_classroomName))
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotClassroom - AddTeacherToClassroom - p_classroomName passé en paramètre est vide", 0));
             }
             if (string.IsNullOrWhiteSpace(p_teacherUsername))
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotClassroom - AddTeacherToClassroom - p_teacherUsername passé en paramètre est vide", 0));
             }
 
@@ -401,17 +401,17 @@ namespace RPLP.DAL.SQL.Depots
                     this._context.Update(classroomResult);
                     this._context.SaveChanges();
 
-                    RPLP.JOURNALISATION.Logging.Journal(new Log("Classroom - Teacher", $"DepotClassroom - Method - AddTeacherToClassroom(string p_classroomName, string p_teacherUsername) - Void - add teacher classroom"));
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Classroom - Teacher", $"DepotClassroom - Method - AddTeacherToClassroom(string p_classroomName, string p_teacherUsername) - Void - add teacher classroom"));
                 }
                 else
                 {
-                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                                     "DepotClassroom - AddTeacherToClassroom(string p_classroomName, string p_teacherUsername) - teacherResult != null && !classroomResult.Teachers.Contains(teacherResult) pas entree dans ce if", 0));
                 }
             }
             else
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log("Classroom - Teacher", $"DepotClassroom - Method - AddTeacherToClassroom(string p_classroomName, string p_teacherUsername) - Void - classroomResult est null", 0));
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Classroom - Teacher", $"DepotClassroom - Method - AddTeacherToClassroom(string p_classroomName, string p_teacherUsername) - Void - classroomResult est null", 0));
             }
         }
 
@@ -419,12 +419,12 @@ namespace RPLP.DAL.SQL.Depots
         {
             if (string.IsNullOrWhiteSpace(p_classroomName))
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotClassroom - RemoveAssignmentFromClassroom - p_classroomName passé en paramètre est vide", 0));
             }
             if (string.IsNullOrWhiteSpace(p_assignmentName))
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotClassroom - RemoveAssignmentFromClassroom - p_assignmentName passé en paramètre est vide", 0));
             }
 
@@ -444,17 +444,17 @@ namespace RPLP.DAL.SQL.Depots
                     this._context.Update(classroomResult);
                     this._context.SaveChanges();
 
-                    RPLP.JOURNALISATION.Logging.Journal(new Log("Classroom - Assignment", $"DepotClassroom - Method - RemoveAssignmentFromClassroom(string p_classroomName, string p_assignmentName) - Void - remove assigment classroom"));
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Classroom - Assignment", $"DepotClassroom - Method - RemoveAssignmentFromClassroom(string p_classroomName, string p_assignmentName) - Void - remove assigment classroom"));
                 }
                 else
                 {
-                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                                     "DepotClassroom - RemoveAssignmentFromClassroom(string p_classroomName, string p_assignmentName) - assignmentResult != null && classroomResult.Assignments.Contains(assignmentResult) pas entree dans ce if", 0));
                 }
             }
             else
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log("Classroom - Assignment", $"DepotClassroom - Method - RemoveAssignmentFromClassroom(string p_classroomName, string p_assignmentName) - Void - classroomResult est null", 0));
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Classroom - Assignment", $"DepotClassroom - Method - RemoveAssignmentFromClassroom(string p_classroomName, string p_assignmentName) - Void - classroomResult est null", 0));
             }
         }
 
@@ -462,12 +462,12 @@ namespace RPLP.DAL.SQL.Depots
         {
             if (string.IsNullOrWhiteSpace(p_classroomName))
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotClassroom - RemoveStudentFromClassroom - p_classroomName passé en paramètre est vide", 0));
             }
             if (string.IsNullOrWhiteSpace(p_username))
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotClassroom - RemoveStudentFromClassroom - p_username passé en paramètre est vide", 0));
             }
 
@@ -484,11 +484,11 @@ namespace RPLP.DAL.SQL.Depots
                 this._context.Update(classroomResult);
                 this._context.SaveChanges();
 
-                RPLP.JOURNALISATION.Logging.Journal(new Log("Classroom - Student", $"DepotClassroom - Method - RemoveStudentFromClassroom(string p_classroomName, string p_username) - Void - remove student classroom"));
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Classroom - Student", $"DepotClassroom - Method - RemoveStudentFromClassroom(string p_classroomName, string p_username) - Void - remove student classroom"));
             }
             else
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                                    "DepotClassroom - RemoveAssignmentFromClassroom(string p_classroomName, string p_assignmentName) - classroomResult.Students.SingleOrDefault(s => s.Id == studentResult.Id) != null pas entree dans le if", 0));
             }
         }
@@ -497,12 +497,12 @@ namespace RPLP.DAL.SQL.Depots
         {
             if (string.IsNullOrWhiteSpace(p_classroomName))
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotClassroom - RemoveTeacherFromClassroom - p_classroomName passé en paramètre est vide", 0));
             }
             if (string.IsNullOrWhiteSpace(p_username))
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotClassroom - RemoveTeacherFromClassroom - p_username passé en paramètre est vide", 0));
             }
 
@@ -519,11 +519,11 @@ namespace RPLP.DAL.SQL.Depots
                 this._context.Update(classroomResult);
                 this._context.SaveChanges();
 
-                RPLP.JOURNALISATION.Logging.Journal(new Log("Classroom - Teacher", $"DepotClassroom - Method - RemoveTeacherFromClassroom(string p_classroomName, string p_username) - Void - remove teacher classroom"));
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Classroom - Teacher", $"DepotClassroom - Method - RemoveTeacherFromClassroom(string p_classroomName, string p_username) - Void - remove teacher classroom"));
             }
             else
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                                    "DepotClassroom - RemoveAssignmentFromClassroom(string p_classroomName, string p_assignmentName) - classroomResult.Teachers.SingleOrDefault(t => t.Id == teacherResult.Id) != null pas entree dans le if", 0));
             }
         }
@@ -532,7 +532,7 @@ namespace RPLP.DAL.SQL.Depots
         {
             if (p_classroom == null)
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotClassroom - UpsertClassroom - p_classroom passé en paramètre est null", 0));
             }
 
@@ -542,17 +542,17 @@ namespace RPLP.DAL.SQL.Depots
 
             if (p_classroom.Students == null)
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotClassroom - UpsertClassroom - p_classroom.Students passé en paramètre est null", 0));
             }
             if (p_classroom.Teachers == null)
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotClassroom - UpsertClassroom - p_classroom.Teachers passé en paramètre est null", 0));
             }
             if (p_classroom.Assignments == null)
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotClassroom - UpsertClassroom - p_classroom.Assignments passé en paramètre est null", 0));
             }
 
@@ -591,7 +591,7 @@ namespace RPLP.DAL.SQL.Depots
                 this._context.Update(classroomResult);
                 this._context.SaveChanges();
 
-                RPLP.JOURNALISATION.Logging.Journal(new Log("Classroom - Student - Teacher - Assignment", $"DepotClassroom - Method - UpsertClassroom(Classroom p_classroom) - Void - Update Classroom"));
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Classroom - Student - Teacher - Assignment", $"DepotClassroom - Method - UpsertClassroom(Classroom p_classroom) - Void - Update Classroom"));
             }
             else
             {
@@ -606,7 +606,7 @@ namespace RPLP.DAL.SQL.Depots
                 this._context.Classrooms.Add(classDTO);
                 this._context.SaveChanges();
 
-                RPLP.JOURNALISATION.Logging.Journal(new Log("Classroom - Student - Teacher - Assignment", $"DepotClassroom - Method - UpsertClassroom(Classroom p_classroom) - Void - Add Classroom"));
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Classroom - Student - Teacher - Assignment", $"DepotClassroom - Method - UpsertClassroom(Classroom p_classroom) - Void - Add Classroom"));
             }
         }
 
@@ -614,7 +614,7 @@ namespace RPLP.DAL.SQL.Depots
         {
             if (string.IsNullOrWhiteSpace(p_classroomName))
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotClassroom - DeleteClassroom - p_classroomName passé en paramètre est vide", 0));
             }
 
@@ -627,11 +627,11 @@ namespace RPLP.DAL.SQL.Depots
                 this._context.Update(classroomResult);
                 this._context.SaveChanges();
 
-                RPLP.JOURNALISATION.Logging.Journal(new Log("Classroom", $"DepotClassroom - Method - DeleteClassroom(string p_classroomName) - Void - delete classroom"));
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Classroom", $"DepotClassroom - Method - DeleteClassroom(string p_classroomName) - Void - delete classroom"));
             }
             else
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotClassroom - DeleteClassroom(string p_classroomName) - classroomResult est null", 0));
             }
         }
@@ -640,7 +640,7 @@ namespace RPLP.DAL.SQL.Depots
         {
             if (string.IsNullOrWhiteSpace(p_organisationName))
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotClassroom - GetClassroomsByOrganisationName - p_organisationName passé en paramètre est vide", 0));
             }
 
@@ -648,14 +648,14 @@ namespace RPLP.DAL.SQL.Depots
 
             if (classesResult.Count <= 0)
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotClassroom - DeleteClassroom(string p_classroomName) - classesResult.Count <= 0", 0));
                 return new List<Classroom>();
             }
             else
             {
                 List<Classroom> classes = classesResult.Select(classroom => classroom.ToEntityWithoutList()).ToList();
-                RPLP.JOURNALISATION.Logging.Journal(new Log("Classroom", $"DepotClassroom - Method - GetClassroomsByOrganisationName(string p_organisationName) - Return List<Classroom>"));
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Classroom", $"DepotClassroom - Method - GetClassroomsByOrganisationName(string p_organisationName) - Return List<Classroom>"));
 
                 return classes;
             }

@@ -1,7 +1,7 @@
 ﻿using RPLP.DAL.DTO.Sql;
 using RPLP.ENTITES;
 using RPLP.JOURNALISATION;
-using RPLP.SERVICES.InterfacesDepots;
+using RPLP.ENTITES.InterfacesDepots;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -19,7 +19,7 @@ namespace RPLP.DAL.SQL.Depots
         {
             if (p_context == null)
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                                "DepotComment - DepotComment(RPLPDbContext p_context) - p_context de type RPLPDbContext passé en paramètre est null", 0));
             }
 
@@ -28,7 +28,7 @@ namespace RPLP.DAL.SQL.Depots
 
         public List<Comment> GetComments()
         {
-            RPLP.JOURNALISATION.Logging.Journal(new Log("Comment", $"DepotComment - Method - GetComments() - Return List<Comment>"));
+            RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Comment", $"DepotComment - Method - GetComments() - Return List<Comment>"));
 
             return this._context.Comments.Where(comment => comment.Active)
                                          .Select(comment => comment.ToEntity()).ToList();
@@ -38,7 +38,7 @@ namespace RPLP.DAL.SQL.Depots
         {
             if (p_id < 0)
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                        "DepotComment - GetCommentById - p_id passé en paramêtre est hors des limites", 0));
             }
 
@@ -47,13 +47,13 @@ namespace RPLP.DAL.SQL.Depots
 
             if (comment == null)
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log("Comment", $"DepotComment - Method - GetComments(int p_id) - Return Comment - comment est null",0));
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Comment", $"DepotComment - Method - GetComments(int p_id) - Return Comment - comment est null",0));
 
                 return new Comment();
             }
             else
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log("Comment", $"DepotComment - Method - GetComments(int p_id) - Return Comment - comment != null"));
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Comment", $"DepotComment - Method - GetComments(int p_id) - Return Comment - comment != null"));
             }
 
             return comment.ToEntity();
@@ -63,7 +63,7 @@ namespace RPLP.DAL.SQL.Depots
         {
             if(p_comment == null)
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                        "DepotComment - UpsertComment - p_comment passé en paramêtre est null", 0));
             }
 
@@ -85,7 +85,7 @@ namespace RPLP.DAL.SQL.Depots
                 this._context.Update(commentResult);
                 this._context.SaveChanges();
 
-                RPLP.JOURNALISATION.Logging.Journal(new Log("Comment", $"DepotComment - Method - UpsertComment(Comment p_comment) - Void - Update Comment"));
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Comment", $"DepotComment - Method - UpsertComment(Comment p_comment) - Void - Update Comment"));
             }
             else
             {
@@ -103,7 +103,7 @@ namespace RPLP.DAL.SQL.Depots
                 this._context.Comments.Add(comment);
                 this._context.SaveChanges();
 
-                RPLP.JOURNALISATION.Logging.Journal(new Log("Comment", $"DepotComment - Method - UpsertComment(Comment p_comment) - Void - Add Comment"));
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Comment", $"DepotComment - Method - UpsertComment(Comment p_comment) - Void - Add Comment"));
             }
 
             
@@ -113,7 +113,7 @@ namespace RPLP.DAL.SQL.Depots
         {
             if (p_commentId < 0)
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                        "DepotComment - DeleteComment - p_commentId passé en paramêtre est hors des limites", 0));
             }
 
@@ -125,11 +125,11 @@ namespace RPLP.DAL.SQL.Depots
                 this._context.Update(commentResult);
                 this._context.SaveChanges();
 
-                RPLP.JOURNALISATION.Logging.Journal(new Log("Comment", $"DepotComment - Method - DeleteComment(int p_commentId) - Void - delete comment"));
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Comment", $"DepotComment - Method - DeleteComment(int p_commentId) - Void - delete comment"));
             }
             else
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                       "DepotComment - DeleteComment(int p_commentId) - commentResult est null", 0));
             }
         }

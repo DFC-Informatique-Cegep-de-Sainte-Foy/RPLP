@@ -2,7 +2,8 @@
 using Moq;
 using RPLP.API.Controllers;
 using RPLP.ENTITES;
-using RPLP.SERVICES.InterfacesDepots;
+using RPLP.ENTITES.InterfacesDepots;
+using RPLP.JOURNALISATION;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_Get()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotStudent> depot = new Mock<IDepotStudent>();
             StudentController controller = new StudentController(depot.Object);
 
@@ -50,6 +53,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_GetStudentById()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotStudent> depot = new Mock<IDepotStudent>();
             StudentController controller = new StudentController(depot.Object);
 
@@ -74,6 +79,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_GetStudentByUserName()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotStudent> depot = new Mock<IDepotStudent>();
             StudentController controller = new StudentController(depot.Object);
 
@@ -98,6 +105,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_GetStudentClasses()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotStudent> depot = new Mock<IDepotStudent>();
             StudentController controller = new StudentController(depot.Object);
 
@@ -131,6 +140,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_Post_NullStudent()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotStudent> depot = new Mock<IDepotStudent>();
             StudentController controller = new StudentController(depot.Object);
 
@@ -143,6 +154,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_Post_ModelStateNotValid()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotStudent> depot = new Mock<IDepotStudent>();
             StudentController controller = new StudentController(depot.Object);
             controller.ModelState.AddModelError("", "Mock ModelState Not Valid");
@@ -156,18 +169,22 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_Post_CatchesException_ReturnBadRequest()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotStudent> depot = new Mock<IDepotStudent>();
             StudentController controller = new StudentController(depot.Object);
-            Student student = new Student();
+            Student? student = null;
 
             depot.Setup(d => d.UpsertStudent(student)).Throws<ArgumentException>();
 
-            Assert.IsType<BadRequestObjectResult>(controller.Post(student));
+            Assert.IsType<BadRequestResult>(controller.Post(student));
         }
 
         [Fact]
         public void Test_Post_Created()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotStudent> depot = new Mock<IDepotStudent>();
             StudentController controller = new StudentController(depot.Object);
             Student student = new Student();
@@ -182,6 +199,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_DeleteStudent()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotStudent> depot = new Mock<IDepotStudent>();
             StudentController controller = new StudentController(depot.Object);
 

@@ -2,7 +2,7 @@
 using RPLP.DAL.SQL.Depots;
 using RPLP.ENTITES;
 using RPLP.JOURNALISATION;
-using RPLP.SERVICES.InterfacesDepots;
+using RPLP.ENTITES.InterfacesDepots;
 using System.Diagnostics;
 
 namespace RPLP.API.Controllers
@@ -17,7 +17,7 @@ namespace RPLP.API.Controllers
         {
             if (p_depot == null)
             {
-                RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "CommentController - Constructeur - p_depot passé en paramêtre null", 0));
             }
             this._depot = p_depot;
@@ -28,7 +28,7 @@ namespace RPLP.API.Controllers
         {
             try
             {
-                Logging.Journal(new Log("api/Comment", 200, "CommentController - GET méthode Get"));
+                Logging.Instance.Journal(new Log("api/Comment", 200, "CommentController - GET méthode Get"));
 
                 return Ok(this._depot.GetComments());
             }
@@ -45,11 +45,11 @@ namespace RPLP.API.Controllers
             {
                 if (id < 0)
                 {
-                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "CommentController - GetCommentById - id passé en paramêtre est hors limites", 0));
                 }
 
-                Logging.Journal(new Log($"api/Comment/Id/{id}", 200, "CommentController - GET méthode GetCommentById"));
+                Logging.Instance.Journal(new Log($"api/Comment/Id/{id}", 200, "CommentController - GET méthode GetCommentById"));
 
                 return Ok(this._depot.GetCommentById(id));
             }
@@ -66,7 +66,7 @@ namespace RPLP.API.Controllers
             {
                 if (p_comment == null)
                 {
-                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                         "CommentController - Post - p_comment passé en paramêtre est vide", 0));
 
                     return BadRequest();
@@ -74,13 +74,13 @@ namespace RPLP.API.Controllers
 
                 if (!ModelState.IsValid)
                 {
-                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                         "CommentController - Post - p_comment passé en paramêtre n'est pas valide", 0));
 
                     return BadRequest();
                 }
 
-                Logging.Journal(new Log($"api/Comment", 201, "CommentController - POST méthode Post"));
+                Logging.Instance.Journal(new Log($"api/Comment", 201, "CommentController - POST méthode Post"));
 
                 this._depot.UpsertComment(p_comment);
 
@@ -99,11 +99,11 @@ namespace RPLP.API.Controllers
             {
                 if (id < 0)
                 {
-                    RPLP.JOURNALISATION.Logging.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "CommentController - DeleteComment - id passé en paramêtre est hors limites", 0));
                 }
 
-                Logging.Journal(new Log($"api/Comment/Id/{id}", 204, "CommentController - GET méthode DeleteComment"));
+                Logging.Instance.Journal(new Log($"api/Comment/Id/{id}", 204, "CommentController - GET méthode DeleteComment"));
 
                 this._depot.DeleteComment(id);
                 return NoContent();
