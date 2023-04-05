@@ -200,7 +200,10 @@ namespace RPLP.DAL.SQL.Depots
                 {
                     foreach (Classroom_SQLDTO classroom in teacher.Classes)
                     {
-                        classes.Add(classroom.ToEntityWithoutList());
+                        if (classroom.Active)
+                        { 
+                            classes.Add(classroom.ToEntityWithoutList()); 
+                        }
                     }
                     RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Teacher - Classroom", $"DepotTeacher - Method - GetTeacherClasses(string p_teacherUsername) - Return List<Classroom> - teacher.Classes.Count >= 1"));
 
