@@ -28,6 +28,8 @@ namespace RPLP.JOURNALISATION
             ManipulationLog.ClearLogs();
         }
 
+
+
         public static Logging Instance
         {
             get
