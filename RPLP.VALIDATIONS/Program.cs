@@ -31,7 +31,7 @@ var connectionString = "Server=rplp.db; Database=RPLP; User Id=sa; password=Cad3
 
 //var token = configuration.GetSection("Token");
 
-var token = "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";
+var token = "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";
 
 DbContextOptionsBuilder<RPLPDbContext> optionsBuilder =
     new DbContextOptionsBuilder<RPLPDbContext>().UseSqlServer(connectionString);
