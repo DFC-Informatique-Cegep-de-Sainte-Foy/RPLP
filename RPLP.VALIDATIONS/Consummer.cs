@@ -108,7 +108,7 @@ namespace RPLP.VALIDATIONS
 
                 string p_reviewerName = message.Allocations._classroom.Students.FirstOrDefault(reviewer => reviewer.Id == allocation.StudentId).Username;
 
-                if (allocation.Status == 2)
+                if (allocation.Status == 42)
                 {
                     RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"Assignation effectuée au 10 secondes :" +
                                     $" organisationName : {p_organisationName} - repositoryName : {p_repositoryName} - NomDuReviewer : {p_reviewerName}"));
@@ -127,7 +127,7 @@ namespace RPLP.VALIDATIONS
                     {
                         if (status == "Created")
                         {
-                            RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"Allocation : {allocation.Id} est affecté au status 3"));
+                            RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"Allocation : {allocation.Id} est affecté au status 53"));
 
                             this.Script.SetAllocationAfterAssignation(allocation);
                         }
@@ -137,7 +137,7 @@ namespace RPLP.VALIDATIONS
 
             this.allocations.Pairs = this.Script.GetAllocationBySelectedAllocationID(message.Allocations.Pairs);
 
-            if (this.allocations.Status == 3)
+            if (this.allocations.Status == 53)
             {
                 RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"Assignations complétées avec succès - Message ID : {message.MessageID}"));
 

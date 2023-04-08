@@ -77,7 +77,7 @@ namespace RPLP.ENTITES
                         //             $"i={i} repoId={repoId}" +
                         //             $"j={j} reviewerId={reviewerId}"));
                         if (this.Pairs.FirstOrDefault(all => all.Id == thisAllocationUniqueId) is null)
-                            this.Pairs.Add(new Allocation(thisAllocationUniqueId, repoId, reviewerId, null, 1));
+                            this.Pairs.Add(new Allocation(thisAllocationUniqueId, repoId, reviewerId, null, 31));
                     }
                 }
             }
@@ -117,7 +117,7 @@ namespace RPLP.ENTITES
                     {
                         if (this.Pairs.FirstOrDefault(all => all.Id == thisAllocationUniqueId) is null)
                             if(TeacherAllocationToBeAdded.FirstOrDefault(all => all.Id == thisAllocationUniqueId) is null)
-                                TeacherAllocationToBeAdded.Add(new Allocation(thisAllocationUniqueId, repoId, null, teacherId, 1));
+                                TeacherAllocationToBeAdded.Add(new Allocation(thisAllocationUniqueId, repoId, null, teacherId, 31));
                     }
                     catch (Exception e)
                     {
