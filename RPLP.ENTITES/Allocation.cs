@@ -21,12 +21,6 @@ namespace RPLP.ENTITES
         }
         public Allocation(string id, int repositoryId, int? studentId, int? teacherId, int status)
         {
-            // RPLP.JOURNALISATION.Logging.Instance.Journal(
-            //     new Log($"Allocation.cs - Allocation(int repositoryId, int studentId, int status)" +
-            //             $"repositoryId={repositoryId}" +
-            //             $"studentId={studentId}" +
-            //             $"status={status}"));
-            
             Id = id;
             RepositoryId = repositoryId;
             StudentId = studentId;

@@ -488,7 +488,7 @@ namespace RPLP.DAL.SQL.Depots
 
             foreach (Allocation allocation in p_allocations)
             {
-                allocation.Status = 2;
+                allocation.Status = 42;
                 UpsertAllocation(allocation);
             }
 
@@ -504,7 +504,7 @@ namespace RPLP.DAL.SQL.Depots
                 throw new ArgumentNullException(nameof(p_allocation));
             }
 
-            p_allocation.Status = 3;
+            p_allocation.Status = 53;
             UpsertAllocation(p_allocation);
         }
 
