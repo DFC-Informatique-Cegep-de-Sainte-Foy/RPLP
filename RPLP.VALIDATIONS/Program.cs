@@ -21,8 +21,6 @@ var builder = new ConfigurationBuilder()
 
 configuration = builder.Build();
 
-//A changer mais j'ai un bogue pour l'instant
-
 //var connectionString = configuration.GetConnectionString("DefaultConnection");
 
 var connectionString = "Server=rplp.db; Database=RPLP; User Id=sa; password=Cad3pend86!";
@@ -31,7 +29,7 @@ var connectionString = "Server=rplp.db; Database=RPLP; User Id=sa; password=Cad3
 
 //var token = configuration.GetSection("Token");
 
-var token = "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";
+var token = "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";
 
 DbContextOptionsBuilder<RPLPDbContext> optionsBuilder =
     new DbContextOptionsBuilder<RPLPDbContext>().UseSqlServer(connectionString);
