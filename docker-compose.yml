@@ -1,4 +1,4 @@
-version: '3.4'
+version: '3.9'
 
 services:
   rplp.api:
@@ -39,8 +39,10 @@ services:
       context: .
       dockerfile: RPLP.COHERENCECHECKER/Dockerfile
     depends_on:
-      - rplp.db:
-      - rplp.rabbitmq:
+      rplp.db:
+        condition: service_healthy
+      rplp.rabbitmq:
+        condition: service_healthy
     links: 
       - rplp.rabbitmq
     restart: always
@@ -52,7 +54,8 @@ services:
       context: .
       dockerfile: RPLP.JOURNALISATION/Dockerfile
     depends_on:
-      - rplp.rabbitmq:
+      rplp.rabbitmq:
+        condition: service_healthy
     links: 
       - rplp.rabbitmq
     volumes:
@@ -67,10 +70,10 @@ services:
       context: .
       dockerfile: RPLP.VALIDATIONS/Dockerfile
     depends_on:
-      - rplp.rabbitmq:
+      rplp.rabbitmq:
+        condition: service_healthy
     links: 
       - rplp.rabbitmq
-      
     restart: always
 
   rplp.db:
