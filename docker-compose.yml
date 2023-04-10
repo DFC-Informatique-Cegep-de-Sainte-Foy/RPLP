@@ -11,7 +11,6 @@ services:
       - "47001:80"
     depends_on:
       - rplp.db
-        condition: service_started
     restart: always
 
   rplp.mvc:
@@ -29,7 +28,6 @@ services:
       - "443:443"
     depends_on:
       - rplp.journalisation
-        condition: service_started
     volumes:
       - rplpvolume_logs:/var/log/rplp/
     restart: always
@@ -42,11 +40,9 @@ services:
       dockerfile: RPLP.COHERENCECHECKER/Dockerfile
     depends_on:
       - rplp.db:
-        condition: service_healthy
       - rplp.rabbitmq:
-        condition: service_healthy
     links: 
-        - rplp.rabbitmq
+      - rplp.rabbitmq
     restart: always
 
   rplp.journalisation:
@@ -57,9 +53,8 @@ services:
       dockerfile: RPLP.JOURNALISATION/Dockerfile
     depends_on:
       - rplp.rabbitmq:
-        condition: service_healthy
     links: 
-        - rplp.rabbitmq
+      - rplp.rabbitmq
     volumes:
       - rplpvolume_logs:/var/log/rplp/
       - rplpvolume_logs_zip:/var/log/zip_rplp/
@@ -73,9 +68,8 @@ services:
       dockerfile: RPLP.VALIDATIONS/Dockerfile
     depends_on:
       - rplp.rabbitmq:
-        condition: service_healthy
     links: 
-        - rplp.rabbitmq
+      - rplp.rabbitmq
       
     restart: always
 
