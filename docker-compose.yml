@@ -10,7 +10,8 @@ services:
     ports:
       - "47001:80"
     depends_on:
-      - rplp.db
+      rplp.db:
+        condition: service_healthy
     restart: always
 
   rplp.mvc:
