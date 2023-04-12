@@ -14,7 +14,7 @@ namespace RPLP.JOURNALISATION
     {
 
         public IManipulationLogs ManipulationLog = new ManipulationLogs();
-        private static Logging _instance;
+        private static Logging? _instance;
 
         private static object _lock = new object();
 
