@@ -94,7 +94,7 @@ services:
     volumes:
       - rplpvolume:/var/opt/mssql/data
 #      - C:\mssql:/tmp
-#      - /home/casio/data:/tmp
+#      - /home/rplp/data:/tmp
     restart: always
 
   rplp.db.test:
