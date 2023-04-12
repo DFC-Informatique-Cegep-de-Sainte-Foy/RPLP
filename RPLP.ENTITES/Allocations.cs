@@ -36,7 +36,6 @@ namespace RPLP.ENTITES
 
         }
 
-
         public Allocations(List<Repository> p_repositories, Classroom p_classroom,List<Allocation> p_existingAllocation)
         {
             Pairs = p_existingAllocation;
@@ -62,6 +61,7 @@ namespace RPLP.ENTITES
             if (p_numberOfReviews > 0 && p_numberOfReviews < this._repositories.Count - 1)
             {
                 List<string> usernamesFromCurrentRepos = ExtractUsernameFromRepoName();
+                ShuffleListInPlace(usernamesFromCurrentRepos);
 
                 for (int i = 0; i < _repositories.Count; i++)
                 {
@@ -84,6 +84,18 @@ namespace RPLP.ENTITES
             else
             {
                 throw new ArgumentException("Parameter out of bounds", nameof(p_numberOfReviews));
+            }
+        }
+        
+        private void ShuffleListInPlace<T>(List<T> p_listToShuffle)
+        {
+            Random rnd = new Random();
+            int n = p_listToShuffle.Count;
+            while (n > 1)
+            {
+                n--;
+                int k = rnd.Next(n + 1);
+                (p_listToShuffle[k], p_listToShuffle[n]) = (p_listToShuffle[n], p_listToShuffle[k]);
             }
         }
 

@@ -240,7 +240,6 @@ namespace RPLP.SERVICES.Github
             }
         }
 
-
         private void PrepareRepositoryAndCreatePullRequest()
         {
             RPLP.JOURNALISATION.Logging.Instance.Journal(
@@ -797,20 +796,7 @@ namespace RPLP.SERVICES.Github
 
             return studentDictionary;
         }
-
-        private void ShuffleListInPlace<T>(List<T> p_listToShuffle)
-        {
-            Random rnd = new Random();
-            int n = p_listToShuffle.Count;
-            while (n > 1)
-            {
-                n--;
-                int k = rnd.Next(n + 1);
-                (p_listToShuffle[k], p_listToShuffle[n]) = (p_listToShuffle[n], p_listToShuffle[k]);
-            }
-        }
-
-
+        
         private List<Repository> GetStudentsRepositoriesForAssignment(List<Repository> p_repositories,
             Assignment p_assignment)
         {
