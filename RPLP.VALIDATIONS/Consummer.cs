@@ -18,21 +18,21 @@ namespace RPLP.VALIDATIONS
 {
     public class Consummer
     {
-        private ManualResetEvent faireAttendreProgrammePrincipal = new ManualResetEvent(false);
-        private ConnectionFactory ConnexionFactory = new ConnectionFactory() { HostName = "rplp.rabbitmq" };
-        private ScriptGithubRPLP Script;
-        private Allocations_JSONDTO allocations;
+        private ManualResetEvent _faireAttendreProgrammePrincipal = new ManualResetEvent(false);
+        private ConnectionFactory _connexionFactory = new ConnectionFactory() { HostName = "rplp.rabbitmq" };
+        private ScriptGithubRPLP _script;
+        private Allocations_JSONDTO _allocations;
 
         private string[] subject = { "rplp.assignations.students", "rplp.assignations.professor" };
         public Consummer(ScriptGithubRPLP script)
         {
-            this.Script = script;
-            this.allocations = new Allocations_JSONDTO();
+            this._script = script;
+            this._allocations = new Allocations_JSONDTO();
         }
 
         public void DeclareExchange()
         {
-            using (IConnection connexion = ConnexionFactory.CreateConnection())
+            using (IConnection connexion = _connexionFactory.CreateConnection())
             {
                 using (IModel canalDeCommunication = connexion.CreateModel())
                 {
@@ -56,7 +56,7 @@ namespace RPLP.VALIDATIONS
 
         public void Listen()
         {
-            using (IConnection connexion = ConnexionFactory.CreateConnection())
+            using (IConnection connexion = _connexionFactory.CreateConnection())
             {
                 using (IModel canalDeCommunication = connexion.CreateModel())
                 {
@@ -89,22 +89,22 @@ namespace RPLP.VALIDATIONS
                                         consumerTag: "rplp-message-thread-assignation",
                                         consumer: consommateurServeur);
 
-                    faireAttendreProgrammePrincipal.WaitOne();
+                    _faireAttendreProgrammePrincipal.WaitOne();
                 }
             }
         }
 
         public void ManageAssignmentStudent(MessageGitHubAPI message, IModel canalDeCommunication, BasicDeliverEventArgs argumentEvenement)
         {
-            this.allocations = message.Allocations;
+            this._allocations = message.Allocations;
 
             string status = "Stand";
 
-            foreach (Allocation allocation in this.allocations.Pairs)
+            foreach (Allocation allocation in this._allocations.Pairs)
             {
                 string p_organisationName = message.Allocations._classroom.OrganisationName;
 
-                string p_repositoryName = this.Script.getNameOfRepository(allocation.RepositoryId);
+                string p_repositoryName = this._script.GetNameOfRepository(allocation.RepositoryId);
 
                 string p_reviewerName = message.Allocations._classroom.Students.FirstOrDefault(reviewer => reviewer.Id == allocation.StudentId).Username;
 
@@ -115,7 +115,7 @@ namespace RPLP.VALIDATIONS
                     
                     Thread.Sleep(10000);
 
-                    status = this.Script.createPullRequestAndAssignUser(p_organisationName, p_repositoryName, p_reviewerName);
+                    status = this._script.CreatePullRequestAndAssignUser(p_organisationName, p_repositoryName, p_reviewerName);
 
                     if (status == "Forbidden")
                     {
@@ -129,15 +129,15 @@ namespace RPLP.VALIDATIONS
                         {
                             RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"Allocation : {allocation.Id} est affecté au status 53"));
 
-                            this.Script.SetAllocationAfterAssignation(allocation);
+                            this._script.SetAllocationAfterAssignation(allocation);
                         }
                     }
                 }
             }
 
-            this.allocations.Pairs = this.Script.GetAllocationBySelectedAllocationID(message.Allocations.Pairs);
+            this._allocations.Pairs = this._script.GetAllocationBySelectedAllocationID(message.Allocations.Pairs);
 
-            if (this.allocations.Status == 53)
+            if (this._allocations.Status == 53)
             {
                 RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"Assignations complétées avec succès - Message ID : {message.MessageID}"));
 

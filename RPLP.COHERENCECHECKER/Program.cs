@@ -10,9 +10,6 @@ using RPLP.SERVICES.InterfacesDepots;
 using Unity;
 using Unity.Injection;
 
-// à supprimer après test
-//IUnityContainer container = new UnityContainer().AddExtension(new Diagnostic());
-//IConfiguration configuration = container.Resolve<IConfiguration>(); 
 
 IConfigurationRoot configuration;
 IUnityContainer container = new UnityContainer();
@@ -23,7 +20,7 @@ var builder = new ConfigurationBuilder()
 configuration = builder.Build();
 
 var connectionString = configuration.GetConnectionString("DefaultConnection");
-var token = configuration.GetSection("Token");
+var token = configuration.GetRequiredSection("Token").Value;
 
 DbContextOptionsBuilder<RPLPDbContext> optionsBuilder =
     new DbContextOptionsBuilder<RPLPDbContext>().UseSqlServer(connectionString).UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);

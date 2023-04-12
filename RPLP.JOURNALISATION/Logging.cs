@@ -14,7 +14,7 @@ namespace RPLP.JOURNALISATION
     {
 
         public IManipulationLogs ManipulationLog = new ManipulationLogs();
-        private static Logging instance;
+        private static Logging _instance;
 
         private static object _lock = new object();
 
@@ -34,18 +34,18 @@ namespace RPLP.JOURNALISATION
         {
             get
             {
-                if (instance is null)
+                if (_instance is null)
                 {
                     lock (_lock)
                     {
-                        if (instance == null)
+                        if (_instance == null)
                         {
-                            instance = new Logging();
+                            _instance = new Logging();
                         }
                     }
                 }
 
-                return instance;
+                return _instance;
             }
         }  
     }

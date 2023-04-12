@@ -14,13 +14,13 @@ namespace RPLP.SERVICES
 {
     public static class Producer
     {
-        private static ConnectionFactory ConnexionFactory = new ConnectionFactory() { HostName = "rplp.rabbitmq" };
+        private static ConnectionFactory _connexionFactory = new ConnectionFactory() { HostName = "rplp.rabbitmq" };
 
         public static void CallGitHubAPI(Allocations allocations)
         {
             RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Le Producteur à été appelé"));
 
-            using (IConnection connexion = ConnexionFactory.CreateConnection())
+            using (IConnection connexion = _connexionFactory.CreateConnection())
             {
                 using (IModel canalDeCommunication = connexion.CreateModel())
                 {

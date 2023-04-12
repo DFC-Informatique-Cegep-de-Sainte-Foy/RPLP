@@ -3,33 +3,25 @@ using Microsoft.Extensions.Configuration;
 using RPLP.DAL.SQL;
 using RPLP.DAL.SQL.Depots;
 using RPLP.ENTITES.InterfacesDepots;
-using RPLP.JOURNALISATION;
 using RPLP.SERVICES.Github;
 using RPLP.SERVICES.InterfacesDepots;
 using RPLP.VALIDATIONS;
 using Unity;
 using Unity.Injection;
 
-Thread.Sleep(10000);
 
 IConfigurationRoot configuration;
 IUnityContainer container = new UnityContainer();
 
 var builder = new ConfigurationBuilder()
         .SetBasePath(Directory.GetParent(AppContext.BaseDirectory).FullName)
-        .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+        .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
 configuration = builder.Build();
 
-//var connectionString = configuration.GetConnectionString("DefaultConnection");
+var connectionString = configuration.GetConnectionString("DefaultConnection");
 
-var connectionString = "Server=rplp.db; Database=RPLP; User Id=sa; password=Cad3pend86!";
-
-//RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(connectionString));
-
-//var token = configuration.GetSection("Token");
-
-var token = "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";
+var token = configuration.GetRequiredSection("Token").Value;
 
 DbContextOptionsBuilder<RPLPDbContext> optionsBuilder =
     new DbContextOptionsBuilder<RPLPDbContext>().UseSqlServer(connectionString);
@@ -49,7 +41,6 @@ consummer.DeclareExchange();
 
 while (true)
 {
-    Thread.Sleep(100);
     consummer.Listen();
 }
 
