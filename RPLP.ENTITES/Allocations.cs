@@ -41,6 +41,7 @@ namespace RPLP.ENTITES
             Pairs = p_existingAllocation;
             this._classroom = p_classroom;
             this._repositories = p_repositories;
+            ShuffleListInPlace(this._repositories);
         }
 
         public Allocations(List<Repository> p_repositories, Classroom p_classroom)
@@ -48,6 +49,7 @@ namespace RPLP.ENTITES
             this.Pairs = new List<Allocation>();
             this._classroom = p_classroom;
             this._repositories = p_repositories;
+            ShuffleListInPlace(this._repositories);
         }
 
         public void CreateRandomReviewsAllocation(int p_numberOfReviews)
@@ -61,7 +63,6 @@ namespace RPLP.ENTITES
             if (p_numberOfReviews > 0 && p_numberOfReviews < this._repositories.Count - 1)
             {
                 List<string> usernamesFromCurrentRepos = ExtractUsernameFromRepoName();
-                ShuffleListInPlace(usernamesFromCurrentRepos);
 
                 for (int i = 0; i < _repositories.Count; i++)
                 {
