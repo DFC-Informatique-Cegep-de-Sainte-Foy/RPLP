@@ -33,15 +33,16 @@ namespace RPLP.ENTITES
 
         public Allocations()
         {
-
         }
 
-        public Allocations(List<Repository> p_repositories, Classroom p_classroom,List<Allocation> p_existingAllocation)
+        public Allocations(List<Repository> p_repositories, Classroom p_classroom,
+            List<Allocation> p_existingAllocation)
         {
             Pairs = p_existingAllocation;
             this._classroom = p_classroom;
             this._repositories = p_repositories;
-            ShuffleListInPlace(this._repositories);
+            // A revoir dans la prochaine iteration
+            //ShuffleListInPlace(this._repositories);
         }
 
         public Allocations(List<Repository> p_repositories, Classroom p_classroom)
@@ -49,7 +50,8 @@ namespace RPLP.ENTITES
             this.Pairs = new List<Allocation>();
             this._classroom = p_classroom;
             this._repositories = p_repositories;
-            ShuffleListInPlace(this._repositories);
+            // A revoir dans la prochaine iteration
+            //ShuffleListInPlace(this._repositories);
         }
 
         public void CreateRandomReviewsAllocation(int p_numberOfReviews)
@@ -87,7 +89,7 @@ namespace RPLP.ENTITES
                 throw new ArgumentException("Parameter out of bounds", nameof(p_numberOfReviews));
             }
         }
-        
+
         private void ShuffleListInPlace<T>(List<T> p_listToShuffle)
         {
             Random rnd = new Random();
@@ -129,8 +131,10 @@ namespace RPLP.ENTITES
                     try
                     {
                         if (this.Pairs.FirstOrDefault(all => all.Id == thisAllocationUniqueId) is null)
-                            if(TeacherAllocationToBeAdded.FirstOrDefault(all => all.Id == thisAllocationUniqueId) is null)
-                                TeacherAllocationToBeAdded.Add(new Allocation(thisAllocationUniqueId, repoId, null, teacherId, 31));
+                            if (TeacherAllocationToBeAdded.FirstOrDefault(all => all.Id == thisAllocationUniqueId) is
+                                null)
+                                TeacherAllocationToBeAdded.Add(new Allocation(thisAllocationUniqueId, repoId, null,
+                                    teacherId, 31));
                     }
                     catch (Exception e)
                     {
@@ -138,6 +142,7 @@ namespace RPLP.ENTITES
                             new Log($"error ! ={e.Message}"));
                     }
                 }
+
                 this.Pairs.AddRange(TeacherAllocationToBeAdded);
             }
             else
