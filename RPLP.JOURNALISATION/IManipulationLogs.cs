@@ -11,4 +11,5 @@ namespace RPLP.JOURNALISATION
         void Journal(Log log);
         void ClearLogs();
     }
+    
 }
