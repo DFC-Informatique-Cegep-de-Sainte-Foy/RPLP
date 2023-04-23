@@ -161,5 +161,31 @@ namespace RPLP.DAL.SQL.Depots
 
             return repositories;
         }
+
+        public void ReactivateRepository(string p_repositoryName)
+        {
+            if (string.IsNullOrWhiteSpace(p_repositoryName))
+            {
+                Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                     "DepotRepository - ReactivateRepository - p_repositoryName passé en paramètre est vide", 0));
+            }
+
+            Repository_SQLDTO? repositoryResult = this._context.Repositories.Where(repository => !repository.Active)
+                                                                           .FirstOrDefault(repository => repository.Name == p_repositoryName);
+
+            if (repositoryResult != null)
+            {
+                repositoryResult.Active = true;
+
+                this._context.Update(repositoryResult);
+                this._context.SaveChanges();
+
+                Logging.Instance.Journal(new Log("Repository", $"DepotRepository - Method - ReactivateRepository(string p_repositoryName) - Void - reactivate repository"));
+            }
+            else
+            {
+                Logging.Instance.Journal(new Log("Repository", $"DepotRepository - Method - ReactivateRepository(string p_repositoryName) - Void - repositoryResult est null", 0));
+            }
+        }
     }
 }
