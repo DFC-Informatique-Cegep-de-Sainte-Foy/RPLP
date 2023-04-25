@@ -16,7 +16,7 @@ namespace RPLP.SERVICES
     {
         private static ConnectionFactory _connexionFactory = new ConnectionFactory() { HostName = "rplp.rabbitmq" };
 
-        public static void CallGitHubAPI(Allocations allocations)
+        public static void CallGitHubAPI(Allocations allocations, string objectAllocation = "students")
         {
             RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Le Producteur à été appelé"));
 
@@ -31,7 +31,7 @@ namespace RPLP.SERVICES
                         autoDelete: false
                     );
 
-                    string sujet = $"rplp.assignations.students";
+                    string sujet = $"rplp.assignations.{objectAllocation}";
 
                     MessageGitHubAPI message = new MessageGitHubAPI(Guid.NewGuid(), new Allocations_JSONDTO(allocations));
 
