@@ -110,12 +110,12 @@ namespace RPLP.VALIDATIONS
 
                 if (allocation.Status == 42)
                 {
-                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"Assignation effectuée au 10 secondes :" +
-                                    $" organisationName : {p_organisationName} - repositoryName : {p_repositoryName} - NomDuReviewer : {p_reviewerName}"));
-                    
-                    Thread.Sleep(10000);
-
                     status = this._script.CreatePullRequestAndAssignUser(p_organisationName, p_repositoryName, p_reviewerName);
+
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"Assignation effectuée au 15 secondes :" +
+                                    $" organisationName : {p_organisationName} - repositoryName : {p_repositoryName} - NomDuReviewer : {p_reviewerName}"));
+
+                    Thread.Sleep(15000);
 
                     if (status == "Forbidden")
                     {

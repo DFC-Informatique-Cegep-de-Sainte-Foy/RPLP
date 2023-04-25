@@ -383,7 +383,7 @@ namespace RPLP.API.Controllers
 
                 Logging.Instance.Journal(new Log($"api/Github/{organisationName}/{repositoryName}/Create/Branch/{branchName}/From/{sha}", 200, "GithubController - POST méthode CreateNewBranch"));
 
-                return Ok(this._githubAction.CreateNewBranchForFeedbackGitHub(organisationName, repositoryName, sha, branchName));
+                return Ok(this._githubAction.CreateNewBranchGitHub(organisationName, repositoryName, sha, branchName));
             }
             catch (Exception)
             {
@@ -429,7 +429,7 @@ namespace RPLP.API.Controllers
 
                 Logging.Instance.Journal(new Log($"api/Github/{organisationName}/{repositoryName}/Create/PullRequest/{branchName}/Title/{{title}}/Body/{body}", 200, "GithubController - POST méthode CreateNewPR"));
 
-                return Ok(this._githubAction.CreateNewPullRequestFeedbackGitHub(organisationName, repositoryName, branchName, title, body));
+                return Ok(this._githubAction.CreateNewPullRequestGitHub(organisationName, repositoryName, branchName, title, body));
             }
             catch (Exception)
             {
