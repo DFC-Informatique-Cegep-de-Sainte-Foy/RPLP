@@ -962,6 +962,19 @@ namespace RPLP.SERVICES.Github
             return Path.GetFullPath("ZippedRepos.zip");
         }
 
+        private void VerifyRepositoryValidity(Repository p_repository)
+        {
+            List<Branch_JSONDTO> branches = _githubApiAction.GetRepositoryBranchesGithub(this._activeClassroom.OrganisationName, p_repository.Name);
+            if (branches.Count == 0)
+            {
+                _depotRepository.DeleteRepository(p_repository.Name);
+            }
+            else
+            {
+                _depotRepository.ReactivateRepository(p_repository.Name);
+            }
+        }
+
         #endregion
     }
 }
