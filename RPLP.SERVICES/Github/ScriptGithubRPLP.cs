@@ -773,6 +773,45 @@ namespace RPLP.SERVICES.Github
             return repositoriesToAdd;
         }
 
+        public void ValidateAllRepositories()
+        {
+            List<Repository> repositoriesToValidate = new List<Repository>();
+            List<Organisation> organisations = this._depotOrganisation.GetOrganisations();
+
+            if (organisations == null)
+            {
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                    new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    "ScriptGithubRPLP - ValidateAllRepositories - la liste organisations assignée à partir de this._depotOrganisation.GetOrganisations(); est null",
+                    0));
+            }
+
+            foreach (Organisation o in organisations)
+            {
+                List<Repository> repositoriesInDB = this._depotRepository.GetRepositoriesFromOrganisationName(o.Name);
+
+                repositoriesToValidate.AddRange(repositoriesInDB);
+            }
+
+            foreach (Repository r in repositoriesToValidate)
+            {
+                this.ValidateOneRepository(r);
+            }
+        }
+
+        private void ValidateOneRepository(Repository p_repository)
+        {
+            List<Branch_JSONDTO> branches = _githubApiAction.GetRepositoryBranchesGithub(this._activeClassroom.OrganisationName, p_repository.Name);
+            if (branches.Count == 0)
+            {
+                _depotRepository.DeleteRepository(p_repository.Name);
+            }
+            else
+            {
+                _depotRepository.ReactivateRepository(p_repository.Name);
+            }
+        }
+
         #endregion
 
         #region Private Submethods
@@ -960,19 +999,6 @@ namespace RPLP.SERVICES.Github
             Directory.Delete("ZippedRepos", true);
 
             return Path.GetFullPath("ZippedRepos.zip");
-        }
-
-        private void VerifyRepositoryValidity(Repository p_repository)
-        {
-            List<Branch_JSONDTO> branches = _githubApiAction.GetRepositoryBranchesGithub(this._activeClassroom.OrganisationName, p_repository.Name);
-            if (branches.Count == 0)
-            {
-                _depotRepository.DeleteRepository(p_repository.Name);
-            }
-            else
-            {
-                _depotRepository.ReactivateRepository(p_repository.Name);
-            }
         }
 
         #endregion
