@@ -682,7 +682,7 @@ namespace RPLP.SERVICES.Github
 
                 if (result == "Created")
                 {
-                    result = CreatePullRequestAndAssignTeacher(p_organisationName, p_repositoryName, newBranchName, p_newFileName, p_message, p_content, p_username);
+                    result = CreatePullRequestAndAssignTeacher(p_organisationName, p_repositoryName, newBranchName.ToLower(), p_newFileName, p_message, p_content, p_username);
 
                     if (result != "Created")
                     {
