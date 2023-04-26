@@ -118,8 +118,8 @@ namespace RPLP.DAL.SQL.Depots
                      "DepotRepository - DeleteRepository - p_repositoryName passé en paramètre est vide", 0));
             }
 
-            Repository_SQLDTO repositoryResult = this._context.Repositories.Where(repository => repository.Active)
-                                                                           .FirstOrDefault(repository => repository.Name == p_repositoryName);
+            Repository_SQLDTO repositoryResult = this._context.Repositories.FirstOrDefault(repository => repository.Name == p_repositoryName && repository.Active);
+            
             if (repositoryResult != null)
             {
                 repositoryResult.Active = false;
@@ -127,11 +127,11 @@ namespace RPLP.DAL.SQL.Depots
                 this._context.Update(repositoryResult);
                 this._context.SaveChanges();
 
-                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Repository", $"DepotRepository - Method - DeleteRepository(string p_repositoryName) - Void - delete repository"));
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Repository", $"DepotRepository - Method - DeleteRepository(string p_repositoryName : {p_repositoryName}) - Void - delete repository"));
             }
             else
             {
-                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Repository", $"DepotRepository - Method - DeleteRepository(string p_repositoryName) - Void - repositoryResult est null",0));
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Repository", $"DepotRepository - Method - DeleteRepository(string p_repositoryName : {p_repositoryName}) - Void - repositoryResult est null",0));
             }
             
         }
@@ -144,6 +144,7 @@ namespace RPLP.DAL.SQL.Depots
                 .Select(repository => repository.ToEntity())
                 .ToList();
         }
+
 
         public List<Repository> GetRepositoriesFromOrganisationName(string p_organisationName)
         {
