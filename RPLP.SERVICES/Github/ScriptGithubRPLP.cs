@@ -876,22 +876,6 @@ namespace RPLP.SERVICES.Github
 
         public void EnsureOrganisationRepositoriesAreInDB()
         {
-            List<Repository> repositories = this.ReturnMissingRepositories();
-
-            if (repositories.Count == null)
-            {
-                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
-                    new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                    "ScriptGithubRPLP - EnsureOrganisationRepositoriesAreInDB - la liste repositories assignée à partir de this.ReturnMissingRepositories(); est null",
-                    0));
-            }
-
-            repositories.ForEach(r => this._depotRepository.UpsertRepository(r));
-        }
-
-        private List<Repository> ReturnMissingRepositories()
-        {
-            List<Repository> repositoriesToAdd = new List<Repository>();
             List<Organisation> organisations = this._depotOrganisation.GetOrganisations();
 
             if (organisations == null)
@@ -910,19 +894,54 @@ namespace RPLP.SERVICES.Github
                 List<Repository_JSONDTO> repositoriesOnGithub =
                     this._githubApiAction.GetOrganisationRepositoriesGithub(organisation.Name);
 
-                repositoriesToAdd.AddRange(repositoriesOnGithub
-                    .Where(ghRepo =>
-                        repositoriesInDB.FirstOrDefault(dbRepo => dbRepo.FullName == ghRepo.full_name) == null)
-                    .Select(r => new Repository()
+                ManageMissingRepositoryInDBFromGitHub(repositoriesInDB, repositoriesOnGithub);
+                ManageMissingRepositoryInGitHubFromDB(repositoriesInDB, repositoriesOnGithub);
+            }
+        }
+
+        private void ManageMissingRepositoryInDBFromGitHub(List<Repository> repositoriesInDB, List<Repository_JSONDTO> repositoriesOnGithub)
+        {
+            List<Repository> repositoriesToAdd = new List<Repository>();
+
+            repositoriesToAdd.AddRange(repositoriesOnGithub
+                   .Where(ghRepo =>
+                       repositoriesInDB.FirstOrDefault(dbRepo => dbRepo.FullName == ghRepo.full_name) == null)
+                   .Select(r => new Repository()
+                   {
+                       FullName = r.full_name,
+                       Name = r.name,
+                       OrganisationName = r.full_name.Split('/')[0]
+                   }));
+
+            repositoriesToAdd.ForEach(r => this._depotRepository.UpsertRepository(r));
+        }
+
+
+        private void ManageMissingRepositoryInGitHubFromDB(List<Repository> repositoriesInDB, List<Repository_JSONDTO> repositoriesOnGithub)
+        {
+            List<Repository> repositoriesDesactivate = new List<Repository>();
+
+            foreach (Repository repo in repositoriesInDB)
+            {
+                bool estInclus = false;
+
+                foreach (Repository_JSONDTO repoGitHub in repositoriesOnGithub)
+                {
+                    if(repo.FullName == repoGitHub.full_name)
                     {
-                        FullName = r.full_name,
-                        Name = r.name,
-                        OrganisationName = r.full_name.Split('/')[0]
-                    }));
+                        estInclus = true;
+                    }
+                }
+
+                if(!estInclus)
+                {
+                    repositoriesDesactivate.Add(repo);
+                }
             }
 
-            return repositoriesToAdd;
+            repositoriesDesactivate.ForEach(r => this._depotRepository.DeleteRepository(r.Name));
         }
+
 
         #endregion
 
