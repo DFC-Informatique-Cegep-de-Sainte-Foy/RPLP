@@ -101,16 +101,26 @@ namespace RPLP.VALIDATIONS
             BasicDeliverEventArgs argumentEvenement, bool isReviewerStudent)
         {
             this._allocations = message.Allocations;
+            List<Allocation> allocations;
+            
+            if (isReviewerStudent)
+            {
+                allocations = this._allocations.Pairs.Where(al => al.StudentId is not null).ToList();
+            }
+            else
+            {
+                allocations = this._allocations.Pairs.Where(al => al.StudentId is null).ToList();
+            }
 
-            string status = "Stand";
+            string status;
 
-            foreach (Allocation allocation in this._allocations.Pairs)
+            foreach (Allocation allocation in allocations)
             {
                 string p_organisationName = message.Allocations._classroom.OrganisationName;
 
                 string p_repositoryName = this._script.GetNameOfRepository(allocation.RepositoryId);
 
-                string p_reviewerName = "";
+                string p_reviewerName;
 
                 if (allocation.Status == 42)
                 {
@@ -126,10 +136,7 @@ namespace RPLP.VALIDATIONS
                         p_reviewerName = message.Allocations._classroom.Teachers
                             .FirstOrDefault(reviewer => reviewer.Id == allocation.TeacherId).Username;
 
-                        this._script.createPullRequestForTeacher(p_organisationName, p_repositoryName,p_reviewerName, FILENAME, MESSAGE, CONTENTS);
-
-                        status = "Stand";
-
+                        status = this._script.createPullRequestForTeacher(p_organisationName, p_repositoryName,p_reviewerName, FILENAME, MESSAGE, CONTENTS);
                     }
 
                     RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"Assignation effectuée au 15 secondes :" +

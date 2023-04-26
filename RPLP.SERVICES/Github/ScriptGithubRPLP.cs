@@ -659,31 +659,6 @@ namespace RPLP.SERVICES.Github
             //     "RmljaGllciB0ZXh0ZSBwb3VyIGNyw6nDqSBQUg==");
         }
 
-        private void createPullRequestForTeacher(string p_newFileName, string p_message, string p_content)
-        {
-            List<Allocation> allocationsToATeacher =
-                this._allocations.Pairs.Where(alloc => alloc.TeacherId is not null).ToList();
-
-            if (allocationsToATeacher.Count > 0)
-            {
-                foreach (Allocation allocation in allocationsToATeacher)
-                {
-                    string p_organisationName = this._activeClassroom.OrganisationName;
-                    string p_repositoryName = this._depotRepository.GetRepositoryById(allocation.RepositoryId).Name;
-                    string p_teacherUsername = this._activeClassroom.Teachers
-                        .FirstOrDefault(teacher => teacher.Id == allocation.TeacherId).Username;
-
-                    Branch_JSONDTO branchMain =
-                        GetBranchFromBranchesPerBranchType(p_organisationName, p_repositoryName, "main");
-
-                    Thread.Sleep(10000);
-                    CreatePullRequestAndAssignTeacher(p_organisationName, p_repositoryName,
-                        branchMain.gitObject.sha,
-                        p_newFileName, p_message, p_content, p_teacherUsername);
-                }
-            }
-        }
-
         public string createPullRequestForTeacher(string p_organisationName, string p_repositoryName, string p_username,
             string p_newFileName, string p_message, string p_content)
         {
