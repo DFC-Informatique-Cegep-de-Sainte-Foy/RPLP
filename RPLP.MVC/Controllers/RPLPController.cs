@@ -94,6 +94,12 @@ namespace RPLP.MVC.Controllers
 
             return View("GestionDonnees", model);
         }
+        public IActionResult Allocation()
+        {
+            //AllocationsViewModel model = GetAllocationsInformations();
+
+            return View("Allocation");
+        }
 
         #endregion
 
@@ -349,6 +355,37 @@ namespace RPLP.MVC.Controllers
         #endregion
 
         #region ActionGet
+        [HttpGet]
+        public ActionResult<AllocationsViewModel> GetAllocationsInformations(string classroomName, string assignementName)
+        {
+            try
+            {
+                List<AllocationViewModel> allocations = new List<AllocationViewModel>();
+                List<Allocation> allocationsInDB = this._httpClient.GetFromJsonAsync<List<Allocation>>($"Allocation").Result;
+                List<Student> students = _httpClient.GetFromJsonAsync<List<Student>>($"Student").Result;
+                List<Teacher> teachers = _httpClient.GetFromJsonAsync<List<Teacher>>($"Teacher").Result;
+                List<Repository> repositories = _httpClient.GetFromJsonAsync<List<Repository>>($"Repository").Result;
+
+                foreach (Allocation allocation in allocationsInDB)
+                {
+                    Repository? repository = repositories.Where(r => r.Id == allocation.RepositoryId).FirstOrDefault();
+                    if (repository.Name.Contains(assignementName))
+                    {
+                        Student? student = students.Where(s => s.Id == allocation.StudentId).FirstOrDefault();
+                        Teacher? teacher = teachers.Where(t => t.Id == allocation.TeacherId).FirstOrDefault();
+                        AllocationViewModel allocationViewModel = new AllocationViewModel(allocation.Id, repository.Name, student.Username, teacher.Username, allocation.Status);
+                        allocations.Add(allocationViewModel);
+                    }
+                }
+
+                AllocationsViewModel allocationsViewModel = new AllocationsViewModel(allocations, classroomName);
+                return allocationsViewModel;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
 
         [HttpGet]
         public ActionResult<List<ClassroomViewModel>> GetClassroomsOfOrganisationByName(string orgName)
@@ -1329,6 +1366,7 @@ namespace RPLP.MVC.Controllers
             _scriptGithub.ScriptRemoveStudentCollaboratorsFromAssignment(organisationName, classroomName, assignmentName);
             return Ok();
         }
+        
 
         [HttpPost]
         public ActionResult<string> POSTUpsertTeacher(int Id, string Email, string FirstName, string LastName, string Username)
