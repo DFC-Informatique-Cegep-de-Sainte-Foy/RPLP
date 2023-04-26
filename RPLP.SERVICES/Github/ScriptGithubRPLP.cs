@@ -773,7 +773,7 @@ namespace RPLP.SERVICES.Github
             return repositoriesToAdd;
         }
 
-        public void ValidateAllRepositories()
+        public void ValidateAllRepositoriesHasBranch()
         {
             List<Repository> repositoriesToValidate = new List<Repository>();
             List<Organisation> organisations = this._depotOrganisation.GetOrganisations();
@@ -795,14 +795,18 @@ namespace RPLP.SERVICES.Github
 
             foreach (Repository r in repositoriesToValidate)
             {
-                this.ValidateOneRepository(r);
+                this.ValidateOneRepositoryHasBranch(r);
             }
         }
 
-        private void ValidateOneRepository(Repository p_repository)
+        private void ValidateOneRepositoryHasBranch(Repository p_repository)
         {
             List<Branch_JSONDTO> branches = _githubApiAction.GetRepositoryBranchesGithub(this._activeClassroom.OrganisationName, p_repository.Name);
             if (branches.Count == 0)
+            {
+                _depotRepository.DeleteRepository(p_repository.Name);
+            }
+            else if (ValidateMainBranchExistsFromBranchList(branches))
             {
                 _depotRepository.DeleteRepository(p_repository.Name);
             }
@@ -910,6 +914,22 @@ namespace RPLP.SERVICES.Github
             return branchDTO;
         }
 
+        private bool ValidateMainBranchExistsFromBranchList(List<Branch_JSONDTO> branchesResult)
+        {
+            bool mainExists = false;
+
+            foreach (Branch_JSONDTO branch in branchesResult)
+            {
+                string[] branchName = branch.reference.Split("/");
+
+                if (branchName[2] == "main")
+                {
+                    mainExists = true;
+                }
+            }
+
+            return mainExists;
+        }
         private Branch_JSONDTO GetBranchFromBranchesPerBranchType(string p_organisationName, string p_repositoryName,
             string p_branchType = "feedback")
         {
