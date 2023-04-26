@@ -163,22 +163,31 @@ namespace RPLP.DAL.SQL.Depots
             return repositories;
         }
 
-
-        public List<Repository> GetAllRepositoriesFromOrganisationName(string p_organisationName)
+        public void ReactivateRepository(string p_repositoryName)
         {
-            if (string.IsNullOrWhiteSpace(p_organisationName))
+            if (string.IsNullOrWhiteSpace(p_repositoryName))
             {
-                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                     "DepotRepository - GetRepositoriesFromOrganisationName - p_organisationName passé en paramètre est vide", 0));
+                Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                     "DepotRepository - ReactivateRepository - p_repositoryName passé en paramètre est vide", 0));
+                throw new ArgumentNullException(nameof(p_repositoryName));
             }
-            List<Repository> repositories = this._context.Repositories
-                .Where(repository => repository.OrganisationName == p_organisationName)
-                .Select(repository => repository.ToEntity())
-                .ToList();
 
-            RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Repository", $"DepotRepository - Method - GetRepositoriesFromOrganisationName(string p_organisationName) - Return List<Repository> Count: {repositories.Count}"));
+            Repository_SQLDTO? repositoryResult = this._context.Repositories.Where(repository => !repository.Active)
+                                                                           .FirstOrDefault(repository => repository.Name == p_repositoryName);
 
-            return repositories;
+            if (repositoryResult != null)
+            {
+                repositoryResult.Active = true;
+
+                this._context.Update(repositoryResult);
+                this._context.SaveChanges();
+
+                Logging.Instance.Journal(new Log("Repository", $"DepotRepository - Method - ReactivateRepository(string p_repositoryName) - Void - reactivate repository"));
+            }
+            else
+            {
+                Logging.Instance.Journal(new Log("Repository", $"DepotRepository - Method - ReactivateRepository(string p_repositoryName) - Void - repositoryResult est null", 0));
+            }
         }
     }
 }
