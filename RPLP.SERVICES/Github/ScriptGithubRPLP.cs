@@ -186,6 +186,7 @@ namespace RPLP.SERVICES.Github
 
             CreateOrUpdateAllocations(repositoriesToAssign);
             this._allocations.CreateRandomReviewsAllocation(p_reviewsPerRepository);
+            this._allocations.CreateReviewsAllocationsForStudentsWithoutRepository(studentswithoutRepository,p_reviewsPerRepository);
             this._depotAllocation.UpsertAllocationsBatch(this._allocations.Pairs);
             PrepareRepositoryAndCreatePullRequest();
         }
