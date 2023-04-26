@@ -146,6 +146,8 @@ namespace RPLP.SERVICES.Github
                 throw new ArgumentException("the provided value is incorrect or null");
             }
 
+            ValidateAllRepositoriesHasBranch();
+
             CreateOrUpdateActiveClassroom(p_organisationName, p_classRoomName, p_assignmentName);
 
             if (this._activeClassroom.Students.Count < p_reviewsPerRepository + 1)
@@ -170,8 +172,21 @@ namespace RPLP.SERVICES.Github
                 throw new ArgumentNullException($"No repositories to assign in {p_classRoomName}");
             }
 
+            List<Student> studentswithoutRepository = GetStudentsWithoutRepositoryFromAssignment(repositoriesToAssign);
+
+            if (this._activeClassroom.Students.Count - studentswithoutRepository.Count < p_reviewsPerRepository + 1)
+            {
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new InvalidOperationException().ToString(),
+                    new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    "ScriptGithubRPLP - ScriptAssignStudentToAssignmentReview - La liste students ajustée sans les étudiants sans dépôt n'est pas conforme selon la demande",
+                    0));
+
+                throw new ArgumentException("Number of students inferior to number of reviews");
+            }
+
             CreateOrUpdateAllocations(repositoriesToAssign);
             this._allocations.CreateRandomReviewsAllocation(p_reviewsPerRepository);
+            this._allocations.CreateReviewsAllocationsForStudentsWithoutRepository(studentswithoutRepository,p_reviewsPerRepository);
             this._depotAllocation.UpsertAllocationsBatch(this._allocations.Pairs);
             PrepareRepositoryAndCreatePullRequest();
         }
@@ -1192,6 +1207,32 @@ namespace RPLP.SERVICES.Github
             Directory.Delete("ZippedRepos", true);
 
             return Path.GetFullPath("ZippedRepos.zip");
+        }
+
+        private List<Student> GetStudentsWithoutRepositoryFromAssignment(List<Repository> p_repositories)
+        {
+            List<Student> students = new List<Student>();
+
+            foreach (Student student in this._activeClassroom.Students)
+            {
+                bool hasRepository = false;
+
+                foreach (Repository reopsitory in p_repositories)
+                {
+                    if (reopsitory.Name.ToLower().Contains(student.Username))
+                    {
+                        hasRepository = true;
+                        break;
+                    }
+                }
+
+                if (!hasRepository)
+                {
+                    students.Add(student);
+                }
+            }
+
+            return students;
         }
 
         #endregion
