@@ -724,6 +724,68 @@ namespace RPLP.MVC.Controllers
           
         }
 
+
+        [HttpGet]
+        public ActionResult<List<StudentViewModel>> GetTutors(string classroomName)
+        {
+            try
+            {
+                Logging.Instance.Journal(new Log("api", 0, $"RPLPController - GET méthode GetTutors"));
+
+                List<StudentViewModel> tutors = new List<StudentViewModel>();
+
+                List<Student> databaseTutorInClassroom = this._httpClient
+                    .GetFromJsonAsync<List<Student>>($"Student")
+                    .Result.Where(tutor => tutor.Classes.Any(classroom => classroom.Name == classroomName)).ToList();
+
+                List<Student> databaseTutor = this._httpClient
+                    .GetFromJsonAsync<List<Student>>($"Student")
+                    .Result;
+
+                if (databaseTutorInClassroom == null)
+                {
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                         "RPLPController - GetTutors - La liste databaseTutorInClassroom assignée à partir de la méthode this._httpClient.GetFromJsonAsync<List<Student>>($\"Student\").Result.Where(tutor => tutor.Classes.Any(classroom => classroom.Name == classroomName)).ToList(); est null", 0));
+                }
+
+                if (databaseTutor == null)
+                {
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                         "RPLPController - GetTutors - La liste databaseTutor assignée à partir de la méthode  this._httpClient.GetFromJsonAsync<List<Student>>($\"Student\").Result; est null", 0));
+                }
+
+                if (databaseTutorInClassroom.Count >= 1 || databaseTutor.Count >= 1)
+                {
+                    foreach (Student tutor in databaseTutor)
+                    {
+                        bool estInclus = false;
+
+                        foreach (Student student in databaseTutorInClassroom)
+                        {
+                            if(student.Id == tutor.Id)
+                            {
+                                estInclus = true;
+                            }
+                        }
+
+                        if(!estInclus)
+                        {
+                            tutors.Add(new StudentViewModel { Id = tutor.Id, Username = tutor.Username, FirstName = tutor.FirstName, LastName = tutor.LastName, Email = tutor.Email });
+                        }
+                      
+                    }
+                }
+
+                return tutors;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+        }
+
+
         [HttpGet]
         public ActionResult<List<AssignmentViewModel>> GetAssignmentInClassroomByClassroomName(string classroomName)
         {
