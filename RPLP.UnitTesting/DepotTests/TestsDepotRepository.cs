@@ -6,6 +6,7 @@ using RPLP.DAL.SQL;
 using RPLP.DAL.SQL.Depots;
 using RPLP.ENTITES;
 using RPLP.JOURNALISATION;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
@@ -455,6 +456,224 @@ namespace RPLP.UnitTesting.DepotTests
             Assert.Equal(2, repositories.Count);
            
             
+        }
+
+        [Fact]
+        public void Test_ReactivateRepository_InactiveRepository_RepositoryActive()
+        {
+            List<Repository_SQLDTO> repositoriesDB = new List<Repository_SQLDTO>()
+                {
+                    new Repository_SQLDTO()
+                    {
+                        Id=1,
+                        Name = "ThPaquet",
+                        FullName = "Thierry Paquet",
+                        OrganisationName = "RPLP",
+                        Active = true
+                    },
+                    new Repository_SQLDTO()
+                    {
+                        Id=2,
+                        Name = "ikeameatbol",
+                        FullName = "Jonathan Blouin",
+                        OrganisationName = "RPLP",
+                        Active = true
+                    },
+                    new Repository_SQLDTO()
+                    {
+                        Id=3,
+                        Name = "BACenComm",
+                        FullName = "Melissa Lachapelle",
+                        OrganisationName = "RPLP",
+                        Active = false
+                    },
+                };
+
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
+
+            Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Repositories).ReturnsDbSet(repositoriesDB);
+            DepotRepository depot = new DepotRepository(context.Object);
+
+            depot.ReactivateRepository("BACenComm");
+
+            Repository_SQLDTO? repository = repositoriesDB.FirstOrDefault(r => r.Name == "BACenComm");
+            Assert.True(repository.Active);
+        }
+
+        [Fact]
+        public void Test_ReactivateRepository_ActiveRepository_RepositoryActive()
+        {
+            List<Repository_SQLDTO> repositoriesDB = new List<Repository_SQLDTO>()
+                {
+                    new Repository_SQLDTO()
+                    {
+                        Id=1,
+                        Name = "ThPaquet",
+                        FullName = "Thierry Paquet",
+                        OrganisationName = "RPLP",
+                        Active = true
+                    },
+                    new Repository_SQLDTO()
+                    {
+                        Id=2,
+                        Name = "ikeameatbol",
+                        FullName = "Jonathan Blouin",
+                        OrganisationName = "RPLP",
+                        Active = true
+                    },
+                    new Repository_SQLDTO()
+                    {
+                        Id=3,
+                        Name = "BACenComm",
+                        FullName = "Melissa Lachapelle",
+                        OrganisationName = "RPLP",
+                        Active = false
+                    },
+                };
+
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
+
+            Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Repositories).ReturnsDbSet(repositoriesDB);
+            DepotRepository depot = new DepotRepository(context.Object);
+
+            depot.ReactivateRepository("ThPaquet");
+
+            Repository_SQLDTO? repository = repositoriesDB.FirstOrDefault(r => r.Name == "ThPaquet");
+            Assert.True(repository.Active);
+        }
+
+        [Fact]
+        public void Test_ReactivateRepository_InexistantRepository_DoesNothing()
+        {
+            List<Repository_SQLDTO> repositoriesDB = new List<Repository_SQLDTO>()
+                {
+                    new Repository_SQLDTO()
+                    {
+                        Id=1,
+                        Name = "ThPaquet",
+                        FullName = "Thierry Paquet",
+                        OrganisationName = "RPLP",
+                        Active = true
+                    },
+                    new Repository_SQLDTO()
+                    {
+                        Id=2,
+                        Name = "ikeameatbol",
+                        FullName = "Jonathan Blouin",
+                        OrganisationName = "RPLP",
+                        Active = true
+                    },
+                    new Repository_SQLDTO()
+                    {
+                        Id=3,
+                        Name = "BACenComm",
+                        FullName = "Melissa Lachapelle",
+                        OrganisationName = "RPLP",
+                        Active = false
+                    },
+                };
+
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
+
+            Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Repositories).ReturnsDbSet(repositoriesDB);
+            DepotRepository depot = new DepotRepository(context.Object);
+
+            depot.ReactivateRepository("InexistantRepo");
+
+            Repository_SQLDTO? repository = repositoriesDB.FirstOrDefault(r => r.Name == "InexistantRepo");
+            Assert.Null(repository);
+        }
+
+        [Fact]
+        public void Test_ReactivateRepository_ParamNull_ExceptionThrown()
+        {
+            List<Repository_SQLDTO> repositoriesDB = new List<Repository_SQLDTO>()
+                {
+                    new Repository_SQLDTO()
+                    {
+                        Id=1,
+                        Name = "ThPaquet",
+                        FullName = "Thierry Paquet",
+                        OrganisationName = "RPLP",
+                        Active = true
+                    },
+                    new Repository_SQLDTO()
+                    {
+                        Id=2,
+                        Name = "ikeameatbol",
+                        FullName = "Jonathan Blouin",
+                        OrganisationName = "RPLP",
+                        Active = true
+                    },
+                    new Repository_SQLDTO()
+                    {
+                        Id=3,
+                        Name = "BACenComm",
+                        FullName = "Melissa Lachapelle",
+                        OrganisationName = "RPLP",
+                        Active = false
+                    },
+                };
+
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
+
+            Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Repositories).ReturnsDbSet(repositoriesDB);
+            DepotRepository depot = new DepotRepository(context.Object);
+
+            string repositoryName = null;
+
+            Assert.Throws<ArgumentNullException>(() => { depot.ReactivateRepository(repositoryName); });
+        }
+
+        [Fact]
+        public void Test_ReactivateRepository_ParamWhitespace_ExceptionThrown()
+        {
+            List<Repository_SQLDTO> repositoriesDB = new List<Repository_SQLDTO>()
+                {
+                    new Repository_SQLDTO()
+                    {
+                        Id=1,
+                        Name = "ThPaquet",
+                        FullName = "Thierry Paquet",
+                        OrganisationName = "RPLP",
+                        Active = true
+                    },
+                    new Repository_SQLDTO()
+                    {
+                        Id=2,
+                        Name = "ikeameatbol",
+                        FullName = "Jonathan Blouin",
+                        OrganisationName = "RPLP",
+                        Active = true
+                    },
+                    new Repository_SQLDTO()
+                    {
+                        Id=3,
+                        Name = "BACenComm",
+                        FullName = "Melissa Lachapelle",
+                        OrganisationName = "RPLP",
+                        Active = false
+                    },
+                };
+
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
+
+            Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Repositories).ReturnsDbSet(repositoriesDB);
+            DepotRepository depot = new DepotRepository(context.Object);
+
+            string repositoryName = " ";
+
+            Assert.Throws<ArgumentNullException>(() => { depot.ReactivateRepository(repositoryName); });
         }
     }
 }

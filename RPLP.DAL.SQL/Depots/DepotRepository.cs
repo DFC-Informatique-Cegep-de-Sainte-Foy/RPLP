@@ -168,6 +168,7 @@ namespace RPLP.DAL.SQL.Depots
             {
                 Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotRepository - ReactivateRepository - p_repositoryName passé en paramètre est vide", 0));
+                throw new ArgumentNullException(nameof(p_repositoryName));
             }
 
             Repository_SQLDTO? repositoryResult = this._context.Repositories.Where(repository => !repository.Active)
