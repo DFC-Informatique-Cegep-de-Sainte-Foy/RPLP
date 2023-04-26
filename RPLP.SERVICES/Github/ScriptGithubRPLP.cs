@@ -172,6 +172,8 @@ namespace RPLP.SERVICES.Github
                 throw new ArgumentNullException($"No repositories to assign in {p_classRoomName}");
             }
 
+            List<Student> studentswithoutRepository = GetStudentsWithoutRepositoryFromAssignment(repositoriesToAssign);
+
             CreateOrUpdateAllocations(repositoriesToAssign);
             this._allocations.CreateRandomReviewsAllocation(p_reviewsPerRepository);
             this._depotAllocation.UpsertAllocationsBatch(this._allocations.Pairs);
@@ -1159,6 +1161,32 @@ namespace RPLP.SERVICES.Github
             Directory.Delete("ZippedRepos", true);
 
             return Path.GetFullPath("ZippedRepos.zip");
+        }
+
+        private List<Student> GetStudentsWithoutRepositoryFromAssignment(List<Repository> p_repositories)
+        {
+            List<Student> students = new List<Student>();
+
+            foreach (Student student in this._activeClassroom.Students)
+            {
+                bool hasRepository = false;
+
+                foreach (Repository reopsitory in p_repositories)
+                {
+                    if (reopsitory.Name.ToLower().Contains(student.Username))
+                    {
+                        hasRepository = true;
+                        break;
+                    }
+                }
+
+                if (!hasRepository)
+                {
+                    students.Add(student);
+                }
+            }
+
+            return students;
         }
 
         #endregion
