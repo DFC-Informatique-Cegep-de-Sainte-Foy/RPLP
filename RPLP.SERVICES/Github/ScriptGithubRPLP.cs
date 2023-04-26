@@ -146,6 +146,8 @@ namespace RPLP.SERVICES.Github
                 throw new ArgumentException("the provided value is incorrect or null");
             }
 
+            ValidateAllRepositoriesHasBranch();
+
             CreateOrUpdateActiveClassroom(p_organisationName, p_classRoomName, p_assignmentName);
 
             if (this._activeClassroom.Students.Count < p_reviewsPerRepository + 1)
