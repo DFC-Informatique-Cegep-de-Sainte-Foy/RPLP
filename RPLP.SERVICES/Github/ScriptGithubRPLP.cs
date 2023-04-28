@@ -995,7 +995,6 @@ namespace RPLP.SERVICES.Github
 
         public void ValidateAllRepositoriesHasBranch()
         {
-            List<Repository> repositoriesToValidate = new List<Repository>();
             List<Organisation> organisations = this._depotOrganisation.GetOrganisations();
 
             if (organisations == null)
@@ -1012,22 +1011,20 @@ namespace RPLP.SERVICES.Github
 
                 Logging.Instance.Journal(new Log("ValidateAllRepositoriesHasBranch - Avant le AddRange"));
 
-                repositoriesToValidate.AddRange(repositoriesInDB);
+                foreach (Repository r in repositoriesInDB)
+                {
+                    Logging.Instance.Journal(new Log("ValidateAllRepositoriesHasBranch - dans le foreach"));
+                    this.ValidateOneRepositoryHasBranch(o.Name, r);
+                }
 
                 Logging.Instance.Journal(new Log("ValidateAllRepositoriesHasBranch - Après le AddRange"));
             }
-
-            foreach (Repository r in repositoriesToValidate)
-            {
-                Logging.Instance.Journal(new Log("ValidateAllRepositoriesHasBranch - dans le foreach"));
-                this.ValidateOneRepositoryHasBranch(r);
-            }
         }
 
-        private void ValidateOneRepositoryHasBranch(Repository p_repository)
+        private void ValidateOneRepositoryHasBranch(string p_organisationName, Repository p_repository)
         {
             Logging.Instance.Journal(new Log("ValidateOneRepositoryHasBranch - Début"));
-            List<Branch_JSONDTO> branches = _githubApiAction.GetRepositoryBranchesGithub(this._activeClassroom.OrganisationName, p_repository.Name);
+            List<Branch_JSONDTO> branches = _githubApiAction.GetRepositoryBranchesGithub(p_organisationName, p_repository.Name);
             Logging.Instance.Journal(new Log($"ValidateOneRepositoryHasBranch - branches.Count = {branches.Count}"));
 
             if (branches.Count == 0)
