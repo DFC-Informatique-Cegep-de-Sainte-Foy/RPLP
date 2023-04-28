@@ -59,7 +59,7 @@ namespace RPLP.DAL.SQL.Depots
                      "DepotRepository - GetRepositoryByName - p_repositoryName passé en paramètre est vide", 0));
             }
 
-            Repository_SQLDTO repository = this._context.Repositories.FirstOrDefault(repository => repository.Name == p_repositoryName && repository.Active);
+            Repository_SQLDTO? repository = this._context.Repositories.FirstOrDefault(repository => repository.Name == p_repositoryName && repository.Active);
 
             if (repository == null)
             {
@@ -82,13 +82,13 @@ namespace RPLP.DAL.SQL.Depots
                      "DepotRepository - UpsertRepository - p_repository passé en paramètre est null", 0));
             }
 
-            Repository_SQLDTO repositoryResult = this._context.Repositories.SingleOrDefault(repository => repository.Id == p_repository.Id &&
-                                                                                            repository.Active);
+            Repository_SQLDTO? repositoryResult = this._context.Repositories.SingleOrDefault(repository => repository.Id == p_repository.Id);
             if (repositoryResult != null)
             {
                 repositoryResult.Name = p_repository.Name;
                 repositoryResult.OrganisationName = p_repository.OrganisationName;
                 repositoryResult.FullName = p_repository.FullName;
+                repositoryResult.Active = true;
 
                 this._context.Update(repositoryResult);
                 this._context.SaveChanges();
@@ -118,7 +118,7 @@ namespace RPLP.DAL.SQL.Depots
                      "DepotRepository - DeleteRepository - p_repositoryName passé en paramètre est vide", 0));
             }
 
-            Repository_SQLDTO repositoryResult = this._context.Repositories.FirstOrDefault(repository => repository.Name == p_repositoryName && repository.Active);
+            Repository_SQLDTO? repositoryResult = this._context.Repositories.FirstOrDefault(repository => repository.Name == p_repositoryName && repository.Active);
             
             if (repositoryResult != null)
             {

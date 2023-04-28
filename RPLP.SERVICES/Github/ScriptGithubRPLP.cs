@@ -1028,6 +1028,7 @@ namespace RPLP.SERVICES.Github
             }
             else if (ValidateMainBranchExistsFromBranchList(branches))
             {
+                // FLAG Revalider si on fait autre chose s'il manque la branche main
                 _depotRepository.DeleteRepository(p_repository.Name);
             }
             else
