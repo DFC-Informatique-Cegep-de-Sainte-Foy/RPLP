@@ -2140,6 +2140,7 @@ namespace RPLP.MVC.Controllers
             Logging.Instance.Journal(new Log("api", 200, $"RPLPController - POST méthode StartScriptCoherence"));
 
             this._scriptGithub.EnsureOrganisationRepositoriesAreInDB();
+            //this._scriptGithub.ValidateAllRepositoriesHasBranch();
             return Ok();
         }
 
