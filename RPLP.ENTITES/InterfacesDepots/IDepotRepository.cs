@@ -15,5 +15,6 @@ namespace RPLP.ENTITES.InterfacesDepots
         public Repository GetRepositoryByName(string p_repositoryName);
         public void UpsertRepository(Repository repository);
         public void DeleteRepository(string p_repositoryName);
+        public void ReactivateRepository(string p_repositoryName);
     }
 }

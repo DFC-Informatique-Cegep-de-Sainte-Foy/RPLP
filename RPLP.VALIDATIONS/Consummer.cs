@@ -22,8 +22,13 @@ namespace RPLP.VALIDATIONS
         private ConnectionFactory _connexionFactory = new ConnectionFactory() { HostName = "rplp.rabbitmq" };
         private ScriptGithubRPLP _script;
         private Allocations_JSONDTO _allocations;
+        private readonly string FILENAME = "FichierTexte.txt";
+        private readonly string CONTENTS = "RmljaGllciB0ZXh0ZSBwb3VyIGNyw6nDqSBQUg==";
+        private readonly string MESSAGE = "FeedbackTeacher";
 
-        private string[] subject = { "rplp.assignations.students", "rplp.assignations.professor" };
+        private string[] subject =
+            { "rplp.assignations.students", "rplp.assignations.professor", "rplp.assignations.tutor" };
+
         public Consummer(ScriptGithubRPLP script)
         {
             this._script = script;
@@ -37,18 +42,18 @@ namespace RPLP.VALIDATIONS
                 using (IModel canalDeCommunication = connexion.CreateModel())
                 {
                     canalDeCommunication.ExchangeDeclare(
-                     exchange: "rplp-message-thread",
-                     type: "topic",
-                     durable: true,
-                     autoDelete: false
-                     );
+                        exchange: "rplp-message-thread",
+                        type: "topic",
+                        durable: true,
+                        autoDelete: false
+                    );
 
                     canalDeCommunication.QueueDeclare(
-                    "rplp-message-thread-assignation",
-                    durable: false,
-                    exclusive: false,
-                    autoDelete: false,
-                    arguments: null
+                        "rplp-message-thread-assignation",
+                        durable: false,
+                        exclusive: false,
+                        autoDelete: false,
+                        arguments: null
                     );
                 }
             }
@@ -75,60 +80,82 @@ namespace RPLP.VALIDATIONS
                         byte[] donnees = argumentEvenement.Body.ToArray();
                         string messageNonConvertit = Encoding.UTF8.GetString(donnees);
                         string sujet = argumentEvenement.RoutingKey;
+                        bool isReviewerStudent =
+                            sujet == "rplp.assignations.students"; // assure que la revue est faite par un etudiant
 
-                        if(sujet == "rplp.assignations.students")
-                        {
-                            MessageGitHubAPI message = JsonConvert.DeserializeObject<MessageGitHubAPI>(messageNonConvertit);
-
-                            ManageAssignmentStudent(message, canalDeCommunication, argumentEvenement);
-                        }
+                        MessageGitHubAPI message = JsonConvert.DeserializeObject<MessageGitHubAPI>(messageNonConvertit);
+                        ManageAssignment(message, canalDeCommunication, argumentEvenement, isReviewerStudent);
                     };
 
                     canalDeCommunication.BasicConsume(queue: "rplp-message-thread-assignation",
-                                        autoAck: false,
-                                        consumerTag: "rplp-message-thread-assignation",
-                                        consumer: consommateurServeur);
+                        autoAck: false,
+                        consumerTag: "rplp-message-thread-assignation",
+                        consumer: consommateurServeur);
 
                     _faireAttendreProgrammePrincipal.WaitOne();
                 }
             }
         }
 
-        public void ManageAssignmentStudent(MessageGitHubAPI message, IModel canalDeCommunication, BasicDeliverEventArgs argumentEvenement)
+        public void ManageAssignment(MessageGitHubAPI message, IModel canalDeCommunication,
+            BasicDeliverEventArgs argumentEvenement, bool isReviewerStudent)
         {
             this._allocations = message.Allocations;
+            List<Allocation> allocations;
+            
+            if (isReviewerStudent)
+            {
+                allocations = this._allocations.Pairs.Where(al => al.StudentId is not null).ToList();
+            }
+            else
+            {
+                allocations = this._allocations.Pairs.Where(al => al.StudentId is null).ToList();
+            }
 
-            string status = "Stand";
+            string status;
 
-            foreach (Allocation allocation in this._allocations.Pairs)
+            foreach (Allocation allocation in allocations)
             {
                 string p_organisationName = message.Allocations._classroom.OrganisationName;
 
                 string p_repositoryName = this._script.GetNameOfRepository(allocation.RepositoryId);
 
-                string p_reviewerName = message.Allocations._classroom.Students.FirstOrDefault(reviewer => reviewer.Id == allocation.StudentId).Username;
+                string p_reviewerName;
 
                 if (allocation.Status == 42)
                 {
-                    status = this._script.CreatePullRequestAndAssignUser(p_organisationName, p_repositoryName, p_reviewerName);
+                    if (isReviewerStudent)
+                    {
+                        p_reviewerName = message.Allocations._classroom.Students
+                            .FirstOrDefault(reviewer => reviewer.Id == allocation.StudentId).Username;
+
+                        status = this._script.CreatePullRequestAndAssignUser(p_organisationName, p_repositoryName,p_reviewerName);
+                    }
+                    else
+                    {
+                        p_reviewerName = message.Allocations._classroom.Teachers
+                            .FirstOrDefault(reviewer => reviewer.Id == allocation.TeacherId).Username;
+
+                        status = this._script.createPullRequestForTeacher(p_organisationName, p_repositoryName,p_reviewerName, FILENAME, MESSAGE, CONTENTS);
+                    }
 
                     RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"Assignation effectuée au 15 secondes :" +
-                                    $" organisationName : {p_organisationName} - repositoryName : {p_repositoryName} - NomDuReviewer : {p_reviewerName}"));
+                                                                         $" organisationName : {p_organisationName} - repositoryName : {p_repositoryName} - NomDuReviewer : {p_reviewerName}"));
 
                     Thread.Sleep(15000);
 
                     if (status == "Forbidden")
                     {
-                        RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"Assignation arrêté - status Forbidden reçu"));
-
+                        RPLP.JOURNALISATION.Logging.Instance.Journal(
+                            new Log($"Assignation arrêté - status Forbidden reçu"));
                         Thread.Sleep(60000);
                     }
                     else
                     {
                         if (status == "Created")
                         {
-                            RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"Allocation : {allocation.Id} est affecté au status 53"));
-
+                            RPLP.JOURNALISATION.Logging.Instance.Journal(
+                                new Log($"Allocation : {allocation.Id} est affecté au status 53"));
                             this._script.SetAllocationAfterAssignation(allocation);
                         }
                     }
@@ -139,8 +166,8 @@ namespace RPLP.VALIDATIONS
 
             if (this._allocations.Status == 53)
             {
-                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"Assignations complétées avec succès - Message ID : {message.MessageID}"));
-
+                RPLP.JOURNALISATION.Logging.Instance.Journal(
+                    new Log($"Assignations complétées avec succès - Message ID : {message.MessageID}"));
                 canalDeCommunication.BasicAck(argumentEvenement.DeliveryTag, false);
             }
         }
