@@ -146,7 +146,7 @@ namespace RPLP.SERVICES.Github
                 throw new ArgumentException("the provided value is incorrect or null");
             }
 
-            ValidateAllRepositoriesHasBranch();
+            //ValidateAllRepositoriesHasBranch();
 
             CreateOrUpdateActiveClassroom(p_organisationName, p_classRoomName, p_assignmentName);
 
@@ -1010,29 +1010,40 @@ namespace RPLP.SERVICES.Github
             {
                 List<Repository> repositoriesInDB = this._depotRepository.GetRepositoriesFromOrganisationName(o.Name);
 
+                Logging.Instance.Journal(new Log("ValidateAllRepositoriesHasBranch - Avant le AddRange"));
+
                 repositoriesToValidate.AddRange(repositoriesInDB);
+
+                Logging.Instance.Journal(new Log("ValidateAllRepositoriesHasBranch - Après le AddRange"));
             }
 
             foreach (Repository r in repositoriesToValidate)
             {
+                Logging.Instance.Journal(new Log("ValidateAllRepositoriesHasBranch - dans le foreach"));
                 this.ValidateOneRepositoryHasBranch(r);
             }
         }
 
         private void ValidateOneRepositoryHasBranch(Repository p_repository)
         {
+            Logging.Instance.Journal(new Log("ValidateOneRepositoryHasBranch - Début"));
             List<Branch_JSONDTO> branches = _githubApiAction.GetRepositoryBranchesGithub(this._activeClassroom.OrganisationName, p_repository.Name);
+            Logging.Instance.Journal(new Log($"ValidateOneRepositoryHasBranch - branches.Count = {branches.Count}"));
+
             if (branches.Count == 0)
             {
+                Logging.Instance.Journal(new Log("ValidateOneRepositoryHasBranch - count 0"));
                 _depotRepository.DeleteRepository(p_repository.Name);
             }
             else if (ValidateMainBranchExistsFromBranchList(branches))
             {
+                Logging.Instance.Journal(new Log("ValidateOneRepositoryHasBranch - pas de branche main"));
                 // FLAG Revalider si on fait autre chose s'il manque la branche main
                 _depotRepository.DeleteRepository(p_repository.Name);
             }
             else
             {
+                Logging.Instance.Journal(new Log("ValidateOneRepositoryHasBranch - normal"));
                 _depotRepository.ReactivateRepository(p_repository.Name);
             }
         }
@@ -1118,17 +1129,22 @@ namespace RPLP.SERVICES.Github
 
         private bool ValidateMainBranchExistsFromBranchList(List<Branch_JSONDTO> branchesResult)
         {
+            Logging.Instance.Journal(new Log("ValidateMainBranchExistsFromBranchList - Début"));
             bool mainExists = false;
 
             foreach (Branch_JSONDTO branch in branchesResult)
             {
+                Logging.Instance.Journal(new Log("ValidateMainBranchExistsFromBranchList - foreach"));
                 string[] branchName = branch.reference.Split("/");
+                Logging.Instance.Journal(new Log($"ValidateMainBranchExistsFromBranchList - branchname = {branchName}"));
 
                 if (branchName[2] == "main")
                 {
                     mainExists = true;
                 }
             }
+
+            Logging.Instance.Journal(new Log($"ValidateMainBranchExistsFromBranchList - mainExists = {mainExists}"));
 
             return mainExists;
         }
