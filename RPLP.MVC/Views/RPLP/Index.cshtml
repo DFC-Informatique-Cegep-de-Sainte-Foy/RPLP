@@ -319,7 +319,6 @@
         var myDiv = document.getElementById("assignmentContent");
         myDiv.replaceChildren();
 
-
         assignments.forEach(assignment => {
             var button = document.createElement("BUTTON");
             button.innerHTML = assignment.name;
@@ -348,12 +347,12 @@
             },
             success: function (data) {
                 console.log("works!");
+                Response.Redirect("Allocation.cshtml");
             },
             error: function (ex) {
                 console.log(ex);
             }
         });
-
     }
 
     function StartTeacherAssignationScript (){
