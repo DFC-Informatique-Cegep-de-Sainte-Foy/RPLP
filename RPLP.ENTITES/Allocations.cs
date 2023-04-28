@@ -90,6 +90,29 @@ namespace RPLP.ENTITES
             }
         }
 
+        public void CreateReviewsAllocationsForStudentsWithoutRepository(List<Student> p_students, int p_numberOfReviews)
+        {
+            int indexAssignation = 0;
+
+            if (p_numberOfReviews > _repositories.Count)
+            {
+                p_numberOfReviews = _repositories.Count;
+            }
+
+            foreach (Student student in p_students)
+            {
+                for (int i = 0; i < p_numberOfReviews; i++)
+                {
+                    indexAssignation = indexAssignation % _repositories.Count;
+                    int repoId = _repositories[indexAssignation].Id;
+                    string thisAllocationUniqueId = $"r{repoId}s{student.Id}t0";
+                    if (this.Pairs.FirstOrDefault(all => all.Id == thisAllocationUniqueId) is null)
+                        this.Pairs.Add(new Allocation(thisAllocationUniqueId, repoId, student.Id, null, 31));
+                    indexAssignation++;
+                }
+            }
+        }
+
         private void ShuffleListInPlace<T>(List<T> p_listToShuffle)
         {
             Random rnd = new Random();
