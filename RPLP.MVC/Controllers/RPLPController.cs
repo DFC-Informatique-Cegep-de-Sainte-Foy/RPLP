@@ -94,6 +94,7 @@ namespace RPLP.MVC.Controllers
 
             return View("GestionDonnees", model);
         }
+        
         public IActionResult Allocations()
         {
             AllocationsViewModel model = GetAllocationsInfos("H23_4393_AMOC", "H23_4393_AMOC_TP3");
@@ -401,8 +402,6 @@ namespace RPLP.MVC.Controllers
 
             try
             {
-
-
                 //List<Allocation> allocationsInDB = this._httpClient.GetFromJsonAsync<List<Allocation>>($"Allocation").Result;
                 ////RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                 ////         $"RPLPController - GetAllocationsInformations - {allocationsInDB[0].Id}", 0));
