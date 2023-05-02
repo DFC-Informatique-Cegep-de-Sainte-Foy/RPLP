@@ -6,69 +6,67 @@
     <meta charset="UTF-8">
 </head>
 
-@*@if (Model is not null && Model.Pairs.Count > 0)
-{*@
-    <div class="container mt-3">
+<div class="container mt-3">
     <table id="allocationContent" class="table table-striped">
         <thead>
             <tr>
-                <th>RepositoryName</th>
-                <th>StudentName</th>
-                <th>TeacherName</th>
+                <th>Repository Name</th>
+                <th>Student Name</th>
+                <th>Teacher Name</th>
                 <th>Status</th>
             </tr>
         </thead>
-        <tbody>
-            @foreach (AllocationViewModel dr in Model.Pairs)
-            {
-                <tr>
-                    <td class="text-truncate" style="max-width: 200px;">@dr.RepositoryName</td>
-                    <td class="text-truncate" style="max-width: 200px;">@dr.StudentName</td>
-                    <td class="text-truncate" style="max-width: 200px;">@dr.TeacherName</td>
-                    <td class="text-truncate" style="max-width: 200px;">@dr.Status</td>
-                </tr>
-            }
-        </tbody>
+        @if (Model is not null && Model.Pairs.Count > 0)
+        {
+            <tbody>
+                @foreach (AllocationViewModel dr in Model.Pairs)
+                {
+                    <tr>
+                        <td class="text-truncate" style="max-width: 200px;">@Html.DisplayFor(item => dr.RepositoryName)</td>
+                        <td class="text-truncate" style="max-width: 200px;">@Html.DisplayFor(item => dr.StudentName)</td>
+                        <td class="text-truncate" style="max-width: 200px;">@Html.DisplayFor(item => dr.TeacherName)</td>
+                        @if (@dr.Status == 53)
+                        {
+                            <td class="text-truncate" style="max-width: 200px;"><i class="bi bi-check2"></i></td>
+                        }
+                        else if (@dr.Status == 53)
+                        {
+                            <td class="text-truncate" style="max-width: 200px;"><i class="bi bi-clock"></i></td>
+                        }
+                        else
+                        {
+                            <td class="text-truncate" style="max-width: 200px;"><i class="bi bi-x"></i></td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        }
     </table>
 </div>
-@*}*@
+
 
 
 <script src="/lib/jquery/dist/jquery.min.js"></script>
 <script type="text/javascript">
     var allocations = [];
-    setInterval(GetAllocationsInformations("H23_4393_AMOC", "H23_4393_AMOC_TP3"), 5000);
-    //function ShowAllocations() {
-    //    var myDiv = document.getElementById("allocationContent");
-    //    myDiv.replaceChildren();
 
-    //    allocations.Pairs.forEach(allocation => {
-    //        var button = document.createElement("BUTTON");
-    //        button.innerHTML = allocations.RepositoryName;
-    //        button.classList.add("btn-lg", "btn-outline-primary", "p-2", "buttons");
-    //        button.setAttribute('id', allocations.RepositoryName);
-    //        myDiv.appendChild(button);
-    //    });
-    //}
-    function GetAllocationsInformations(classroomName, assignementName) {
+    setInterval(function () {
         var ajaxURL = '/RPLP/Allocations/GetAllocationsInformations';
 
         $.ajax({
             type: 'GET',
             url: ajaxURL,
-            data: { classroomName: classroomName, assignementName: assignementName },
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             beforeSend: function () {
                 console.log('firing ajax call');
             },
             success: function (data) {
-                //allocations = data;
-                //ShowAllocations();
+                console.log('Success');
             },
             error: function (ex) {
                 console.log('Error');
             }
         });
-    }
+    }, 5000);
 </script>
