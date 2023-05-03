@@ -112,6 +112,8 @@ namespace RPLP.DAL.SQL.Depots
 
         public void DeleteRepository(string p_repositoryName)
         {
+            this._context.ChangeTracker.Clear();
+
             Logging.Instance.Journal(new Log($"DeleteRepository - Debut - p_repositoryName {p_repositoryName}"));
             if (string.IsNullOrWhiteSpace(p_repositoryName))
             {
@@ -128,8 +130,7 @@ namespace RPLP.DAL.SQL.Depots
                 Logging.Instance.Journal(new Log($"DeleteRepository - repositoryResult not null - repositoryResult.Name {repositoryResult.Name}"));
 
                 repositoryResult.Active = false;
-
-                //this._context.Update(repositoryResult);
+                this._context.Update(repositoryResult);
                 this._context.SaveChanges();
 
                 RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Repository", $"DepotRepository - Method - DeleteRepository(string p_repositoryName : {p_repositoryName}) - Void - delete repository"));
