@@ -351,6 +351,13 @@ namespace RPLP.MVC.Controllers
         #region ActionGet
 
         [HttpGet]
+        public ActionResult<int> GetValidReposByAssignmentName(string assignmentName)
+        {
+            //get the number of valid repos
+            return 5;
+        }
+
+        [HttpGet]
         public ActionResult<List<ClassroomViewModel>> GetClassroomsOfOrganisationByName(string orgName)
         {
             try
@@ -724,7 +731,6 @@ namespace RPLP.MVC.Controllers
           
         }
 
-
         [HttpGet]
         public ActionResult<List<StudentViewModel>> GetTutors(string classroomName)
         {
@@ -784,7 +790,6 @@ namespace RPLP.MVC.Controllers
             }
 
         }
-
 
         [HttpGet]
         public ActionResult<List<AssignmentViewModel>> GetAssignmentInClassroomByClassroomName(string classroomName)
