@@ -6,7 +6,8 @@ using RPLP.DAL.DTO.Sql;
 using RPLP.DAL.SQL;
 using RPLP.DAL.SQL.Depots;
 using RPLP.ENTITES;
-using RPLP.SERVICES.InterfacesDepots;
+using RPLP.ENTITES.InterfacesDepots;
+using RPLP.JOURNALISATION;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,9 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_Get()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
+
             var mockDepotAdministrator = new Mock<IDepotAdministrator>();
             List<Administrator> adminsInMock = new List<Administrator>()
             {
@@ -58,6 +62,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_GetAdministratorById()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             var mockDepotAdministrator = new Mock<IDepotAdministrator>();
             Administrator adminInMock = new Administrator
             {
@@ -87,6 +93,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_GetAdministratorByName()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             var mockDepotAdministrator = new Mock<IDepotAdministrator>();
             Administrator adminInMock = new Administrator
             {
@@ -115,6 +123,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_GetAdministratorByEmail()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             var mockDepotAdministrator = new Mock<IDepotAdministrator>();
             Administrator adminInMock = new Administrator
             {
@@ -144,6 +154,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_GetAdminOrganisations()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             var mockDepotAdministrator = new Mock<IDepotAdministrator>();
             List<Organisation> organisationsInMock = new List<Organisation>()
             {
@@ -178,6 +190,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_GetAdminOrganisationsByEmail()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             var mockDepotAdministrator = new Mock<IDepotAdministrator>();
             List<Organisation> organisationsInMock = new List<Organisation>()
             {
@@ -215,6 +229,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_AddAdminToOrganisation_AdminNullOrWhiteSpace()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             var mockDepotAdministrator = new Mock<IDepotAdministrator>();
             AdministratorController controller = new AdministratorController(mockDepotAdministrator.Object);
 
@@ -227,6 +243,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_AddAdminToOrganisation_OrganisationNullOrWhiteSpace()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             var mockDepotAdministrator = new Mock<IDepotAdministrator>();
             AdministratorController controller = new AdministratorController(mockDepotAdministrator.Object);
 
@@ -239,6 +257,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_AddAdminToOrganisation_Created()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             var mockDepotAdministrator = new Mock<IDepotAdministrator>();
             AdministratorController controller = new AdministratorController(mockDepotAdministrator.Object);
 
@@ -251,6 +271,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_RemoveAdminFromOrganisation_AdminNullOrWhiteSpace()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             var mockDepotAdministrator = new Mock<IDepotAdministrator>();
             AdministratorController controller = new AdministratorController(mockDepotAdministrator.Object);
 
@@ -263,6 +285,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_RemoveAdminFromOrganisation_OrganisationNullOrWhiteSpace()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             var mockDepotAdministrator = new Mock<IDepotAdministrator>();
             AdministratorController controller = new AdministratorController(mockDepotAdministrator.Object);
 
@@ -275,6 +299,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_RemoveAdminFromOrganisation_NoContent()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             var mockDepotAdministrator = new Mock<IDepotAdministrator>();
             AdministratorController controller = new AdministratorController(mockDepotAdministrator.Object);
 
@@ -287,6 +313,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_UpsertAdmin_AdminNull()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             var mockDepotAdministrator = new Mock<IDepotAdministrator>();
             AdministratorController controller = new AdministratorController(mockDepotAdministrator.Object);
 
@@ -299,6 +327,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_UpsertAdmin_NotValidModelState()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             var mockDepotAdministrator = new Mock<IDepotAdministrator>();
             AdministratorController controller = new AdministratorController(mockDepotAdministrator.Object);
 
@@ -319,6 +349,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_UpsertAdmin_CatchException_ReturnBadRequest()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             var mockDepotAdministrator = new Mock<IDepotAdministrator>();
             AdministratorController controller = new AdministratorController(mockDepotAdministrator.Object);
 
@@ -332,6 +364,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_UpsertAdmin_Created()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             var mockDepotAdministrator = new Mock<IDepotAdministrator>();
             AdministratorController controller = new AdministratorController(mockDepotAdministrator.Object);
 
@@ -351,6 +385,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_DeleteAdmin_NoContent()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             var mockDepotAdministrator = new Mock<IDepotAdministrator>();
             AdministratorController controller = new AdministratorController(mockDepotAdministrator.Object);
 

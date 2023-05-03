@@ -30,7 +30,13 @@ body {
     width: 100%;
 }
 
-
+.show{
+    border: 1px solid red;
+    padding: 5px;
+    white-space: break-spaces;
+    overflow: unset;
+    word-wrap: break-word;
+}
 
     .collapsible input {
         display: none;

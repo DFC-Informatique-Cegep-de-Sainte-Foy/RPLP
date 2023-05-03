@@ -17,10 +17,12 @@
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="6.0.3" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.14.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.13" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\RPLP.DAL.SQL\RPLP.DAL.SQL.csproj" />
+    <ProjectReference Include="..\RPLP.JOURNALISATION\RPLP.JOURNALISATION.csproj" />
     <ProjectReference Include="..\RPLP.SERVICES\RPLP.SERVICES.csproj" />
   </ItemGroup>
 

@@ -1,0 +1,89 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@using System.Data;
+@model DataTable
+
+@*
+	//Commentaire
+*@
+<div>
+    <button id="btnClearLogs" class="btn-lg btn-outline-primary buttons" onclick="clearLogs()">Clear Logs</button>
+    <button id="btnExportLogFile" class="btn-lg btn-outline-primary buttons" onclick="exportLogs()">Export Logs</button>
+</div>
+<div>
+    <hr/>
+    <table id="logsTable" class="table table-striped">
+        <thead>
+        <tr>
+            @foreach (DataColumn dc in Model.Columns)
+            {
+                <th>@dc.ColumnName</th>
+            }
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (DataRow dr in Model.Rows)
+        {
+            <tr>
+                @foreach (DataColumn dc in Model.Columns)
+                {
+                    <td class="text-truncate" style="max-width: 200px;">@dr[dc.ColumnName]</td>
+                }
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+
+<script type="text/javascript">
+function clearLogs(){
+    var ajaxURL = '/Logs/ClearLogs';
+    $.ajax({
+    type: 'GET',
+    url: ajaxURL,
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
+    beforeSend: function () {
+        console.log('firing ajax call');
+        },
+        success: function (data) {
+        console.log(data);
+        },
+        error: function (ex) {
+        console.log(ex);
+        }
+    });
+    }
+    
+function exportLogs(){
+    var ajaxURL = '/Logs/ExportLogs';
+    $.ajax({
+    type: 'GET',
+    url: ajaxURL,
+    xhrFields: {
+    responseType: 'blob'
+    },
+        success: function (data) {
+            var a = document.createElement('a');
+            var url = window.URL.createObjectURL(data);
+            a.href = url;
+            a.download = 'logs.csv';
+            document.body.append(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(url);
+            }
+    });
+    }
+    
+function clickHandler() {
+    if (this.classList.contains('show')){
+        this.classList.add('text-truncate');
+        this.classList.remove('show');
+    }else{
+        this.classList.add('show');
+        this.classList.remove('text-truncate');
+    }
+}
+document.querySelectorAll('#logsTable td')
+    .forEach(e => e.addEventListener("click", clickHandler));
+</script>

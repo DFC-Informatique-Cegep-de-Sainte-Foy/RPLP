@@ -39,5 +39,7 @@ namespace RPLP.ENTITES
             this.DeliveryDeadline = p_deliveryDeadline;
             this.DistributionDate = p_distributionDate;
         }
+        
+        
     }
 }
