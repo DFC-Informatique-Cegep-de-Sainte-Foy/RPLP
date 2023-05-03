@@ -41,6 +41,8 @@
             <button class="btn-lg btn-primary p-2 buttons" onclick="StartStudentAssignationScript()">Lancer le script de revue des pairs</button>
             <button class="btn-lg btn-primary p-2 buttons" onclick="StartTeacherAssignationScript()">Lancer le script de revue du prof</button>
             <select class="form-control" id="selectTeacher"></select>
+            <button class="btn-lg btn-primary p-2 buttons" onclick="StartTutorAssignationScript()">Lancer le script de revue du tuteur</button>
+            <select class="form-control" id="selectTutor"></select>
             <button id="marg" class="btn-lg btn-primary p-2 buttons" onclick="RemoveCollaboratorFromAssignment()">Retirer les pairs du travail</button>
         </div>
 
@@ -76,6 +78,7 @@
     var assignments = [];
     var students = [];
     var teachers = [];
+    var tutors = [];
 
     function SetOrganisationName (organisationName){
         if(organisationName != "")
@@ -116,6 +119,7 @@
 
             GetStudentsInClassroomByClassroomName(classroomName);
             GetTeacherInClassroomByClassroomName(classroomName);
+            GetTutors(classroomName);
         }
     }
 
@@ -176,6 +180,27 @@
             option.text = teacher.firstName + " " + teacher.lastName;
             option.value = teacher.username;
             var select = document.getElementById("selectTeacher");
+            select.appendChild(option);
+        });
+    }
+
+
+    ShowTutors = function () 
+    {
+        const classes = document.getElementById("selectTutor");
+        classes.innerHTML = '';
+
+        var option = document.createElement("option");
+        option.text = "Faites un choix";
+        option.value = -1;
+        var select = document.getElementById("selectTutor");
+        select.appendChild(option);
+
+        tutors.forEach(tutor => {
+            var option = document.createElement("option");
+            option.text = tutor.firstName + " " + tutor.lastName;
+            option.value = tutor.username;
+            var select = document.getElementById("selectTutor");
             select.appendChild(option);
         });
     }
@@ -272,6 +297,7 @@
         });
     }
 
+
     function ShowClassrooms() {
         var myDiv = document.getElementById("classroomContent");
         myDiv.replaceChildren();
@@ -293,7 +319,6 @@
     function ShowAssignments() {
         var myDiv = document.getElementById("assignmentContent");
         myDiv.replaceChildren();
-
 
         assignments.forEach(assignment => {
             var button = document.createElement("BUTTON");
@@ -323,12 +348,12 @@
             },
             success: function (data) {
                 console.log("works!");
+                Response.Redirect("Allocation.cshtml");
             },
             error: function (ex) {
                 console.log(ex);
             }
         });
-
     }
 
     function StartTeacherAssignationScript (){
@@ -389,6 +414,27 @@
             success: function (data) {
                 teachers = data;
                 ShowTeachers();
+            },
+            error: function (ex) {
+                console.log('Error');
+            }
+        });
+    }
+
+    function GetTutors(classroomName) {
+       var ajaxURL = '/RPLP/GetTutors';
+        $.ajax({
+            type: 'GET',
+            url: ajaxURL,
+            data: { classroomName: classroomName },
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            beforeSend: function () {
+                console.log('firing ajax call');
+            },
+            success: function (data) {
+                tutors = data;
+                ShowTutors();
             },
             error: function (ex) {
                 console.log('Error');

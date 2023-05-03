@@ -6,7 +6,8 @@ using RPLP.DAL.DTO.Sql;
 using RPLP.DAL.SQL;
 using RPLP.DAL.SQL.Depots;
 using RPLP.ENTITES;
-using RPLP.SERVICES.InterfacesDepots;
+using RPLP.ENTITES.InterfacesDepots;
+using RPLP.JOURNALISATION;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_GetAssignments()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotAssignment> depot = new Mock<IDepotAssignment>();
             List<Assignment> assignmentsInMockDepot = new List<Assignment>()
             {
@@ -54,6 +57,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_GetAssignmentById()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotAssignment> depot = new Mock<IDepotAssignment>();
             Assignment assignment = new Assignment()
             {
@@ -80,6 +85,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_GetAssignmentByName()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotAssignment> depot = new Mock<IDepotAssignment>();
             AssignmentController controller = new AssignmentController(depot.Object);
 
@@ -108,6 +115,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_GetAssignmentByClassroomName()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotAssignment> depot = new Mock<IDepotAssignment>();
             AssignmentController controller = new AssignmentController(depot.Object);
 
@@ -144,6 +153,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_Post_AssignmentNull()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotAssignment> depot = new Mock<IDepotAssignment>();
             AssignmentController controller = new AssignmentController(depot.Object);
 
@@ -155,6 +166,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_Post_NotValidModelState()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotAssignment> depot = new Mock<IDepotAssignment>();
             AssignmentController controller = new AssignmentController(depot.Object);
             Assignment assignment = new Assignment();
@@ -168,6 +181,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_Post_Created()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotAssignment> depot = new Mock<IDepotAssignment>();
             AssignmentController controller = new AssignmentController(depot.Object);
             Assignment assignment = new Assignment();
@@ -182,6 +197,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_DeleteAssignment()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotAssignment> depot = new Mock<IDepotAssignment>();
             AssignmentController controller = new AssignmentController(depot.Object);
 

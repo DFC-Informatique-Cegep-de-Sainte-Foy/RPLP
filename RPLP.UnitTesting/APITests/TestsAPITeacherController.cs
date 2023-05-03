@@ -2,7 +2,8 @@
 using Moq;
 using RPLP.API.Controllers;
 using RPLP.ENTITES;
-using RPLP.SERVICES.InterfacesDepots;
+using RPLP.ENTITES.InterfacesDepots;
+using RPLP.JOURNALISATION;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_Get()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotTeacher> depot = new Mock<IDepotTeacher>();
             TeacherController controller = new TeacherController(depot.Object);
 
@@ -50,6 +53,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_GetStudentById()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotTeacher> depot = new Mock<IDepotTeacher>();
             TeacherController controller = new TeacherController(depot.Object);
 
@@ -74,6 +79,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_GetTeacherByUsername()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotTeacher> depot = new Mock<IDepotTeacher>();
             TeacherController controller = new TeacherController(depot.Object);
 
@@ -98,6 +105,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_GetTeacherByEmail()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotTeacher> depot = new Mock<IDepotTeacher>();
             TeacherController controller = new TeacherController(depot.Object);
 
@@ -123,6 +132,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_GetTeacherClasses()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotTeacher> depot = new Mock<IDepotTeacher>();
             TeacherController controller = new TeacherController(depot.Object);
 
@@ -156,6 +167,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_GetTeacherOrganisationsByUsername()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotTeacher> depot = new Mock<IDepotTeacher>();
             TeacherController controller = new TeacherController(depot.Object);
 
@@ -187,6 +200,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_GetTeacherOrganisationsByEmail()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotTeacher> depot = new Mock<IDepotTeacher>();
             TeacherController controller = new TeacherController(depot.Object);
 
@@ -226,6 +241,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_GetClassroomsOfTeacherInOrganisationByEmail()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotTeacher> depot = new Mock<IDepotTeacher>();
             TeacherController controller = new TeacherController(depot.Object);
 
@@ -265,6 +282,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_UpsertTeacher_NullTeacher()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotTeacher> depot = new Mock<IDepotTeacher>();
             TeacherController controller = new TeacherController(depot.Object);
 
@@ -277,6 +296,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_UpsertTeacher_ModelStateNotValid()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotTeacher> depot = new Mock<IDepotTeacher>();
             TeacherController controller = new TeacherController(depot.Object);
             controller.ModelState.AddModelError("", "Mock ModelState Not Valid");
@@ -290,18 +311,22 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_Post_CatchesException_ReturnBadRequest()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotTeacher> depot = new Mock<IDepotTeacher>();
             TeacherController controller = new TeacherController(depot.Object);
-            Teacher teacher = new Teacher();
+            Teacher? teacher = null;
 
             depot.Setup(d => d.UpsertTeacher(teacher)).Throws<ArgumentException>();
 
-            Assert.IsType<BadRequestObjectResult>(controller.UpsertTeacher(teacher));
+            Assert.IsType<BadRequestResult>(controller.UpsertTeacher(teacher));
         }
 
         [Fact]
         public void Test_UpsertTeacher_Created()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotTeacher> depot = new Mock<IDepotTeacher>();
             TeacherController controller = new TeacherController(depot.Object);
             Teacher teacher = new Teacher();
@@ -316,6 +341,8 @@ namespace RPLP.UnitTesting.APITests
         [Fact]
         public void Test_DeleteTeacher()
         {
+            var logMock = new Mock<IManipulationLogs>();
+            Logging.Instance.ManipulationLog = logMock.Object;
             Mock<IDepotTeacher> depot = new Mock<IDepotTeacher>();
             TeacherController controller = new TeacherController(depot.Object);
 
