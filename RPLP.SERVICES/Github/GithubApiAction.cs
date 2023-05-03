@@ -164,7 +164,11 @@ namespace RPLP.SERVICES.Github
                    "GithubApiAction - GetRepositoryBranchesGithub - p_repositoryName passé en paramètre est vide", 0));
             }
 
+            Logging.Instance.Journal(new Log($"GithubApiAction - GetRepositoryBranchesGithub - Début - p_organisationName -> {p_organisationName} / p_repositoryName -> {p_repositoryName}"));
+
             string fullPath = _getBranchesFromRepositoryCommitGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName);
+
+            Logging.Instance.Journal(new Log($"GithubApiAction - GetRepositoryBranchesGithub - fullPath -> {fullPath}"));
 
             if (string.IsNullOrWhiteSpace(fullPath))
             {
@@ -174,6 +178,8 @@ namespace RPLP.SERVICES.Github
             RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"fullPath: {fullPath}"));
             Task <List<Branch_JSONDTO>> refsJSON = RepositoryBranchesGithubApiRequest(fullPath);
             refsJSON.Wait();
+
+            // Logging.Instance.Journal(new Log($"GithubApiAction - GetRepositoryBranchesGithub - fin - refsJSON.Result[0].reference -> {refsJSON.Result[0].reference}"));
 
             return refsJSON.Result;
         }

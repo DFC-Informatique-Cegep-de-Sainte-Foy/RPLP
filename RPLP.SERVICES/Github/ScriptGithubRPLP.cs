@@ -146,7 +146,7 @@ namespace RPLP.SERVICES.Github
                 throw new ArgumentException("the provided value is incorrect or null");
             }
 
-            //ValidateAllRepositoriesHasBranch();
+            ValidateAllRepositoriesHasBranch();
 
             CreateOrUpdateActiveClassroom(p_organisationName, p_classRoomName, p_assignmentName);
 
@@ -172,21 +172,21 @@ namespace RPLP.SERVICES.Github
                 throw new ArgumentNullException($"No repositories to assign in {p_classRoomName}");
             }
 
-            //List<Student> studentswithoutRepository = GetStudentsWithoutRepositoryFromAssignment(repositoriesToAssign);
+            List<Student> studentswithoutRepository = GetStudentsWithoutRepositoryFromAssignment(repositoriesToAssign);
 
-            //if (this._activeClassroom.Students.Count - studentswithoutRepository.Count < p_reviewsPerRepository + 1)
-            //{
-            //    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new InvalidOperationException().ToString(),
-            //        new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-            //        "ScriptGithubRPLP - ScriptAssignStudentToAssignmentReview - La liste students ajustée sans les étudiants sans dépôt n'est pas conforme selon la demande",
-            //        0));
+            if (this._activeClassroom.Students.Count - studentswithoutRepository.Count <= p_reviewsPerRepository)
+            {
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new InvalidOperationException().ToString(),
+                    new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    "ScriptGithubRPLP - ScriptAssignStudentToAssignmentReview - La liste students ajustée sans les étudiants sans dépôt n'est pas conforme selon la demande",
+                    0));
 
-            //    throw new ArgumentException("Number of students inferior to number of reviews");
-            //}
+                throw new ArgumentException("Number of students inferior to number of reviews");
+            }
 
             CreateOrUpdateAllocations(repositoriesToAssign);
             this._allocations.CreateRandomReviewsAllocation(p_reviewsPerRepository);
-            //this._allocations.CreateReviewsAllocationsForStudentsWithoutRepository(studentswithoutRepository,p_reviewsPerRepository);
+            this._allocations.CreateReviewsAllocationsForStudentsWithoutRepository(studentswithoutRepository, p_reviewsPerRepository);
             this._depotAllocation.UpsertAllocationsBatch(this._allocations.Pairs);
             PrepareRepositoryAndCreatePullRequest();
         }
@@ -1023,25 +1023,26 @@ namespace RPLP.SERVICES.Github
 
         private void ValidateOneRepositoryHasBranch(string p_organisationName, Repository p_repository)
         {
-            Logging.Instance.Journal(new Log("ValidateOneRepositoryHasBranch - Début"));
-            List<Branch_JSONDTO> branches = _githubApiAction.GetRepositoryBranchesGithub(p_organisationName, p_repository.Name);
+            Logging.Instance.Journal(new Log($"ValidateOneRepositoryHasBranch - Début - p_organisationName -> {p_organisationName} - p_repository.Name -> {p_repository.Name}"));
+            List<Branch_JSONDTO>? branches = _githubApiAction.GetRepositoryBranchesGithub(p_organisationName, p_repository.Name);
             Logging.Instance.Journal(new Log($"ValidateOneRepositoryHasBranch - branches.Count = {branches.Count}"));
 
-            if (branches.Count == 0)
+            if (branches is null || branches.Count == 0)
             {
-                Logging.Instance.Journal(new Log("ValidateOneRepositoryHasBranch - count 0"));
+                Logging.Instance.Journal(new Log("ValidateOneRepositoryHasBranch - count 0 or null"));
                 _depotRepository.DeleteRepository(p_repository.Name);
+                Logging.Instance.Journal(new Log("ValidateOneRepositoryHasBranch - count 0 or null - Après Delete"));
             }
             else if (ValidateMainBranchExistsFromBranchList(branches))
+            {
+                Logging.Instance.Journal(new Log("ValidateOneRepositoryHasBranch - normal"));
+                _depotRepository.ReactivateRepository(p_repository.Name);
+            }
+            else
             {
                 Logging.Instance.Journal(new Log("ValidateOneRepositoryHasBranch - pas de branche main"));
                 // FLAG Revalider si on fait autre chose s'il manque la branche main
                 _depotRepository.DeleteRepository(p_repository.Name);
-            }
-            else
-            {
-                Logging.Instance.Journal(new Log("ValidateOneRepositoryHasBranch - normal"));
-                _depotRepository.ReactivateRepository(p_repository.Name);
             }
         }
 
@@ -1132,8 +1133,9 @@ namespace RPLP.SERVICES.Github
             foreach (Branch_JSONDTO branch in branchesResult)
             {
                 Logging.Instance.Journal(new Log("ValidateMainBranchExistsFromBranchList - foreach"));
+                Logging.Instance.Journal(new Log($"ValidateMainBranchExistsFromBranchList - branch.reference = {branch.reference}"));
                 string[] branchName = branch.reference.Split("/");
-                Logging.Instance.Journal(new Log($"ValidateMainBranchExistsFromBranchList - branchname = {branchName}"));
+                Logging.Instance.Journal(new Log($"ValidateMainBranchExistsFromBranchList - branchname = {branchName[2]}"));
 
                 if (branchName[2] == "main")
                 {
@@ -1233,7 +1235,7 @@ namespace RPLP.SERVICES.Github
 
                 foreach (Repository reopsitory in p_repositories)
                 {
-                    if (reopsitory.Name.ToLower().Contains(student.Username))
+                    if (reopsitory.Name.ToLower().Contains(student.Username.ToLower()))
                     {
                         hasRepository = true;
                         break;
