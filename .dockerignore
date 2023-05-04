@@ -14,7 +14,7 @@
 **/azds.yaml
 **/bin
 **/charts
-!**/docker-compose.override.yml
+docker-compose.override.yml
 **/docker-compose*
 **/Dockerfile*
 **/node_modules
