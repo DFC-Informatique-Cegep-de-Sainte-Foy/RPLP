@@ -37,7 +37,7 @@
     <div class="wrapper" id="scriptStart" hidden>
         <div id="level">
             <label for="numberOfReview">Nombre de revues par étudiant</label>
-            <input class="p-2 buttons" type="number" id="numberOfReview" min="0" max="10" value="3" />
+            <input class="p-2 buttons" type="number" id="numberOfReview" min="1" max="10" value="3" />
             <button class="btn-lg btn-primary p-2 buttons" onclick="StartStudentAssignationScript()">Lancer le script de revue des pairs</button>
             <button class="btn-lg btn-primary p-2 buttons" onclick="StartTeacherAssignationScript()">Lancer le script de revue du prof</button>
             <select class="form-control" id="selectTeacher"></select>
@@ -81,6 +81,7 @@
     var teachers = [];
     var tutors = [];
     var allocations = {};
+    var reposAssociatedAThisAssignment = 0;
 
     setInterval(function () { GetAllocationsInformations(SelectedClassroomName, SelectedAssignmentName) }, 5000);
 
@@ -246,6 +247,7 @@
     function SetAssignmentName(assignmentName) {
         if (assignmentName != "") {
             SelectedAssignmentName = assignmentName;
+            GetValidReposByAssignmentName(SelectedAssignmentName);
 
             assignments.forEach(assignment => {
                 if (assignment.name == assignmentName) {
@@ -319,9 +321,31 @@
             select.appendChild(option);
         });
     }
+    
+    GetValidReposByAssignmentName = function(assignmentName){
+           var ajaxURL = '/RPLP/GetValidReposByAssignmentName';
+            $.ajax({
+                type: 'GET',
+                url: ajaxURL,
+                data: { assignmentName : assignmentName},
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                beforeSend: function () {
+                    console.log('firing ajax call');
+                },
+                success: function (data) {
+                    reposAssociatedAThisAssignment = data;
+                    document.getElementById("numberOfReview").setAttribute("max", reposAssociatedAThisAssignment - 1);
+                },
+                error: function (ex) {
+                    console.log('Error');
+                }
+            });
+    }
 
-    GetStudentsInClassroomByClassroomName = function (classroomName) {
-        var ajaxURL = '/RPLP/GetStudentsInClassroomByClassroomName';
+    GetStudentsInClassroomByClassroomName = function (classroomName)
+     {
+       var ajaxURL = '/RPLP/GetStudentsInClassroomByClassroomName';
         $.ajax({
             type: 'GET',
             url: ajaxURL,
