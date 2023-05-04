@@ -256,7 +256,7 @@
                     document.getElementById(assignment.name).classList.remove("btn-primary");
                 }
             });
-
+            GetAllocationsInformations(SelectedClassroomName, SelectedAssignmentName);
             $("#scriptStart").removeAttr("hidden");
             $("#allocationContentTable").removeAttr("hidden");
         }
@@ -462,6 +462,7 @@
             },
             success: function (data) {
                 console.log("works!");
+                 GetAllocationsInformations(SelectedClassroomName, SelectedAssignmentName);
             },
             error: function (ex) {
                 console.log(ex);
@@ -484,6 +485,7 @@
             },
             success: function (data) {
                 console.log("works!");
+                 GetAllocationsInformations(SelectedClassroomName, SelectedAssignmentName);
             },
             error: function (ex) {
                 console.log(ex);
