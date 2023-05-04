@@ -61,6 +61,9 @@ namespace RPLP.SERVICES.Github
             }
 
             string fullPath = _getOrganisationRepositoriesGithub.Replace(organisationName, p_organisationName);
+            List<Repository_JSONDTO> repositoriesFromAllPages = new List<Repository_JSONDTO>();
+            bool isOver = false;
+            int page = 1;
 
             if (string.IsNullOrWhiteSpace(fullPath))
             {
@@ -68,16 +71,28 @@ namespace RPLP.SERVICES.Github
                             "GithubApiAction - GetOrganisationRepositoriesGithub - la variable fullPath assigné à partir de la méthode string.Replace est vide", 0));
             }
 
-            Task<List<Repository_JSONDTO>> RepositoriesJSON = OrganisationRepositoryGithubApiRequest(fullPath);
-            RepositoriesJSON.Wait();
+            while (!isOver)
+            {
+                Task<List<Repository_JSONDTO>> RepositoriesJSON = OrganisationRepositoryGithubApiRequestPerPage(fullPath, page);
+                RepositoriesJSON.Wait();
+                repositoriesFromAllPages.AddRange(RepositoriesJSON.Result);
 
-            return RepositoriesJSON.Result;
+                if (RepositoriesJSON.Result.Count <= 0)
+                {
+                    isOver = true;
+                }
+
+                ++page;
+            }
+
+            return repositoriesFromAllPages;
         }
 
-        private static async Task<List<Repository_JSONDTO>> OrganisationRepositoryGithubApiRequest(string p_githubLink)
+        private static async Task<List<Repository_JSONDTO>> OrganisationRepositoryGithubApiRequestPerPage(string p_githubLink, int p_page)
         {
             List<Repository_JSONDTO> repositories = new List<Repository_JSONDTO>();
-            HttpResponseMessage response = await _httpClient.GetAsync(p_githubLink);
+            string requestLink = p_githubLink + "?page=" + p_page.ToString();
+            HttpResponseMessage response = await _httpClient.GetAsync(requestLink);
 
             HttpHeaders headers = response.Headers;
             int remaining = 0;
