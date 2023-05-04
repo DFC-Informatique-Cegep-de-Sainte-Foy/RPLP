@@ -146,7 +146,8 @@ namespace RPLP.SERVICES.Github
                 throw new ArgumentException("the provided value is incorrect or null");
             }
 
-            ValidateAllRepositoriesHasBranch();
+            //Flag
+            //ValidateAllRepositoriesHasBranch();
 
             CreateOrUpdateActiveClassroom(p_organisationName, p_classRoomName, p_assignmentName);
 

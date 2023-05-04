@@ -86,8 +86,7 @@
 
     GetAllocationsInformations = function (classroomName, assignementName) {
         var ajaxURL = '/RPLP/GetAllocationsInformations';
-        console.log(SelectedClassroomName);
-        console.log(SelectedAssignmentName);
+
         $.ajax({
             type: 'GET',
             url: ajaxURL,
@@ -99,7 +98,6 @@
             },
             success: function (data) {
                 console.log('Success');
-                console.log(data);
                 allocations = data;
                 ShowAllocations();
             },
@@ -190,10 +188,16 @@
                 td4.setAttribute("class", "bi bi-check2");
                 tr.appendChild(td4);
             }
-            else {
+            else if (allocation.status == 42) {
                 var td4 = document.createElement("td");
                 td4.setAttribute("style", "max-width: 200px");
                 td4.setAttribute("class", "bi bi-clock");
+                tr.appendChild(td4);
+            }
+            else {
+                var td4 = document.createElement("td");
+                td4.setAttribute("style", "max-width: 200px");
+                td4.setAttribute("class", "bi bi-x");
                 tr.appendChild(td4);
             }
         });
@@ -446,9 +450,7 @@
     function StartStudentAssignationScript() {
         var ajaxURL = '/RPLP/StartStudentAssignationScript';
         var numberOfReviewsRequired = $("#numberOfReview").val();
-        console.log(SelectedOrganisationName);
-        console.log(SelectedClassroomName);
-        console.log(SelectedAssignmentName);
+
         $.ajax({
             type: 'GET',
             url: ajaxURL,
