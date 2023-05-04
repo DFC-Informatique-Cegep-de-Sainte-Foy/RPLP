@@ -8,6 +8,7 @@
 !/RPLP.MVC/Views/Logs/*
 *.bak
 
+
 # User-specific stuff
 .idea/**/workspace.xml
 .idea/**/tasks.xml
