@@ -94,57 +94,11 @@ namespace RPLP.MVC.Controllers
 
             return View("GestionDonnees", model);
         }
-        
-        public IActionResult Allocations()
-        {
-            AllocationsViewModel model = GetAllocationsInfos("H23_4393_AMOC", "H23_4393_AMOC_TP3");
-
-            return View("Allocations", model);
-        }
 
         #endregion
 
         #region Methodes prive
-        private AllocationsViewModel GetAllocationsInfos(string classroomName, string assignementName)
-        {
-            List<AllocationViewModel> allocations = new List<AllocationViewModel>();
 
-            //List<Allocation> allocationsInDB = this._httpClient.GetFromJsonAsync<List<Allocation>>($"Allocation").Result;
-            ////RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-            ////         $"RPLPController - GetAllocationsInformations - {allocationsInDB[0].Id}", 0));
-
-            //List<Student> students = _httpClient.GetFromJsonAsync<List<Student>>($"Student").Result;
-            ////if(students.Count > 0) { 
-            ////RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-            ////         $"RPLPController - GetAllocationsInformations - {students[0].Username}", 0));
-            ////}
-
-            //List<Teacher> teachers = _httpClient.GetFromJsonAsync<List<Teacher>>($"Teacher").Result;
-            ////if (teachers.Count > 0)
-            ////{
-            ////    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-            ////             $"RPLPController - GetAllocationsInformations - {teachers[0].Username}", 0));
-            ////}
-
-            //List<Repository> repositories = _httpClient.GetFromJsonAsync<List<Repository>>($"Repository").Result;
-            ////RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-            ////         $"RPLPController - GetAllocationsInformations - {repositories[0].Name}", 0));
-
-            //foreach (Allocation allocation in allocationsInDB)
-            //{
-            //    Repository? repository = repositories.Where(r => r.Id == allocation.RepositoryId).FirstOrDefault();
-            //    if (repository.Name.Contains(assignementName))
-            //    {
-            //        Student? student = students.Where(s => s.Id == allocation.StudentId).FirstOrDefault();
-            //        Teacher? teacher = teachers.Where(t => t.Id == allocation.TeacherId).FirstOrDefault();
-            //        AllocationViewModel allocationViewModel = new AllocationViewModel(allocation.Id, repository.Name, student.Username, teacher.Username, allocation.Status);
-            //        allocations.Add(allocationViewModel);
-            //    }
-            //}
-
-            AllocationsViewModel allocationsViewModel = new AllocationsViewModel(allocations, classroomName);
-            return allocationsViewModel;
-        }
         private GestionDonneeViewModel getGestionDonneeModel()
         {
             try
@@ -402,47 +356,53 @@ namespace RPLP.MVC.Controllers
 
             try
             {
-                //List<Allocation> allocationsInDB = this._httpClient.GetFromJsonAsync<List<Allocation>>($"Allocation").Result;
-                ////RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                ////         $"RPLPController - GetAllocationsInformations - {allocationsInDB[0].Id}", 0));
+                if (!String.IsNullOrEmpty(classroomName) && !String.IsNullOrEmpty(assignementName))
+                {
+                    List<Allocation>? allocationsInDB = this._httpClient.GetFromJsonAsync<List<Allocation>>($"/api/Allocation").Result;
+                    //Logging.Instance.Journal(new Log("Allocation", $"RPLPController - GetAllocationsInformations - {allocationsInDB[0].Id} - Count: {allocationsInDB.Count}"));
 
-                //List<Student> students = _httpClient.GetFromJsonAsync<List<Student>>($"Student").Result;
-                ////if(students.Count > 0) { 
-                ////RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                ////         $"RPLPController - GetAllocationsInformations - {students[0].Username}", 0));
-                ////}
+                    List<Student>? students = _httpClient.GetFromJsonAsync<List<Student>>($"/api/Student").Result;
+                    //if (students.Count > 0)
+                    //{
+                    //    Logging.Instance.Journal(new Log("Student", $"RPLPController - GetAllocationsInformations - {students[0].Username} - Count: {students.Count}"));
+                    //}
 
-                //List<Teacher> teachers = _httpClient.GetFromJsonAsync<List<Teacher>>($"Teacher").Result;
-                ////if (teachers.Count > 0)
-                ////{
-                ////    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                ////             $"RPLPController - GetAllocationsInformations - {teachers[0].Username}", 0));
-                ////}
+                    List<Teacher>? teachers = _httpClient.GetFromJsonAsync<List<Teacher>>($"/api/Teacher").Result;
+                    //if (teachers.Count > 0)
+                    //{
+                    //    Logging.Instance.Journal(new Log("Teacher", $"RPLPController - GetAllocationsInformations - {teachers[0].Username} - Count: {teachers.Count}"));
+                    //}
 
-                //List<Repository> repositories = _httpClient.GetFromJsonAsync<List<Repository>>($"Repository").Result;
-                ////RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                ////         $"RPLPController - GetAllocationsInformations - {repositories[0].Name}", 0));
+                    List<Repository>? repositories = _httpClient.GetFromJsonAsync<List<Repository>>($"/api/Repository").Result;
+                    //Logging.Instance.Journal(new Log("Repository", $"RPLPController - GetAllocationsInformations - {repositories[0].Name} - Count: {repositories.Count}"));
+                    if (allocationsInDB is not null)
+                    {
+                        foreach (Allocation allocation in allocationsInDB)
+                        {
+                            Logging.Instance.Journal(new Log("Allocation allocation in allocationsInDB", $"RPLPController - GetAllocationsInformations - {allocation.Id}"));
 
-                //foreach (Allocation allocation in allocationsInDB)
-                //{
-                //    Repository? repository = repositories.Where(r => r.Id == allocation.RepositoryId).FirstOrDefault();
-                //    if (repository.Name.Contains(assignementName))
-                //    {
-                //        Student? student = students.Where(s => s.Id == allocation.StudentId).FirstOrDefault();
-                //        Teacher? teacher = teachers.Where(t => t.Id == allocation.TeacherId).FirstOrDefault();
-                //        AllocationViewModel allocationViewModel = new AllocationViewModel(allocation.Id, repository.Name, student.Username, teacher.Username, allocation.Status);
-                //        allocations.Add(allocationViewModel);
-                //    }
-                //}
+                            Repository? repository = repositories.Where(r => r.Id == allocation.RepositoryId).FirstOrDefault();
+                            Logging.Instance.Journal(new Log("Repository", $"RPLPController - GetAllocationsInformations - {repository.Name}"));
 
-
-
+                            Logging.Instance.Journal(new Log("repository.Name.ToLower().Contains(assignementName.ToLower())", $"RPLPController - GetAllocationsInformations - {repository.Name.ToLower().Contains(assignementName.ToLower())} - assignementName: {assignementName.ToLower()}"));
+                            if (repository.Name.ToLower().Contains(assignementName.ToLower()))
+                            {
+                                Student? student = students.Where(s => s.Id == allocation.StudentId).FirstOrDefault();
+                                Teacher? teacher = teachers.Where(t => t.Id == allocation.TeacherId).FirstOrDefault();
+                                AllocationViewModel allocationViewModel = student is null ? new AllocationViewModel(allocation.Id, repository.Name, null, teacher.Username, allocation.Status)
+                                    : new AllocationViewModel(allocation.Id, repository.Name, student.Username, null, allocation.Status);
+                                Logging.Instance.Journal(new Log("AllocationViewModel", $"RPLPController - GetAllocationsInformations - {allocationViewModel.RepositoryName}"));
+                                allocations.Add(allocationViewModel);
+                            }
+                        }
+                    }
+                }
             }
             catch (Exception)
             {
                 throw;
             }
-            AllocationsViewModel allocationsViewModel = new AllocationsViewModel(allocations, classroomName);
+            AllocationsViewModel allocationsViewModel = new AllocationsViewModel(allocations, assignementName);
             return allocationsViewModel;
         }
 
@@ -858,17 +818,17 @@ namespace RPLP.MVC.Controllers
 
                         foreach (Student student in databaseTutorInClassroom)
                         {
-                            if(student.Id == tutor.Id)
+                            if (student.Id == tutor.Id)
                             {
                                 estInclus = true;
                             }
                         }
 
-                        if(!estInclus)
+                        if (!estInclus)
                         {
                             tutors.Add(new StudentViewModel { Id = tutor.Id, Username = tutor.Username, FirstName = tutor.FirstName, LastName = tutor.LastName, Email = tutor.Email });
                         }
-                      
+
                     }
                 }
 
@@ -1020,6 +980,7 @@ namespace RPLP.MVC.Controllers
         {
             try
             {
+
                 if (string.IsNullOrWhiteSpace(organisationName))
                 {
                     RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),

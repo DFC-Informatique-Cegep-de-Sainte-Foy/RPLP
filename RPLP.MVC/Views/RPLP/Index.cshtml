@@ -52,7 +52,8 @@
             <button class="btn-lg btn-primary p-2 buttons" onclick="DownloadSingleRepository()">Télécharger le dépôt d'un étudiant</button>
             <select class="form-control" id="selectStudent"></select>
         </div>
-
+    </div>
+    <div class="wrapper" id="allocationContentTable" hidden>
     </div>
 </div>
 
@@ -79,16 +80,137 @@
     var students = [];
     var teachers = [];
     var tutors = [];
+    var allocations = {};
 
-    function SetOrganisationName (organisationName){
-        if(organisationName != "")
-        {
+    setInterval(function () { GetAllocationsInformations(SelectedClassroomName, SelectedAssignmentName) }, 5000);
+
+    GetAllocationsInformations = function (classroomName, assignementName) {
+        var ajaxURL = '/RPLP/GetAllocationsInformations';
+
+        $.ajax({
+            type: 'GET',
+            url: ajaxURL,
+            data: { classroomName: SelectedClassroomName, assignementName: SelectedAssignmentName },
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            beforeSend: function () {
+                console.log('firing ajax call');
+            },
+            success: function (data) {
+                console.log('Success');
+                allocations = data;
+                ShowAllocations();
+            },
+            error: function (ex) {
+                console.log('Error');
+            }
+        });
+    }
+
+    ShowAllocations = function () {
+        var div = document.getElementById("allocationContentTable");
+        div.innerHTML = "";
+
+        var table = document.createElement("table");
+        table.setAttribute("class", "table table-striped");
+        div.appendChild(table);
+
+        var thead = document.createElement("thead");
+        table.appendChild(thead);
+
+        var tr = document.createElement("tr");
+        thead.appendChild(tr);
+
+        var th1 = document.createElement("th");
+        var thText = document.createTextNode("Repository Name");
+        th1.appendChild(thText);
+        tr.appendChild(th1);
+
+        var th2 = document.createElement("th");
+        thText = document.createTextNode("Student Name");
+        th2.appendChild(thText);
+        tr.appendChild(th2);
+
+        var th3 = document.createElement("th");
+        thText = document.createTextNode("Teacher Name");
+        th3.appendChild(thText);
+        tr.appendChild(th3);
+
+        var th4 = document.createElement("th");
+        thText = document.createTextNode("Status");
+        th4.appendChild(thText);
+        tr.appendChild(th4);
+
+        thead.appendChild(tr);
+
+        var tbody = document.createElement("tbody");
+        table.appendChild(tbody);
+
+        allocations.pairs.forEach(allocation => {
+            var tr = document.createElement("tr");
+            tbody.appendChild(tr);
+
+            var td1 = document.createElement("td");
+            td1.setAttribute("style", "max-width: 200px");
+            tdText = document.createTextNode(allocation.repositoryName);
+            td1.appendChild(tdText);
+            tr.appendChild(td1);
+
+            if (allocation.studentName === null) {
+                var td2 = document.createElement("td");
+                td2.setAttribute("style", "max-width: 200px");
+                tdText = document.createTextNode("");
+                td2.appendChild(tdText);
+                tr.appendChild(td2);
+                var td3 = document.createElement("td");
+                td3.setAttribute("style", "max-width: 200px");
+                tdText = document.createTextNode(allocation.teacherName);
+                td3.appendChild(tdText);
+                tr.appendChild(td3);
+            }
+            else {
+                var td2 = document.createElement("td");
+                td2.setAttribute("style", "max-width: 200px");
+                tdText = document.createTextNode(allocation.studentName);
+                td2.appendChild(tdText);
+                tr.appendChild(td2);
+                var td3 = document.createElement("td");
+                td3.setAttribute("style", "max-width: 200px");
+                tdText = document.createTextNode("");
+                td3.appendChild(tdText);
+                tr.appendChild(td3);
+            }
+
+
+            if (allocation.status == 53) {
+                var td4 = document.createElement("td");
+                td4.setAttribute("style", "max-width: 200px");
+                td4.setAttribute("class", "bi bi-check2");
+                tr.appendChild(td4);
+            }
+            else if (allocation.status == 42) {
+                var td4 = document.createElement("td");
+                td4.setAttribute("style", "max-width: 200px");
+                td4.setAttribute("class", "bi bi-clock");
+                tr.appendChild(td4);
+            }
+            else {
+                var td4 = document.createElement("td");
+                td4.setAttribute("style", "max-width: 200px");
+                td4.setAttribute("class", "bi bi-x");
+                tr.appendChild(td4);
+            }
+        });
+        div.appendChild(table);
+    }
+
+    function SetOrganisationName(organisationName) {
+        if (organisationName != "") {
             SelectedOrganisationName = organisationName;
             GetClassroomsOfOrganisationByName(SelectedOrganisationName);
 
             organisations.forEach(organisation => {
-                if(organisation.name == organisationName)
-                {
+                if (organisation.name == organisationName) {
                     document.getElementById(organisation.name).classList.remove("btn-outline-primary");
                     document.getElementById(organisation.name).classList.add("btn-primary");
                 } else {
@@ -99,16 +221,14 @@
         }
     }
 
-    function SetClassroomName (classroomName){
-        if(classroomName != "")
-        {
+    function SetClassroomName(classroomName) {
+        if (classroomName != "") {
             SelectedClassroomName = classroomName;
             GetAssignmentsOfClassroomByName(SelectedClassroomName);
             GetStudentsOfClassroomByName(SelectedClassroomName);
 
             classrooms.forEach(classroom => {
-                if(classroom.name == classroomName)
-                {
+                if (classroom.name == classroomName) {
                     document.getElementById(classroom.name).classList.remove("btn-outline-primary");
                     document.getElementById(classroom.name).classList.add("btn-primary");
                 } else {
@@ -123,14 +243,12 @@
         }
     }
 
-    function SetAssignmentName (assignmentName) {
-        if(assignmentName != "")
-        {
+    function SetAssignmentName(assignmentName) {
+        if (assignmentName != "") {
             SelectedAssignmentName = assignmentName;
 
             assignments.forEach(assignment => {
-                if(assignment.name == assignmentName)
-                {
+                if (assignment.name == assignmentName) {
                     document.getElementById(assignment.name).classList.remove("btn-outline-primary");
                     document.getElementById(assignment.name).classList.add("btn-primary");
                 } else {
@@ -140,11 +258,11 @@
             });
 
             $("#scriptStart").removeAttr("hidden");
-         }
+            $("#allocationContentTable").removeAttr("hidden");
+        }
     }
 
-    ShowStudents = function()
-    {
+    ShowStudents = function () {
         const classes = document.getElementById("selectStudent");
         classes.innerHTML = '';
 
@@ -163,8 +281,7 @@
         });
     }
 
-    ShowTeachers = function()
-    {
+    ShowTeachers = function () {
         const classes = document.getElementById("selectTeacher");
         classes.innerHTML = '';
 
@@ -184,8 +301,7 @@
     }
 
 
-    ShowTutors = function () 
-    {
+    ShowTutors = function () {
         const classes = document.getElementById("selectTutor");
         classes.innerHTML = '';
 
@@ -204,13 +320,12 @@
         });
     }
 
-    GetStudentsInClassroomByClassroomName = function (classroomName)
-     {
-       var ajaxURL = '/RPLP/GetStudentsInClassroomByClassroomName';
+    GetStudentsInClassroomByClassroomName = function (classroomName) {
+        var ajaxURL = '/RPLP/GetStudentsInClassroomByClassroomName';
         $.ajax({
             type: 'GET',
             url: ajaxURL,
-            data: { ClassroomName : classroomName},
+            data: { ClassroomName: classroomName },
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             beforeSend: function () {
@@ -226,13 +341,13 @@
         });
     }
 
-    function GetClassroomsOfOrganisationByName(organisationName){
-       var ajaxURL = '/RPLP/GetClassroomsOfOrganisationByName';
+    function GetClassroomsOfOrganisationByName(organisationName) {
+        var ajaxURL = '/RPLP/GetClassroomsOfOrganisationByName';
 
         $.ajax({
             type: 'GET',
             url: ajaxURL,
-            data: { orgName : organisationName},
+            data: { orgName: organisationName },
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             beforeSend: function () {
@@ -248,13 +363,13 @@
         });
     }
 
-    function GetAssignmentsOfClassroomByName (classroomName){
+    function GetAssignmentsOfClassroomByName(classroomName) {
         var ajaxURL = '/RPLP/GetAssignmentsOfClassroomByName';
 
         $.ajax({
             type: 'GET',
             url: ajaxURL,
-            data: { classroomName : classroomName},
+            data: { classroomName: classroomName },
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             beforeSend: function () {
@@ -271,13 +386,13 @@
         });
     }
 
-    function GetStudentsOfClassroomByName (classroomName){
+    function GetStudentsOfClassroomByName(classroomName) {
         var ajaxURL = '/RPLP/GetStudentsOfClassroomByName';
 
         $.ajax({
             type: 'GET',
             url: ajaxURL,
-            data: { classroomName : classroomName},
+            data: { classroomName: classroomName },
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             beforeSend: function () {
@@ -305,8 +420,8 @@
             var button = document.createElement("BUTTON");
             button.innerHTML = classroom.name;
             button.classList.add("btn-lg", "btn-outline-primary", "p-2", "buttons");
-            button.setAttribute('id',classroom.name ) ;
-            button.onclick = function() { SetClassroomName(classroom.name); };
+            button.setAttribute('id', classroom.name);
+            button.onclick = function () { SetClassroomName(classroom.name); };
             myDiv.appendChild(button);
         });
 
@@ -323,8 +438,8 @@
             var button = document.createElement("BUTTON");
             button.innerHTML = assignment.name;
             button.classList.add("btn-lg", "btn-outline-primary", "p-2", "buttons");
-            button.setAttribute('id',assignment.name ) ;
-            button.onclick = function() { SetAssignmentName(assignment.name); };
+            button.setAttribute('id', assignment.name);
+            button.onclick = function () { SetAssignmentName(assignment.name); };
             myDiv.appendChild(button);
         });
 
@@ -332,14 +447,14 @@
         $("#scriptStart").attr("hidden", true);
     }
 
-    function StartStudentAssignationScript (){
+    function StartStudentAssignationScript() {
         var ajaxURL = '/RPLP/StartStudentAssignationScript';
         var numberOfReviewsRequired = $("#numberOfReview").val();
 
         $.ajax({
             type: 'GET',
             url: ajaxURL,
-            data: { organisationName: SelectedOrganisationName, classroomName: SelectedClassroomName, assignmentName: SelectedAssignmentName, numberOfReviews: numberOfReviewsRequired},
+            data: { organisationName: SelectedOrganisationName, classroomName: SelectedClassroomName, assignmentName: SelectedAssignmentName, numberOfReviews: numberOfReviewsRequired },
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             beforeSend: function () {
@@ -347,7 +462,6 @@
             },
             success: function (data) {
                 console.log("works!");
-                Response.Redirect("Allocation.cshtml");
             },
             error: function (ex) {
                 console.log(ex);
@@ -355,14 +469,14 @@
         });
     }
 
-    function StartTeacherAssignationScript (){
+    function StartTeacherAssignationScript() {
         var ajaxURL = '/RPLP/StartTeachertAssignationScript';
         var teacherUsername = document.getElementById("selectTeacher").value;
 
         $.ajax({
             type: 'GET',
             url: ajaxURL,
-            data: { organisationName: SelectedOrganisationName, classroomName: SelectedClassroomName, assignmentName: SelectedAssignmentName, teacherUsername: teacherUsername},
+            data: { organisationName: SelectedOrganisationName, classroomName: SelectedClassroomName, assignmentName: SelectedAssignmentName, teacherUsername: teacherUsername },
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             beforeSend: function () {
@@ -377,13 +491,13 @@
         });
     }
 
-    function RemoveCollaboratorFromAssignment (){
+    function RemoveCollaboratorFromAssignment() {
         var ajaxURL = '/RPLP/RemoveCollaboratorsFromAssignmentRepositories';
 
         $.ajax({
             type: 'GET',
             url: ajaxURL,
-            data: { organisationName: SelectedOrganisationName, classroomName: SelectedClassroomName, assignmentName: SelectedAssignmentName},
+            data: { organisationName: SelectedOrganisationName, classroomName: SelectedClassroomName, assignmentName: SelectedAssignmentName },
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             beforeSend: function () {
@@ -398,13 +512,12 @@
         });
     }
 
-    function GetTeacherInClassroomByClassroomName (classroomName)
-     {
-       var ajaxURL = '/RPLP/GetTeacherInClassroomByClassroomName';
+    function GetTeacherInClassroomByClassroomName(classroomName) {
+        var ajaxURL = '/RPLP/GetTeacherInClassroomByClassroomName';
         $.ajax({
             type: 'GET',
             url: ajaxURL,
-            data: { classroomName : classroomName},
+            data: { classroomName: classroomName },
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             beforeSend: function () {
@@ -421,7 +534,7 @@
     }
 
     function GetTutors(classroomName) {
-       var ajaxURL = '/RPLP/GetTutors';
+        var ajaxURL = '/RPLP/GetTutors';
         $.ajax({
             type: 'GET',
             url: ajaxURL,
@@ -441,21 +554,18 @@
         });
     }
 
-    function DownloadComments ()
-    {
+    function DownloadComments() {
         var url = `RPLP/DownloadCommentsOfPullRequestByAssignment?organisationName=${SelectedOrganisationName}&classroomName=${SelectedClassroomName}&assignmentName=${SelectedAssignmentName}`;
         window.open(url);
     }
 
-    function DownloadSingleRepository()
-    {
+    function DownloadSingleRepository() {
         var selectedStudent = document.getElementById('selectStudent').value;
         var url = `RPLP/DownloadSingleRepository?organisationName=${SelectedOrganisationName}&classroomName=${SelectedClassroomName}&assignmentName=${SelectedAssignmentName}&studentUsername=${selectedStudent}`;
         window.open(url);
     }
 
-    function DownloadAllRepositoriesForAssignment()
-    {
+    function DownloadAllRepositoriesForAssignment() {
         var url = `RPLP/DownloadAllRepositoriesForAssignment?organisationName=${SelectedOrganisationName}&classroomName=${SelectedClassroomName}&assignmentName=${SelectedAssignmentName}`;
         window.open(url);
     }

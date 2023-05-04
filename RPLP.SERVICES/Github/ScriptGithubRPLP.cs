@@ -146,6 +146,7 @@ namespace RPLP.SERVICES.Github
                 throw new ArgumentException("the provided value is incorrect or null");
             }
 
+            //Flag
             //ValidateAllRepositoriesHasBranch();
 
             CreateOrUpdateActiveClassroom(p_organisationName, p_classRoomName, p_assignmentName);
@@ -978,13 +979,13 @@ namespace RPLP.SERVICES.Github
 
                 foreach (Repository_JSONDTO repoGitHub in repositoriesOnGithub)
                 {
-                    if(repo.FullName == repoGitHub.full_name)
+                    if (repo.FullName == repoGitHub.full_name)
                     {
                         estInclus = true;
                     }
                 }
 
-                if(!estInclus)
+                if (!estInclus)
                 {
                     repositoriesDesactivate.Add(repo);
                 }
