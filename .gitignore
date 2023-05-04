@@ -8,8 +8,6 @@
 !/RPLP.MVC/Views/Logs/*
 *.bak
 
-# Docker
-docker-compose.override.yml
 
 # User-specific stuff
 .idea/**/workspace.xml
