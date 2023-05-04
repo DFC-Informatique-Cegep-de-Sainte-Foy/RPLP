@@ -153,7 +153,6 @@ namespace RPLP.DAL.SQL.Depots
                 .ToList();
         }
 
-
         public List<Repository> GetRepositoriesFromOrganisationName(string p_organisationName)
         {
             if (string.IsNullOrWhiteSpace(p_organisationName))
