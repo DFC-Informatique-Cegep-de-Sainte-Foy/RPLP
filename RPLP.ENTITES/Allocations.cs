@@ -41,8 +41,6 @@ namespace RPLP.ENTITES
             Pairs = p_existingAllocation;
             this._classroom = p_classroom;
             this._repositories = p_repositories;
-            // A revoir dans la prochaine iteration
-            //ShuffleListInPlace(this._repositories);
         }
 
         public Allocations(List<Repository> p_repositories, Classroom p_classroom)
@@ -50,8 +48,6 @@ namespace RPLP.ENTITES
             this.Pairs = new List<Allocation>();
             this._classroom = p_classroom;
             this._repositories = p_repositories;
-            // A revoir dans la prochaine iteration
-            //ShuffleListInPlace(this._repositories);
         }
 
         public void CreateRandomReviewsAllocation(int p_numberOfReviews)
@@ -120,18 +116,6 @@ namespace RPLP.ENTITES
                         this.Pairs.Add(new Allocation(thisAllocationUniqueId, repoId, student.Id, null, 31));
                     indexAssignation++;
                 }
-            }
-        }
-
-        private void ShuffleListInPlace<T>(List<T> p_listToShuffle)
-        {
-            Random rnd = new Random();
-            int n = p_listToShuffle.Count;
-            while (n > 1)
-            {
-                n--;
-                int k = rnd.Next(n + 1);
-                (p_listToShuffle[k], p_listToShuffle[n]) = (p_listToShuffle[n], p_listToShuffle[k]);
             }
         }
 

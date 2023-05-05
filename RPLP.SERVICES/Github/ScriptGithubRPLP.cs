@@ -162,6 +162,13 @@ namespace RPLP.SERVICES.Github
 
             List<Repository> repositoriesToAssign = GetRepositoriesToAssign();
 
+            // flag : shuffle the repositories list
+            if (repositoriesToAssign is not null)
+            {
+                ShuffleListInPlace(repositoriesToAssign);
+            }
+            // flag : shuffle the repositories list
+
             if (repositoriesToAssign == null)
             {
                 RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
@@ -1074,6 +1081,18 @@ namespace RPLP.SERVICES.Github
             }
 
             return studentDictionary;
+        }
+
+        private void ShuffleListInPlace<T>(List<T> p_listToShuffle)
+        {
+            Random rnd = new Random();
+            int n = p_listToShuffle.Count;
+            while (n > 1)
+            {
+                n--;
+                int k = rnd.Next(n + 1);
+                (p_listToShuffle[k], p_listToShuffle[n]) = (p_listToShuffle[n], p_listToShuffle[k]);
+            }
         }
 
         private List<Repository> GetStudentsRepositoriesForAssignment(List<Repository> p_repositories,
