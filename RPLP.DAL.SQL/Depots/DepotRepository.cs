@@ -82,7 +82,7 @@ namespace RPLP.DAL.SQL.Depots
                      "DepotRepository - UpsertRepository - p_repository passé en paramètre est null", 0));
             }
 
-            Repository_SQLDTO? repositoryResult = this._context.Repositories.SingleOrDefault(repository => repository.Name == p_repository.Name);
+            Repository_SQLDTO? repositoryResult = this._context.Repositories.SingleOrDefault(repository => repository.Id == p_repository.Id);
             if (repositoryResult != null)
             {
                 repositoryResult.Name = p_repository.Name;
@@ -112,7 +112,12 @@ namespace RPLP.DAL.SQL.Depots
 
         public void DeleteRepository(string p_repositoryName)
         {
-            this._context.ChangeTracker.Clear();
+            if(this._context.ChangeTracker != null)
+            {
+                Logging.Instance.Journal(new Log($"DeleteRepository - J'ai passé le this._context.ChangeTracker"));
+                this._context.ChangeTracker.Clear();
+            }
+            
 
             Logging.Instance.Journal(new Log($"DeleteRepository - Debut - p_repositoryName {p_repositoryName}"));
             if (string.IsNullOrWhiteSpace(p_repositoryName))

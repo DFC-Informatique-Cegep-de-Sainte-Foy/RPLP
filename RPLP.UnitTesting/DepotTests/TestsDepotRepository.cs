@@ -540,9 +540,9 @@ namespace RPLP.UnitTesting.DepotTests
             context.Setup(x => x.Repositories).ReturnsDbSet(repositoriesDB);
             DepotRepository depot = new DepotRepository(context.Object);
 
-            depot.ReactivateRepository("ThPaquet");
+            depot.ReactivateRepository("BACenComm");
 
-            Repository_SQLDTO? repository = repositoriesDB.FirstOrDefault(r => r.Name == "ThPaquet");
+            Repository_SQLDTO? repository = repositoriesDB.FirstOrDefault(r => r.Name == "BACenComm");
             Assert.True(repository.Active);
         }
 
