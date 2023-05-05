@@ -97,16 +97,6 @@ services:
 #      - /home/rplp/data:/tmp
     restart: always
 
-  rplp.db.test:
-    container_name: rplp.db.test
-    user: root
-    image: mcr.microsoft.com/mssql/server:2019-latest
-    ports:
-      - "1434:1433"
-    environment:
-      SA_PASSWORD: "Cad3pend86!"
-      ACCEPT_EULA: "Y"
-
   rplp.rabbitmq:
     container_name: rplp.rabbitmq
     image: rabbitmq:3-management
