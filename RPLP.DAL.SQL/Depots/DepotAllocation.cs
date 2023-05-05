@@ -317,6 +317,12 @@ namespace RPLP.DAL.SQL.Depots
 
         public void UpsertAllocation(Allocation p_allocation)
         {
+            if (this._context.ChangeTracker != null)
+            {
+                Logging.Instance.Journal(new Log($"DeleteRepository - J'ai passé le this._context.ChangeTracker"));
+                this._context.ChangeTracker.Clear();
+            }
+
             if (p_allocation is null)
             {
                 Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
@@ -337,7 +343,7 @@ namespace RPLP.DAL.SQL.Depots
                     allocationResult.RepositoryId = p_allocation.RepositoryId;
                     allocationResult.Status = p_allocation.Status;
 
-                    // this._context.Update(allocationResult);
+                    this._context.Update(allocationResult);
                     this._context.SaveChanges();
 
                     Logging.Instance.Journal(new Log("Allocation", $"DepotAllocation - Method - UpsertAllocation(Allocation p_allocation) - Void - Update Allocation"));
@@ -404,6 +410,11 @@ namespace RPLP.DAL.SQL.Depots
 
         public void UpsertAllocationsBatch(List<Allocation> p_allocations)
         {
+            if (this._context.ChangeTracker != null)
+            {
+                Logging.Instance.Journal(new Log($"DeleteRepository - J'ai passé le this._context.ChangeTracker"));
+                this._context.ChangeTracker.Clear();
+            }
             if (p_allocations is null)
             {
                 Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
@@ -432,7 +443,7 @@ namespace RPLP.DAL.SQL.Depots
                     allocationResult.StudentId = a.StudentId;
                     allocationResult.RepositoryId = a.RepositoryId;
                     allocationResult.Status = a.Status;
-                    //this._context.Update(allocationResult);
+                    this._context.Update(allocationResult);
                     Logging.Instance.Journal(new Log("Allocation", $"DepotAllocation - Method - UpsertAllocationsBatch(List<Allocation> p_allocations) - Void - Update Allocations"));
                 }
                 else

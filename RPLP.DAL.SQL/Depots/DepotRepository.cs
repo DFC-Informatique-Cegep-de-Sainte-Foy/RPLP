@@ -112,7 +112,12 @@ namespace RPLP.DAL.SQL.Depots
 
         public void DeleteRepository(string p_repositoryName)
         {
-            this._context.ChangeTracker.Clear();
+            if(this._context.ChangeTracker != null)
+            {
+                Logging.Instance.Journal(new Log($"DeleteRepository - J'ai passé le this._context.ChangeTracker"));
+                this._context.ChangeTracker.Clear();
+            }
+            
 
             Logging.Instance.Journal(new Log($"DeleteRepository - Debut - p_repositoryName {p_repositoryName}"));
             if (string.IsNullOrWhiteSpace(p_repositoryName))

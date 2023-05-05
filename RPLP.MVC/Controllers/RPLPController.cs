@@ -403,19 +403,19 @@ namespace RPLP.MVC.Controllers
                     {
                         foreach (Allocation allocation in allocationsInDB)
                         {
-                            Logging.Instance.Journal(new Log("Allocation allocation in allocationsInDB", $"RPLPController - GetAllocationsInformations - {allocation.Id}"));
+                            //Logging.Instance.Journal(new Log("Allocation allocation in allocationsInDB", $"RPLPController - GetAllocationsInformations - {allocation.Id}"));
 
                             Repository? repository = repositories.Where(r => r.Id == allocation.RepositoryId).FirstOrDefault();
-                            Logging.Instance.Journal(new Log("Repository", $"RPLPController - GetAllocationsInformations - {repository.Name}"));
+                            //Logging.Instance.Journal(new Log("Repository", $"RPLPController - GetAllocationsInformations - {repository.Name}"));
 
-                            Logging.Instance.Journal(new Log("repository.Name.ToLower().Contains(assignementName.ToLower())", $"RPLPController - GetAllocationsInformations - {repository.Name.ToLower().Contains(assignementName.ToLower())} - assignementName: {assignementName.ToLower()}"));
+                            //Logging.Instance.Journal(new Log("repository.Name.ToLower().Contains(assignementName.ToLower())", $"RPLPController - GetAllocationsInformations - {repository.Name.ToLower().Contains(assignementName.ToLower())} - assignementName: {assignementName.ToLower()}"));
                             if (repository.Name.ToLower().Contains(assignementName.ToLower()))
                             {
                                 Student? student = students.Where(s => s.Id == allocation.StudentId).FirstOrDefault();
                                 Teacher? teacher = teachers.Where(t => t.Id == allocation.TeacherId).FirstOrDefault();
                                 AllocationViewModel allocationViewModel = student is null ? new AllocationViewModel(allocation.Id, repository.Name, null, teacher.Username, allocation.Status)
                                     : new AllocationViewModel(allocation.Id, repository.Name, student.Username, null, allocation.Status);
-                                Logging.Instance.Journal(new Log("AllocationViewModel", $"RPLPController - GetAllocationsInformations - {allocationViewModel.RepositoryName}"));
+                                //Logging.Instance.Journal(new Log("AllocationViewModel", $"RPLPController - GetAllocationsInformations - {allocationViewModel.RepositoryName}"));
                                 allocations.Add(allocationViewModel);
                             }
                         }

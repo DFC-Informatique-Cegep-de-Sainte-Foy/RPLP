@@ -305,16 +305,15 @@ namespace RPLP.UnitTesting.DepotTests
             Repository? repository = repositoriesDB.FirstOrDefault(r => r.Name == "ThPaquet").ToEntity();
             Assert.NotNull(repository);
 
-            repository.Name = "testrepo";
             repository.FullName = "Test Repository";
             repository.OrganisationName = "test organisation";
 
             depot.UpsertRepository(repository);
 
-            Repository_SQLDTO? repositorySQL = repositoriesDB.FirstOrDefault(r => r.Name == "testrepo");
+            Repository_SQLDTO? repositorySQL = repositoriesDB.FirstOrDefault(r => r.Name == "ThPaquet");
 
             Assert.NotNull(repositorySQL);
-            Assert.Equal("testrepo", repositorySQL.Name);
+            Assert.Equal("ThPaquet", repositorySQL.Name);
             Assert.Equal("Test Repository", repositorySQL.FullName);
             Assert.Equal("test organisation", repositorySQL.OrganisationName);
             Assert.True(repositorySQL.Active);
@@ -540,9 +539,9 @@ namespace RPLP.UnitTesting.DepotTests
             context.Setup(x => x.Repositories).ReturnsDbSet(repositoriesDB);
             DepotRepository depot = new DepotRepository(context.Object);
 
-            depot.ReactivateRepository("ThPaquet");
+            depot.ReactivateRepository("BACenComm");
 
-            Repository_SQLDTO? repository = repositoriesDB.FirstOrDefault(r => r.Name == "ThPaquet");
+            Repository_SQLDTO? repository = repositoriesDB.FirstOrDefault(r => r.Name == "BACenComm");
             Assert.True(repository.Active);
         }
 
