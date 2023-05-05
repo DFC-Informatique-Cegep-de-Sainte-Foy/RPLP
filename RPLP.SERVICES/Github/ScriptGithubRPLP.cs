@@ -162,6 +162,13 @@ namespace RPLP.SERVICES.Github
 
             List<Repository> repositoriesToAssign = GetRepositoriesToAssign();
 
+            // flag : shuffle the repositories list
+            if (repositoriesToAssign is not null)
+            {
+                ShuffleListInPlace(repositoriesToAssign);
+            }
+            // flag : shuffle the repositories list
+
             if (repositoriesToAssign == null)
             {
                 RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
@@ -697,7 +704,8 @@ namespace RPLP.SERVICES.Github
 
                 if (result == "Created")
                 {
-                    result = CreatePullRequestAndAssignTeacher(p_organisationName, p_repositoryName, newBranchName.ToLower(), p_newFileName, p_message, p_content, p_username);
+                    result = CreatePullRequestAndAssignTeacher(p_organisationName, p_repositoryName,
+                        newBranchName.ToLower(), p_newFileName, p_message, p_content, p_username);
 
                     if (result != "Created")
                     {
@@ -726,7 +734,8 @@ namespace RPLP.SERVICES.Github
             return result;
         }
 
-        private string CreatePullRequestAndAssignTeacher(string p_organisationName, string p_repositoryName, string p_newBranchName,
+        private string CreatePullRequestAndAssignTeacher(string p_organisationName, string p_repositoryName,
+            string p_newBranchName,
             string p_newFileName, string p_message, string p_content, string teacherUsername)
         {
             this._githubApiAction.AddFileToContentsGitHub(
@@ -950,25 +959,27 @@ namespace RPLP.SERVICES.Github
             }
         }
 
-        private void ManageMissingRepositoryInDBFromGitHub(List<Repository> repositoriesInDB, List<Repository_JSONDTO> repositoriesOnGithub)
+        private void ManageMissingRepositoryInDBFromGitHub(List<Repository> repositoriesInDB,
+            List<Repository_JSONDTO> repositoriesOnGithub)
         {
             List<Repository> repositoriesToAdd = new List<Repository>();
 
             repositoriesToAdd.AddRange(repositoriesOnGithub
-                   .Where(ghRepo =>
-                       repositoriesInDB.FirstOrDefault(dbRepo => dbRepo.FullName == ghRepo.full_name) == null)
-                   .Select(r => new Repository()
-                   {
-                       FullName = r.full_name,
-                       Name = r.name,
-                       OrganisationName = r.full_name.Split('/')[0]
-                   }));
+                .Where(ghRepo =>
+                    repositoriesInDB.FirstOrDefault(dbRepo => dbRepo.FullName == ghRepo.full_name) == null)
+                .Select(r => new Repository()
+                {
+                    FullName = r.full_name,
+                    Name = r.name,
+                    OrganisationName = r.full_name.Split('/')[0]
+                }));
 
             repositoriesToAdd.ForEach(r => this._depotRepository.UpsertRepository(r));
         }
 
 
-        private void ManageMissingRepositoryInGitHubFromDB(List<Repository> repositoriesInDB, List<Repository_JSONDTO> repositoriesOnGithub)
+        private void ManageMissingRepositoryInGitHubFromDB(List<Repository> repositoriesInDB,
+            List<Repository_JSONDTO> repositoriesOnGithub)
         {
             List<Repository> repositoriesDesactivate = new List<Repository>();
 
@@ -1023,8 +1034,10 @@ namespace RPLP.SERVICES.Github
 
         private void ValidateOneRepositoryHasBranch(string p_organisationName, Repository p_repository)
         {
-            Logging.Instance.Journal(new Log($"ValidateOneRepositoryHasBranch - Début - p_organisationName -> {p_organisationName} - p_repository.Name -> {p_repository.Name}"));
-            List<Branch_JSONDTO>? branches = _githubApiAction.GetRepositoryBranchesGithub(p_organisationName, p_repository.Name);
+            Logging.Instance.Journal(new Log(
+                $"ValidateOneRepositoryHasBranch - Début - p_organisationName -> {p_organisationName} - p_repository.Name -> {p_repository.Name}"));
+            List<Branch_JSONDTO>? branches =
+                _githubApiAction.GetRepositoryBranchesGithub(p_organisationName, p_repository.Name);
             Logging.Instance.Journal(new Log($"ValidateOneRepositoryHasBranch - branches.Count = {branches.Count}"));
 
             if (branches is null || branches.Count == 0)
@@ -1045,7 +1058,6 @@ namespace RPLP.SERVICES.Github
                 _depotRepository.DeleteRepository(p_repository.Name);
             }
         }
-
 
         #endregion
 
@@ -1069,6 +1081,18 @@ namespace RPLP.SERVICES.Github
             }
 
             return studentDictionary;
+        }
+
+        private void ShuffleListInPlace<T>(List<T> p_listToShuffle)
+        {
+            Random rnd = new Random();
+            int n = p_listToShuffle.Count;
+            while (n > 1)
+            {
+                n--;
+                int k = rnd.Next(n + 1);
+                (p_listToShuffle[k], p_listToShuffle[n]) = (p_listToShuffle[n], p_listToShuffle[k]);
+            }
         }
 
         private List<Repository> GetStudentsRepositoriesForAssignment(List<Repository> p_repositories,
@@ -1133,9 +1157,11 @@ namespace RPLP.SERVICES.Github
             foreach (Branch_JSONDTO branch in branchesResult)
             {
                 Logging.Instance.Journal(new Log("ValidateMainBranchExistsFromBranchList - foreach"));
-                Logging.Instance.Journal(new Log($"ValidateMainBranchExistsFromBranchList - branch.reference = {branch.reference}"));
+                Logging.Instance.Journal(
+                    new Log($"ValidateMainBranchExistsFromBranchList - branch.reference = {branch.reference}"));
                 string[] branchName = branch.reference.Split("/");
-                Logging.Instance.Journal(new Log($"ValidateMainBranchExistsFromBranchList - branchname = {branchName[2]}"));
+                Logging.Instance.Journal(
+                    new Log($"ValidateMainBranchExistsFromBranchList - branchname = {branchName[2]}"));
 
                 if (branchName[2] == "main")
                 {
@@ -1147,6 +1173,7 @@ namespace RPLP.SERVICES.Github
 
             return mainExists;
         }
+
         private Branch_JSONDTO GetBranchFromBranchesPerBranchType(string p_organisationName, string p_repositoryName,
             string p_branchType)
         {

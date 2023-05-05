@@ -41,8 +41,6 @@ namespace RPLP.ENTITES
             Pairs = p_existingAllocation;
             this._classroom = p_classroom;
             this._repositories = p_repositories;
-            // A revoir dans la prochaine iteration
-            //ShuffleListInPlace(this._repositories);
         }
 
         public Allocations(List<Repository> p_repositories, Classroom p_classroom)
@@ -50,8 +48,6 @@ namespace RPLP.ENTITES
             this.Pairs = new List<Allocation>();
             this._classroom = p_classroom;
             this._repositories = p_repositories;
-            // A revoir dans la prochaine iteration
-            //ShuffleListInPlace(this._repositories);
         }
 
         public void CreateRandomReviewsAllocation(int p_numberOfReviews)
@@ -71,9 +67,18 @@ namespace RPLP.ENTITES
                     for (int j = 0; j < p_numberOfReviews; j++)
                     {
                         int repoId = _repositories[i].Id;
-                        int reviewerId =
-                            GetReviewerIdParUsername(
-                                usernamesFromCurrentRepos[(i + j + 1) % usernamesFromCurrentRepos.Count]);
+                        //flag: Ensure that in no case the reviewer is the owner of the repos
+                        int k = 0;
+                        int indexReviewer = 0;
+                        do
+                        {
+                            k++;
+                            indexReviewer = (i + j + k) % usernamesFromCurrentRepos.Count;
+                        } while (_repositories[i].Name.ToLower()
+                                     .Contains(usernamesFromCurrentRepos[indexReviewer].ToLower()));
+                        //flag: Ensure that in no case the reviewer is the owner of the repos
+
+                        int reviewerId = GetReviewerIdParUsername(usernamesFromCurrentRepos[indexReviewer]);
                         string thisAllocationUniqueId = $"r{repoId}s{reviewerId}t0";
                         // RPLP.JOURNALISATION.Logging.Instance.Journal(
                         //     new Log($"Allocations.cs - CreateRandomReviewsAllocation(int p_numberOfReviews)" +
@@ -90,7 +95,8 @@ namespace RPLP.ENTITES
             }
         }
 
-        public void CreateReviewsAllocationsForStudentsWithoutRepository(List<Student> p_students, int p_numberOfReviews)
+        public void CreateReviewsAllocationsForStudentsWithoutRepository(List<Student> p_students,
+            int p_numberOfReviews)
         {
             int indexAssignation = 0;
 
@@ -110,18 +116,6 @@ namespace RPLP.ENTITES
                         this.Pairs.Add(new Allocation(thisAllocationUniqueId, repoId, student.Id, null, 31));
                     indexAssignation++;
                 }
-            }
-        }
-
-        private void ShuffleListInPlace<T>(List<T> p_listToShuffle)
-        {
-            Random rnd = new Random();
-            int n = p_listToShuffle.Count;
-            while (n > 1)
-            {
-                n--;
-                int k = rnd.Next(n + 1);
-                (p_listToShuffle[k], p_listToShuffle[n]) = (p_listToShuffle[n], p_listToShuffle[k]);
             }
         }
 
