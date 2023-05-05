@@ -82,7 +82,7 @@ namespace RPLP.DAL.SQL.Depots
                      "DepotRepository - UpsertRepository - p_repository passé en paramètre est null", 0));
             }
 
-            Repository_SQLDTO? repositoryResult = this._context.Repositories.SingleOrDefault(repository => repository.Id == p_repository.Id);
+            Repository_SQLDTO? repositoryResult = this._context.Repositories.SingleOrDefault(repository => repository.Name == p_repository.Name);
             if (repositoryResult != null)
             {
                 repositoryResult.Name = p_repository.Name;

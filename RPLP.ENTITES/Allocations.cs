@@ -48,6 +48,8 @@ namespace RPLP.ENTITES
             this.Pairs = new List<Allocation>();
             this._classroom = p_classroom;
             this._repositories = p_repositories;
+            RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"Le MeltDuPot - Ctor - _classroom.Name: {_classroom.Name} - this._repositories: {this._repositories.Count}"));
+
         }
 
         public void CreateRandomReviewsAllocation(int p_numberOfReviews)
@@ -58,7 +60,7 @@ namespace RPLP.ENTITES
             //             $"this._repositories.Count={this._repositories.Count}" +
             //             $"this.Pairs={this.Pairs.Count}"));
 
-            if (p_numberOfReviews > 0 && p_numberOfReviews < this._repositories.Count - 1)
+            if (p_numberOfReviews > 0 && p_numberOfReviews < this._repositories.Count)
             {
                 List<string> usernamesFromCurrentRepos = ExtractUsernameFromRepoName();
 
