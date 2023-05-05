@@ -71,9 +71,18 @@ namespace RPLP.ENTITES
                     for (int j = 0; j < p_numberOfReviews; j++)
                     {
                         int repoId = _repositories[i].Id;
-                        int reviewerId =
-                            GetReviewerIdParUsername(
-                                usernamesFromCurrentRepos[(i + j + 1) % usernamesFromCurrentRepos.Count]);
+                        //flag: Ensure that in no case the reviewer is the owner of the repos
+                        int k = 0;
+                        int indexReviewer = 0;
+                        do
+                        {
+                            k++;
+                            indexReviewer = (i + j + k) % usernamesFromCurrentRepos.Count;
+                        } while (_repositories[i].Name.ToLower()
+                                     .Contains(usernamesFromCurrentRepos[indexReviewer].ToLower()));
+                        //flag: Ensure that in no case the reviewer is the owner of the repos
+
+                        int reviewerId = GetReviewerIdParUsername(usernamesFromCurrentRepos[indexReviewer]);
                         string thisAllocationUniqueId = $"r{repoId}s{reviewerId}t0";
                         // RPLP.JOURNALISATION.Logging.Instance.Journal(
                         //     new Log($"Allocations.cs - CreateRandomReviewsAllocation(int p_numberOfReviews)" +
@@ -90,7 +99,8 @@ namespace RPLP.ENTITES
             }
         }
 
-        public void CreateReviewsAllocationsForStudentsWithoutRepository(List<Student> p_students, int p_numberOfReviews)
+        public void CreateReviewsAllocationsForStudentsWithoutRepository(List<Student> p_students,
+            int p_numberOfReviews)
         {
             int indexAssignation = 0;
 
