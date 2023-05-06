@@ -48,8 +48,6 @@ namespace RPLP.ENTITES
             this.Pairs = new List<Allocation>();
             this._classroom = p_classroom;
             this._repositories = p_repositories;
-            RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"Le MeltDuPot - Ctor - _classroom.Name: {_classroom.Name} - this._repositories: {this._repositories.Count}"));
-
         }
 
         public void CreateRandomReviewsAllocation(int p_numberOfReviews)
@@ -77,7 +75,7 @@ namespace RPLP.ENTITES
                             k++;
                             indexReviewer = (i + j + k) % usernamesFromCurrentRepos.Count;
                         } while (_repositories[i].Name.ToLower()
-                                     .Contains(usernamesFromCurrentRepos[indexReviewer].ToLower()));
+                                 .Contains(usernamesFromCurrentRepos[indexReviewer].ToLower()));
                         //flag: Ensure that in no case the reviewer is the owner of the repos
 
                         int reviewerId = GetReviewerIdParUsername(usernamesFromCurrentRepos[indexReviewer]);
