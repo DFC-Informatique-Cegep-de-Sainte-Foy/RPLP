@@ -41,6 +41,7 @@
             <button class="btn-lg btn-primary p-2 buttons" onclick="StartStudentAssignationScript()">Lancer le script de revue des pairs</button>
             <button class="btn-lg btn-primary p-2 buttons" onclick="StartTeacherAssignationScript()">Lancer le script de revue du prof</button>
             <select class="form-control" id="selectTeacher"></select>
+            <br/>
             <button class="btn-lg btn-primary p-2 buttons" onclick="StartTutorAssignationScript()">Lancer le script de revue du tuteur</button>
             <select class="form-control" id="selectTutor"></select>
             <button id="marg" class="btn-lg btn-primary p-2 buttons" onclick="RemoveCollaboratorFromAssignment()">Retirer les pairs du travail</button>
@@ -510,6 +511,29 @@
             success: function (data) {
                 console.log("works!");
                  GetAllocationsInformations(SelectedClassroomName, SelectedAssignmentName);
+            },
+            error: function (ex) {
+                console.log(ex);
+            }
+        });
+    }
+    
+    function StartTutorAssignationScript() {
+        var ajaxURL = '/RPLP/StartTutortAssignationScript';
+        var tutorUsername = document.getElementById("selectTutor").value;
+    
+        $.ajax({
+            type: 'GET',
+            url: ajaxURL,
+            data: { organisationName: SelectedOrganisationName, classroomName: SelectedClassroomName, assignmentName: SelectedAssignmentName, tutorUsername: tutorUsername },
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            beforeSend: function () {
+                console.log('firing ajax call');
+            },
+            success: function (data) {
+                console.log("works!");
+                GetAllocationsInformations(SelectedClassroomName, SelectedAssignmentName);
             },
             error: function (ex) {
                 console.log(ex);
