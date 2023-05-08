@@ -3,7 +3,7 @@ version: '3.9'
 services:
   rplp.api:
     container_name: rplp.api
-    image: revueparlespairs/rplpapi-dev
+    image: revueparlespairs/rplpapi-dev:latest
     build:
       context: .
       dockerfile: RPLP.API/Dockerfile
@@ -16,7 +16,7 @@ services:
 
   rplp.mvc:
     container_name: rplp.mvc
-    image: revueparlespairs/rplpmvc-dev
+    image: revueparlespairs/rplpmvc-dev:latest
     build:
       context: .
       dockerfile: RPLP.MVC/Dockerfile
@@ -35,7 +35,7 @@ services:
 
   rplp.coherencechecker:
     container_name: rplp.coherencechecker
-    image: revueparlespairs/rplp-coherencechecker
+    image: revueparlespairs/rplp-coherencechecker:latest
     build:
       context: .
       dockerfile: RPLP.COHERENCECHECKER/Dockerfile
@@ -50,7 +50,7 @@ services:
 
   rplp.journalisation:
     container_name: rplp.journalisation
-    image: revueparlespairs/rplp-journalisation
+    image: revueparlespairs/rplp-journalisation:latest
     build:
       context: .
       dockerfile: RPLP.JOURNALISATION/Dockerfile
@@ -66,7 +66,7 @@ services:
 
   rplp.validations:
     container_name: rplp.validations
-    image: revueparlespairs/rplp-validations
+    image: revueparlespairs/rplp-validations:latest
     build:
       context: .
       dockerfile: RPLP.VALIDATIONS/Dockerfile
@@ -96,16 +96,6 @@ services:
 #      - C:\mssql:/tmp
 #      - /home/rplp/data:/tmp
     restart: always
-
-  rplp.db.test:
-    container_name: rplp.db.test
-    user: root
-    image: mcr.microsoft.com/mssql/server:2019-latest
-    ports:
-      - "1434:1433"
-    environment:
-      SA_PASSWORD: "Cad3pend86!"
-      ACCEPT_EULA: "Y"
 
   rplp.rabbitmq:
     container_name: rplp.rabbitmq

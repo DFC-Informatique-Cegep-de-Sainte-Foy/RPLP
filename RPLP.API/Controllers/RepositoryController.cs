@@ -22,6 +22,21 @@ namespace RPLP.API.Controllers
 
             this._depot = p_depot;
         }
+       
+        [HttpGet]
+        public ActionResult<List<Repository>> GetRepositories()
+        {
+            try
+            {
+                Logging.Instance.Journal(new Log($"api/Repository", 200, "RepositoryController - GET méthode GetRepositories"));
+
+                return Ok(this._depot.GetRepositories());
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
 
         [HttpGet("Id/{id}")]
         public ActionResult<Repository> GetRepositoryById(int id)
