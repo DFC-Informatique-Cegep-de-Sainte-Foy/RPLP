@@ -14,7 +14,6 @@ namespace RPLP.ENTITES
         public string LastName { get; set; }
         public string Email { get; set; }
         public string Matricule { get; set; }
-
         public bool IsTutor { get; set; }
         public List<Classroom> Classes { get; set; }
 

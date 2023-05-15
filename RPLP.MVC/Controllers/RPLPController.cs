@@ -264,7 +264,7 @@ namespace RPLP.MVC.Controllers
                         model.Students.Add(new StudentViewModel
                         {
                             Id = student.Id, Username = student.Username, Email = student.Email,
-                            FirstName = student.FirstName, LastName = student.LastName,
+                            FirstName = student.FirstName, LastName = student.LastName, IsTuteur = student.IsTutor,
                             Matricule = student.Matricule
                         });
                     });
@@ -993,7 +993,7 @@ namespace RPLP.MVC.Controllers
                     tutors.Add(new StudentViewModel
                     {
                         Id = tutor.Id, Username = tutor.Username, FirstName = tutor.FirstName,
-                        LastName = tutor.LastName, Email = tutor.Email
+                        LastName = tutor.LastName, Email = tutor.Email, Matricule = tutor.Matricule, IsTuteur = tutor.IsTutor
                     });
                 }
                 return tutors;
@@ -1085,7 +1085,7 @@ namespace RPLP.MVC.Controllers
                         students.Add(new StudentViewModel
                         {
                             Id = student.Id, Email = student.Email, FirstName = student.FirstName,
-                            LastName = student.LastName, Username = student.Username, Matricule = student.Matricule
+                            LastName = student.LastName, Username = student.Username, IsTuteur = student.IsTutor, Matricule = student.Matricule
                         });
                     }
 
@@ -1147,7 +1147,7 @@ namespace RPLP.MVC.Controllers
                             students.Add(new StudentViewModel
                             {
                                 Id = student.Id, Email = student.Email, FirstName = student.FirstName,
-                                LastName = student.LastName, Username = student.Username, Matricule = student.Matricule
+                                LastName = student.LastName, Username = student.Username, IsTuteur = student.IsTutor, Matricule = student.Matricule
                             });
                         }
                     }
