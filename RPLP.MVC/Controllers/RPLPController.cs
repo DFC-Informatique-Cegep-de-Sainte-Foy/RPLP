@@ -967,17 +967,17 @@ namespace RPLP.MVC.Controllers
         // }
 
         [HttpGet]
-        public ActionResult<List<StudentViewModel>> GetTutors()
+        public ActionResult<List<StudentViewModel>> GetTutors(string classroomName)
         {
             try
             {
-                Logging.Instance.Journal(new Log("api", 0, $"RPLPController - GET méthode GetTutors"));
+                Logging.Instance.Journal(new Log("api", 0, $"RPLPController - GET méthode GetTutors(string classroomName = {classroomName})"));
 
                 List<StudentViewModel> tutors = new List<StudentViewModel>();
 
                 List<Student> databaseTutor = this._httpClient
                     .GetFromJsonAsync<List<Student>>($"Student/Tutors")
-                    .Result
+                    .Result.Where(s => s.Classes.All(classroom => classroom.Name != classroomName))
                     .ToList();
 
                 if (databaseTutor == null)

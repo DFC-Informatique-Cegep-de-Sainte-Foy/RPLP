@@ -45,7 +45,7 @@ namespace RPLP.API.Controllers
             {
                 Logging.Instance.Journal(new Log("api/Student/Tutors", 200, "StudentController - GET méthode Get"));
 
-                return Ok(this._depot.GetStudents().Where(s => s.Matricule is null or ""));
+                return Ok(this._depot.GetStudents().Where(s => s.IsTutor));
             }
             catch (Exception)
             {
