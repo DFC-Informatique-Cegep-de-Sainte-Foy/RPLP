@@ -1556,7 +1556,7 @@ namespace RPLP.MVC.Controllers
 
         [HttpPost]
         public ActionResult<string> POSTUpsertStudent(int Id, string Email, string FirstName, string LastName,
-            string Username, string Matricule)
+            string Username, bool IsTuteur, string Matricule)
         {
             try
             {
@@ -1605,7 +1605,7 @@ namespace RPLP.MVC.Controllers
                 Student student = new Student
                 {
                     Id = Id, Email = Email, FirstName = FirstName, LastName = LastName, Username = Username,
-                    Classes = new List<Classroom>(), Matricule = Matricule
+                    Classes = new List<Classroom>(), IsTutor = IsTuteur, Matricule = Matricule
                 };
 
                 Task<HttpResponseMessage> response = this._httpClient
