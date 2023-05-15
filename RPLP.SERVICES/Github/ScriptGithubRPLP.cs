@@ -684,8 +684,6 @@ namespace RPLP.SERVICES.Github
             this._allocations.CreateTeacherReviewsAllocation(teacherUsername);
             this._depotAllocation.UpsertAllocationsBatch(this._allocations.Pairs);
             Producer.CallGitHubAPI(this._allocations, "professor");
-            // createPullRequestForTeacher("FichierTexte.txt", "FeedbackTeacher",
-            //     "RmljaGllciB0ZXh0ZSBwb3VyIGNyw6nDqSBQUg==");
         }
         
         public void ScriptAssignTutorToAssignmentReview(string p_organisationName, string p_classRoomName,
