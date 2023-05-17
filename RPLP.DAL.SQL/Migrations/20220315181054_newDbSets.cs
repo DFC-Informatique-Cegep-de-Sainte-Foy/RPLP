@@ -134,6 +134,7 @@ namespace RPLP.DAL.SQL.Migrations
                     Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsTutor = table.Column<bool>(type: "bit", nullable: true),
                     Active = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>

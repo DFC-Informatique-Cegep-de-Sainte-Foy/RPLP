@@ -167,6 +167,52 @@ namespace RPLP.ENTITES
                 throw new ArgumentException("Teacher name cannot be missing", nameof(p_teacherUsername));
             }
         }
+        
+        public void CreateTutorReviewsAllocation(string p_tutorUsername, int p_tutorId)
+        {
+            RPLP.JOURNALISATION.Logging.Instance.Journal(
+                new Log($"Allocations.cs - CreateTutorReviewsAllocation(string p_tutorUsername, int p_tutorId)" +
+                        $"p_tutorUsername={p_tutorUsername}" +
+                        $"p_tutorId={p_tutorId}"));
+
+            if (p_tutorUsername != string.Empty)
+            {
+                RPLP.JOURNALISATION.Logging.Instance.Journal(
+                    new Log($"Allocations.cs - CreateTutorReviewsAllocation(string p_tutorUsername)" +
+                            $"p_tutorId={p_tutorId}"));
+                List<Allocation> tutorAllocationToBeAdded = new List<Allocation>();
+
+                foreach (Allocation allocation in this.Pairs)
+                {
+                    int repoId = allocation.RepositoryId;
+                    string thisAllocationUniqueId = $"r{repoId}s{p_tutorId}t0";
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(
+                        new Log($"Allocations.cs - CreateTutorReviewsAllocation(string p_tutorUsername)" +
+                                $"repoId={repoId}" +
+                                $"tutorId={p_tutorId}" +
+                                $"thisAllocationUniqueId={thisAllocationUniqueId}"));
+                    try
+                    {
+                        if (this.Pairs.FirstOrDefault(all => all.Id == thisAllocationUniqueId) is null)
+                            if (tutorAllocationToBeAdded.FirstOrDefault(all => all.Id == thisAllocationUniqueId) is
+                                null)
+                                tutorAllocationToBeAdded.Add(new Allocation(thisAllocationUniqueId, repoId, p_tutorId,
+                                    null, 31));
+                    }
+                    catch (Exception e)
+                    {
+                        RPLP.JOURNALISATION.Logging.Instance.Journal(
+                            new Log($"error ! ={e.Message}"));
+                    }
+                }
+
+                this.Pairs.AddRange(tutorAllocationToBeAdded);
+            }
+            else
+            {
+                throw new ArgumentException("Tutor username cannot be missing", nameof(p_tutorUsername));
+            }
+        }
 
         private List<string> ExtractUsernameFromRepoName()
         {

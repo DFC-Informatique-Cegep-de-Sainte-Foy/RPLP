@@ -22,7 +22,7 @@ namespace RPLP.API.Controllers
         private GithubPRCommentFetcher _githubPRCommentFetcher;
         private ScriptGithubRPLP _scriptGithub;
 
-        public GithubController(IConfiguration configuration, IDepotClassroom depotClassroom, IDepotRepository depotRepository, IDepotOrganisation depotOrganisation, IDepotAllocation depotAllocation)
+        public GithubController(IConfiguration configuration, IDepotClassroom depotClassroom, IDepotRepository depotRepository, IDepotOrganisation depotOrganisation, IDepotAllocation depotAllocation, IDepotStudent depotStudent)
         {
             if (configuration == null)
             {
@@ -34,7 +34,7 @@ namespace RPLP.API.Controllers
 
             _githubAction = new GithubApiAction(token);
             _githubPRCommentFetcher = new GithubPRCommentFetcher(token, depotClassroom, depotRepository);
-            _scriptGithub = new ScriptGithubRPLP(depotClassroom, depotRepository, depotOrganisation, depotAllocation, token);
+            _scriptGithub = new ScriptGithubRPLP(depotClassroom, depotRepository, depotOrganisation, depotAllocation, depotStudent, token);
         }
 
         [HttpGet("/test/{organisationName}/{classroomName}/{assignmentName}/{numberOfReviews}")]

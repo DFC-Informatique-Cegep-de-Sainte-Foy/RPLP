@@ -28,7 +28,8 @@ namespace RPLP.MVC.Controllers
         private object classroomName;
 
         public RPLPController(IConfiguration configuration, IDepotClassroom depotClassroom,
-            IDepotRepository depotRepository, IDepotOrganisation depotOrganisation, IDepotAllocation depotAllocation)
+            IDepotRepository depotRepository, IDepotOrganisation depotOrganisation, IDepotAllocation depotAllocation,
+            IDepotStudent depotStudent)
         {
             if (configuration == null)
             {
@@ -40,6 +41,7 @@ namespace RPLP.MVC.Controllers
             string token = configuration.GetValue<string>("Token");
             GithubApiAction _githubAction = new GithubApiAction(token);
             _scriptGithub = new ScriptGithubRPLP(depotClassroom, depotRepository, depotOrganisation, depotAllocation,
+                depotStudent,
                 token);
 
             this._httpClient = new HttpClient();
@@ -262,7 +264,7 @@ namespace RPLP.MVC.Controllers
                         model.Students.Add(new StudentViewModel
                         {
                             Id = student.Id, Username = student.Username, Email = student.Email,
-                            FirstName = student.FirstName, LastName = student.LastName,
+                            FirstName = student.FirstName, LastName = student.LastName, IsTuteur = student.IsTutor,
                             Matricule = student.Matricule
                         });
                     });
@@ -373,8 +375,10 @@ namespace RPLP.MVC.Controllers
         #endregion
 
         #region ActionGet
+
         [HttpGet]
-        public ActionResult<AllocationsViewModel> GetAllocationsInformations(string classroomName, string assignementName)
+        public ActionResult<AllocationsViewModel> GetAllocationsInformations(string classroomName,
+            string assignementName)
         {
             List<AllocationViewModel> allocations = new List<AllocationViewModel>();
 
@@ -382,7 +386,8 @@ namespace RPLP.MVC.Controllers
             {
                 if (!String.IsNullOrEmpty(classroomName) && !String.IsNullOrEmpty(assignementName))
                 {
-                    List<Allocation>? allocationsInDB = this._httpClient.GetFromJsonAsync<List<Allocation>>($"/api/Allocation").Result;
+                    List<Allocation>? allocationsInDB =
+                        this._httpClient.GetFromJsonAsync<List<Allocation>>($"/api/Allocation").Result;
                     //Logging.Instance.Journal(new Log("Allocation", $"RPLPController - GetAllocationsInformations - {allocationsInDB[0].Id} - Count: {allocationsInDB.Count}"));
 
                     List<Student>? students = _httpClient.GetFromJsonAsync<List<Student>>($"/api/Student").Result;
@@ -397,7 +402,8 @@ namespace RPLP.MVC.Controllers
                     //    Logging.Instance.Journal(new Log("Teacher", $"RPLPController - GetAllocationsInformations - {teachers[0].Username} - Count: {teachers.Count}"));
                     //}
 
-                    List<Repository>? repositories = _httpClient.GetFromJsonAsync<List<Repository>>($"/api/Repository").Result;
+                    List<Repository>? repositories =
+                        _httpClient.GetFromJsonAsync<List<Repository>>($"/api/Repository").Result;
                     //Logging.Instance.Journal(new Log("Repository", $"RPLPController - GetAllocationsInformations - {repositories[0].Name} - Count: {repositories.Count}"));
                     if (allocationsInDB is not null)
                     {
@@ -405,7 +411,8 @@ namespace RPLP.MVC.Controllers
                         {
                             //Logging.Instance.Journal(new Log("Allocation allocation in allocationsInDB", $"RPLPController - GetAllocationsInformations - {allocation.Id}"));
 
-                            Repository? repository = repositories.Where(r => r.Id == allocation.RepositoryId).FirstOrDefault();
+                            Repository? repository = repositories.Where(r => r.Id == allocation.RepositoryId)
+                                .FirstOrDefault();
                             //Logging.Instance.Journal(new Log("Repository", $"RPLPController - GetAllocationsInformations - {repository.Name}"));
 
                             //Logging.Instance.Journal(new Log("repository.Name.ToLower().Contains(assignementName.ToLower())", $"RPLPController - GetAllocationsInformations - {repository.Name.ToLower().Contains(assignementName.ToLower())} - assignementName: {assignementName.ToLower()}"));
@@ -413,8 +420,11 @@ namespace RPLP.MVC.Controllers
                             {
                                 Student? student = students.Where(s => s.Id == allocation.StudentId).FirstOrDefault();
                                 Teacher? teacher = teachers.Where(t => t.Id == allocation.TeacherId).FirstOrDefault();
-                                AllocationViewModel allocationViewModel = student is null ? new AllocationViewModel(allocation.Id, repository.Name, null, teacher.Username, allocation.Status)
-                                    : new AllocationViewModel(allocation.Id, repository.Name, student.Username, null, allocation.Status);
+                                AllocationViewModel allocationViewModel = student is null
+                                    ? new AllocationViewModel(allocation.Id, repository.Name, null, teacher.Username,
+                                        allocation.Status)
+                                    : new AllocationViewModel(allocation.Id, repository.Name, student.Username, null,
+                                        allocation.Status);
                                 //Logging.Instance.Journal(new Log("AllocationViewModel", $"RPLPController - GetAllocationsInformations - {allocationViewModel.RepositoryName}"));
                                 allocations.Add(allocationViewModel);
                             }
@@ -426,6 +436,7 @@ namespace RPLP.MVC.Controllers
             {
                 throw;
             }
+
             AllocationsViewModel allocationsViewModel = new AllocationsViewModel(allocations, assignementName);
             return allocationsViewModel;
         }
@@ -889,30 +900,85 @@ namespace RPLP.MVC.Controllers
             }
         }
 
+        // [HttpGet]
+        // public ActionResult<List<StudentViewModel>> GetTutors(string classroomName)
+        // {
+        //     try
+        //     {
+        //         Logging.Instance.Journal(new Log("api", 0, $"RPLPController - GET méthode GetTutors"));
+        //
+        //         List<StudentViewModel> tutors = new List<StudentViewModel>();
+        //
+        //         List<Student> databaseTutorInClassroom = this._httpClient
+        //             .GetFromJsonAsync<List<Student>>($"Student")
+        //             .Result.Where(tutor => tutor.Classes.Any(classroom => classroom.Name == classroomName)).ToList();
+        //
+        //         List<Student> databaseTutor = this._httpClient
+        //             .GetFromJsonAsync<List<Student>>($"Student")
+        //             .Result;
+        //
+        //         if (databaseTutorInClassroom == null)
+        //         {
+        //             RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+        //                 new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+        //                 "RPLPController - GetTutors - La liste databaseTutorInClassroom assignée à partir de la méthode this._httpClient.GetFromJsonAsync<List<Student>>($\"Student\").Result.Where(tutor => tutor.Classes.Any(classroom => classroom.Name == classroomName)).ToList(); est null",
+        //                 0));
+        //         }
+        //
+        //         if (databaseTutor == null)
+        //         {
+        //             RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+        //                 new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+        //                 "RPLPController - GetTutors - La liste databaseTutor assignée à partir de la méthode  this._httpClient.GetFromJsonAsync<List<Student>>($\"Student\").Result; est null",
+        //                 0));
+        //         }
+        //
+        //         if (databaseTutorInClassroom.Count >= 1 || databaseTutor.Count >= 1)
+        //         {
+        //             foreach (Student tutor in databaseTutor)
+        //             {
+        //                 bool estInclus = false;
+        //
+        //                 foreach (Student student in databaseTutorInClassroom)
+        //                 {
+        //                     if (student.Id == tutor.Id)
+        //                     {
+        //                         estInclus = true;
+        //                     }
+        //                 }
+        //
+        //                 if (!estInclus)
+        //                 {
+        //                     tutors.Add(new StudentViewModel
+        //                     {
+        //                         Id = tutor.Id, Username = tutor.Username, FirstName = tutor.FirstName,
+        //                         LastName = tutor.LastName, Email = tutor.Email
+        //                     });
+        //                 }
+        //             }
+        //         }
+        //
+        //         return tutors;
+        //     }
+        //     catch (Exception)
+        //     {
+        //         throw;
+        //     }
+        // }
+
         [HttpGet]
         public ActionResult<List<StudentViewModel>> GetTutors(string classroomName)
         {
             try
             {
-                Logging.Instance.Journal(new Log("api", 0, $"RPLPController - GET méthode GetTutors"));
+                Logging.Instance.Journal(new Log("api", 0, $"RPLPController - GET méthode GetTutors(string classroomName = {classroomName})"));
 
                 List<StudentViewModel> tutors = new List<StudentViewModel>();
 
-                List<Student> databaseTutorInClassroom = this._httpClient
-                    .GetFromJsonAsync<List<Student>>($"Student")
-                    .Result.Where(tutor => tutor.Classes.Any(classroom => classroom.Name == classroomName)).ToList();
-
                 List<Student> databaseTutor = this._httpClient
-                    .GetFromJsonAsync<List<Student>>($"Student")
-                    .Result;
-
-                if (databaseTutorInClassroom == null)
-                {
-                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
-                        new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                        "RPLPController - GetTutors - La liste databaseTutorInClassroom assignée à partir de la méthode this._httpClient.GetFromJsonAsync<List<Student>>($\"Student\").Result.Where(tutor => tutor.Classes.Any(classroom => classroom.Name == classroomName)).ToList(); est null",
-                        0));
-                }
+                    .GetFromJsonAsync<List<Student>>($"Student/Tutors")
+                    .Result.Where(s => s.Classes.All(classroom => classroom.Name != classroomName))
+                    .ToList();
 
                 if (databaseTutor == null)
                 {
@@ -922,31 +988,14 @@ namespace RPLP.MVC.Controllers
                         0));
                 }
 
-                if (databaseTutorInClassroom.Count >= 1 || databaseTutor.Count >= 1)
+                foreach (var tutor in databaseTutor)
                 {
-                    foreach (Student tutor in databaseTutor)
+                    tutors.Add(new StudentViewModel
                     {
-                        bool estInclus = false;
-
-                        foreach (Student student in databaseTutorInClassroom)
-                        {
-                            if (student.Id == tutor.Id)
-                            {
-                                estInclus = true;
-                            }
-                        }
-
-                        if (!estInclus)
-                        {
-                            tutors.Add(new StudentViewModel
-                            {
-                                Id = tutor.Id, Username = tutor.Username, FirstName = tutor.FirstName,
-                                LastName = tutor.LastName, Email = tutor.Email
-                            });
-                        }
-                    }
+                        Id = tutor.Id, Username = tutor.Username, FirstName = tutor.FirstName,
+                        LastName = tutor.LastName, Email = tutor.Email, Matricule = tutor.Matricule, IsTuteur = tutor.IsTutor
+                    });
                 }
-
                 return tutors;
             }
             catch (Exception)
@@ -1036,7 +1085,7 @@ namespace RPLP.MVC.Controllers
                         students.Add(new StudentViewModel
                         {
                             Id = student.Id, Email = student.Email, FirstName = student.FirstName,
-                            LastName = student.LastName, Username = student.Username, Matricule = student.Matricule
+                            LastName = student.LastName, Username = student.Username, IsTuteur = student.IsTutor, Matricule = student.Matricule
                         });
                     }
 
@@ -1098,7 +1147,7 @@ namespace RPLP.MVC.Controllers
                             students.Add(new StudentViewModel
                             {
                                 Id = student.Id, Email = student.Email, FirstName = student.FirstName,
-                                LastName = student.LastName, Username = student.Username, Matricule = student.Matricule
+                                LastName = student.LastName, Username = student.Username, IsTuteur = student.IsTutor, Matricule = student.Matricule
                             });
                         }
                     }
@@ -1118,7 +1167,6 @@ namespace RPLP.MVC.Controllers
         {
             try
             {
-
                 if (string.IsNullOrWhiteSpace(organisationName))
                 {
                     RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
@@ -1207,6 +1255,57 @@ namespace RPLP.MVC.Controllers
 
                 _scriptGithub.ScriptAssignTeacherToAssignmentReview(organisationName, classroomName, assignmentName,
                     teacherUsername);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet]
+        public ActionResult StartTutortAssignationScript(string organisationName, string classroomName,
+            string assignmentName, string tutorUsername)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(organisationName))
+                {
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                        new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                        "RPLPController - StartTutortAssignationScript - organisationName passé en paramètre est vide",
+                        0));
+                }
+
+                if (string.IsNullOrWhiteSpace(classroomName))
+                {
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                        new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                        "RPLPController - StartTutortAssignationScript - classroomName passé en paramètre est vide",
+                        0));
+                }
+
+                if (string.IsNullOrWhiteSpace(assignmentName))
+                {
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                        new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                        "RPLPController - StartTutortAssignationScript - assignmentName passé en paramètre est vide",
+                        0));
+                }
+
+                if (string.IsNullOrWhiteSpace(tutorUsername))
+                {
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentOutOfRangeException().ToString(),
+                        new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                        "RPLPController - StartTutortAssignationScript - teacherUsername passé en paramètre est vide",
+                        0));
+                }
+
+                Logging.Instance.Journal(new Log("api", 200,
+                    $"RPLPController - GET méthode StartTutortAssignationScript(string organisationName = {organisationName}, string classroomName = {classroomName}, string assignmentName = {assignmentName}, string tutorUsername = {tutorUsername})"));
+
+                _scriptGithub.ScriptAssignTutorToAssignmentReview(organisationName, classroomName, assignmentName,
+                    tutorUsername);
                 return Ok();
             }
             catch (Exception ex)
@@ -1457,7 +1556,7 @@ namespace RPLP.MVC.Controllers
 
         [HttpPost]
         public ActionResult<string> POSTUpsertStudent(int Id, string Email, string FirstName, string LastName,
-            string Username, string Matricule)
+            string Username, bool IsTuteur, string Matricule)
         {
             try
             {
@@ -1506,7 +1605,7 @@ namespace RPLP.MVC.Controllers
                 Student student = new Student
                 {
                     Id = Id, Email = Email, FirstName = FirstName, LastName = LastName, Username = Username,
-                    Classes = new List<Classroom>(), Matricule = Matricule
+                    Classes = new List<Classroom>(), IsTutor = IsTuteur, Matricule = Matricule
                 };
 
                 Task<HttpResponseMessage> response = this._httpClient
@@ -1793,6 +1892,7 @@ namespace RPLP.MVC.Controllers
                         new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                         "RPLPController - POSTNewAssignment - Description passé en paramètre est vide", 0));
                 }
+
                 if (DeliveryDeadline == DateTime.MinValue)
                 {
                     RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentOutOfRangeException().ToString(),
