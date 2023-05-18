@@ -5,11 +5,11 @@
     <div class="wrapper">
         <div id="orgsCollapsible" class="collapsible">
             <input type="checkbox" id="collapsible-orgs" name="checkboxOrg" />
-            <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
-                <option selected for="collapsible-orgs">Organisations</option>    
+            <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" id="selectBox" onchange="SetOrganisationName(selectBox.options[selectBox.selectedIndex].value)">
+                <option selected for="collapsible-orgs" disabled>Organisations</option>    
                 @foreach (var org in Model.Organisations)
                 {
-                    <option onclick="SetOrganisationName('@org.Name')" value='@org.Name' id='@org.Name'>@org.Name</option>
+                    <option  value='@org.Name' id='@org.Name'>@org.Name</option>
                 }
             </select>
         </div>

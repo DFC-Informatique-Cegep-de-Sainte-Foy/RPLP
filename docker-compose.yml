@@ -44,7 +44,7 @@ services:
         condition: service_healthy
       rplp.rabbitmq:
         condition: service_healthy
-    links: 
+    links:
       - rplp.rabbitmq
     restart: always
 
@@ -57,7 +57,7 @@ services:
     depends_on:
       rplp.rabbitmq:
         condition: service_healthy
-    links: 
+    links:
       - rplp.rabbitmq
     volumes:
       - rplpvolume_logs:/var/log/rplp/
@@ -73,7 +73,7 @@ services:
     depends_on:
       rplp.rabbitmq:
         condition: service_healthy
-    links: 
+    links:
       - rplp.rabbitmq
     restart: always
 
@@ -87,14 +87,27 @@ services:
       SA_PASSWORD: "Cad3pend86!"
       ACCEPT_EULA: "Y"
     healthcheck:
-      test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-U", "sa", "-P", "Cad3pend86!", "-Q", "select 1", "-b", "-o", "/dev/null"]
+      test:
+        [
+          "CMD",
+          "/opt/mssql-tools/bin/sqlcmd",
+          "-U",
+          "sa",
+          "-P",
+          "Cad3pend86!",
+          "-Q",
+          "select 1",
+          "-b",
+          "-o",
+          "/dev/null"
+        ]
       interval: 30s
       timeout: 30s
       retries: 3
     volumes:
       - rplpvolume:/var/opt/mssql/data
-#      - C:\mssql:/tmp
-#      - /home/rplp/data:/tmp
+    #      - C:\mssql:/tmp
+    #      - /home/rplp/data:/tmp
     restart: always
 
   rplp.rabbitmq:
