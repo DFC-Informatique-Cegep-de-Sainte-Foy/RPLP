@@ -37,6 +37,21 @@ namespace RPLP.API.Controllers
                 throw;
             }
         }
+        
+        [HttpGet("Tutors")]
+        public ActionResult<IEnumerable<Student>> GetTutors()
+        {
+            try
+            {
+                Logging.Instance.Journal(new Log("api/Student/Tutors", 200, "StudentController - GET méthode Get"));
+
+                return Ok(this._depot.GetStudents().Where(s => s.IsTutor));
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
 
         [HttpGet("Deactivated")]
         public ActionResult<IEnumerable<Student>> GetDeactivated()
@@ -115,8 +130,7 @@ namespace RPLP.API.Controllers
                 throw;
             }
         }
-
-
+        
         [HttpPost]
         public ActionResult Post([FromBody] Student p_student)
         {

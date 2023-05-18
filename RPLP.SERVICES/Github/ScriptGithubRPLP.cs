@@ -24,12 +24,14 @@ namespace RPLP.SERVICES.Github
         private readonly IDepotRepository _depotRepository;
         private readonly IDepotOrganisation _depotOrganisation;
         private readonly IDepotAllocation _depotAllocation;
+        //flag: ajout pour les tuteurs
+        private readonly IDepotStudent _depotStudent;
         private readonly GithubApiAction _githubApiAction;
         private Classroom _activeClassroom;
         private Allocations _allocations;
 
         public ScriptGithubRPLP(IDepotClassroom p_depotClassroom, IDepotRepository p_depotRepository,
-            IDepotOrganisation p_depotOrganisation, IDepotAllocation p_depotAllocation, string p_token)
+            IDepotOrganisation p_depotOrganisation, IDepotAllocation p_depotAllocation, IDepotStudent p_depotStudent, string p_token)
         {
             if (p_depotClassroom == null)
             {
@@ -63,6 +65,7 @@ namespace RPLP.SERVICES.Github
             this._depotRepository = p_depotRepository;
             this._depotOrganisation = p_depotOrganisation;
             this._depotAllocation = p_depotAllocation;
+            this._depotStudent = p_depotStudent;
             this._githubApiAction = new GithubApiAction(p_token);
         }
 
@@ -681,8 +684,104 @@ namespace RPLP.SERVICES.Github
             this._allocations.CreateTeacherReviewsAllocation(teacherUsername);
             this._depotAllocation.UpsertAllocationsBatch(this._allocations.Pairs);
             Producer.CallGitHubAPI(this._allocations, "professor");
-            // createPullRequestForTeacher("FichierTexte.txt", "FeedbackTeacher",
-            //     "RmljaGllciB0ZXh0ZSBwb3VyIGNyw6nDqSBQUg==");
+        }
+        
+        public void ScriptAssignTutorToAssignmentReview(string p_organisationName, string p_classRoomName,
+            string p_assignmentName, string tutorUsername)
+        {
+            if (string.IsNullOrWhiteSpace(p_organisationName))
+            {
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                    new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    "ScriptGithubRPLP - ScriptAssignTutorToAssignmentReview - p_organisationName passé en paramètre est vide",
+                    0));
+
+                throw new ArgumentException("the provided value is incorrect or null");
+            }
+
+            if (string.IsNullOrWhiteSpace(p_classRoomName))
+            {
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                    new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    "ScriptGithubRPLP - ScriptAssignTutorToAssignmentReview - p_classRoomName passé en paramètre est vide",
+                    0));
+
+                throw new ArgumentException("the provided value is incorrect or null");
+            }
+
+            if (string.IsNullOrWhiteSpace(p_assignmentName))
+            {
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                    new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    "ScriptGithubRPLP - ScriptAssignTutorToAssignmentReview - p_assignmentName passé en paramètre est vide",
+                    0));
+
+                throw new ArgumentException("the provided value is incorrect or null");
+            }
+
+            if (string.IsNullOrWhiteSpace(tutorUsername))
+            {
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                    new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    "ScriptGithubRPLP - ScriptAssignTutorToAssignmentReview - tutorUsername passé en paramètre est vide",
+                    0));
+
+                throw new ArgumentException("the provided value is incorrect or null");
+            }
+
+            CreateOrUpdateActiveClassroom(p_organisationName, p_classRoomName, p_assignmentName);
+
+            if (this._activeClassroom.Students.Count < 1)
+            {
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                    new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    "ScriptGithubRPLP - ScriptAssignTutorToAssignmentReview - la liste students assignée à partir de la méthode _depotClassroom.GetStudentsByClassroomName(p_classRoomName); est vide.",
+                    0));
+
+                throw new ArgumentException("Number of students cannot be less than one");
+            }
+
+            if (this._activeClassroom.Teachers.Count < 1)
+            {
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                    new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    "ScriptGithubRPLP - ScriptAssignTutorToAssignmentReview -  la liste teachers assignée à partir de la méthode _depotClassroom.GetTeachersByClassroomName(p_classRoomName); est vide.",
+                    0));
+
+                throw new ArgumentException("Number of teachers cannot be less than one");
+            }
+
+            List<Repository> repositoriesToAssign = GetRepositoriesToAssign();
+
+            if (repositoriesToAssign == null)
+            {
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                    new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    "ScriptGithubRPLP - ScriptAssignTutorToAssignmentReview - la liste repositoriesToAssign assignée à partir de getRepositoriesToAssign(p_organisationName, p_classRoomName, p_assignmentName, students); est null",
+                    0));
+
+                throw new ArgumentNullException($"No repositories to assign in {p_classRoomName}");
+            }
+
+            Student tutor = this._depotStudent.GetStudentByUsername(tutorUsername);
+
+            if (tutor is not null)
+            {
+                CreateOrUpdateAllocations(repositoriesToAssign);
+                this._allocations._classroom.Students.Add(tutor);
+                this._allocations.CreateTutorReviewsAllocation(tutorUsername, tutor.Id);
+                this._depotAllocation.UpsertAllocationsBatch(this._allocations.Pairs);
+                Producer.CallGitHubAPI(this._allocations, "students");
+            }
+            else
+            {
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                    new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    "ScriptGithubRPLP - ScriptAssignTutorToAssignmentReview - tutorUsername passé en paramètre est vide ou inexistant",
+                    0));
+
+                throw new ArgumentException("the tutor username is incorrect or null");
+            }
         }
 
         public string createPullRequestForTeacher(string p_organisationName, string p_repositoryName, string p_username,

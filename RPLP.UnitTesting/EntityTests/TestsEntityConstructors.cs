@@ -254,9 +254,10 @@ namespace RPLP.UnitTesting.EntityTests
             string lastName = "Paquet";
             string email = "Th_Paquet@hotmail.com";
             string matricule = "1234567";
+            bool isTutor = false;
             List<Classroom> classes = new List<Classroom>();
 
-            Student student = new Student(id, username, firstName, lastName, email, matricule, classes);
+            Student student = new Student(id, username, firstName, lastName, email, matricule, isTutor, classes);
 
             Assert.NotNull(student);
             Assert.Equal(id, student.Id);
@@ -265,6 +266,7 @@ namespace RPLP.UnitTesting.EntityTests
             Assert.Equal(lastName, student.LastName);
             Assert.Equal(email, student.Email);
             Assert.Equal(matricule, student.Matricule);
+            Assert.False(student.IsTutor);
             Assert.Equal(classes, student.Classes);
         }
 
