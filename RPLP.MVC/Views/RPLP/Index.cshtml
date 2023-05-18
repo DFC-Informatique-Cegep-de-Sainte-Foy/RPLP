@@ -3,16 +3,15 @@
 
 <div class="container mt-3">
     <div class="wrapper">
-
         <div id="orgsCollapsible" class="collapsible">
             <input type="checkbox" id="collapsible-orgs" name="checkboxOrg" />
-            <label for="collapsible-orgs">Organisations</label>
-            <div class="collapsible-content">
+            <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
+                <option selected for="collapsible-orgs">Organisations</option>    
                 @foreach (var org in Model.Organisations)
                 {
-                    <Button class="btn-lg btn-outline-primary p-2 buttons" onclick="SetOrganisationName('@org.Name')" id='@org.Name'>@org.Name</Button>
+                    <option onclick="SetOrganisationName('@org.Name')" value='@org.Name' id='@org.Name'>@org.Name</option>
                 }
-            </div>
+            </select>
         </div>
     </div>
 
