@@ -8,7 +8,7 @@
         public List<Student> Students { get; set; }
         public List<Teacher> Teachers { get; set; }
         public List<Assignment> Assignments { get; set; }
-        public Assignment ActiveAssignment { get; set; }
+        public Assignment? ActiveAssignment { get; set; }
 
 
         public Classroom()
@@ -26,6 +26,7 @@
             this.Students = p_students;
             this.Teachers = p_teachers;
             this.Assignments = p_assignments;
+            this.ActiveAssignment = null;
         }
 
         public void UpdateActiveAssignment(string p_assignmentName)

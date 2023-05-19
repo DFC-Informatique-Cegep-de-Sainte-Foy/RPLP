@@ -530,6 +530,11 @@ namespace RPLP.DAL.SQL.Depots
 
         public void UpsertClassroom(Classroom p_classroom)
         {
+            if (this._context.ChangeTracker != null)
+            {
+                this._context.ChangeTracker.Clear();
+            }
+            
             if (p_classroom == null)
             {
                 RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
@@ -545,11 +550,13 @@ namespace RPLP.DAL.SQL.Depots
                 RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotClassroom - UpsertClassroom - p_classroom.Students passé en paramètre est null", 0));
             }
+            
             if (p_classroom.Teachers == null)
             {
                 RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotClassroom - UpsertClassroom - p_classroom.Teachers passé en paramètre est null", 0));
             }
+            
             if (p_classroom.Assignments == null)
             {
                 RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
