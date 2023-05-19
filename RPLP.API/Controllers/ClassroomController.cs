@@ -17,7 +17,8 @@ namespace RPLP.API.Controllers
         {
             if (p_depotClassroom == null)
             {
-                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                    new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "ClassroomController - Constructeur - p_depotClassroom passé en paramêtre null", 0));
             }
 
@@ -46,17 +47,18 @@ namespace RPLP.API.Controllers
             {
                 if (id < 0)
                 {
-                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentOutOfRangeException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                    "ClassroomController - GetClassroomById - id passé en paramêtre est hors limites", 0));
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentOutOfRangeException().ToString(),
+                        new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                        "ClassroomController - GetClassroomById - id passé en paramêtre est hors limites", 0));
                 }
 
-                Logging.Instance.Journal(new Log($"api/Classroom/Id/{id}", 200, "ClassroomController - GET méthode GetClassroomById"));
+                Logging.Instance.Journal(new Log($"api/Classroom/Id/{id}", 200,
+                    "ClassroomController - GET méthode GetClassroomById"));
 
                 return Ok(this._depot.GetClassroomById(id));
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
@@ -68,17 +70,18 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(classroomName))
                 {
-                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                    "ClassroomController - GetClassroomByName - classroomName passé en paramêtre est vide", 0));
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                        new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                        "ClassroomController - GetClassroomByName - classroomName passé en paramêtre est vide", 0));
                 }
 
-                Logging.Instance.Journal(new Log($"api/Classroom/Name/{classroomName}", 200, "ClassroomController - GET méthode GetClassroomByName"));
+                Logging.Instance.Journal(new Log($"api/Classroom/Name/{classroomName}", 200,
+                    "ClassroomController - GET méthode GetClassroomByName"));
 
                 return Ok(this._depot.GetClassroomByName(classroomName));
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
@@ -90,11 +93,14 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(organisationName))
                 {
-                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                    "ClassroomController - GetClassroomsByOrganisationName - organisationName passé en paramêtre est vide", 0));
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                        new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                        "ClassroomController - GetClassroomsByOrganisationName - organisationName passé en paramêtre est vide",
+                        0));
                 }
 
-                Logging.Instance.Journal(new Log($"api/Classroom/Organisation/{organisationName}/Classroom", 200, "ClassroomController - GET méthode GetClassroomsByOrganisationName"));
+                Logging.Instance.Journal(new Log($"api/Classroom/Organisation/{organisationName}/Classroom", 200,
+                    "ClassroomController - GET méthode GetClassroomsByOrganisationName"));
 
                 return Ok(this._depot.GetClassroomsByOrganisationName(organisationName));
             }
@@ -111,17 +117,19 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(classroomName))
                 {
-                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                    "ClassroomController - GetAssignmentsByClassroomName - classroomName passé en paramêtre est vide", 0));
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                        new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                        "ClassroomController - GetAssignmentsByClassroomName - classroomName passé en paramêtre est vide",
+                        0));
                 }
 
-                Logging.Instance.Journal(new Log($"api/Classroom/Assignments/{classroomName}", 200, "ClassroomController - GET méthode GetAssignmentsByClassroomName"));
+                Logging.Instance.Journal(new Log($"api/Classroom/Assignments/{classroomName}", 200,
+                    "ClassroomController - GET méthode GetAssignmentsByClassroomName"));
 
                 return Ok(this._depot.GetAssignmentsByClassroomName(classroomName));
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
@@ -133,11 +141,13 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(classroomName))
                 {
-                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                    "ClassroomController - GetTeachers - classroomName passé en paramêtre est vide", 0));
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                        new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                        "ClassroomController - GetTeachers - classroomName passé en paramêtre est vide", 0));
                 }
 
-                Logging.Instance.Journal(new Log($"api/Classroom/Name/{classroomName}/Teachers", 200, "ClassroomController - GET méthode GetTeachers"));
+                Logging.Instance.Journal(new Log($"api/Classroom/Name/{classroomName}/Teachers", 200,
+                    "ClassroomController - GET méthode GetTeachers"));
 
                 return Ok(this._depot.GetTeachersByClassroomName(classroomName));
             }
@@ -154,11 +164,13 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(classroomName))
                 {
-                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                    "ClassroomController - GetStudents - classroomName passé en paramêtre est vide", 0));
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                        new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                        "ClassroomController - GetStudents - classroomName passé en paramêtre est vide", 0));
                 }
 
-                Logging.Instance.Journal(new Log($"api/Classroom/Name/{classroomName}/Students", 200, "ClassroomController - GET méthode GetStudents"));
+                Logging.Instance.Journal(new Log($"api/Classroom/Name/{classroomName}/Students", 200,
+                    "ClassroomController - GET méthode GetStudents"));
 
                 return Ok(this._depot.GetStudentsByClassroomName(classroomName));
             }
@@ -166,7 +178,6 @@ namespace RPLP.API.Controllers
             {
                 throw;
             }
-
         }
 
         [HttpGet("Name/{classroomName}/Assignments")]
@@ -176,11 +187,13 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(classroomName))
                 {
-                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                    "ClassroomController - GetAssignments - classroomName passé en paramêtre est vide", 0));
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                        new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                        "ClassroomController - GetAssignments - classroomName passé en paramêtre est vide", 0));
                 }
 
-                Logging.Instance.Journal(new Log($"api/Classroom/Name/{classroomName}/Assignments", 200, "ClassroomController - GET méthode GetAssignments"));
+                Logging.Instance.Journal(new Log($"api/Classroom/Name/{classroomName}/Assignments", 200,
+                    "ClassroomController - GET méthode GetAssignments"));
 
                 return Ok(this._depot.GetAssignmentsByClassroomName(classroomName));
             }
@@ -197,7 +210,8 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(classroomName))
                 {
-                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                        new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                         "ClassroomController - AddTeacherToClassroom - classroomName passé en paramêtre est vide", 0));
 
                     return BadRequest();
@@ -205,13 +219,16 @@ namespace RPLP.API.Controllers
 
                 if (string.IsNullOrWhiteSpace(teacherUsername))
                 {
-                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                        "ClassroomController - AddTeacherToClassroom - teacherUsername passé en paramêtre est vide", 0));
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                        new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                        "ClassroomController - AddTeacherToClassroom - teacherUsername passé en paramêtre est vide",
+                        0));
 
                     return BadRequest();
                 }
 
-                Logging.Instance.Journal(new Log($"api/Classroom/Name/{classroomName}/Teachers/Add/{teacherUsername}", 201, "ClassroomController - POST méthode AddTeacherToClassroom"));
+                Logging.Instance.Journal(new Log($"api/Classroom/Name/{classroomName}/Teachers/Add/{teacherUsername}",
+                    201, "ClassroomController - POST méthode AddTeacherToClassroom"));
 
                 this._depot.AddTeacherToClassroom(classroomName, teacherUsername);
 
@@ -230,21 +247,25 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(classroomName))
                 {
-                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                           "ClassroomController - AddStudentToClassroom - classroomName passé en paramêtre est vide", 0));
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                        new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                        "ClassroomController - AddStudentToClassroom - classroomName passé en paramêtre est vide", 0));
 
                     return BadRequest();
                 }
 
                 if (string.IsNullOrWhiteSpace(studentUsername))
                 {
-                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                           "ClassroomController - AddStudentToClassroom - studentUsername passé en paramêtre est vide", 0));
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                        new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                        "ClassroomController - AddStudentToClassroom - studentUsername passé en paramêtre est vide",
+                        0));
 
                     return BadRequest();
                 }
 
-                Logging.Instance.Journal(new Log($"api/Classroom/Name/{classroomName}/Students/Add/{studentUsername}", 201, "ClassroomController - POST méthode AddStudentToClassroom"));
+                Logging.Instance.Journal(new Log($"api/Classroom/Name/{classroomName}/Students/Add/{studentUsername}",
+                    201, "ClassroomController - POST méthode AddStudentToClassroom"));
 
                 this._depot.AddStudentToClassroom(classroomName, studentUsername);
 
@@ -263,21 +284,27 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(classroomName))
                 {
-                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                              "ClassroomController - AddStudentToClassroomMatricule - classroomName passé en paramêtre est vide", 0));
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                        new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                        "ClassroomController - AddStudentToClassroomMatricule - classroomName passé en paramêtre est vide",
+                        0));
 
                     return BadRequest();
                 }
 
                 if (string.IsNullOrWhiteSpace(studentMatricule))
                 {
-                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                              "ClassroomController - AddStudentToClassroomMatricule - classroomName passé en paramêtre est vide", 0));
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                        new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                        "ClassroomController - AddStudentToClassroomMatricule - classroomName passé en paramêtre est vide",
+                        0));
 
                     return BadRequest();
                 }
 
-                Logging.Instance.Journal(new Log($"api/Classroom/Name/{classroomName}/Students/Add/Matricule/{studentMatricule}", 201, "ClassroomController - POST méthode AddStudentToClassroomMatricules"));
+                Logging.Instance.Journal(new Log(
+                    $"api/Classroom/Name/{classroomName}/Students/Add/Matricule/{studentMatricule}", 201,
+                    "ClassroomController - POST méthode AddStudentToClassroomMatricules"));
 
                 this._depot.AddStudentToClassroomMatricule(classroomName, studentMatricule);
 
@@ -296,21 +323,26 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(classroomName))
                 {
-                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                                  "ClassroomController - AddAssignmentToClassroom - classroomName passé en paramêtre est vide", 0));
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                        new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                        "ClassroomController - AddAssignmentToClassroom - classroomName passé en paramêtre est vide",
+                        0));
 
                     return BadRequest();
                 }
 
                 if (string.IsNullOrWhiteSpace(assignmentName))
                 {
-                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                                  "ClassroomController - AddAssignmentToClassroom - assignmentName passé en paramêtre est vide", 0));
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                        new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                        "ClassroomController - AddAssignmentToClassroom - assignmentName passé en paramêtre est vide",
+                        0));
 
                     return BadRequest();
                 }
 
-                Logging.Instance.Journal(new Log($"api/Classroom/Name/{classroomName}/Assignments/Add/{assignmentName}", 201, "ClassroomController - POST méthode AddAssignmentToClassroom"));
+                Logging.Instance.Journal(new Log($"api/Classroom/Name/{classroomName}/Assignments/Add/{assignmentName}",
+                    201, "ClassroomController - POST méthode AddAssignmentToClassroom"));
 
                 this._depot.AddAssignmentToClassroom(classroomName, assignmentName);
 
@@ -329,21 +361,26 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(classroomName))
                 {
-                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                                  "ClassroomController - RemoveTeacherFromClassroom - classroomName passé en paramêtre est vide", 0));
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                        new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                        "ClassroomController - RemoveTeacherFromClassroom - classroomName passé en paramêtre est vide",
+                        0));
 
                     return BadRequest();
                 }
 
                 if (string.IsNullOrWhiteSpace(teacherUsername))
                 {
-                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                                  "ClassroomController - RemoveTeacherFromClassroom - teacherUsername passé en paramêtre est vide"));
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                        new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                        "ClassroomController - RemoveTeacherFromClassroom - teacherUsername passé en paramêtre est vide"));
 
                     return BadRequest();
                 }
 
-                Logging.Instance.Journal(new Log($"api/Classroom/Name/{classroomName}/Teachers/Remove/{teacherUsername}", 204, "ClassroomController - POST méthode RemoveTeacherFromClassroom"));
+                Logging.Instance.Journal(new Log(
+                    $"api/Classroom/Name/{classroomName}/Teachers/Remove/{teacherUsername}", 204,
+                    "ClassroomController - POST méthode RemoveTeacherFromClassroom"));
 
                 this._depot.RemoveTeacherFromClassroom(classroomName, teacherUsername);
 
@@ -351,7 +388,6 @@ namespace RPLP.API.Controllers
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
@@ -363,21 +399,27 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(classroomName))
                 {
-                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                                      "ClassroomController - RemoveStudentFromClassroom - classroomName passé en paramêtre est vide", 0));
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                        new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                        "ClassroomController - RemoveStudentFromClassroom - classroomName passé en paramêtre est vide",
+                        0));
 
                     return BadRequest();
                 }
 
                 if (string.IsNullOrWhiteSpace(studentUsername))
                 {
-                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                                      "ClassroomController - RemoveStudentFromClassroom - studentUsername passé en paramêtre est vide", 0));
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                        new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                        "ClassroomController - RemoveStudentFromClassroom - studentUsername passé en paramêtre est vide",
+                        0));
 
                     return BadRequest();
                 }
 
-                Logging.Instance.Journal(new Log($"api/Classroom/Name/{classroomName}/Students/Remove/{studentUsername}", 204, "ClassroomController - POST méthode RemoveStudentFromClassroom"));
+                Logging.Instance.Journal(new Log(
+                    $"api/Classroom/Name/{classroomName}/Students/Remove/{studentUsername}", 204,
+                    "ClassroomController - POST méthode RemoveStudentFromClassroom"));
 
                 this._depot.RemoveStudentFromClassroom(classroomName, studentUsername);
 
@@ -387,7 +429,6 @@ namespace RPLP.API.Controllers
             {
                 throw;
             }
-          
         }
 
         [HttpPost("Name/{classroomName}/Assignments/Remove/{assignmentName}")]
@@ -397,21 +438,27 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(classroomName))
                 {
-                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                                          "ClassroomController - RemoveAssignmentFromClassroom - classroomName passé en paramêtre est vide", 0));
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                        new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                        "ClassroomController - RemoveAssignmentFromClassroom - classroomName passé en paramêtre est vide",
+                        0));
 
                     return BadRequest();
                 }
 
                 if (string.IsNullOrWhiteSpace(assignmentName))
                 {
-                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                                          "ClassroomController - RemoveAssignmentFromClassroom - assignmentName passé en paramêtre est vide", 0));
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                        new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                        "ClassroomController - RemoveAssignmentFromClassroom - assignmentName passé en paramêtre est vide",
+                        0));
 
                     return BadRequest();
                 }
 
-                Logging.Instance.Journal(new Log($"api/Classroom/Name/{classroomName}/Assignments/Remove/{assignmentName}", 204, "ClassroomController - POST méthode RemoveAssignmentFromClassroom"));
+                Logging.Instance.Journal(new Log(
+                    $"api/Classroom/Name/{classroomName}/Assignments/Remove/{assignmentName}", 204,
+                    "ClassroomController - POST méthode RemoveAssignmentFromClassroom"));
 
                 this._depot.RemoveAssignmentFromClassroom(classroomName, assignmentName);
 
@@ -419,7 +466,6 @@ namespace RPLP.API.Controllers
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
@@ -427,25 +473,30 @@ namespace RPLP.API.Controllers
         [HttpPost]
         public ActionResult UpsertClassroom([FromBody] Classroom p_classroom)
         {
+            Logging.Instance.Journal(new Log($"Debug - avant try - p_classroom {p_classroom.Name}"));
             try
             {
+                Logging.Instance.Journal(new Log($"Debug - avant conditions- p_classroom {p_classroom.Name}"));
                 if (p_classroom == null)
                 {
-                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                                             "ClassroomController - UpsertClassroom - p_classroom passé en paramêtre est null", 0));
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                        new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                        "ClassroomController - UpsertClassroom - p_classroom passé en paramêtre est null", 0));
 
                     return BadRequest();
                 }
 
                 if (!ModelState.IsValid)
                 {
-                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                                             "ClassroomController - UpsertClassroom - p_classroom passé en paramêtre n'est pas valide", 0));
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentException().ToString(),
+                        new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                        "ClassroomController - UpsertClassroom - p_classroom passé en paramêtre n'est pas valide", 0));
 
                     return BadRequest();
                 }
 
-                Logging.Instance.Journal(new Log($"api/Classroom", 201, "ClassroomController - POST méthode UpsertClassroom"));
+                Logging.Instance.Journal(new Log($"api/Classroom", 201,
+                    "ClassroomController - POST méthode UpsertClassroom"));
 
                 this._depot.UpsertClassroom(p_classroom);
 
@@ -464,13 +515,15 @@ namespace RPLP.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(classroomName))
                 {
-                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                                          "ClassroomController - DeleteClassroom - classroomName passé en paramêtre est vide", 0));
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                        new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                        "ClassroomController - DeleteClassroom - classroomName passé en paramêtre est vide", 0));
 
                     return BadRequest();
                 }
 
-                Logging.Instance.Journal(new Log($"api/Classroom/Name/{classroomName}", 204, "ClassroomController - DELETE méthode DeleteClassroom"));
+                Logging.Instance.Journal(new Log($"api/Classroom/Name/{classroomName}", 204,
+                    "ClassroomController - DELETE méthode DeleteClassroom"));
 
                 this._depot.DeleteClassroom(classroomName);
                 return NoContent();
@@ -479,7 +532,6 @@ namespace RPLP.API.Controllers
             {
                 throw;
             }
-           
         }
     }
 }

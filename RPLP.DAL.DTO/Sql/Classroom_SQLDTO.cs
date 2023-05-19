@@ -64,7 +64,12 @@ namespace RPLP.DAL.DTO.Sql
 
         public Classroom ToEntity()
         {
-            return new Classroom(this.Id, this.Name, this.OrganisationName, this.Students.Select(student => student.ToEntity()).ToList(), this.Teachers.Select(teacher => teacher.ToEntity()).ToList(), this.Assignments.Select(assignment => assignment.ToEntity()).ToList());
+            return new Classroom(this.Id,
+                this.Name,
+                this.OrganisationName,
+                this.Students.Select(student => student.ToEntity()).ToList(),
+                this.Teachers.Select(teacher => teacher.ToEntity()).ToList(),
+                this.Assignments.Select(assignment => assignment.ToEntity()).ToList());
         }
 
         public Classroom ToEntityWithoutList()

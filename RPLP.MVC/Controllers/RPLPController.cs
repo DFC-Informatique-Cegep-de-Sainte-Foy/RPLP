@@ -1501,8 +1501,13 @@ namespace RPLP.MVC.Controllers
 
                 Classroom classroom = new Classroom
                 {
-                    Id = Id, Name = ClassroomName, OrganisationName = OrganisationName,
-                    Assignments = new List<Assignment>(), Students = new List<Student>(), Teachers = new List<Teacher>()
+                    Id = Id,
+                    Name = ClassroomName,
+                    OrganisationName = OrganisationName,
+                    Assignments = new List<Assignment>(),
+                    Students = new List<Student>(),
+                    Teachers = new List<Teacher>(),
+                    ActiveAssignment = null
                 };
 
                 if (Id != 0)
@@ -1530,7 +1535,6 @@ namespace RPLP.MVC.Controllers
                             0));
                     }
 
-
                     if (databaseAssignments.Count >= 1)
                         foreach (Assignment assignment in databaseAssignments)
                         {
@@ -1538,6 +1542,8 @@ namespace RPLP.MVC.Controllers
                                 assignment.DeliveryDeadline);
                         }
                 }
+                
+                Logging.Instance.Journal(new Log($"new classroomName = {classroom.Name}, new classroomOrganisation = {classroom.OrganisationName}"));
 
                 Task<HttpResponseMessage> response = this._httpClient
                     .PostAsJsonAsync<Classroom>($"Classroom", classroom);
