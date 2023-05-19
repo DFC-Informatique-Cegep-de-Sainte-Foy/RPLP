@@ -183,7 +183,6 @@ namespace RPLP.DAL.SQL.Depots
             return administrator;
         }
 
-
         public Administrator GetAdministratorByUsername(string p_adminUsername)
         {
             if (string.IsNullOrWhiteSpace(p_adminUsername))
@@ -263,6 +262,11 @@ namespace RPLP.DAL.SQL.Depots
 
         public void JoinOrganisation(string p_adminUsername, string p_organisationName)
         {
+            if(this._context.ChangeTracker != null)
+            {
+                this._context.ChangeTracker.Clear();
+            }
+            
             if (string.IsNullOrWhiteSpace(p_adminUsername))
             {
                 RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
@@ -276,15 +280,18 @@ namespace RPLP.DAL.SQL.Depots
             }
 
             Administrator_SQLDTO adminResult = this._context.Administrators.Include(admin => admin.Organisations.Where(organisation => organisation.Active))
-                                                                           .FirstOrDefault(admin => admin.Username == p_adminUsername && admin.Active);
+                                                                           .SingleOrDefault(admin => admin.Username == p_adminUsername && admin.Active);
             if (adminResult != null)
             {
                 Organisation_SQLDTO organisationResult = this._context.Organisations.SingleOrDefault(organisation => organisation.Name == p_organisationName && organisation.Active);
 
                 if (organisationResult != null && !adminResult.Organisations.Contains(organisationResult))
                 {
+                    Logging.Instance.Journal(new Log($"JoinOrganisation(string p_adminUsername: {adminResult.Username}, string p_organisationName: {organisationResult.Name})"));
+                    adminResult.Organisations = new List<Organisation_SQLDTO>();
+                    organisationResult.Administrators = new List<Administrator_SQLDTO>();
                     adminResult.Organisations.Add(organisationResult);
-
+                    organisationResult.Administrators.Add(adminResult);
                     this._context.Update(adminResult);
                     this._context.SaveChanges();
 
