@@ -226,12 +226,14 @@
 
         switch (selectBoxScripts.options[selectBoxScripts.selectedIndex].value) {
             case "StartStudentAssignationScript":
-                StartStudentAssignationScript();
-                StudentAssignationScriptAlreadyDone();
+                if (!StudentAssignationScriptAlreadyDone()) {
+                    StartStudentAssignationScript();
+                }
                 break;
             case "StartTeacherAssignationScript":
-                StartTeacherAssignationScript();
-                TeacherAssignationScriptAlreadyDone();
+                if (!TeacherAssignationScriptAlreadyDone()) {
+                    StartTeacherAssignationScript();
+                }
                 break;
             case "StartTutorAssignationScript":
                 StartTutorAssignationScript();
@@ -266,7 +268,7 @@
                 $("#numberOfReview").attr("hidden", false);
                 StudentAssignationScriptAlreadyDone();
                 break;
-            case "StartTeacherAssignationScript":              
+            case "StartTeacherAssignationScript":
                 $("#selectTeacher").attr("hidden", false);
                 TeacherAssignationScriptAlreadyDone();
                 break;
@@ -279,17 +281,24 @@
         }
     }
     StudentAssignationScriptAlreadyDone = function () {
-        if (allocations.pairs.Count > 0) {
-            $("#buttonSelectedScript").prop("disabled", true);
-        }
+        let isDone = false;
+        allocations.pairs.forEach(allocation => {
+            if (typeof (allocation.StudentName) !== "undefined" || allocation.StudentName !== null || allocation.StudentName.trim() !== "") {
+                $("#buttonSelectedScript").prop("disabled", true);
+                isDone = true;
+            }
+        });
+        return isDone;
     }
     TeacherAssignationScriptAlreadyDone = function () {
+        let isDone = false;
         allocations.pairs.forEach(allocation => {
             if (allocations.TeacherName === selectTeacher.options[selectTeacher.selectedIndex].value) {
                 $("#buttonSelectedScript").prop("disabled", true);
+                isDone = true;
             }
         });
-
+        return isDone;
     }
 
     function SetOrganisationName(organisationName) {
