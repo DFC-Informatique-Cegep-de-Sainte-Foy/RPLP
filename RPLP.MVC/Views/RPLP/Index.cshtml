@@ -3,11 +3,11 @@
 
 <div class="container mt-3">
     <div class="row align-items-start">
-        <div class="col-6">
+        <div class="col-md-6 col-sm-12">
             <div id="orgsCollapsible" class="collapsible">
-                <input type="checkbox" id="collapsible-orgs" name="checkboxOrg" />
+                <label>Organisations</label>
                 <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" id="selectBoxOrg" onchange="SetOrganisationName(selectBoxOrg.options[selectBoxOrg.selectedIndex].value)">
-                    <option selected disabled selected hidden>Organisations</option>
+                    <option disabled selected hidden>Faites votre choix...</option>
                     @foreach (var org in Model.Organisations)
                     {
                         <option value='@org.Name' id='@org.Name'>@org.Name</option>
@@ -16,49 +16,49 @@
             </div>
         </div>
 
-        <div class="col-6">
+        <div class="col-md-6 col-sm-12">
             <div id="classroomCollapsible" class="collapsible" hidden>
-                <input type="checkbox" id="collapsible-class" name="checkboxClass" />
-                <select class="form-select form-select-lg mb-3" aria-
-                =".form-select-lg example" id="selectBoxClass" onchange="SetClassroomName(selectBoxClass.options[selectBoxClass.selectedIndex].value)">
-                    <option selected disabled selected hidden>Classes</option>
+                <label>Classes</label>
+                <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" id="selectBoxClass" onchange="SetClassroomName(selectBoxClass.options[selectBoxClass.selectedIndex].value)">
+                    <option disabled selected hidden>Faites votre choix...</option>
                 </select>
             </div>
         </div>
 
-        <div class="col-6">
+        <div class="col-md-6 col-sm-12">
             <div id="assignmentCollapsible" class="collapsible" hidden>
-                <input type="checkbox" id="collapsible-assignments" name="checkboxAssignment" />
+                <label>Travaux</label>
                 <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" id="selectBoxAssignments" onchange="SetAssignmentName(selectBoxAssignments.options[selectBoxAssignments.selectedIndex].value)">
-                    <option selected disabled selected hidden>Travaux</option>
+                    <option disabled selected hidden>Faites votre choix...</option>
                 </select>
             </div>
         </div>
-
-        <div class="col-6" id="scriptStart" hidden>
-
-            <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" id="selectBoxScripts" onchange="ShowScriptsOptions(selectBoxScripts.options[selectBoxScripts.selectedIndex].value)">
-                <option selected disabled selected hidden>Scripts</option>
-                <option value="StartStudentAssignationScript">Lancer le script de revue des pairs</option>
-                <option value="StartTeacherAssignationScript">Lancer le script de revue du prof</option>
-                <option value="StartTutorAssignationScript">Lancer le script de revue du tuteur</option>
-                <option value="RemoveCollaboratorFromAssignment">Retirer les pairs du travail</option>
-                <option value="DownloadComments">Télécharger les commentaires</option>
-                <option value="DownloadAllRepositoriesForAssignment">Télécharger les dépôts de devoir de la classe</option>
-                <option value="DownloadSingleRepository">Télécharger le dépôt d'un étudiant</option>
-            </select>
+        <div class="col-md-6 col-sm-12">
+            <div class="collapsible" id="scriptStart" hidden>
+                <label>Scripts</label>
+                <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" id="selectBoxScripts" onchange="ShowScriptsOptions(selectBoxScripts.options[selectBoxScripts.selectedIndex].value)">
+                    <option disabled selected hidden>Faites votre choix...</option>
+                    <option value="StartStudentAssignationScript">Lancer le script de revue des pairs</option>
+                    <option value="StartTeacherAssignationScript">Lancer le script de revue du prof</option>
+                    <option value="StartTutorAssignationScript">Lancer le script de revue du tuteur</option>
+                    <option value="RemoveCollaboratorFromAssignment">Retirer les pairs du travail</option>
+                    <option value="DownloadComments">Télécharger les commentaires</option>
+                    <option value="DownloadAllRepositoriesForAssignment">Télécharger les dépôts de devoir de la classe</option>
+                    <option value="DownloadSingleRepository">Télécharger le dépôt d'un étudiant</option>
+                </select>
+            </div>
         </div>
-        <div class="col-6">
+        <div class="col-md-6 col-sm-12">
             <label id="labelNumberOfReview" hidden for="numberOfReview">Nombre de revues par étudiant</label>
             <input class="p-2 buttons" type="number" hidden id="numberOfReview" min="1" max="10" value="3" />
             <select class="form-select form-select-lg mb-3" hidden id="selectTeacher"></select>
             <select class="form-select form-select-lg mb-3" hidden id="selectTutor"></select>
             <select class="form-select form-select-lg mb-3" hidden id="selectStudent"></select>
         </div>
-        <div class="col-6 d-grid gap-2">
-            <button class="btn-lg btn-primary buttons" hidden id="buttonSelectedScript" onclick="StartChoosedScript()">Lancer</button>
+        <div class="col-md-6 col-sm-12 d-grid gap-2">
+            <button class="btn-lg btn-primary" hidden id="buttonSelectedScript" onclick="StartChoosedScript()">Lancer</button>
         </div>
-        <div class="col-12" id="allocationContentTable" hidden>
+        <div class="col-12 mt-3" id="allocationContentTable" hidden>
         </div>
     </div>
 </div>
@@ -74,6 +74,14 @@
 
     .icon-green {
         color: green;
+    }
+
+    .icon-blue {
+        color: blue;
+    }
+
+    .icon-red {
+        color: red;
     }
 </style>
 
@@ -202,13 +210,13 @@
             else if (allocation.status == 42) {
                 var td4 = document.createElement("td");
                 td4.setAttribute("style", "max-width: 200px");
-                td4.setAttribute("class", "bi bi-clock");
+                td4.setAttribute("class", "bi bi-clock icon-blue");
                 tr.appendChild(td4);
             }
             else {
                 var td4 = document.createElement("td");
                 td4.setAttribute("style", "max-width: 200px");
-                td4.setAttribute("class", "bi bi-x ");
+                td4.setAttribute("class", "bi bi-x icon-red");
                 tr.appendChild(td4);
             }
         });

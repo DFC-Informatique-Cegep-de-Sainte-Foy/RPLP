@@ -231,9 +231,7 @@ namespace RPLP.UnitTesting.DepotTests
             Organisation organisation = depot.GetOrganisationByName("CEGEP Ste-Foy");
 
             Assert.NotNull(organisation);
-            Assert.Equal(3, organisation.Administrators.Count);
-           
-            
+            Assert.Equal(3, organisation.Administrators.Count);                   
         }
 
         [Fact]

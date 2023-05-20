@@ -5,16 +5,15 @@
 
 <div class="container m-3">
     <button class="btn-primary btn" onclick="StartScriptCoherence()">Démarrer le script de cohérence</button>
-    <div class="wrapper">
-        <div class="col-5" id="ActionButtons">
+    <div class="row align-items-start">
+        <div class="col-md-5 col-sm-12" id="ActionButtons">
             @if (Model.RoleType == "Administrator")
             {
                 <div class="wrapper">
                     <div id="adminsCollapsible" class="collapsible">
-                        @*<input type="checkbox" id="collapsible-admins" name="checkboxadmins" />*@
                         <label>Administrateurs</label>
-                        <select class="form-select form-select-lg" aria-label=".form-select-lg example" id="selectedAdminOptions" onchange="FormUnlock(selectedAdminOptions.options[selectedAdminOptions.selectedIndex].value,selectedAdminOptions.options[selectedAdminOptions.selectedIndex].id)">
-                            <option selected disabled selected hidden>Faites votre choix...</option>
+                        <select class="form-select form-select-lg" aria-label=".form-select-lg example" id="selectedAdminOptions" onchange="FormUnlock(selectedAdminOptions.options[selectedAdminOptions.selectedIndex].value)">
+                            <option disabled selected hidden>Faites votre choix...</option>
                             <option id="btnCreateAdmin" value="createAdmin">Créer</option>
                             <option id="btnModifyAdmin" value="modifyAdmin">Modifier</option>
                             <option id="btnDeleteAdmin" value="deleteAdmin">Supprimer</option>
@@ -25,10 +24,9 @@
 
                 <div class="wrapper">
                     <div id="orgsCollapsible" class="collapsible">
-                        @*<input type="checkbox" id="collapsible-orgs" name="checkboxOrgs" />*@
                         <label>Organisations</label>
-                        <select class="form-select form-select-lg" aria-label=".form-select-lg example" id="selectedOrganisationOptions" onchange="FormUnlock(selectedOrganisationOptions.options[selectedOrganisationOptions.selectedIndex].value,selectedOrganisationOptions.options[selectedOrganisationOptions.selectedIndex].id)">
-                            <option selected disabled selected hidden>Faites votre choix...</option>
+                        <select class="form-select form-select-lg" aria-label=".form-select-lg example" id="selectedOrganisationOptions" onchange="FormUnlock(selectedOrganisationOptions.options[selectedOrganisationOptions.selectedIndex].value)">
+                            <option disabled selected hidden>Faites votre choix...</option>
                             <option id="btnCreateOrganisation" value="createOrganisation">Créer</option>
                             <option id="btnModifyOrganisation" value="modifyOrganisation">Modifier</option>
                             <option id="btnDeleteOrganisation" value="deleteOrganisation">Supprimer</option>
@@ -40,10 +38,9 @@
 
                 <div class="wrapper">
                     <div id="teacherCollapsible" class="collapsible">
-                        @*<input type="checkbox" id="collapsible-teacher" name="checkboxTeacher" />*@
                         <label>Professeurs</label>
-                        <select class="form-select form-select-lg" aria-label=".form-select-lg example" id="selectedTeacherOptions" onchange="FormUnlock(selectedTeacherOptions.options[selectedTeacherOptions.selectedIndex].value,selectedTeacherOptions.options[selectedTeacherOptions.selectedIndex].id)">
-                            <option selected disabled selected hidden>Faites votre choix...</option>
+                        <select class="form-select form-select-lg" aria-label=".form-select-lg example" id="selectedTeacherOptions" onchange="FormUnlock(selectedTeacherOptions.options[selectedTeacherOptions.selectedIndex].value">
+                            <option disabled selected hidden>Faites votre choix...</option>
                             <option id="btnCreateTeacher" value="createTeacher">Créer</option>
                             <option id="btnModifyTeacher" value="modifyTeacher">Modifier</option>
                             <option id="btnDeleteTeacher" value="deleteTeacher">Supprimer</option>
@@ -56,10 +53,9 @@
             {
                 <div class="wrapper">
                     <div id="classesCollapsible" class="collapsible">
-                        @*<input type="checkbox" id="collapsible-classes" name="checkboxClasses" />*@
                         <label>Classes</label>
-                        <select class="form-select form-select-lg" aria-label=".form-select-lg example" id="selectedClassesOptions" onchange="FormUnlock(selectedClassesOptions.options[selectedClassesOptions.selectedIndex].value,selectedClassesOptions.options[selectedClassesOptions.selectedIndex].id)">
-                            <option selected disabled selected hidden>Faites votre choix...</option>
+                        <select class="form-select form-select-lg" aria-label=".form-select-lg example" id="selectedClassesOptions" onchange="FormUnlock(selectedClassesOptions.options[selectedClassesOptions.selectedIndex].value)">
+                            <option disabled selected hidden>Faites votre choix...</option>
                             <option id="btnCreateClassroom" value="createClassroom">Créer</option>
                             <option id="btnModifyClassroom" value="modifyClassroom">Modifier</option>
                             <option id="btnDeleteClassroom" value="deleteClassroom">Supprimer</option>
@@ -75,10 +71,9 @@
 
                 <div class="wrapper">
                     <div id="assignmentCollapsible" class="collapsible">
-                        @* <input type="checkbox" id="collapsible-assignment" name="checkboxAssignment" />*@
                         <label>Travaux</label>
-                        <select class="form-select form-select-lg" aria-label=".form-select-lg example" id="selectedAssignmentOptions" onchange="FormUnlock(selectedAssignmentOptions.options[selectedAssignmentOptions.selectedIndex].value,selectedAssignmentOptions.options[selectedAssignmentOptions.selectedIndex].id)">
-                            <option selected disabled selected hidden>Faites votre choix...</option>
+                        <select class="form-select form-select-lg" aria-label=".form-select-lg example" id="selectedAssignmentOptions" onchange="FormUnlock(selectedAssignmentOptions.options[selectedAssignmentOptions.selectedIndex].value)">
+                            <option disabled selected hidden>Faites votre choix...</option>
                             <option id="btnCreateAssignment" value="createAssignment">Créer</option>
                             <option id="btnModifyAssignment" value="modifyAssignment">Modifier</option>
                             <option id="btnDeleteAssignment" value="deleteAssignment">Supprimer</option>
@@ -88,10 +83,9 @@
 
                 <div class="wrapper">
                     <div id="studentCollapsible" class="collapsible">
-                        @*<input type="checkbox" id="collapsible-student" name="checkboxStudent" />*@
                         <label>Étudiants</label>
-                        <select class="form-select form-select-lg" aria-label=".form-select-lg example" id="selectedStudentOptions" onchange="FormUnlock(selectedStudentOptions.options[selectedStudentOptions.selectedIndex].value,selectedStudentOptions.options[selectedStudentOptions.selectedIndex].id)">
-                            <option selected disabled selected hidden>Faites votre choix...</option>
+                        <select class="form-select form-select-lg" aria-label=".form-select-lg example" id="selectedStudentOptions" onchange="FormUnlock(selectedStudentOptions.options[selectedStudentOptions.selectedIndex].value)">
+                            <option disabled selected hidden>Faites votre choix...</option>
                             <option id="btnCreateStudent" value="createStudent">Créer</option>
                             <option id="btnCreateStudentBatch" value="createStudentBatch">Créer en lot</option>
                             <option id="btnModifyStudent" value="modifyStudent">Modifier</option>
@@ -103,7 +97,7 @@
             }
         </div>
 
-        <div class="col-5 offset-2" id="formulaires">
+        <div class="col-md-5 offset-md-2 col-sm-12" id="formulaires">
             <div id="createAdmin" hidden>
                 @{
                     Html.RenderPartial(@"../Shared/GestionDonnees/_ActionAjouterAdmin.cshtml");
@@ -285,7 +279,6 @@
             </div>
 
         </div>
-
     </div>
 </div>
 
@@ -300,7 +293,7 @@
     }
 
 
-                        var forms = ["createAdmin", "modifyAdmin", "deleteAdmin", "addAdminToOrg", "removeAdminFromOrg", "reactivateAdminInOrg",
+                                var forms = ["createAdmin", "modifyAdmin", "deleteAdmin", "addAdminToOrg", "removeAdminFromOrg", "reactivateAdminInOrg",
         "createOrganisation", "modifyOrganisation", "deleteOrganisation",
         "createTeacher", "modifyTeacher", "deleteTeacher", "reactivateTeacherInOrg",
         "createClassroom", "modifyClassroom", "deleteClassroom", "addTeacherToClassroom", "removeTeacherFromClassroom", "removeAssignmentFromClassroom", "removeStudentFromClassroom", "addStudentToClassroom", "addStudentToClassroomBatch",
@@ -328,17 +321,7 @@
         });
     }
 
-    function FormUnlock(formName, ButtonName) {
-        buttons.forEach(button => {
-            document.getElementById(button).classList.add("btn-outline-primary");
-            document.getElementById(button).classList.remove("btn-primary");
-
-            if (button == ButtonName) {
-                document.getElementById(button).classList.remove("btn-outline-primary");
-                document.getElementById(button).classList.add("btn-primary");
-            }
-        });
-
+    function FormUnlock(formName) {
         forms.forEach(form => {
             document.getElementById(form).hidden = true;
 
