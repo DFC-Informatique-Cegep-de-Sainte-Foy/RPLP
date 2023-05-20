@@ -2,60 +2,64 @@
 @model RPLP.MVC.Models.PeerReviewViewModel
 
 <div class="container mt-3">
-    <div class="wrapper">
-
-        <div id="orgsCollapsible" class="collapsible">
-            <input type="checkbox" id="collapsible-orgs" name="checkboxOrg" />
-            <label for="collapsible-orgs">Organisations</label>
-            <div class="collapsible-content">
-                @foreach (var org in Model.Organisations)
-                {
-                    <Button class="btn-lg btn-outline-primary p-2 buttons" onclick="SetOrganisationName('@org.Name')" id='@org.Name'>@org.Name</Button>
-                }
+    <div class="row align-items-start">
+        <div class="col-6">
+            <div id="orgsCollapsible" class="collapsible">
+                <input type="checkbox" id="collapsible-orgs" name="checkboxOrg" />
+                <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" id="selectBoxOrg" onchange="SetOrganisationName(selectBoxOrg.options[selectBoxOrg.selectedIndex].value)">
+                    <option selected disabled selected hidden>Organisations</option>
+                    @foreach (var org in Model.Organisations)
+                    {
+                        <option value='@org.Name' id='@org.Name'>@org.Name</option>
+                    }
+                </select>
             </div>
         </div>
-    </div>
 
-    <div class="wrapper">
-        <div id="classroomCollapsible" class="collapsible" hidden>
-            <input type="checkbox" id="collapsible-class" name="checkboxClass" />
-            <label for="collapsible-class">Classes</label>
-            <div class="collapsible-content" id="classroomContent">
+        <div class="col-6">
+            <div id="classroomCollapsible" class="collapsible" hidden>
+                <input type="checkbox" id="collapsible-class" name="checkboxClass" />
+                <select class="form-select form-select-lg mb-3" aria-
+                =".form-select-lg example" id="selectBoxClass" onchange="SetClassroomName(selectBoxClass.options[selectBoxClass.selectedIndex].value)">
+                    <option selected disabled selected hidden>Classes</option>
+                </select>
             </div>
         </div>
-    </div>
 
-    <div class="wrapper">
-        <div id="assignmentCollapsible" class="collapsible" hidden>
-            <input type="checkbox" id="collapsible-assignments" name="checkboxAssignment" />
-            <label for="collapsible-assignments">Travaux</label>
-            <div class="collapsible-content" id="assignmentContent">
+        <div class="col-6">
+            <div id="assignmentCollapsible" class="collapsible" hidden>
+                <input type="checkbox" id="collapsible-assignments" name="checkboxAssignment" />
+                <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" id="selectBoxAssignments" onchange="SetAssignmentName(selectBoxAssignments.options[selectBoxAssignments.selectedIndex].value)">
+                    <option selected disabled selected hidden>Travaux</option>
+                </select>
             </div>
         </div>
-    </div>
 
-    <div class="wrapper" id="scriptStart" hidden>
-        <div id="level">
-            <label for="numberOfReview">Nombre de revues par étudiant</label>
-            <input class="p-2 buttons" type="number" id="numberOfReview" min="1" max="10" value="3" />
-            <button class="btn-lg btn-primary p-2 buttons" onclick="StartStudentAssignationScript()">Lancer le script de revue des pairs</button>
-            <button class="btn-lg btn-primary p-2 buttons" onclick="StartTeacherAssignationScript()">Lancer le script de revue du prof</button>
-            <select class="form-control" id="selectTeacher"></select>
-            <br/>
-            <button class="btn-lg btn-primary p-2 buttons" onclick="StartTutorAssignationScript()">Lancer le script de revue du tuteur</button>
-            <select class="form-control" id="selectTutor"></select>
-            <br/>
-            <button id="marg" class="btn-lg btn-primary p-2 buttons" hidden="hidden" onclick="RemoveCollaboratorFromAssignment()">Retirer les pairs du travail</button>
-        </div>
+        <div class="col-6" id="scriptStart" hidden>
 
-        <div class="form-group">
-            <button class="btn-lg btn-primary p-2 buttons" hidden="hidden" onclick="DownloadComments()">Télécharger les commentaires</button>
-            <button class="btn-lg btn-primary p-2 buttons" hidden="hidden" onclick="DownloadAllRepositoriesForAssignment()">Télécharger les dépôts de devoir de la classe</button>
-            <button class="btn-lg btn-primary p-2 buttons" hidden="hidden" onclick="DownloadSingleRepository()">Télécharger le dépôt d'un étudiant</button>
-            <select class="form-control" hidden="hidden" id="selectStudent"></select>
+            <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" id="selectBoxScripts" onchange="ShowScriptsOptions(selectBoxScripts.options[selectBoxScripts.selectedIndex].value)">
+                <option selected disabled selected hidden>Scripts</option>
+                <option value="StartStudentAssignationScript">Lancer le script de revue des pairs</option>
+                <option value="StartTeacherAssignationScript">Lancer le script de revue du prof</option>
+                <option value="StartTutorAssignationScript">Lancer le script de revue du tuteur</option>
+                <option value="RemoveCollaboratorFromAssignment">Retirer les pairs du travail</option>
+                <option value="DownloadComments">Télécharger les commentaires</option>
+                <option value="DownloadAllRepositoriesForAssignment">Télécharger les dépôts de devoir de la classe</option>
+                <option value="DownloadSingleRepository">Télécharger le dépôt d'un étudiant</option>
+            </select>
         </div>
-    </div>
-    <div class="wrapper" id="allocationContentTable" hidden>
+        <div class="col-6">
+            <label id="labelNumberOfReview" hidden for="numberOfReview">Nombre de revues par étudiant</label>
+            <input class="p-2 buttons" type="number" hidden id="numberOfReview" min="1" max="10" value="3" />
+            <select class="form-select form-select-lg mb-3" hidden id="selectTeacher"></select>
+            <select class="form-select form-select-lg mb-3" hidden id="selectTutor"></select>
+            <select class="form-select form-select-lg mb-3" hidden id="selectStudent"></select>
+        </div>
+        <div class="col-6 d-grid gap-2">
+            <button class="btn-lg btn-primary buttons" hidden id="buttonSelectedScript" onclick="StartChoosedScript()">Lancer</button>
+        </div>
+        <div class="col-12" id="allocationContentTable" hidden>
+        </div>
     </div>
 </div>
 
@@ -66,6 +70,10 @@
 
     #marg {
         margin-top: 10px;
+    }
+
+    .icon-green {
+        color: green;
     }
 </style>
 
@@ -188,7 +196,7 @@
             if (allocation.status == 53) {
                 var td4 = document.createElement("td");
                 td4.setAttribute("style", "max-width: 200px");
-                td4.setAttribute("class", "bi bi-check2");
+                td4.setAttribute("class", "bi bi-check2 icon-green");
                 tr.appendChild(td4);
             }
             else if (allocation.status == 42) {
@@ -200,27 +208,68 @@
             else {
                 var td4 = document.createElement("td");
                 td4.setAttribute("style", "max-width: 200px");
-                td4.setAttribute("class", "bi bi-x");
+                td4.setAttribute("class", "bi bi-x ");
                 tr.appendChild(td4);
             }
         });
         div.appendChild(table);
+    }
+    StartChoosedScript = function () {
+
+        switch (selectBoxScripts.options[selectBoxScripts.selectedIndex].value) {
+            case "StartStudentAssignationScript":
+                StartStudentAssignationScript();
+                break;
+            case "StartTeacherAssignationScript":
+                StartTeacherAssignationScript();
+                break;
+            case "StartTutorAssignationScript":
+                StartTutorAssignationScript();
+                break;
+            case "RemoveCollaboratorFromAssignment":
+                RemoveCollaboratorFromAssignment();
+                break;
+            case "DownloadComments":
+                DownloadComments();
+                break;
+            case "DownloadAllRepositoriesForAssignment":
+                DownloadAllRepositoriesForAssignment();
+                break;
+            case "DownloadSingleRepository":
+                DownloadSingleRepository();
+                break;
+        }
+    }
+
+    ShowScriptsOptions = function (scriptOptionName) {
+        $("#labelNumberOfReview").attr("hidden", true);
+        $("#numberOfReview").attr("hidden", true);
+        $("#selectTeacher").attr("hidden", true);
+        $("#selectTutor").attr("hidden", true);
+        $("#selectStudent").attr("hidden", true);
+        $("#buttonSelectedScript").attr("hidden", false);
+
+        switch (scriptOptionName) {
+            case "StartStudentAssignationScript":
+                $("#labelNumberOfReview").attr("hidden", false);
+                $("#numberOfReview").attr("hidden", false);
+                break;
+            case "StartTeacherAssignationScript":
+                $("#selectTeacher").attr("hidden", false);
+                break;
+            case "StartTutorAssignationScript":
+                $("#selectTutor").attr("hidden", false);
+                break;
+            case "DownloadSingleRepository":
+                $("#selectStudent").attr("hidden", false);
+                break;
+        }
     }
 
     function SetOrganisationName(organisationName) {
         if (organisationName != "") {
             SelectedOrganisationName = organisationName;
             GetClassroomsOfOrganisationByName(SelectedOrganisationName);
-
-            organisations.forEach(organisation => {
-                if (organisation.name == organisationName) {
-                    document.getElementById(organisation.name).classList.remove("btn-outline-primary");
-                    document.getElementById(organisation.name).classList.add("btn-primary");
-                } else {
-                    document.getElementById(organisation.name).classList.add("btn-outline-primary");
-                    document.getElementById(organisation.name).classList.remove("btn-primary");
-                }
-            });
         }
     }
 
@@ -229,17 +278,6 @@
             SelectedClassroomName = classroomName;
             GetAssignmentsOfClassroomByName(SelectedClassroomName);
             GetStudentsOfClassroomByName(SelectedClassroomName);
-
-            classrooms.forEach(classroom => {
-                if (classroom.name == classroomName) {
-                    document.getElementById(classroom.name).classList.remove("btn-outline-primary");
-                    document.getElementById(classroom.name).classList.add("btn-primary");
-                } else {
-                    document.getElementById(classroom.name).classList.add("btn-outline-primary");
-                    document.getElementById(classroom.name).classList.remove("btn-primary");
-                }
-            });
-
             GetStudentsInClassroomByClassroomName(classroomName);
             GetTeacherInClassroomByClassroomName(classroomName);
             GetTutors(classroomName);
@@ -250,16 +288,6 @@
         if (assignmentName != "") {
             SelectedAssignmentName = assignmentName;
             GetValidReposByAssignmentName(SelectedAssignmentName);
-
-            assignments.forEach(assignment => {
-                if (assignment.name == assignmentName) {
-                    document.getElementById(assignment.name).classList.remove("btn-outline-primary");
-                    document.getElementById(assignment.name).classList.add("btn-primary");
-                } else {
-                    document.getElementById(assignment.name).classList.add("btn-outline-primary");
-                    document.getElementById(assignment.name).classList.remove("btn-primary");
-                }
-            });
             GetAllocationsInformations(SelectedClassroomName, SelectedAssignmentName);
             $("#scriptStart").removeAttr("hidden");
             $("#allocationContentTable").removeAttr("hidden");
@@ -323,31 +351,30 @@
             select.appendChild(option);
         });
     }
-    
-    GetValidReposByAssignmentName = function(assignmentName){
-           var ajaxURL = '/RPLP/GetValidReposByAssignmentName';
-            $.ajax({
-                type: 'GET',
-                url: ajaxURL,
-                data: { assignmentName : assignmentName},
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                beforeSend: function () {
-                    console.log('firing ajax call');
-                },
-                success: function (data) {
-                    reposAssociatedAThisAssignment = data;
-                    document.getElementById("numberOfReview").setAttribute("max", reposAssociatedAThisAssignment - 1);
-                },
-                error: function (ex) {
-                    console.log('Error');
-                }
-            });
+
+    GetValidReposByAssignmentName = function (assignmentName) {
+        var ajaxURL = '/RPLP/GetValidReposByAssignmentName';
+        $.ajax({
+            type: 'GET',
+            url: ajaxURL,
+            data: { assignmentName: assignmentName },
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            beforeSend: function () {
+                console.log('firing ajax call');
+            },
+            success: function (data) {
+                reposAssociatedAThisAssignment = data;
+                document.getElementById("numberOfReview").setAttribute("max", reposAssociatedAThisAssignment - 1);
+            },
+            error: function (ex) {
+                console.log('Error');
+            }
+        });
     }
 
-    GetStudentsInClassroomByClassroomName = function (classroomName)
-     {
-       var ajaxURL = '/RPLP/GetStudentsInClassroomByClassroomName';
+    GetStudentsInClassroomByClassroomName = function (classroomName) {
+        var ajaxURL = '/RPLP/GetStudentsInClassroomByClassroomName';
         $.ajax({
             type: 'GET',
             url: ajaxURL,
@@ -437,18 +464,15 @@
         });
     }
 
-
     function ShowClassrooms() {
-        var myDiv = document.getElementById("classroomContent");
-        myDiv.replaceChildren();
+        var selected = document.getElementById("selectBoxClass");
 
         classrooms.forEach(classroom => {
-            var button = document.createElement("BUTTON");
-            button.innerHTML = classroom.name;
-            button.classList.add("btn-lg", "btn-outline-primary", "p-2", "buttons");
-            button.setAttribute('id', classroom.name);
-            button.onclick = function () { SetClassroomName(classroom.name); };
-            myDiv.appendChild(button);
+            var option = document.createElement("OPTION");
+            option.innerHTML = classroom.name;
+            option.value = classroom.name;
+            option.setAttribute('id', classroom.name);
+            selected.appendChild(option);
         });
 
         $("#classroomCollapsible").removeAttr("hidden");
@@ -457,16 +481,14 @@
     }
 
     function ShowAssignments() {
-        var myDiv = document.getElementById("assignmentContent");
-        myDiv.replaceChildren();
+        var selected = document.getElementById("selectBoxAssignments");
 
         assignments.forEach(assignment => {
-            var button = document.createElement("BUTTON");
-            button.innerHTML = assignment.name;
-            button.classList.add("btn-lg", "btn-outline-primary", "p-2", "buttons");
-            button.setAttribute('id', assignment.name);
-            button.onclick = function () { SetAssignmentName(assignment.name); };
-            myDiv.appendChild(button);
+            var option = document.createElement("OPTION");
+            option.innerHTML = assignment.name;
+            option.value = assignment.name;
+            option.setAttribute('id', assignment.name);
+            selected.appendChild(option);
         });
 
         $("#assignmentCollapsible").removeAttr("hidden");
@@ -488,7 +510,7 @@
             },
             success: function (data) {
                 console.log("works!");
-                 GetAllocationsInformations(SelectedClassroomName, SelectedAssignmentName);
+                GetAllocationsInformations(SelectedClassroomName, SelectedAssignmentName);
             },
             error: function (ex) {
                 console.log(ex);
@@ -511,18 +533,18 @@
             },
             success: function (data) {
                 console.log("works!");
-                 GetAllocationsInformations(SelectedClassroomName, SelectedAssignmentName);
+                GetAllocationsInformations(SelectedClassroomName, SelectedAssignmentName);
             },
             error: function (ex) {
                 console.log(ex);
             }
         });
     }
-    
+
     function StartTutorAssignationScript() {
         var ajaxURL = '/RPLP/StartTutortAssignationScript';
         var tutorUsername = document.getElementById("selectTutor").value;
-    
+
         $.ajax({
             type: 'GET',
             url: ajaxURL,
