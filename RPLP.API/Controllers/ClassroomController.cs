@@ -473,10 +473,10 @@ namespace RPLP.API.Controllers
         [HttpPost]
         public ActionResult UpsertClassroom([FromBody] Classroom p_classroom)
         {
-            Logging.Instance.Journal(new Log($"Debug - avant try - p_classroom {p_classroom.Name}"));
+            //Logging.Instance.Journal(new Log($"Debug - avant try - p_classroom {p_classroom.Name}"));
             try
             {
-                Logging.Instance.Journal(new Log($"Debug - avant conditions- p_classroom {p_classroom.Name}"));
+                //Logging.Instance.Journal(new Log($"Debug - avant conditions- p_classroom {p_classroom.Name}"));
                 if (p_classroom == null)
                 {
                     RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),

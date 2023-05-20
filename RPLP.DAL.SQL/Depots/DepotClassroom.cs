@@ -585,9 +585,12 @@ namespace RPLP.DAL.SQL.Depots
                 {
                     int index = classroomResult.Students.IndexOf(
                         classroomResult.Students.FirstOrDefault(t => t.Id == studentResult.Id));
-                    this._context.ChangeTracker.Clear();
-                    this._context.Attach(classroomResult);
-                    this._context.Entry(classroomResult).Collection(x => x.Students).Load();
+                    if (this._context.ChangeTracker != null)
+                    {
+                        this._context.ChangeTracker.Clear();
+                        this._context.Attach(classroomResult);
+                        this._context.Entry(classroomResult).Collection(x => x.Students).Load();
+                    }
                     classroomResult.Students.RemoveAt(index);
                     this._context.SaveChanges();
 
@@ -646,9 +649,12 @@ namespace RPLP.DAL.SQL.Depots
                 {
                     int index = classroomResult.Teachers.IndexOf(
                         classroomResult.Teachers.FirstOrDefault(t => t.Id == teacherResult.Id));
-                    this._context.ChangeTracker.Clear();
-                    this._context.Attach(classroomResult);
-                    this._context.Entry(classroomResult).Collection(x => x.Teachers).Load();
+                    if (this._context.ChangeTracker != null)
+                    {
+                        this._context.ChangeTracker.Clear();
+                        this._context.Attach(classroomResult);
+                        this._context.Entry(classroomResult).Collection(x => x.Teachers).Load();
+                    }
                     classroomResult.Teachers.RemoveAt(index);
                     this._context.SaveChanges();
 

@@ -426,13 +426,11 @@ namespace RPLP.UnitTesting.DepotTests
             depot.AddAdministratorToOrganisation(organisation.Name, administratorInContext.Username);
 
 
-            organisation = organisationsDB.FirstOrDefault(o => o.Name == "CEGEP Ste-Foy");
-            Administrator_SQLDTO? administrator = organisation.Administrators.FirstOrDefault(a => a.Username == "PiFou86");
+            administratorInContext = administratorsDB.FirstOrDefault(a => a.Username == "PiFou86");
+            organisation = administratorInContext.Organisations.FirstOrDefault(a => a.Name == "CEGEP Ste-Foy");
 
-            Assert.NotNull(organisation);
-            Assert.NotNull(administrator);
-           
-            
+            Assert.NotNull(administratorInContext);
+            Assert.NotNull(organisation);                
         }
 
         [Fact]
@@ -511,14 +509,11 @@ namespace RPLP.UnitTesting.DepotTests
 
             depot.RemoveAdministratorFromOrganisation(organisation.Name, administratorInContext.Username);
 
-            organisation = organisationsDB.FirstOrDefault(o => o.Name == "CEGEP Ste-Foy");
-            Administrator_SQLDTO? administrator = organisation.Administrators
-                                                              .FirstOrDefault(a => a.Username == administratorUserName);
+            administratorInContext = administratorsDB.FirstOrDefault(a => a.Username == administratorUserName);
+            organisation = administratorInContext.Organisations.FirstOrDefault(a => a.Name == "CEGEP Ste-Foy");
 
-            Assert.NotNull(organisation);
-            Assert.Null(administrator);
-           
-            
+            Assert.NotNull(administratorInContext);
+            Assert.Null(organisation);           
         }
 
         [Fact]

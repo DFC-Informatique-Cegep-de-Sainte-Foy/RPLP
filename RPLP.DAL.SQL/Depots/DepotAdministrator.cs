@@ -346,9 +346,12 @@ namespace RPLP.DAL.SQL.Depots
 
                 if (organisationResult != null && !adminResult.Organisations.Contains(organisationResult))
                 {
-                    this._context.ChangeTracker.Clear();
-                    this._context.Attach(adminResult);
-                    this._context.Entry(adminResult).Collection(x => x.Organisations).Load();
+                    if (this._context.ChangeTracker != null)
+                    {
+                        this._context.ChangeTracker.Clear();
+                        this._context.Attach(adminResult);
+                        this._context.Entry(adminResult).Collection(x => x.Organisations).Load();
+                    }
 
                     adminResult.Organisations.Add(organisationResult);
                     this._context.SaveChanges();
@@ -403,9 +406,12 @@ namespace RPLP.DAL.SQL.Depots
                 {
                     int index = adminResult.Organisations.IndexOf(
                         adminResult.Organisations.FirstOrDefault(o => o.Id == organisationResult.Id));
-                    this._context.ChangeTracker.Clear();
-                    this._context.Attach(adminResult);
-                    this._context.Entry(adminResult).Collection(x => x.Organisations).Load();
+                    if (this._context.ChangeTracker != null)
+                    {
+                        this._context.ChangeTracker.Clear();
+                        this._context.Attach(adminResult);
+                        this._context.Entry(adminResult).Collection(x => x.Organisations).Load();
+                    }
                     adminResult.Organisations.RemoveAt(index);
                     this._context.SaveChanges();
 
