@@ -227,9 +227,11 @@
         switch (selectBoxScripts.options[selectBoxScripts.selectedIndex].value) {
             case "StartStudentAssignationScript":
                 StartStudentAssignationScript();
+                StudentAssignationScriptAlreadyDone();
                 break;
             case "StartTeacherAssignationScript":
                 StartTeacherAssignationScript();
+                TeacherAssignationScriptAlreadyDone();
                 break;
             case "StartTutorAssignationScript":
                 StartTutorAssignationScript();
@@ -256,14 +258,17 @@
         $("#selectTutor").attr("hidden", true);
         $("#selectStudent").attr("hidden", true);
         $("#buttonSelectedScript").attr("hidden", false);
+        $("#buttonSelectedScript").prop("disabled", false);
 
         switch (scriptOptionName) {
             case "StartStudentAssignationScript":
                 $("#labelNumberOfReview").attr("hidden", false);
                 $("#numberOfReview").attr("hidden", false);
+                StudentAssignationScriptAlreadyDone();
                 break;
-            case "StartTeacherAssignationScript":
+            case "StartTeacherAssignationScript":              
                 $("#selectTeacher").attr("hidden", false);
+                TeacherAssignationScriptAlreadyDone();
                 break;
             case "StartTutorAssignationScript":
                 $("#selectTutor").attr("hidden", false);
@@ -272,6 +277,19 @@
                 $("#selectStudent").attr("hidden", false);
                 break;
         }
+    }
+    StudentAssignationScriptAlreadyDone = function () {
+        if (allocations.pairs.Count > 0) {
+            $("#buttonSelectedScript").prop("disabled", true);
+        }
+    }
+    TeacherAssignationScriptAlreadyDone = function () {
+        allocations.pairs.forEach(allocation => {
+            if (allocations.TeacherName === selectTeacher.options[selectTeacher.selectedIndex].value) {
+                $("#buttonSelectedScript").prop("disabled", true);
+            }
+        });
+
     }
 
     function SetOrganisationName(organisationName) {
