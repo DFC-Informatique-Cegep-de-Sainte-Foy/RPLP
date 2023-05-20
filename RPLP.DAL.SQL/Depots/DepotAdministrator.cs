@@ -346,17 +346,14 @@ namespace RPLP.DAL.SQL.Depots
 
                 if (organisationResult != null && !adminResult.Organisations.Contains(organisationResult))
                 {
-                    Logging.Instance.Journal(new Log(
-                        $"JoinOrganisation(string p_adminUsername: {adminResult.Username}, string p_organisationName: {organisationResult.Name})"));
-                    // adminResult.Organisations = new List<Organisation_SQLDTO>();
-                    // organisationResult.Administrators = new List<Administrator_SQLDTO>();
-                    // adminResult.Organisations.Add(organisationResult);
-                    // organisationResult.Administrators.Add(adminResult);
-                    // this._context.Update(adminResult);
-                    // this._context.SaveChanges();
+                    this._context.ChangeTracker.Clear();
+                    this._context.Attach(adminResult);
+                    this._context.Entry(adminResult).Collection(x => x.Organisations).Load();
 
-                    this._context.Database.ExecuteSqlRaw(
-                        $"INSERT INTO Administrator_SQLDTOOrganisation_SQLDTO (AdministratorsId, OrganisationsId) VALUES({adminResult.Id},{organisationResult.Id});");
+                    adminResult.Organisations.Add(organisationResult);
+                    this._context.SaveChanges();
+
+                    //this._context.Database.ExecuteSqlRaw($"INSERT INTO Administrator_SQLDTOOrganisation_SQLDTO (AdministratorsId, OrganisationsId) VALUES({adminResult.Id},{organisationResult.Id});");
 
                     RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Administrators - Organisations",
                         $"DepotAdministrator - Method - JoinOrganisation(string p_adminUsername, string p_organisationName) - void - Add Organisations"));
@@ -401,15 +398,18 @@ namespace RPLP.DAL.SQL.Depots
                     .Where(organisation => organisation.Active)
                     .SingleOrDefault(organisation => organisation.Name == p_organisationName);
 
-                if (organisationResult != null && adminResult.Organisations.Contains(organisationResult))
+                if (organisationResult is not null &&
+                    adminResult.Organisations.FirstOrDefault(o => o.Id == organisationResult.Id) != null)
                 {
-                    //adminResult.Organisations.Remove(organisationResult);
+                    int index = adminResult.Organisations.IndexOf(
+                        adminResult.Organisations.FirstOrDefault(o => o.Id == organisationResult.Id));
+                    this._context.ChangeTracker.Clear();
+                    this._context.Attach(adminResult);
+                    this._context.Entry(adminResult).Collection(x => x.Organisations).Load();
+                    adminResult.Organisations.RemoveAt(index);
+                    this._context.SaveChanges();
 
-                    // this._context.Update(adminResult);
-                    // this._context.SaveChanges();
-                    this._context.Database.ExecuteSqlRaw(
-                        $"DELETE FROM Administrator_SQLDTOOrganisation_SQLDTO WHERE AdministratorsId={adminResult.Id} AND OrganisationsId={organisationResult.Id};");
-
+                    //this._context.Database.ExecuteSqlRaw($"DELETE FROM Administrator_SQLDTOOrganisation_SQLDTO WHERE AdministratorsId={adminResult.Id} AND OrganisationsId={organisationResult.Id};");
 
                     RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Administrators - Organisations",
                         $"DepotAdministrator - Method - LeaveOrganisation(string p_adminUsername, string p_organisationName) - void - leave Organisations"));
