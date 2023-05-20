@@ -102,7 +102,7 @@ namespace RPLP.VALIDATIONS
         {
             this._allocations = message.Allocations;
             List<Allocation> allocations;
-            
+
             if (isReviewerStudent)
             {
                 allocations = this._allocations.Pairs.Where(al => al.StudentId is not null).ToList();
@@ -129,18 +129,22 @@ namespace RPLP.VALIDATIONS
                         p_reviewerName = message.Allocations._classroom.Students
                             .FirstOrDefault(reviewer => reviewer.Id == allocation.StudentId).Username;
 
-                        status = this._script.CreatePullRequestAndAssignUser(p_organisationName, p_repositoryName,p_reviewerName);
+                        status = this._script.CreatePullRequestAndAssignUser(p_organisationName, p_repositoryName,
+                            p_reviewerName);
                     }
                     else
                     {
                         p_reviewerName = message.Allocations._classroom.Teachers
                             .FirstOrDefault(reviewer => reviewer.Id == allocation.TeacherId).Username;
 
-                        status = this._script.createPullRequestForTeacher(p_organisationName, p_repositoryName,p_reviewerName, FILENAME, MESSAGE, CONTENTS);
+                        status = this._script.createPullRequestForTeacher(p_organisationName, p_repositoryName,
+                            p_reviewerName, FILENAME, MESSAGE, CONTENTS);
                     }
 
-                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"Assignation effectuée au 15 secondes :" +
-                                                                         $" organisationName : {p_organisationName} - repositoryName : {p_repositoryName} - NomDuReviewer : {p_reviewerName}"));
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"Assignation effectuée au 15 secondes : " +
+                                                                         $"organisationName : {p_organisationName} - " +
+                                                                         $"repositoryName : {p_repositoryName} - " +
+                                                                         $"NomDuReviewer : {p_reviewerName}"));
 
                     Thread.Sleep(15000);
 

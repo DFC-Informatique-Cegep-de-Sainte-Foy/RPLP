@@ -222,6 +222,7 @@ namespace RPLP.DAL.SQL.Depots
                 studentResult.FirstName = p_student.FirstName;
                 studentResult.LastName = p_student.LastName;
                 studentResult.Email = p_student.Email;
+                studentResult.IsTutor = p_student.IsTutor;
                 studentResult.Matricule = p_student.Matricule;
 
                 this._context.Update(studentResult);
@@ -250,6 +251,7 @@ namespace RPLP.DAL.SQL.Depots
                 student.LastName = p_student.LastName;
                 student.Email = p_student.Email;
                 student.Classes = classes;
+                student.IsTutor = p_student.IsTutor;
                 student.Matricule = p_student.Matricule;
                 student.Active = true;
 

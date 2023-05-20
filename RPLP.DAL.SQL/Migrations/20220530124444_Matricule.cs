@@ -14,6 +14,8 @@ namespace RPLP.DAL.SQL.Migrations
                 type: "nvarchar(max)",
                 nullable: false,
                 defaultValue: "");
+
+                migrationBuilder.Sql(@"INSERT INTO Administrators VALUES('admin','admin','admin',1,'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','admin@rplp.com');");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

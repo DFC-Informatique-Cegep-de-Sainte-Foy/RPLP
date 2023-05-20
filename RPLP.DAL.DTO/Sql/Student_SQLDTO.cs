@@ -16,6 +16,8 @@ namespace RPLP.DAL.DTO.Sql
         public string Email { get; set; }
         public string Matricule { get; set; }
         public List<Classroom_SQLDTO> Classes { get; set; }
+
+        public bool IsTutor { get; set; }
         public bool Active { get; set; }
 
         public Student_SQLDTO()
@@ -32,6 +34,7 @@ namespace RPLP.DAL.DTO.Sql
             this.FirstName = p_student.FirstName;
             this.LastName = p_student.LastName;
             this.Matricule = p_student.Matricule;
+            this.IsTutor = p_student.IsTutor;
             this.Email = p_student.Email;
 
             if (p_student.Classes.Count >= 1)
@@ -48,12 +51,12 @@ namespace RPLP.DAL.DTO.Sql
 
         public Student ToEntity()
         {
-            return new Student(this.Id, this.Username, this.FirstName, this.LastName, this.Email, this.Matricule, this.Classes.Select(classroom => classroom.ToEntity()).ToList());
+            return new Student(this.Id, this.Username, this.FirstName, this.LastName, this.Email, this.Matricule, this.IsTutor, this.Classes.Select(classroom => classroom.ToEntity()).ToList());
         }
 
         public Student ToEntityWithoutList()
         {
-            return new Student(this.Id, this.Username, this.FirstName, this.LastName, this.Email, this.Matricule, new List<Classroom>());
+            return new Student(this.Id, this.Username, this.FirstName, this.LastName, this.Email, this.Matricule, this.IsTutor,new List<Classroom>());
         }
     }
 }

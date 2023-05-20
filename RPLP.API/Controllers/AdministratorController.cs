@@ -167,8 +167,7 @@ namespace RPLP.API.Controllers
                 throw;
             }
         }
-
-
+        
         [HttpPost("Username/{adminUsername}/Orgs/Add/{organisationName}")]
         public ActionResult AddAdminToOrganisation(string adminUsername, string organisationName)
         {

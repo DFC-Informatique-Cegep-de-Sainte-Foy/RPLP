@@ -32,6 +32,7 @@ container.RegisterType<IDepotClassroom, DepotClassroom>(TypeLifetime.Scoped);
 container.RegisterType<IDepotOrganisation, DepotOrganisation>(TypeLifetime.Scoped);
 container.RegisterType<IDepotRepository, DepotRepository>(TypeLifetime.Scoped);
 container.RegisterType<IDepotAllocation, DepotAllocation>(TypeLifetime.Scoped);
+container.RegisterType<IDepotStudent, DepotStudent>(TypeLifetime.Scoped);
 
 
 ScriptGithubRPLP scripts = new ScriptGithubRPLP(
@@ -39,6 +40,7 @@ ScriptGithubRPLP scripts = new ScriptGithubRPLP(
     container.Resolve<IDepotRepository>(), 
     container.Resolve<IDepotOrganisation>(), 
     container.Resolve<IDepotAllocation>(),
+    container.Resolve<IDepotStudent>(),
     token.ToString());
 
 while (true)
