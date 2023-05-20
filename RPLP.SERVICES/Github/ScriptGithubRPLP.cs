@@ -185,7 +185,7 @@ namespace RPLP.SERVICES.Github
 
             List<Student> studentswithoutRepository = GetStudentsWithoutRepositoryFromAssignment(repositoriesToAssign);
 
-            if (this._activeClassroom.Students.Count - studentswithoutRepository.Count < p_reviewsPerRepository + 1)
+            if (repositoriesToAssign.Count <= p_reviewsPerRepository)
             {
                 RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new InvalidOperationException().ToString(),
                     new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
