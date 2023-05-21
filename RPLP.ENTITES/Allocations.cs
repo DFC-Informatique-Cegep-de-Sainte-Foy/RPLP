@@ -136,27 +136,58 @@ namespace RPLP.ENTITES
                             $"teacherId={teacherId}"));
                 List<Allocation> TeacherAllocationToBeAdded = new List<Allocation>();
 
-                foreach (Allocation allocation in this.Pairs)
+                if (this.Pairs.Count > 0)
                 {
-                    int repoId = allocation.RepositoryId;
-                    string thisAllocationUniqueId = $"r{repoId}s0t{teacherId}";
-                    RPLP.JOURNALISATION.Logging.Instance.Journal(
-                        new Log($"Allocations.cs - CreateTeacherReviewsAllocation(string p_teacherUsername)" +
-                                $"repoId={repoId}" +
-                                $"teacherId={teacherId}" +
-                                $"thisAllocationUniqueId={thisAllocationUniqueId}"));
-                    try
+                    foreach (Allocation allocation in this.Pairs)
                     {
-                        if (this.Pairs.FirstOrDefault(all => all.Id == thisAllocationUniqueId) is null)
-                            if (TeacherAllocationToBeAdded.FirstOrDefault(all => all.Id == thisAllocationUniqueId) is
-                                null)
-                                TeacherAllocationToBeAdded.Add(new Allocation(thisAllocationUniqueId, repoId, null,
-                                    teacherId, 31));
-                    }
-                    catch (Exception e)
-                    {
+                        int repoId = allocation.RepositoryId;
+                        string thisAllocationUniqueId = $"r{repoId}s0t{teacherId}";
                         RPLP.JOURNALISATION.Logging.Instance.Journal(
-                            new Log($"error ! ={e.Message}"));
+                            new Log($"Allocations.cs - CreateTeacherReviewsAllocation(string p_teacherUsername)" +
+                                    $"repoId={repoId}" +
+                                    $"teacherId={teacherId}" +
+                                    $"thisAllocationUniqueId={thisAllocationUniqueId}"));
+                        try
+                        {
+                            if (this.Pairs.FirstOrDefault(all => all.Id == thisAllocationUniqueId) is null)
+                                if (TeacherAllocationToBeAdded.FirstOrDefault(all => all.Id == thisAllocationUniqueId)
+                                    is
+                                    null)
+                                    TeacherAllocationToBeAdded.Add(new Allocation(thisAllocationUniqueId, repoId, null,
+                                        teacherId, 31));
+                        }
+                        catch (Exception e)
+                        {
+                            RPLP.JOURNALISATION.Logging.Instance.Journal(
+                                new Log($"error ! ={e.Message}"));
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (Repository repo in this._repositories)
+                    {
+                        int repoId = repo.Id;
+                        string thisAllocationUniqueId = $"r{repoId}s0t{teacherId}";
+                        RPLP.JOURNALISATION.Logging.Instance.Journal(
+                            new Log($"Allocations.cs - CreateTeacherReviewsAllocation ** else ** (string p_teacherUsername)" +
+                                    $"repoId={repoId}" +
+                                    $"teacherId={teacherId}" +
+                                    $"thisAllocationUniqueId={thisAllocationUniqueId}"));
+                        try
+                        {
+                            if (this.Pairs.FirstOrDefault(all => all.Id == thisAllocationUniqueId) is null)
+                                if (TeacherAllocationToBeAdded.FirstOrDefault(all => all.Id == thisAllocationUniqueId)
+                                    is
+                                    null)
+                                    TeacherAllocationToBeAdded.Add(new Allocation(thisAllocationUniqueId, repoId, null,
+                                        teacherId, 31));
+                        }
+                        catch (Exception e)
+                        {
+                            RPLP.JOURNALISATION.Logging.Instance.Journal(
+                                new Log($"error ! ={e.Message}"));
+                        }
                     }
                 }
 
@@ -182,27 +213,58 @@ namespace RPLP.ENTITES
                             $"p_tutorId={p_tutorId}"));
                 List<Allocation> tutorAllocationToBeAdded = new List<Allocation>();
 
-                foreach (Allocation allocation in this.Pairs)
+                if (this.Pairs.Count > 0)
                 {
-                    int repoId = allocation.RepositoryId;
-                    string thisAllocationUniqueId = $"r{repoId}s{p_tutorId}t0";
-                    RPLP.JOURNALISATION.Logging.Instance.Journal(
-                        new Log($"Allocations.cs - CreateTutorReviewsAllocation(string p_tutorUsername)" +
-                                $"repoId={repoId}" +
-                                $"tutorId={p_tutorId}" +
-                                $"thisAllocationUniqueId={thisAllocationUniqueId}"));
-                    try
+                    foreach (Allocation allocation in this.Pairs)
                     {
-                        if (this.Pairs.FirstOrDefault(all => all.Id == thisAllocationUniqueId) is null)
-                            if (tutorAllocationToBeAdded.FirstOrDefault(all => all.Id == thisAllocationUniqueId) is
-                                null)
-                                tutorAllocationToBeAdded.Add(new Allocation(thisAllocationUniqueId, repoId, p_tutorId,
-                                    null, 31));
-                    }
-                    catch (Exception e)
-                    {
+                        int repoId = allocation.RepositoryId;
+                        string thisAllocationUniqueId = $"r{repoId}s{p_tutorId}t0";
                         RPLP.JOURNALISATION.Logging.Instance.Journal(
-                            new Log($"error ! ={e.Message}"));
+                            new Log($"Allocations.cs - CreateTutorReviewsAllocation(string p_tutorUsername)" +
+                                    $"repoId={repoId}" +
+                                    $"tutorId={p_tutorId}" +
+                                    $"thisAllocationUniqueId={thisAllocationUniqueId}"));
+                        try
+                        {
+                            if (this.Pairs.FirstOrDefault(all => all.Id == thisAllocationUniqueId) is null)
+                                if (tutorAllocationToBeAdded.FirstOrDefault(all => all.Id == thisAllocationUniqueId) is
+                                    null)
+                                    tutorAllocationToBeAdded.Add(new Allocation(thisAllocationUniqueId, repoId,
+                                        p_tutorId,
+                                        null, 31));
+                        }
+                        catch (Exception e)
+                        {
+                            RPLP.JOURNALISATION.Logging.Instance.Journal(
+                                new Log($"error ! ={e.Message}"));
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (Repository repo in this._repositories)
+                    {
+                        int repoId = repo.Id;
+                        string thisAllocationUniqueId = $"r{repoId}s{p_tutorId}t0";
+                        RPLP.JOURNALISATION.Logging.Instance.Journal(
+                            new Log($"Allocations.cs - CreateTutorReviewsAllocation ** else ** (string p_tutorUsername)" +
+                                    $"repoId={repoId}" +
+                                    $"tutorId={p_tutorId}" +
+                                    $"thisAllocationUniqueId={thisAllocationUniqueId}"));
+                        try
+                        {
+                            if (this.Pairs.FirstOrDefault(all => all.Id == thisAllocationUniqueId) is null)
+                                if (tutorAllocationToBeAdded.FirstOrDefault(all => all.Id == thisAllocationUniqueId) is
+                                    null)
+                                    tutorAllocationToBeAdded.Add(new Allocation(thisAllocationUniqueId, repoId,
+                                        p_tutorId,
+                                        null, 31));
+                        }
+                        catch (Exception e)
+                        {
+                            RPLP.JOURNALISATION.Logging.Instance.Journal(
+                                new Log($"error ! ={e.Message}"));
+                        }
                     }
                 }
 

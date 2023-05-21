@@ -87,15 +87,12 @@ namespace RPLP.SERVICES.Github
 
         public void CreateOrUpdateAllocations(List<Repository> p_repositories)
         {
-            RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"Le MeltDuPot - CreateOrUpdateAllocations - avant la décheance - Count p_repositories: {p_repositories.Count}"));
             if (this._allocations is null)
             {
-                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"Le MeltDuPot - CreateOrUpdateAllocations - this._allocations is null - Count p_repositories: {p_repositories.Count}"));
                 List <Allocation> allocationsExistingInDb =
                     this._depotAllocation.GetAllocationsByAssignmentName(this._activeClassroom.ActiveAssignment.Name);
                 if (allocationsExistingInDb.Count > 0)
                 {
-                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"Le MeltDuPot - CreateOrUpdateAllocations - allocationsExistingInDb.Count > 0 - Count p_repositories: {allocationsExistingInDb.Count}"));
                     List<Repository> repositoriesDansBd = new List<Repository>();
                     allocationsExistingInDb.ForEach(alloc =>
                         repositoriesDansBd.Add(_depotRepository.GetRepositoryById(alloc.RepositoryId)));
@@ -104,7 +101,6 @@ namespace RPLP.SERVICES.Github
                 }
                 else
                 {
-                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"Le MeltDuPot - CreateOrUpdateAllocations - else"));
                     this._allocations = new Allocations(p_repositories, this._activeClassroom);
                 }
             }
