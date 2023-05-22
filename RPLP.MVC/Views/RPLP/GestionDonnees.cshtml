@@ -4,288 +4,295 @@
 </head>
 
 <div class="container m-3">
-    <button class="btn-primary btn" onclick="StartScriptCoherence()">Démarrer le script de cohérence</button>
-    <div class="row align-items-start">
-        <div class="col-md-5 col-sm-12" id="ActionButtons">
-            @if (Model.RoleType == "Administrator")
-            {
-                <div class="wrapper">
-                    <div id="adminsCollapsible" class="collapsible">
-                        <label>Administrateurs</label>
-                        <select class="form-select form-select-lg" aria-label=".form-select-lg example" id="selectedAdminOptions" onchange="FormUnlock(selectedAdminOptions.options[selectedAdminOptions.selectedIndex].value)">
-                            <option disabled selected hidden>Faites votre choix...</option>
-                            <option id="btnCreateAdmin" value="createAdmin">Créer</option>
-                            <option id="btnModifyAdmin" value="modifyAdmin">Modifier</option>
-                            <option id="btnDeleteAdmin" value="deleteAdmin">Supprimer</option>
-                            <option id="btnReactivateAdmin" value="reactivateAdminInOrg">Réactiver</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="wrapper">
-                    <div id="orgsCollapsible" class="collapsible">
-                        <label>Organisations</label>
-                        <select class="form-select form-select-lg" aria-label=".form-select-lg example" id="selectedOrganisationOptions" onchange="FormUnlock(selectedOrganisationOptions.options[selectedOrganisationOptions.selectedIndex].value)">
-                            <option disabled selected hidden>Faites votre choix...</option>
-                            <option id="btnCreateOrganisation" value="createOrganisation">Créer</option>
-                            <option id="btnModifyOrganisation" value="modifyOrganisation">Modifier</option>
-                            <option id="btnDeleteOrganisation" value="deleteOrganisation">Supprimer</option>
-                            <option id="btnAddAdminToOrg" value="addAdminToOrg">Ajouter administrateur </option>
-                            <option id="btnRemoveAdminFromOrg" value="removeAdminFromOrg">Retirer administrateur</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="wrapper">
-                    <div id="teacherCollapsible" class="collapsible">
-                        <label>Professeurs</label>
-                        <select class="form-select form-select-lg" aria-label=".form-select-lg example" id="selectedTeacherOptions" onchange="FormUnlock(selectedTeacherOptions.options[selectedTeacherOptions.selectedIndex].value">
-                            <option disabled selected hidden>Faites votre choix...</option>
-                            <option id="btnCreateTeacher" value="createTeacher">Créer</option>
-                            <option id="btnModifyTeacher" value="modifyTeacher">Modifier</option>
-                            <option id="btnDeleteTeacher" value="deleteTeacher">Supprimer</option>
-                            <option id="btnReactivateTeacher" value="reactivateTeacherInOrg">Réactiver</option>
-                        </select>
-                    </div>
-                </div>
-            }
-            @if (Model.RoleType == "Administrator" || Model.RoleType == "Teacher")
-            {
-                <div class="wrapper">
-                    <div id="classesCollapsible" class="collapsible">
-                        <label>Classes</label>
-                        <select class="form-select form-select-lg" aria-label=".form-select-lg example" id="selectedClassesOptions" onchange="FormUnlock(selectedClassesOptions.options[selectedClassesOptions.selectedIndex].value)">
-                            <option disabled selected hidden>Faites votre choix...</option>
-                            <option id="btnCreateClassroom" value="createClassroom">Créer</option>
-                            <option id="btnModifyClassroom" value="modifyClassroom">Modifier</option>
-                            <option id="btnDeleteClassroom" value="deleteClassroom">Supprimer</option>
-                            <option id="btnAddTeacherToClassroom" value="addTeacherToClassroom">Ajouter professeur</option>
-                            <option id="btnRemoveTeacherFromClassroom" value="removeTeacherFromClassroom">Retirer professeur</option>
-                            <option id="btnAddStudentToClassroom" value="addStudentToClassroom">Ajouter Étudiant</option>
-                            <option id="btnAddStudentToClassroomBatch" value="addStudentToClassroomBatch">Ajouter étudiants en lot</option>
-                            <option id="btnRemoveStudentFromClassroom" value="removeStudentFromClassroom">Retirer étudiant</option>
-                            <option id="btnRemoveAssignmentFromClassroom" value="removeAssignmentFromClassroom">Retirer travail</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="wrapper">
-                    <div id="assignmentCollapsible" class="collapsible">
-                        <label>Travaux</label>
-                        <select class="form-select form-select-lg" aria-label=".form-select-lg example" id="selectedAssignmentOptions" onchange="FormUnlock(selectedAssignmentOptions.options[selectedAssignmentOptions.selectedIndex].value)">
-                            <option disabled selected hidden>Faites votre choix...</option>
-                            <option id="btnCreateAssignment" value="createAssignment">Créer</option>
-                            <option id="btnModifyAssignment" value="modifyAssignment">Modifier</option>
-                            <option id="btnDeleteAssignment" value="deleteAssignment">Supprimer</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="wrapper">
-                    <div id="studentCollapsible" class="collapsible">
-                        <label>Étudiants</label>
-                        <select class="form-select form-select-lg" aria-label=".form-select-lg example" id="selectedStudentOptions" onchange="FormUnlock(selectedStudentOptions.options[selectedStudentOptions.selectedIndex].value)">
-                            <option disabled selected hidden>Faites votre choix...</option>
-                            <option id="btnCreateStudent" value="createStudent">Créer</option>
-                            <option id="btnCreateStudentBatch" value="createStudentBatch">Créer en lot</option>
-                            <option id="btnModifyStudent" value="modifyStudent">Modifier</option>
-                            <option id="btnDeleteStudent" value="deleteStudent">Supprimer</option>
-                            <option id="btnReactivateStudent" value="reactivateStudentInOrg">Réactiver</option>
-                        </select>
-                    </div>
-                </div>
-            }
+<button class="btn-primary btn" onclick="StartScriptCoherence()">Démarrer le script de cohérence</button>
+<div class="row align-items-start">
+<div class="col-md-5 col-sm-12" id="ActionButtons">
+    @if (Model.RoleType == "Administrator")
+    {
+        <div class="wrapper">
+            <div id="adminsCollapsible" class="collapsible">
+                <label>Administrateurs</label>
+                <select class="form-select form-select-lg" aria-label=".form-select-lg example" id="selectedAdminOptions" onchange="FormUnlock(selectedAdminOptions.options[selectedAdminOptions.selectedIndex].value)">
+                    <option disabled selected hidden>Faites votre choix...</option>
+                    <option id="btnCreateAdmin" value="createAdmin">Créer</option>
+                    <option id="btnModifyAdmin" value="modifyAdmin">Modifier</option>
+                    <option id="btnDeleteAdmin" value="deleteAdmin">Supprimer</option>
+                    <option id="btnReactivateAdmin" value="reactivateAdminInOrg">Réactiver</option>
+                </select>
+            </div>
         </div>
 
-        <div class="col-md-5 offset-md-2 col-sm-12" id="formulaires">
-            <div id="createAdmin" hidden>
-                @{
-                    Html.RenderPartial(@"../Shared/GestionDonnees/_ActionAjouterAdmin.cshtml");
-                }
+        <div class="wrapper">
+            <div id="orgsCollapsible" class="collapsible">
+                <label>Organisations</label>
+                <select class="form-select form-select-lg" aria-label=".form-select-lg example" id="selectedOrganisationOptions" onchange="FormUnlock(selectedOrganisationOptions.options[selectedOrganisationOptions.selectedIndex].value)">
+                    <option disabled selected hidden>Faites votre choix...</option>
+                    <option id="btnCreateOrganisation" value="createOrganisation">Créer</option>
+                    <option id="btnModifyOrganisation" value="modifyOrganisation">Modifier</option>
+                    <option id="btnDeleteOrganisation" value="deleteOrganisation">Supprimer</option>
+                    <option id="btnReactivateOrganisation" value="reactivateOrganisation">Réactiver</option>
+                    <option id="btnAddAdminToOrg" value="addAdminToOrg">Ajouter administrateur </option>
+                    <option id="btnRemoveAdminFromOrg" value="removeAdminFromOrg">Retirer administrateur</option>
+                </select>
             </div>
-
-            <div id="modifyAdmin" hidden>
-                @{
-                    Html.RenderPartial(@"../Shared/GestionDonnees/_ActionModifierAdmin.cshtml", Model);
-                }
-            </div>
-
-            <div id="deleteAdmin" hidden>
-                @{
-                    Html.RenderPartial(@"../Shared/GestionDonnees/_ActionSupprimerAdmin.cshtml", Model);
-                }
-            </div>
-
-            <div id="addAdminToOrg" hidden>
-                @{
-                    Html.RenderPartial(@"../Shared/GestionDonnees/_ActionAjouterAdminAOrg.cshtml", Model);
-                }
-            </div>
-
-            <div id="removeAdminFromOrg" hidden>
-                @{
-                    Html.RenderPartial(@"../Shared/GestionDonnees/_ActionRetirerAdminDeOrg.cshtml", Model);
-                }
-            </div>
-
-            <div id="reactivateAdminInOrg" hidden>
-                @{
-                    Html.RenderPartial(@"../Shared/GestionDonnees/_ActionReactiverAdmin.cshtml", Model);
-                }
-            </div>
-
-            <div id="createOrganisation" hidden>
-                @{
-                    Html.RenderPartial(@"../Shared/GestionDonnees/_ActionAjouterOrg.cshtml");
-                }
-            </div>
-
-            <div id="modifyOrganisation" hidden>
-                @{
-                    Html.RenderPartial(@"../Shared/GestionDonnees/_ActionModifierOrg.cshtml", Model);
-                }
-            </div>
-
-            <div id="deleteOrganisation" hidden>
-                @{
-                    Html.RenderPartial(@"../Shared/GestionDonnees/_ActionSupprimerOrg.cshtml", Model);
-                }
-            </div>
-
-            <div id="createTeacher" hidden>
-                @{
-                    Html.RenderPartial(@"../Shared/GestionDonnees/_ActionAjouterTeacher.cshtml");
-                }
-            </div>
-
-            <div id="modifyTeacher" hidden>
-                @{
-                    Html.RenderPartial(@"../Shared/GestionDonnees/_ActionModifierTeacher.cshtml");
-                }
-            </div>
-
-            <div id="deleteTeacher" hidden>
-                @{
-                    Html.RenderPartial(@"../Shared/GestionDonnees/_ActionSupprimerTeacher.cshtml");
-                }
-            </div>
-
-            <div id="addTeacherToClassroom" hidden>
-                @{
-                    Html.RenderPartial(@"../Shared/GestionDonnees/_ActionAjouterTeacherAClassroom.cshtml", Model);
-                }
-            </div>
-
-            <div id="reactivateTeacherInOrg" hidden>
-                @{
-                    Html.RenderPartial(@"../Shared/GestionDonnees/_ActionReactiverTeacher.cshtml", Model);
-                }
-            </div>
-
-            <div id="addStudentToClassroom" hidden>
-                @{
-                    Html.RenderPartial(@"../Shared/GestionDonnees/_ActionAjouterStudentAClassroom.cshtml", Model);
-                }
-            </div>
-
-            <div id="addStudentToClassroomBatch" hidden>
-                @{
-                    Html.RenderPartial(@"../Shared/GestionDonnees/_ActionAjouterStudentAClassroomBatch.cshtml", Model);
-                }
-            </div>
-
-            <div id="removeTeacherFromClassroom" hidden>
-                @{
-                    Html.RenderPartial(@"../Shared/GestionDonnees/_ActionRetirerTeacherDeClassroom.cshtml", Model);
-                }
-            </div>
-
-            <div id="removeAssignmentFromClassroom" hidden>
-                @{
-                    Html.RenderPartial(@"../Shared/GestionDonnees/_ActionRetirerAssignmentDeClassroom.cshtml", Model);
-                }
-            </div>
-
-            <div id="removeStudentFromClassroom" hidden>
-                @{
-                    Html.RenderPartial(@"../Shared/GestionDonnees/_ActionRetirerStudentDeClassroom.cshtml", Model);
-                }
-            </div>
-
-            <div id="reactivateStudentInOrg" hidden>
-                @{
-                    Html.RenderPartial(@"../Shared/GestionDonnees/_ActionReactiverStudent.cshtml", Model);
-                }
-            </div>
-
-            <div id="createClassroom" hidden>
-                @{
-                    Html.RenderPartial(@"../Shared/GestionDonnees/_ActionAjouterClassroom.cshtml", Model);
-                }
-            </div>
-
-            <div id="modifyClassroom" hidden>
-                @{
-                    Html.RenderPartial(@"../Shared/GestionDonnees/_ActionModifierClassroom.cshtml", Model);
-                }
-            </div>
-
-            <div id="deleteClassroom" hidden>
-                @{
-                    Html.RenderPartial(@"../Shared/GestionDonnees/_ActionSupprimerClassroom.cshtml", Model);
-                }
-            </div>
-
-            <div id="createAssignment" hidden>
-                @{
-                    Html.RenderPartial(@"../Shared/GestionDonnees/_ActionAjouterAssignment.cshtml", Model);
-                }
-            </div>
-
-            <div id="modifyAssignment" hidden>
-                @{
-                    Html.RenderPartial(@"../Shared/GestionDonnees/_ActionModifierAssignment.cshtml", Model);
-                }
-            </div>
-
-            <div id="deleteAssignment" hidden>
-                @{
-                    Html.RenderPartial(@"../Shared/GestionDonnees/_ActionSupprimerAssignment.cshtml", Model);
-                }
-            </div>
-
-            <div id="createStudent" hidden>
-                @{
-                    Html.RenderPartial(@"../Shared/GestionDonnees/_ActionAjouterStudent.cshtml", Model);
-                }
-            </div>
-
-            <div id="createStudentBatch" hidden>
-                @{
-                    Html.RenderPartial(@"../Shared/GestionDonnees/_ActionAjouterStudentBatch.cshtml");
-                }
-            </div>
-
-            <div id="modifyStudent" hidden>
-                @{
-                    Html.RenderPartial(@"../Shared/GestionDonnees/_ActionModifierStudent.cshtml", Model);
-                }
-            </div>
-
-            <div id="deleteStudent" hidden>
-                @{
-                    Html.RenderPartial(@"../Shared/GestionDonnees/_ActionSupprimerStudent.cshtml", Model);
-                }
-            </div>
-
         </div>
+
+        <div class="wrapper">
+            <div id="teacherCollapsible" class="collapsible">
+                <label>Professeurs</label>
+                <select class="form-select form-select-lg" aria-label=".form-select-lg example" id="selectedTeacherOptions" onchange="FormUnlock(selectedTeacherOptions.options[selectedTeacherOptions.selectedIndex].value)">
+                    <option disabled selected hidden>Faites votre choix...</option>
+                    <option id="btnCreateTeacher" value="createTeacher">Créer</option>
+                    <option id="btnModifyTeacher" value="modifyTeacher">Modifier</option>
+                    <option id="btnDeleteTeacher" value="deleteTeacher">Supprimer</option>
+                    <option id="btnReactivateTeacher" value="reactivateTeacherInOrg">Réactiver</option>
+                </select>
+            </div>
+        </div>
+    }
+    @if (Model.RoleType == "Administrator" || Model.RoleType == "Teacher")
+    {
+        <div class="wrapper">
+            <div id="classesCollapsible" class="collapsible">
+                <label>Classes</label>
+                <select class="form-select form-select-lg" aria-label=".form-select-lg example" id="selectedClassesOptions" onchange="FormUnlock(selectedClassesOptions.options[selectedClassesOptions.selectedIndex].value)">
+                    <option disabled selected hidden>Faites votre choix...</option>
+                    <option id="btnCreateClassroom" value="createClassroom">Créer</option>
+                    <option id="btnModifyClassroom" value="modifyClassroom">Modifier</option>
+                    <option id="btnDeleteClassroom" value="deleteClassroom">Supprimer</option>
+                    <option id="btnAddTeacherToClassroom" value="addTeacherToClassroom">Ajouter professeur</option>
+                    <option id="btnRemoveTeacherFromClassroom" value="removeTeacherFromClassroom">Retirer professeur</option>
+                    <option id="btnAddStudentToClassroom" value="addStudentToClassroom">Ajouter Étudiant</option>
+                    <option id="btnAddStudentToClassroomBatch" value="addStudentToClassroomBatch">Ajouter étudiants en lot</option>
+                    <option id="btnRemoveStudentFromClassroom" value="removeStudentFromClassroom">Retirer étudiant</option>
+                    <option id="btnRemoveAssignmentFromClassroom" value="removeAssignmentFromClassroom">Retirer travail</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="wrapper">
+            <div id="assignmentCollapsible" class="collapsible">
+                <label>Travaux</label>
+                <select class="form-select form-select-lg" aria-label=".form-select-lg example" id="selectedAssignmentOptions" onchange="FormUnlock(selectedAssignmentOptions.options[selectedAssignmentOptions.selectedIndex].value)">
+                    <option disabled selected hidden>Faites votre choix...</option>
+                    <option id="btnCreateAssignment" value="createAssignment">Créer</option>
+                    <option id="btnModifyAssignment" value="modifyAssignment">Modifier</option>
+                    <option id="btnDeleteAssignment" value="deleteAssignment">Supprimer</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="wrapper">
+            <div id="studentCollapsible" class="collapsible">
+                <label>Étudiants</label>
+                <select class="form-select form-select-lg" aria-label=".form-select-lg example" id="selectedStudentOptions" onchange="FormUnlock(selectedStudentOptions.options[selectedStudentOptions.selectedIndex].value)">
+                    <option disabled selected hidden>Faites votre choix...</option>
+                    <option id="btnCreateStudent" value="createStudent">Créer</option>
+                    <option id="btnCreateStudentBatch" value="createStudentBatch">Créer en lot</option>
+                    <option id="btnModifyStudent" value="modifyStudent">Modifier</option>
+                    <option id="btnDeleteStudent" value="deleteStudent">Supprimer</option>
+                    <option id="btnReactivateStudent" value="reactivateStudentInOrg">Réactiver</option>
+                </select>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="col-md-5 offset-md-2 col-sm-12" id="formulaires">
+    <div id="createAdmin" hidden>
+        @{
+            Html.RenderPartial(@"../Shared/GestionDonnees/_ActionAjouterAdmin.cshtml");
+        }
     </div>
+
+    <div id="modifyAdmin" hidden>
+        @{
+            Html.RenderPartial(@"../Shared/GestionDonnees/_ActionModifierAdmin.cshtml", Model);
+        }
+    </div>
+
+    <div id="deleteAdmin" hidden>
+        @{
+            Html.RenderPartial(@"../Shared/GestionDonnees/_ActionSupprimerAdmin.cshtml", Model);
+        }
+    </div>
+
+    <div id="addAdminToOrg" hidden>
+        @{
+            Html.RenderPartial(@"../Shared/GestionDonnees/_ActionAjouterAdminAOrg.cshtml", Model);
+        }
+    </div>
+
+    <div id="removeAdminFromOrg" hidden>
+        @{
+            Html.RenderPartial(@"../Shared/GestionDonnees/_ActionRetirerAdminDeOrg.cshtml", Model);
+        }
+    </div>
+
+    <div id="reactivateAdminInOrg" hidden>
+        @{
+            Html.RenderPartial(@"../Shared/GestionDonnees/_ActionReactiverAdmin.cshtml", Model);
+        }
+    </div>
+
+    <div id="createOrganisation" hidden>
+        @{
+            Html.RenderPartial(@"../Shared/GestionDonnees/_ActionAjouterOrg.cshtml");
+        }
+    </div>
+
+    <div id="modifyOrganisation" hidden>
+        @{
+            Html.RenderPartial(@"../Shared/GestionDonnees/_ActionModifierOrg.cshtml", Model);
+        }
+    </div>
+
+    <div id="deleteOrganisation" hidden>
+        @{
+            Html.RenderPartial(@"../Shared/GestionDonnees/_ActionSupprimerOrg.cshtml", Model);
+        }
+    </div>
+
+    <div id="reactivateOrganisation" hidden>
+        @{
+            Html.RenderPartial(@"../Shared/GestionDonnees/_ActionReactiverOrg.cshtml", Model);
+        }
+    </div>
+
+    <div id="createTeacher" hidden>
+        @{
+            Html.RenderPartial(@"../Shared/GestionDonnees/_ActionAjouterTeacher.cshtml");
+        }
+    </div>
+
+    <div id="modifyTeacher" hidden>
+        @{
+            Html.RenderPartial(@"../Shared/GestionDonnees/_ActionModifierTeacher.cshtml");
+        }
+    </div>
+
+    <div id="deleteTeacher" hidden>
+        @{
+            Html.RenderPartial(@"../Shared/GestionDonnees/_ActionSupprimerTeacher.cshtml");
+        }
+    </div>
+
+    <div id="addTeacherToClassroom" hidden>
+        @{
+            Html.RenderPartial(@"../Shared/GestionDonnees/_ActionAjouterTeacherAClassroom.cshtml", Model);
+        }
+    </div>
+
+    <div id="reactivateTeacherInOrg" hidden>
+        @{
+            Html.RenderPartial(@"../Shared/GestionDonnees/_ActionReactiverTeacher.cshtml", Model);
+        }
+    </div>
+
+    <div id="addStudentToClassroom" hidden>
+        @{
+            Html.RenderPartial(@"../Shared/GestionDonnees/_ActionAjouterStudentAClassroom.cshtml", Model);
+        }
+    </div>
+
+    <div id="addStudentToClassroomBatch" hidden>
+        @{
+            Html.RenderPartial(@"../Shared/GestionDonnees/_ActionAjouterStudentAClassroomBatch.cshtml", Model);
+        }
+    </div>
+
+    <div id="removeTeacherFromClassroom" hidden>
+        @{
+            Html.RenderPartial(@"../Shared/GestionDonnees/_ActionRetirerTeacherDeClassroom.cshtml", Model);
+        }
+    </div>
+
+    <div id="removeAssignmentFromClassroom" hidden>
+        @{
+            Html.RenderPartial(@"../Shared/GestionDonnees/_ActionRetirerAssignmentDeClassroom.cshtml", Model);
+        }
+    </div>
+
+    <div id="removeStudentFromClassroom" hidden>
+        @{
+            Html.RenderPartial(@"../Shared/GestionDonnees/_ActionRetirerStudentDeClassroom.cshtml", Model);
+        }
+    </div>
+
+    <div id="reactivateStudentInOrg" hidden>
+        @{
+            Html.RenderPartial(@"../Shared/GestionDonnees/_ActionReactiverStudent.cshtml", Model);
+        }
+    </div>
+
+    <div id="createClassroom" hidden>
+        @{
+            Html.RenderPartial(@"../Shared/GestionDonnees/_ActionAjouterClassroom.cshtml", Model);
+        }
+    </div>
+
+    <div id="modifyClassroom" hidden>
+        @{
+            Html.RenderPartial(@"../Shared/GestionDonnees/_ActionModifierClassroom.cshtml", Model);
+        }
+    </div>
+
+    <div id="deleteClassroom" hidden>
+        @{
+            Html.RenderPartial(@"../Shared/GestionDonnees/_ActionSupprimerClassroom.cshtml", Model);
+        }
+    </div>
+
+    <div id="createAssignment" hidden>
+        @{
+            Html.RenderPartial(@"../Shared/GestionDonnees/_ActionAjouterAssignment.cshtml", Model);
+        }
+    </div>
+
+    <div id="modifyAssignment" hidden>
+        @{
+            Html.RenderPartial(@"../Shared/GestionDonnees/_ActionModifierAssignment.cshtml", Model);
+        }
+    </div>
+
+    <div id="deleteAssignment" hidden>
+        @{
+            Html.RenderPartial(@"../Shared/GestionDonnees/_ActionSupprimerAssignment.cshtml", Model);
+        }
+    </div>
+
+    <div id="createStudent" hidden>
+        @{
+            Html.RenderPartial(@"../Shared/GestionDonnees/_ActionAjouterStudent.cshtml", Model);
+        }
+    </div>
+
+    <div id="createStudentBatch" hidden>
+        @{
+            Html.RenderPartial(@"../Shared/GestionDonnees/_ActionAjouterStudentBatch.cshtml");
+        }
+    </div>
+
+    <div id="modifyStudent" hidden>
+        @{
+            Html.RenderPartial(@"../Shared/GestionDonnees/_ActionModifierStudent.cshtml", Model);
+        }
+    </div>
+
+    <div id="deleteStudent" hidden>
+        @{
+            Html.RenderPartial(@"../Shared/GestionDonnees/_ActionSupprimerStudent.cshtml", Model);
+        }
+    </div>
+
+</div>
+</div>
 </div>
 
 <script type="text/javascript">
     @if (Model.RoleType == "Administrator")
     {
-        @Html.Raw("var buttons = ['btnCreateAdmin', 'btnModifyAdmin', 'btnDeleteAdmin','btnCreateOrganisation', 'btnModifyOrganisation', 'btnDeleteOrganisation','btnAddAdminToOrg', 'btnRemoveAdminFromOrg','btnCreateTeacher', 'btnModifyTeacher', 'btnDeleteTeacher','btnCreateClassroom', 'btnModifyClassroom', 'btnDeleteClassroom', 'btnAddTeacherToClassroom', 'btnRemoveTeacherFromClassroom', 'btnAddStudentToClassroom', 'btnAddStudentToClassroomBatch', 'btnRemoveStudentFromClassroom', 'btnRemoveAssignmentFromClassroom','btnCreateAssignment', 'btnModifyAssignment', 'btnDeleteAssignment','btnCreateStudent','btnCreateStudentBatch', 'btnModifyStudent', 'btnDeleteStudent', 'btnReactivateStudent', 'btnReactivateTeacher', 'btnReactivateAdmin'];")
+        @Html.Raw("var buttons = ['btnCreateAdmin', 'btnModifyAdmin', 'btnDeleteAdmin','btnCreateOrganisation', 'btnModifyOrganisation', 'btnReactivateOrganisation','btnDeleteOrganisation','btnAddAdminToOrg', 'btnRemoveAdminFromOrg','btnCreateTeacher', 'btnModifyTeacher', 'btnDeleteTeacher','btnCreateClassroom', 'btnModifyClassroom', 'btnDeleteClassroom', 'btnAddTeacherToClassroom', 'btnRemoveTeacherFromClassroom', 'btnAddStudentToClassroom', 'btnAddStudentToClassroomBatch', 'btnRemoveStudentFromClassroom', 'btnRemoveAssignmentFromClassroom','btnCreateAssignment', 'btnModifyAssignment', 'btnDeleteAssignment','btnCreateStudent','btnCreateStudentBatch', 'btnModifyStudent', 'btnDeleteStudent', 'btnReactivateStudent', 'btnReactivateTeacher', 'btnReactivateAdmin'];")
     }
     else if (Model.RoleType == "Teacher")
     {
@@ -293,8 +300,8 @@
     }
 
 
-                                var forms = ["createAdmin", "modifyAdmin", "deleteAdmin", "addAdminToOrg", "removeAdminFromOrg", "reactivateAdminInOrg",
-        "createOrganisation", "modifyOrganisation", "deleteOrganisation",
+        var forms = ["createAdmin", "modifyAdmin", "deleteAdmin", "addAdminToOrg", "removeAdminFromOrg", "reactivateAdminInOrg",
+        "createOrganisation", "modifyOrganisation", "deleteOrganisation", "reactivateOrganisation",
         "createTeacher", "modifyTeacher", "deleteTeacher", "reactivateTeacherInOrg",
         "createClassroom", "modifyClassroom", "deleteClassroom", "addTeacherToClassroom", "removeTeacherFromClassroom", "removeAssignmentFromClassroom", "removeStudentFromClassroom", "addStudentToClassroom", "addStudentToClassroomBatch",
         "createAssignment", "modifyAssignment", "deleteAssignment",
@@ -331,4 +338,3 @@
     }
 
 </script>
-

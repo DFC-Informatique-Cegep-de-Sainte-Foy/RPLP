@@ -176,6 +176,7 @@ namespace RPLP.MVC.Controllers
                     model.DeactivatedAdministrators = GetDeactivatedAdministratorsList();
                     model.DeactivatedStudents = GetDeactivatedStudentsList();
                     model.DeactivatedTeachers = GetDeactivatedTeachersList();
+                    model.DeactivateOrganisations = GetDeactivatedOrganisationsList();
                 }
                 else if (userType == typeof(Teacher).ToString())
                 {
@@ -295,6 +296,26 @@ namespace RPLP.MVC.Controllers
                     .ToList();
 
                 return administratorViewModels;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        
+        private List<OrganisationViewModel> GetDeactivatedOrganisationsList()
+        {
+            try
+            {
+                List<Organisation> deactivatedOrganisations = this._httpClient
+                    .GetFromJsonAsync<List<Organisation>>("Organisation/Deactivated")
+                    .Result;
+                List<OrganisationViewModel> organisationViewModels = new List<OrganisationViewModel>();
+                
+                deactivatedOrganisations.ForEach(org => organisationViewModels.Add(new OrganisationViewModel
+                    { Id = org.Id, Name = org.Name }));
+
+                return organisationViewModels;
             }
             catch (Exception)
             {
@@ -2482,6 +2503,33 @@ namespace RPLP.MVC.Controllers
 
                 Logging.Instance.Journal(new Log("api", (int)response.Result.StatusCode,
                     $"RPLPController - POST méthode POSTReactivateAdmin(string username = {username})"));
+
+                return response.Result.StatusCode.ToString();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        
+        [HttpPost]
+        public ActionResult<string> POSTReactivateOrg(string orgName)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(orgName))
+                {
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                        new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                        "RPLPController - POSTReactivateOrg - orgName passé en paramètre est vide", 0));
+                }
+
+                Task<HttpResponseMessage> response = this._httpClient
+                    .GetAsync($"Organisation/Reactivate/{orgName}");
+                response.Wait();
+
+                Logging.Instance.Journal(new Log("api", (int)response.Result.StatusCode,
+                    $"RPLPController - POST méthode POSTReactivateOrg(string orgName = {orgName})"));
 
                 return response.Result.StatusCode.ToString();
             }
