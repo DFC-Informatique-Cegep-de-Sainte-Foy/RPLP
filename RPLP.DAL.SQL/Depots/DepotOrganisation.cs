@@ -51,6 +51,27 @@ namespace RPLP.DAL.SQL.Depots
             return organisations;
         }
 
+        public List<Organisation> GetOrganisationsInactives()
+        {
+            List<Organisation_SQLDTO> organisationResult = this._context.Organisations
+                .Where(organisation => !organisation.Active)
+                .Include(organisation => organisation.Administrators.Where(admin => admin.Active)).ToList();
+
+            List<Organisation> organisations = organisationResult.Select(admin => admin.ToEntityWithoutList()).ToList();
+
+            for (int i = 0; i < organisationResult.Count; i++)
+            {
+                if (organisationResult[i].Id == organisations[i].Id && organisationResult[i].Administrators.Count >= 1)
+                    organisations[i].Administrators = organisationResult[i].Administrators
+                        .Select(organisation => organisation.ToEntityWithoutList()).ToList();
+            }
+
+            RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Organisation",
+                $"DepotOrganisation - Method - GetOrganisationsInactives() - Return List<Organisation>"));
+
+            return organisations;
+        }
+
         public Organisation GetOrganisationById(int p_id)
         {
             if (p_id < 0)
@@ -206,6 +227,7 @@ namespace RPLP.DAL.SQL.Depots
                         this._context.Attach(adminResult);
                         this._context.Entry(adminResult).Collection(x => x.Organisations).Load();
                     }
+
                     //flag
                     adminResult.Organisations.Add(organisationResult);
                     this._context.SaveChanges();
@@ -267,6 +289,7 @@ namespace RPLP.DAL.SQL.Depots
                         this._context.Attach(adminResult);
                         this._context.Entry(adminResult).Collection(x => x.Organisations).Load();
                     }
+
                     adminResult.Organisations.RemoveAt(index);
                     this._context.SaveChanges();
 
@@ -310,7 +333,6 @@ namespace RPLP.DAL.SQL.Depots
             }
 
             Organisation_SQLDTO organisationResult = this._context.Organisations
-                .Where(organisation => organisation.Active)
                 .FirstOrDefault(organisation => organisation.Id == p_organisation.Id);
             if (organisationResult != null)
             {
@@ -365,6 +387,34 @@ namespace RPLP.DAL.SQL.Depots
                 RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Organisation",
                     $"DepotOrganisation - Method - DeleteOrganisation(string p_organisationName) - la variable organisationResult est null",
                     0));
+            }
+        }
+
+        public void ReactivateOrganisation(string orgName)
+        {
+            if (string.IsNullOrWhiteSpace(orgName))
+            {
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                    new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    "DepotOrganisation - ReactivateOrganisation - orgName passé en paramètre est vide", 0));
+            }
+
+            Organisation_SQLDTO orgResult = this._context.Organisations.Where(o => !o.Active)
+                .FirstOrDefault(o => o.Name == orgName);
+            if (orgResult != null)
+            {
+                orgResult.Active = true;
+
+                this._context.Update(orgResult);
+                this._context.SaveChanges();
+
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Administrators",
+                    $"DepotOrganisation - Method - ReactivateOrganisation(string orgName) - Void - reactive organisation"));
+            }
+            else
+            {
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Administrators",
+                    $"DepotOrganisation - Method - ReactivateOrganisation(string orgName) - Void - orgResult est null"));
             }
         }
     }

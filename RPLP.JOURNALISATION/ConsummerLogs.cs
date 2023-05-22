@@ -21,6 +21,7 @@ namespace RPLP.JOURNALISATION
         private static string CheminDossierZipLogs = @"/var/log/zip_rplp/";
         private static string CheminFichierDeLogs = CheminDossierLogs + "Log_Revue_Par_Les_Paires.csv";
         private static string Header = "Identifiant~TypeDeLog~DateDuLog~ExceptionLevee~StackTrace~RouteApi~CodeStatusRequete~RequetesRestantes~TableAffectee~UtilisateurConnecte~Role~MessageSupplementaire";
+        private static readonly double FILE_SIZE_LIMIT = 0.5;
 
         public ConsummerLogs()
         {
@@ -93,12 +94,11 @@ namespace RPLP.JOURNALISATION
             return (informations.Length / 8e+6);
         }
 
-
         private static void HandleSizeOfTheFile()
         {
             //À titre de démonstation
             //if (GetSizeOfFile() >= 20)
-            if (GetSizeOfFile() >= 2)
+            if (GetSizeOfFile() >= FILE_SIZE_LIMIT)
             {
                 string nameOfZipLogsFile = $"{Guid.NewGuid()}_zip_logs";
 
