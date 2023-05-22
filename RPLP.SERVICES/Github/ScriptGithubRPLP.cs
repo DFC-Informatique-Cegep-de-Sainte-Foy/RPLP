@@ -153,17 +153,17 @@ namespace RPLP.SERVICES.Github
 
             CreateOrUpdateActiveClassroom(p_organisationName, p_classRoomName, p_assignmentName);
 
-            if (this._activeClassroom.Students.Count < p_reviewsPerRepository + 1)
+            List<Repository> repositoriesToAssign = GetRepositoriesToAssign();
+
+            if (repositoriesToAssign.Count <= p_reviewsPerRepository)
             {
-                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new InvalidOperationException().ToString(),
                     new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                    "ScriptGithubRPLP - ScriptAssignStudentToAssignmentReview - La liste students assignée à partir de la méthode _depotClassroom.GetStudentsByClassroomName(p_classRoomName) n'est pas conforme selon la demande",
+                    "ScriptGithubRPLP - ScriptAssignStudentToAssignmentReview - La liste students ajustée sans les étudiants sans dépôt n'est pas conforme selon la demande",
                     0));
 
                 throw new ArgumentException("Number of students inferior to number of reviews");
             }
-
-            List<Repository> repositoriesToAssign = GetRepositoriesToAssign();
 
             // flag : shuffle the repositories list
             if (repositoriesToAssign is not null)
@@ -183,16 +183,6 @@ namespace RPLP.SERVICES.Github
             }
 
             List<Student> studentswithoutRepository = GetStudentsWithoutRepositoryFromAssignment(repositoriesToAssign);
-
-            if (repositoriesToAssign.Count <= p_reviewsPerRepository)
-            {
-                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new InvalidOperationException().ToString(),
-                    new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                    "ScriptGithubRPLP - ScriptAssignStudentToAssignmentReview - La liste students ajustée sans les étudiants sans dépôt n'est pas conforme selon la demande",
-                    0));
-
-                throw new ArgumentException("Number of students inferior to number of reviews");
-            }
 
             CreateOrUpdateAllocations(repositoriesToAssign);
             this._allocations.CreateRandomReviewsAllocation(p_reviewsPerRepository);
