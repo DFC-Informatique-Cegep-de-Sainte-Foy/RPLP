@@ -402,7 +402,6 @@ namespace RPLP.DAL.SQL.Depots
             try
             {
                 Allocation_SQLDTO? allocationResult = this._context.Allocations.
-                    //SingleOrDefault(allocation => allocation.Status > 0 && allocation.StudentId == p_allocation.StudentId && allocation.RepositoryId == p_allocation.RepositoryId);
                     SingleOrDefault(allocation =>
                         allocation.Id == p_allocation.Id && allocation.StudentId == p_allocation.StudentId &&
                         allocation.RepositoryId == p_allocation.RepositoryId);
@@ -458,7 +457,6 @@ namespace RPLP.DAL.SQL.Depots
             try
             {
                 Allocation_SQLDTO? allocationResult = this._context.Allocations.
-                    //SingleOrDefault(allocation => allocation.Status > 0 && allocation.StudentId == p_allocation.StudentId && allocation.RepositoryId == p_allocation.RepositoryId);
                     SingleOrDefault(allocation =>
                         allocation.Id == p_allocation.Id && allocation.StudentId == p_allocation.StudentId &&
                         allocation.RepositoryId == p_allocation.RepositoryId);
@@ -467,6 +465,7 @@ namespace RPLP.DAL.SQL.Depots
                 {
                     allocationResult.Status = 0;
 
+                    //flag
                     //this._context.Update(allocationResult);
                     this._context.SaveChanges();
 
@@ -519,7 +518,6 @@ namespace RPLP.DAL.SQL.Depots
                 }
 
                 Allocation_SQLDTO? allocationResult = this._context.Allocations.
-                    // SingleOrDefault(allocation => allocation.Id == a.Id);
                     SingleOrDefault(allocation =>
                         allocation.Id == a.Id && allocation.StudentId == a.StudentId &&
                         allocation.RepositoryId == a.RepositoryId);
@@ -671,7 +669,6 @@ namespace RPLP.DAL.SQL.Depots
                 }
 
                 Allocation_SQLDTO? allocationResult = this._context.Allocations.
-                    //SingleOrDefault(allocation => allocation.Status > 0 && allocation.StudentId == a.StudentId && allocation.RepositoryId == a.RepositoryId);
                     SingleOrDefault(allocation =>
                         allocation.Id == a.Id && allocation.StudentId == a.StudentId &&
                         allocation.RepositoryId == a.RepositoryId);
@@ -680,6 +677,7 @@ namespace RPLP.DAL.SQL.Depots
                 {
                     allocationResult.Status = 0;
 
+                    //flag
                     //this._context.Update(allocationResult);
 
                     Logging.Instance.Journal(new Log("Allocation",

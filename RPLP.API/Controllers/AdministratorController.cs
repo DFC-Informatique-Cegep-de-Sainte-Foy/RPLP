@@ -256,33 +256,6 @@ namespace RPLP.API.Controllers
             }
 
             return Created(nameof(this.UpsertAdmin), p_admin);
-            //try
-            //{
-            //    if (p_admin == null)
-            //    {
-            //        RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-            //        "AdministratorController - UpsertAdmin - p_admin passé en paramêtre est null"));
-
-            //        return BadRequest();
-            //    }
-
-            //    if (!ModelState.IsValid)
-            //    {
-            //        RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-            //       "AdministratorController - UpsertAdmin - p_admin n'est pas un model valide"));
-
-            //        return BadRequest();
-            //    }
-
-            //    this._depot.UpsertAdministrator(p_admin);
-
-            //    return Created(nameof(this.UpsertAdmin), p_admin);
-            //}
-            //catch (Exception)
-            //{
-            //    throw;
-            //}
-
         }
 
         [HttpDelete("Username/{username}")]
