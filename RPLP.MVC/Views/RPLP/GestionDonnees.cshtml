@@ -65,7 +65,6 @@
                     <option id="btnAddStudentToClassroom" value="addStudentToClassroom">Ajouter Étudiant</option>
                     <option id="btnAddStudentToClassroomBatch" value="addStudentToClassroomBatch">Ajouter étudiants en lot</option>
                     <option id="btnRemoveStudentFromClassroom" value="removeStudentFromClassroom">Retirer étudiant</option>
-                    <option id="btnRemoveAssignmentFromClassroom" value="removeAssignmentFromClassroom">Retirer travail</option>
                 </select>
             </div>
         </div>
@@ -286,18 +285,18 @@
 <script type="text/javascript">
     @if (Model.RoleType == "Administrator")
     {
-        @Html.Raw("var buttons = ['btnCreateAdmin', 'btnModifyAdmin', 'btnDeleteAdmin','btnCreateOrganisation', 'btnModifyOrganisation', 'btnReactivateOrganisation','btnDeleteOrganisation','btnAddAdminToOrg', 'btnRemoveAdminFromOrg','btnCreateTeacher', 'btnModifyTeacher', 'btnDeleteTeacher','btnCreateClassroom', 'btnModifyClassroom', 'btnDeleteClassroom', 'btnAddTeacherToClassroom', 'btnRemoveTeacherFromClassroom', 'btnAddStudentToClassroom', 'btnAddStudentToClassroomBatch', 'btnRemoveStudentFromClassroom', 'btnRemoveAssignmentFromClassroom','btnCreateAssignment', 'btnModifyAssignment', 'btnDeleteAssignment','btnCreateStudent','btnCreateStudentBatch', 'btnModifyStudent', 'btnDeleteStudent', 'btnReactivateStudent', 'btnReactivateTeacher', 'btnReactivateAdmin'];")
+        @Html.Raw("var buttons = ['btnCreateAdmin', 'btnModifyAdmin', 'btnDeleteAdmin','btnCreateOrganisation', 'btnModifyOrganisation', 'btnReactivateOrganisation','btnDeleteOrganisation','btnAddAdminToOrg', 'btnRemoveAdminFromOrg','btnCreateTeacher', 'btnModifyTeacher', 'btnDeleteTeacher','btnCreateClassroom', 'btnModifyClassroom', 'btnDeleteClassroom', 'btnAddTeacherToClassroom', 'btnRemoveTeacherFromClassroom', 'btnAddStudentToClassroom', 'btnAddStudentToClassroomBatch', 'btnRemoveStudentFromClassroom','btnCreateAssignment', 'btnModifyAssignment', 'btnDeleteAssignment','btnCreateStudent','btnCreateStudentBatch', 'btnModifyStudent', 'btnDeleteStudent', 'btnReactivateStudent', 'btnReactivateTeacher', 'btnReactivateAdmin'];")
     }
     else if (Model.RoleType == "Teacher")
     {
-        @Html.Raw("var buttons = ['btnCreateClassroom', 'btnModifyClassroom', 'btnDeleteClassroom', 'btnAddTeacherToClassroom', 'btnRemoveTeacherFromClassroom', 'btnAddStudentToClassroom','btnAddStudentToClassroomBatch', 'btnRemoveStudentFromClassroom', 'btnRemoveAssignmentFromClassroom','btnCreateAssignment', 'btnModifyAssignment', 'btnDeleteAssignment','btnCreateStudent','btnCreateStudentBatch', 'btnModifyStudent', 'btnDeleteStudent', 'btnReactivateStudent'];")
+        @Html.Raw("var buttons = ['btnCreateClassroom', 'btnModifyClassroom', 'btnDeleteClassroom', 'btnAddTeacherToClassroom', 'btnRemoveTeacherFromClassroom', 'btnAddStudentToClassroom','btnAddStudentToClassroomBatch', 'btnRemoveStudentFromClassroom','btnCreateAssignment', 'btnModifyAssignment', 'btnDeleteAssignment','btnCreateStudent','btnCreateStudentBatch', 'btnModifyStudent', 'btnDeleteStudent', 'btnReactivateStudent'];")
     }
 
 
         var forms = ["createAdmin", "modifyAdmin", "deleteAdmin", "addAdminToOrg", "removeAdminFromOrg", "reactivateAdminInOrg",
         "createOrganisation", "modifyOrganisation", "deleteOrganisation", "reactivateOrganisation",
         "createTeacher", "modifyTeacher", "deleteTeacher", "reactivateTeacherInOrg",
-        "createClassroom", "modifyClassroom", "deleteClassroom", "addTeacherToClassroom", "removeTeacherFromClassroom", "removeAssignmentFromClassroom", "removeStudentFromClassroom", "addStudentToClassroom", "addStudentToClassroomBatch",
+        "createClassroom", "modifyClassroom", "deleteClassroom", "addTeacherToClassroom", "removeTeacherFromClassroom", "removeStudentFromClassroom", "addStudentToClassroom", "addStudentToClassroomBatch",
         "createAssignment", "modifyAssignment", "deleteAssignment",
         "createStudent", 'createStudentBatch', "modifyStudent", "deleteStudent", "reactivateStudentInOrg"];
 
@@ -311,13 +310,10 @@
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             beforeSend: function () {
-                console.log('firing ajax call');
             },
             success: function (data) {
-                console.log(data);
             },
             error: function (ex) {
-                console.log(ex);
             }
         });
     }
