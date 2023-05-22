@@ -1550,8 +1550,6 @@ namespace RPLP.MVC.Controllers
                                 assignment.DeliveryDeadline);
                         }
                 }
-                
-                Logging.Instance.Journal(new Log($"new classroomName = {classroom.Name}, new classroomOrganisation = {classroom.OrganisationName}"));
 
                 Task<HttpResponseMessage> response = this._httpClient
                     .PostAsJsonAsync<Classroom>($"Classroom", classroom);

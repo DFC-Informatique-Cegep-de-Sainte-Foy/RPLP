@@ -371,10 +371,6 @@ namespace RPLP.DAL.SQL.Depots
                 {
                     allocations = this.GetAllocationsByAssignmentID(assignmentResult.Id);
                 }
-
-                Logging.Instance.Journal(new Log(
-                    $"GetAllocationsByAssignmentName(string p_assignmentName) {p_assignmentName}" +
-                    $"allocations.Count: {allocations.Count}"));
             }
             catch (InvalidOperationException e)
             {
@@ -391,7 +387,6 @@ namespace RPLP.DAL.SQL.Depots
         {
             if (this._context.ChangeTracker != null)
             {
-                Logging.Instance.Journal(new Log($"DeleteRepository - J'ai passé le this._context.ChangeTracker"));
                 this._context.ChangeTracker.Clear();
             }
 
@@ -426,7 +421,6 @@ namespace RPLP.DAL.SQL.Depots
                 }
                 else
                 {
-                    Logging.Instance.Journal(new Log("UpsertAllocation - 4 "));
                     Allocation_SQLDTO allocation = new Allocation_SQLDTO();
                     allocation.StudentId = p_allocation.StudentId;
                     allocation.RepositoryId = p_allocation.RepositoryId;
@@ -500,7 +494,6 @@ namespace RPLP.DAL.SQL.Depots
         {
             if (this._context.ChangeTracker != null)
             {
-                Logging.Instance.Journal(new Log($"DeleteRepository - J'ai passé le this._context.ChangeTracker"));
                 this._context.ChangeTracker.Clear();
             }
 
@@ -557,6 +550,7 @@ namespace RPLP.DAL.SQL.Depots
                     }
                     catch (Exception e)
                     {
+                        //flag
                         Logging.Instance.Journal(new Log($"Exception e:{e.Message}"));
                     }
 
@@ -590,8 +584,6 @@ namespace RPLP.DAL.SQL.Depots
 
         private void SetAllocationAfterVerification(List<Allocation> p_allocations)
         {
-            Logging.Instance.Journal(new Log($"{p_allocations.Count()}"));
-
             foreach (Allocation allocation in p_allocations)
             {
                 //flag : a revoir methode pour allocation en batch

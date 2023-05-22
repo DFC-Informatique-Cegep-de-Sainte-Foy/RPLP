@@ -121,19 +121,11 @@ namespace RPLP.ENTITES
 
         public void CreateTeacherReviewsAllocation(string p_teacherUsername)
         {
-            RPLP.JOURNALISATION.Logging.Instance.Journal(
-                new Log($"Allocations.cs - CreateTeacherReviewsAllocation(string p_teacherUsername)" +
-                        $"p_teacherUsername={p_teacherUsername}"));
-
             if (p_teacherUsername != string.Empty)
             {
                 int teacherId = this._classroom.Teachers
                     .Where(teacher => teacher.Username.ToLower() == p_teacherUsername.ToLower()).FirstOrDefault().Id;
 
-
-                RPLP.JOURNALISATION.Logging.Instance.Journal(
-                    new Log($"Allocations.cs - CreateTeacherReviewsAllocation(string p_teacherUsername)" +
-                            $"teacherId={teacherId}"));
                 List<Allocation> TeacherAllocationToBeAdded = new List<Allocation>();
 
                 if (this.Pairs.Count > 0)
@@ -142,11 +134,7 @@ namespace RPLP.ENTITES
                     {
                         int repoId = allocation.RepositoryId;
                         string thisAllocationUniqueId = $"r{repoId}s0t{teacherId}";
-                        RPLP.JOURNALISATION.Logging.Instance.Journal(
-                            new Log($"Allocations.cs - CreateTeacherReviewsAllocation(string p_teacherUsername)" +
-                                    $"repoId={repoId}" +
-                                    $"teacherId={teacherId}" +
-                                    $"thisAllocationUniqueId={thisAllocationUniqueId}"));
+
                         try
                         {
                             if (this.Pairs.FirstOrDefault(all => all.Id == thisAllocationUniqueId) is null)
@@ -158,6 +146,7 @@ namespace RPLP.ENTITES
                         }
                         catch (Exception e)
                         {
+                            //flag
                             RPLP.JOURNALISATION.Logging.Instance.Journal(
                                 new Log($"error ! ={e.Message}"));
                         }
@@ -169,11 +158,7 @@ namespace RPLP.ENTITES
                     {
                         int repoId = repo.Id;
                         string thisAllocationUniqueId = $"r{repoId}s0t{teacherId}";
-                        RPLP.JOURNALISATION.Logging.Instance.Journal(
-                            new Log($"Allocations.cs - CreateTeacherReviewsAllocation ** else ** (string p_teacherUsername)" +
-                                    $"repoId={repoId}" +
-                                    $"teacherId={teacherId}" +
-                                    $"thisAllocationUniqueId={thisAllocationUniqueId}"));
+
                         try
                         {
                             if (this.Pairs.FirstOrDefault(all => all.Id == thisAllocationUniqueId) is null)
@@ -185,6 +170,7 @@ namespace RPLP.ENTITES
                         }
                         catch (Exception e)
                         {
+                            //flag
                             RPLP.JOURNALISATION.Logging.Instance.Journal(
                                 new Log($"error ! ={e.Message}"));
                         }
@@ -201,16 +187,8 @@ namespace RPLP.ENTITES
         
         public void CreateTutorReviewsAllocation(string p_tutorUsername, int p_tutorId)
         {
-            RPLP.JOURNALISATION.Logging.Instance.Journal(
-                new Log($"Allocations.cs - CreateTutorReviewsAllocation(string p_tutorUsername, int p_tutorId)" +
-                        $"p_tutorUsername={p_tutorUsername}" +
-                        $"p_tutorId={p_tutorId}"));
-
             if (p_tutorUsername != string.Empty)
             {
-                RPLP.JOURNALISATION.Logging.Instance.Journal(
-                    new Log($"Allocations.cs - CreateTutorReviewsAllocation(string p_tutorUsername)" +
-                            $"p_tutorId={p_tutorId}"));
                 List<Allocation> tutorAllocationToBeAdded = new List<Allocation>();
 
                 if (this.Pairs.Count > 0)
@@ -219,11 +197,7 @@ namespace RPLP.ENTITES
                     {
                         int repoId = allocation.RepositoryId;
                         string thisAllocationUniqueId = $"r{repoId}s{p_tutorId}t0";
-                        RPLP.JOURNALISATION.Logging.Instance.Journal(
-                            new Log($"Allocations.cs - CreateTutorReviewsAllocation(string p_tutorUsername)" +
-                                    $"repoId={repoId}" +
-                                    $"tutorId={p_tutorId}" +
-                                    $"thisAllocationUniqueId={thisAllocationUniqueId}"));
+
                         try
                         {
                             if (this.Pairs.FirstOrDefault(all => all.Id == thisAllocationUniqueId) is null)
@@ -235,6 +209,7 @@ namespace RPLP.ENTITES
                         }
                         catch (Exception e)
                         {
+                            //flag
                             RPLP.JOURNALISATION.Logging.Instance.Journal(
                                 new Log($"error ! ={e.Message}"));
                         }
@@ -246,11 +221,7 @@ namespace RPLP.ENTITES
                     {
                         int repoId = repo.Id;
                         string thisAllocationUniqueId = $"r{repoId}s{p_tutorId}t0";
-                        RPLP.JOURNALISATION.Logging.Instance.Journal(
-                            new Log($"Allocations.cs - CreateTutorReviewsAllocation ** else ** (string p_tutorUsername)" +
-                                    $"repoId={repoId}" +
-                                    $"tutorId={p_tutorId}" +
-                                    $"thisAllocationUniqueId={thisAllocationUniqueId}"));
+
                         try
                         {
                             if (this.Pairs.FirstOrDefault(all => all.Id == thisAllocationUniqueId) is null)
@@ -262,6 +233,7 @@ namespace RPLP.ENTITES
                         }
                         catch (Exception e)
                         {
+                            //flag
                             RPLP.JOURNALISATION.Logging.Instance.Journal(
                                 new Log($"error ! ={e.Message}"));
                         }

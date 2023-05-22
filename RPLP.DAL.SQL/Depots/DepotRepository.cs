@@ -114,26 +114,19 @@ namespace RPLP.DAL.SQL.Depots
         {
             if(this._context.ChangeTracker != null)
             {
-                Logging.Instance.Journal(new Log($"DeleteRepository - J'ai passé le this._context.ChangeTracker"));
                 this._context.ChangeTracker.Clear();
             }
             
-
-            Logging.Instance.Journal(new Log($"DeleteRepository - Debut - p_repositoryName {p_repositoryName}"));
             if (string.IsNullOrWhiteSpace(p_repositoryName))
             {
                 RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotRepository - DeleteRepository - p_repositoryName passé en paramètre est vide", 0));
             }
 
-            Logging.Instance.Journal(new Log($"DeleteRepository - Debut - p_repositoryName {p_repositoryName}"));
-
             Repository_SQLDTO? repositoryResult = this._context.Repositories.FirstOrDefault(repository => repository.Name == p_repositoryName);
             
             if (repositoryResult != null)
             {
-                Logging.Instance.Journal(new Log($"DeleteRepository - repositoryResult not null - repositoryResult.Name {repositoryResult.Name}"));
-
                 repositoryResult.Active = false;
                 this._context.Update(repositoryResult);
                 this._context.SaveChanges();
@@ -142,8 +135,6 @@ namespace RPLP.DAL.SQL.Depots
             }
             else
             {
-                Logging.Instance.Journal(new Log($"DeleteRepository - repositoryResult null"));
-
                 RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Repository", $"DepotRepository - Method - DeleteRepository(string p_repositoryName) - Void - repositoryResult est null",0));
             }
             

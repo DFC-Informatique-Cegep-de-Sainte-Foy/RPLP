@@ -14,7 +14,6 @@ public class LogsController : Controller
     public ActionResult ClearLogs()
     {
         RPLP.JOURNALISATION.Logging.Instance.ClearLogs();
-        RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Methode ClearLogs appeler"));
         return Ok();
     }
     
