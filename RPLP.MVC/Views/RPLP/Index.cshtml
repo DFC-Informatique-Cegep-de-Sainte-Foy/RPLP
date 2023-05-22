@@ -48,14 +48,14 @@
                 </select>
             </div>
         </div>
-        <div class="col-md-6 col-sm-12">
+        <div class="col-md-6 col-sm-12 mt-3">
             <label id="labelNumberOfReview" hidden for="numberOfReview">Nombre de revues par étudiant</label>
             <input class="p-2 buttons" type="number" hidden id="numberOfReview" min="1" max="10" value="3" />
-            <select class="form-select form-select-lg mb-3" hidden id="selectTeacher"></select>
-            <select class="form-select form-select-lg mb-3" hidden id="selectTutor"></select>
+            <select class="form-select form-select-lg mb-3" onchange="TeacherAssignationScriptAlreadyDone()" hidden id="selectTeacher"></select>
+            <select class="form-select form-select-lg mb-3" onchange="TutorAssignationScriptAlreadyDone()" hidden id="selectTutor"></select>
             <select class="form-select form-select-lg mb-3" hidden id="selectStudent"></select>
         </div>
-        <div class="col-md-6 col-sm-12 d-grid gap-2">
+        <div class="col-md-6 col-sm-12 d-grid gap-2 mt-3">
             <button class="btn-lg btn-primary" hidden id="buttonSelectedScript" onclick="StartChoosedScript()">Lancer</button>
         </div>
         <div class="col-12 mt-3" id="allocationContentTable" hidden>
@@ -132,107 +132,102 @@
 
         var table = document.createElement("table");
         table.setAttribute("class", "table table-striped");
-        div.appendChild(table);
 
         var thead = document.createElement("thead");
-        table.appendChild(thead);
-
         var tr = document.createElement("tr");
-        thead.appendChild(tr);
 
-        var th1 = document.createElement("th");
-        var thText = document.createTextNode("Repository Name");
-        th1.appendChild(thText);
+        var th1 = createTableHeader("Repository Name");
+        var th2 = createTableHeader("Student Name");
+        var th3 = createTableHeader("Teacher Name");
+        var th4 = createTableHeader("Tutor Name");
+        var th5 = createTableHeader("Status");
+
         tr.appendChild(th1);
-
-        var th2 = document.createElement("th");
-        thText = document.createTextNode("Student Name");
-        th2.appendChild(thText);
         tr.appendChild(th2);
-
-        var th3 = document.createElement("th");
-        thText = document.createTextNode("Teacher Name");
-        th3.appendChild(thText);
         tr.appendChild(th3);
-
-        var th4 = document.createElement("th");
-        thText = document.createTextNode("Status");
-        th4.appendChild(thText);
         tr.appendChild(th4);
-
+        tr.appendChild(th5);
         thead.appendChild(tr);
+        table.appendChild(thead);
 
         var tbody = document.createElement("tbody");
         table.appendChild(tbody);
 
         allocations.pairs.forEach(allocation => {
             var tr = document.createElement("tr");
-            tbody.appendChild(tr);
 
-            var td1 = document.createElement("td");
-            td1.setAttribute("style", "max-width: 200px");
-            tdText = document.createTextNode(allocation.repositoryName);
-            td1.appendChild(tdText);
+            var td1 = createTableCell(allocation.repositoryName);
+            var td2, td3, td4;
+
+            if (allocation.studentName !== null) {
+                td2 = createTableCell(allocation.studentName);
+                td3 = createTableCell("");
+                td4 = createTableCell("");
+            } else if (allocation.tutorName !== null) {
+                td2 = createTableCell("");
+                td3 = createTableCell("");
+                td4 = createTableCell(allocation.tutorName);
+            } else {
+                console.log(allocation.teacherName);
+                td2 = createTableCell("");
+                td3 = createTableCell(allocation.teacherName);
+                td4 = createTableCell("");
+            }
+
             tr.appendChild(td1);
+            tr.appendChild(td2);
+            tr.appendChild(td3);
+            tr.appendChild(td4);
 
-            if (allocation.studentName === null) {
-                var td2 = document.createElement("td");
-                td2.setAttribute("style", "max-width: 200px");
-                tdText = document.createTextNode("");
-                td2.appendChild(tdText);
-                tr.appendChild(td2);
-                var td3 = document.createElement("td");
-                td3.setAttribute("style", "max-width: 200px");
-                tdText = document.createTextNode(allocation.teacherName);
-                td3.appendChild(tdText);
-                tr.appendChild(td3);
-            }
-            else {
-                var td2 = document.createElement("td");
-                td2.setAttribute("style", "max-width: 200px");
-                tdText = document.createTextNode(allocation.studentName);
-                td2.appendChild(tdText);
-                tr.appendChild(td2);
-                var td3 = document.createElement("td");
-                td3.setAttribute("style", "max-width: 200px");
-                tdText = document.createTextNode("");
-                td3.appendChild(tdText);
-                tr.appendChild(td3);
-            }
-
+            var statusTd = document.createElement("td");
+            statusTd.setAttribute("style", "max-width: 200px");
 
             if (allocation.status == 53) {
-                var td4 = document.createElement("td");
-                td4.setAttribute("style", "max-width: 200px");
-                td4.setAttribute("class", "bi bi-check2 icon-green");
-                tr.appendChild(td4);
+                statusTd.setAttribute("class", "bi bi-check2 icon-green");
+            } else if (allocation.status == 42) {
+                statusTd.setAttribute("class", "bi bi-clock icon-blue");
+            } else {
+                statusTd.setAttribute("class", "bi bi-x icon-red");
             }
-            else if (allocation.status == 42) {
-                var td4 = document.createElement("td");
-                td4.setAttribute("style", "max-width: 200px");
-                td4.setAttribute("class", "bi bi-clock icon-blue");
-                tr.appendChild(td4);
-            }
-            else {
-                var td4 = document.createElement("td");
-                td4.setAttribute("style", "max-width: 200px");
-                td4.setAttribute("class", "bi bi-x icon-red");
-                tr.appendChild(td4);
-            }
+
+            tr.appendChild(statusTd);
+            tbody.appendChild(tr);
         });
+
+        table.appendChild(tbody);
         div.appendChild(table);
+    }
+    function createTableHeader(text) {
+        var th = document.createElement("th");
+        var thText = document.createTextNode(text);
+        th.appendChild(thText);
+        return th;
+    }
+
+    function createTableCell(text) {
+        var td = document.createElement("td");
+        td.setAttribute("style", "max-width: 200px");
+        var tdText = document.createTextNode(text);
+        td.appendChild(tdText);
+        return td;
     }
     StartChoosedScript = function () {
 
         switch (selectBoxScripts.options[selectBoxScripts.selectedIndex].value) {
             case "StartStudentAssignationScript":
-                StartStudentAssignationScript();
+                if (!StudentAssignationScriptAlreadyDone()) {
+                    StartStudentAssignationScript();
+                }
                 break;
             case "StartTeacherAssignationScript":
-                StartTeacherAssignationScript();
+                if (!TeacherAssignationScriptAlreadyDone()) {
+                    StartTeacherAssignationScript();
+                }
                 break;
             case "StartTutorAssignationScript":
-                StartTutorAssignationScript();
+                if (!TutorAssignationScriptAlreadyDone()) {
+                    StartTutorAssignationScript();
+                }
                 break;
             case "RemoveCollaboratorFromAssignment":
                 RemoveCollaboratorFromAssignment();
@@ -256,11 +251,13 @@
         $("#selectTutor").attr("hidden", true);
         $("#selectStudent").attr("hidden", true);
         $("#buttonSelectedScript").attr("hidden", false);
+        $("#buttonSelectedScript").prop("disabled", false);
 
         switch (scriptOptionName) {
             case "StartStudentAssignationScript":
                 $("#labelNumberOfReview").attr("hidden", false);
                 $("#numberOfReview").attr("hidden", false);
+                StudentAssignationScriptAlreadyDone();
                 break;
             case "StartTeacherAssignationScript":
                 $("#selectTeacher").attr("hidden", false);
@@ -272,6 +269,37 @@
                 $("#selectStudent").attr("hidden", false);
                 break;
         }
+    }
+    StudentAssignationScriptAlreadyDone = function () {
+        let isDone = false;
+        allocations.pairs.forEach(allocation => {
+            if (typeof (allocation.studentName) !== "undefined" || allocation.studentName !== null || allocation.studentName.trim() !== "") {
+                $("#buttonSelectedScript").prop("disabled", true);
+                isDone = true;
+            }
+        });
+        return isDone;
+    }
+    TeacherAssignationScriptAlreadyDone = function () {
+        let isDone = false;
+        allocations.pairs.forEach(allocation => {
+            console.log(allocation.teacherName === selectTeacher.options[selectTeacher.selectedIndex].value);
+            if (allocation.teacherName === selectTeacher.options[selectTeacher.selectedIndex].value) {
+                $("#buttonSelectedScript").prop("disabled", true);
+                isDone = true;
+            }
+        });
+        return isDone;
+    }
+    TutorAssignationScriptAlreadyDone = function () {
+        let isDone = false;
+        allocations.pairs.forEach(allocation => {
+            if (allocation.tutorName === selectTutor.options[selectTutor.selectedIndex].value) {
+                $("#buttonSelectedScript").prop("disabled", true);
+                isDone = true;
+            }
+        });
+        return isDone;
     }
 
     function SetOrganisationName(organisationName) {

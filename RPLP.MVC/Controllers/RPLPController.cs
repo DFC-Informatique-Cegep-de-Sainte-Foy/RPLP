@@ -418,14 +418,22 @@ namespace RPLP.MVC.Controllers
                             //Logging.Instance.Journal(new Log("repository.Name.ToLower().Contains(assignementName.ToLower())", $"RPLPController - GetAllocationsInformations - {repository.Name.ToLower().Contains(assignementName.ToLower())} - assignementName: {assignementName.ToLower()}"));
                             if (repository.Name.ToLower().Contains(assignementName.ToLower()))
                             {
-                                Student? student = students.Where(s => s.Id == allocation.StudentId).FirstOrDefault();
+                                Student? student = students.Where(s => s.Id == allocation.StudentId && !s.IsTutor).FirstOrDefault();
+                                Student? tutor = students.Where(s => s.Id == allocation.StudentId && s.IsTutor).FirstOrDefault();
                                 Teacher? teacher = teachers.Where(t => t.Id == allocation.TeacherId).FirstOrDefault();
-                                AllocationViewModel allocationViewModel = student is null
-                                    ? new AllocationViewModel(allocation.Id, repository.Name, null, teacher.Username,
-                                        allocation.Status)
-                                    : new AllocationViewModel(allocation.Id, repository.Name, student.Username, null,
-                                        allocation.Status);
-                                //Logging.Instance.Journal(new Log("AllocationViewModel", $"RPLPController - GetAllocationsInformations - {allocationViewModel.RepositoryName}"));
+                                AllocationViewModel allocationViewModel;
+                                if (student != null)
+                                {
+                                    allocationViewModel = new AllocationViewModel(allocation.Id, repository.Name, student.Username, null, null, allocation.Status);
+                                }
+                                else if (tutor != null)
+                                {
+                                    allocationViewModel = new AllocationViewModel(allocation.Id, repository.Name, null, null, tutor.Username,allocation.Status);
+                                }
+                                else
+                                {        
+                                    allocationViewModel = new AllocationViewModel(allocation.Id, repository.Name, null, teacher.Username, null, allocation.Status);
+                                }
                                 allocations.Add(allocationViewModel);
                             }
                         }
