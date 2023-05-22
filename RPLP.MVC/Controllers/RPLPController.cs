@@ -1629,7 +1629,11 @@ namespace RPLP.MVC.Controllers
                     string[] student = rawStudent.Split(";");
                     string studentUsername = "";
 
-                    if (student.Count() >= 5)
+                    // if the importation document has 4 columns
+                    // take the 4th value as username
+                    // else
+                    // the username == collegeId for the student
+                    if (student.Count() > 3)
                     {
                         studentUsername = JsonConvert.DeserializeObject<string>(student[3].Replace("=", ""));
                     }

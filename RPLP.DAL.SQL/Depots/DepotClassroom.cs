@@ -421,9 +421,11 @@ namespace RPLP.DAL.SQL.Depots
 
                 if (studentResult != null && !classroomResult.Students.Contains(studentResult))
                 {
-                    classroomResult.Students.Add(studentResult);
+                    this._context.ChangeTracker.Clear();
+                    this._context.Attach(classroomResult);
+                    this._context.Entry(classroomResult).Collection(x => x.Students).Load();
 
-                    this._context.Update(classroomResult);
+                    classroomResult.Students.Add(studentResult);
                     this._context.SaveChanges();
 
                     RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Classroom - Student",
@@ -591,6 +593,7 @@ namespace RPLP.DAL.SQL.Depots
                         this._context.Attach(classroomResult);
                         this._context.Entry(classroomResult).Collection(x => x.Students).Load();
                     }
+
                     classroomResult.Students.RemoveAt(index);
                     this._context.SaveChanges();
 
@@ -655,6 +658,7 @@ namespace RPLP.DAL.SQL.Depots
                         this._context.Attach(classroomResult);
                         this._context.Entry(classroomResult).Collection(x => x.Teachers).Load();
                     }
+
                     classroomResult.Teachers.RemoveAt(index);
                     this._context.SaveChanges();
 
