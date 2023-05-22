@@ -141,25 +141,16 @@ namespace RPLP.VALIDATIONS
                             p_reviewerName, FILENAME, MESSAGE, CONTENTS);
                     }
 
-                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"Assignation effectuée au 15 secondes : " +
-                                                                         $"organisationName : {p_organisationName} - " +
-                                                                         $"repositoryName : {p_repositoryName} - " +
-                                                                         $"NomDuReviewer : {p_reviewerName}"));
-
                     Thread.Sleep(15000);
 
                     if (status == "Forbidden")
                     {
-                        RPLP.JOURNALISATION.Logging.Instance.Journal(
-                            new Log($"Assignation arrêté - status Forbidden reçu"));
                         Thread.Sleep(60000);
                     }
                     else
                     {
                         if (status == "Created")
                         {
-                            RPLP.JOURNALISATION.Logging.Instance.Journal(
-                                new Log($"Allocation : {allocation.Id} est affecté au status 53"));
                             this._script.SetAllocationAfterAssignation(allocation);
                         }
                     }
@@ -170,8 +161,6 @@ namespace RPLP.VALIDATIONS
 
             if (this._allocations.Status == 53)
             {
-                RPLP.JOURNALISATION.Logging.Instance.Journal(
-                    new Log($"Assignations complétées avec succès - Message ID : {message.MessageID}"));
                 canalDeCommunication.BasicAck(argumentEvenement.DeliveryTag, false);
             }
         }

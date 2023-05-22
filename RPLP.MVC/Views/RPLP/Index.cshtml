@@ -113,15 +113,12 @@
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             beforeSend: function () {
-                console.log('firing ajax call');
             },
             success: function (data) {
-                console.log('Success');
                 allocations = data;
                 ShowAllocations();
             },
             error: function (ex) {
-                console.log('Error');
             }
         });
     }
@@ -168,7 +165,6 @@
                 td3 = createTableCell("");
                 td4 = createTableCell(allocation.tutorName);
             } else {
-                console.log(allocation.teacherName);
                 td2 = createTableCell("");
                 td3 = createTableCell(allocation.teacherName);
                 td4 = createTableCell("");
@@ -283,7 +279,6 @@
     TeacherAssignationScriptAlreadyDone = function () {
         let isDone = false;
         allocations.pairs.forEach(allocation => {
-            console.log(allocation.teacherName === selectTeacher.options[selectTeacher.selectedIndex].value);
             if (allocation.teacherName === selectTeacher.options[selectTeacher.selectedIndex].value) {
                 $("#buttonSelectedScript").prop("disabled", true);
                 isDone = true;
@@ -397,14 +392,12 @@
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             beforeSend: function () {
-                console.log('firing ajax call');
             },
             success: function (data) {
                 reposAssociatedAThisAssignment = data;
                 document.getElementById("numberOfReview").setAttribute("max", reposAssociatedAThisAssignment - 1);
             },
             error: function (ex) {
-                console.log('Error');
             }
         });
     }
@@ -418,14 +411,12 @@
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             beforeSend: function () {
-                console.log('firing ajax call');
             },
             success: function (data) {
                 students = data;
                 ShowStudents();
             },
             error: function (ex) {
-                console.log('Error');
             }
         });
     }
@@ -440,14 +431,12 @@
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             beforeSend: function () {
-                console.log('firing ajax call');
             },
             success: function (data) {
                 classrooms = data;
                 ShowClassrooms();
             },
             error: function (ex) {
-                console.log('Error');
             }
         });
     }
@@ -462,7 +451,6 @@
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             beforeSend: function () {
-                console.log('firing ajax call');
             },
             success: function (data) {
                 assignments = data;
@@ -470,7 +458,6 @@
                 ShowAssignments();
             },
             error: function (ex) {
-                console.log('Error');
             }
         });
     }
@@ -485,7 +472,6 @@
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             beforeSend: function () {
-                console.log('firing ajax call');
             },
             success: function (data) {
                 students = data;
@@ -495,7 +481,6 @@
                 });
             },
             error: function (ex) {
-                console.log('Error');
             }
         });
     }
@@ -542,14 +527,11 @@
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             beforeSend: function () {
-                console.log('firing ajax call');
             },
             success: function (data) {
-                console.log("works!");
                 GetAllocationsInformations(SelectedClassroomName, SelectedAssignmentName);
             },
             error: function (ex) {
-                console.log(ex);
             }
         });
     }
@@ -565,14 +547,11 @@
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             beforeSend: function () {
-                console.log('firing ajax call');
             },
             success: function (data) {
-                console.log("works!");
                 GetAllocationsInformations(SelectedClassroomName, SelectedAssignmentName);
             },
             error: function (ex) {
-                console.log(ex);
             }
         });
     }
@@ -588,14 +567,11 @@
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             beforeSend: function () {
-                console.log('firing ajax call');
             },
             success: function (data) {
-                console.log("works!");
                 GetAllocationsInformations(SelectedClassroomName, SelectedAssignmentName);
             },
             error: function (ex) {
-                console.log(ex);
             }
         });
     }
@@ -610,13 +586,10 @@
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             beforeSend: function () {
-                console.log('firing ajax call');
             },
             success: function (data) {
-                console.log("works!");
             },
             error: function (ex) {
-                console.log(ex);
             }
         });
     }
@@ -630,14 +603,12 @@
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             beforeSend: function () {
-                console.log('firing ajax call');
             },
             success: function (data) {
                 teachers = data;
                 ShowTeachers();
             },
             error: function (ex) {
-                console.log('Error');
             }
         });
     }
@@ -651,14 +622,12 @@
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             beforeSend: function () {
-                console.log('firing ajax call');
             },
             success: function (data) {
                 tutors = data;
                 ShowTutors();
             },
             error: function (ex) {
-                console.log('Error');
             }
         });
     }
