@@ -41,7 +41,7 @@
                     <option value="StartStudentAssignationScript">Lancer le script de revue des pairs</option>
                     <option value="StartTeacherAssignationScript">Lancer le script de revue du prof</option>
                     <option value="StartTutorAssignationScript">Lancer le script de revue du tuteur</option>
-                    <option value="RemoveCollaboratorFromAssignment">Retirer les pairs du travail</option>
+                    @*<option value="RemoveCollaboratorFromAssignment">Retirer les pairs du travail</option>*@
                     <option value="DownloadComments">Télécharger les commentaires</option>
                     <option value="DownloadAllRepositoriesForAssignment">Télécharger les dépôts de devoir de la classe</option>
                     <option value="DownloadSingleRepository">Télécharger le dépôt d'un étudiant</option>
@@ -225,9 +225,9 @@
                     StartTutorAssignationScript();
                 }
                 break;
-            case "RemoveCollaboratorFromAssignment":
-                RemoveCollaboratorFromAssignment();
-                break;
+            //case "RemoveCollaboratorFromAssignment":
+            //    RemoveCollaboratorFromAssignment();
+            //    break;
             case "DownloadComments":
                 DownloadComments();
                 break;
@@ -576,23 +576,23 @@
         });
     }
 
-    function RemoveCollaboratorFromAssignment() {
-        var ajaxURL = '/RPLP/RemoveCollaboratorsFromAssignmentRepositories';
+    //function RemoveCollaboratorFromAssignment() {
+    //    var ajaxURL = '/RPLP/RemoveCollaboratorsFromAssignmentRepositories';
 
-        $.ajax({
-            type: 'GET',
-            url: ajaxURL,
-            data: { organisationName: SelectedOrganisationName, classroomName: SelectedClassroomName, assignmentName: SelectedAssignmentName },
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            beforeSend: function () {
-            },
-            success: function (data) {
-            },
-            error: function (ex) {
-            }
-        });
-    }
+    //    $.ajax({
+    //        type: 'GET',
+    //        url: ajaxURL,
+    //        data: { organisationName: SelectedOrganisationName, classroomName: SelectedClassroomName, assignmentName: SelectedAssignmentName },
+    //        contentType: "application/json; charset=utf-8",
+    //        dataType: "json",
+    //        beforeSend: function () {
+    //        },
+    //        success: function (data) {
+    //        },
+    //        error: function (ex) {
+    //        }
+    //    });
+    //}
 
     function GetTeacherInClassroomByClassroomName(classroomName) {
         var ajaxURL = '/RPLP/GetTeacherInClassroomByClassroomName';
