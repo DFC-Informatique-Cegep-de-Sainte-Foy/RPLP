@@ -2160,21 +2160,17 @@ namespace RPLP.MVC.Controllers
                         0));
                 }
 
-                // Vérifier si le StudentString brise le fichier des Logs en ajoutant plus de lignes
                 Logging.Instance.Journal(new Log("api", 0,
                     $"RPLPController - POST méthode POSTAddStudentToClassroomBatch(string ClassroomName = {ClassroomName}, string StudentString = {StudentString})"));
 
-                string[] SplitStudents = StudentString.Split("\n");
+                List<string> SplitStudents = JsonConvert.DeserializeObject<List<string>>(StudentString);
+
                 HttpResponseMessage result = new HttpResponseMessage();
 
-                foreach (string rawStudent in SplitStudents)
+                foreach (string studentId in SplitStudents)
                 {
-                    string[] student = rawStudent.Split(";");
-
-                    string studentMatricule = JsonConvert.DeserializeObject<string>(student[0].Replace("=", ""));
-
                     Task<HttpResponseMessage> response = this._httpClient
-                        .PostAsJsonAsync($"Classroom/Name/{ClassroomName}/Students/Add/Matricule/{studentMatricule}",
+                        .PostAsJsonAsync($"Classroom/Name/{ClassroomName}/Students/Add/Matricule/{studentId}",
                             "");
 
                     result = response.Result;

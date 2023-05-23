@@ -23,8 +23,7 @@
 
     <div class="form-group">
         <label for="InputAjouterStudentAClassroomBatch">Étudiants</label>
-         <textarea class="form-control rounded-0" id="InputAjouterStudentAClassroomBatch" rows="10" placeholder='="matricule";
-...'></textarea>
+         <textarea class="form-control rounded-0" id="InputAjouterStudentAClassroomBatch" rows="10" placeholder='matricule'></textarea>
     </div>
 
   <input type="button" class="btn-lg btn-success titlePartial" onclick="ajouterStudentAClassroomBatch.AddStudentToClassroom()" value="Ajouter">
@@ -93,21 +92,37 @@
     ajouterStudentAClassroomBatch.AddStudentToClassroom = function ()
     {
         var classroomName = document.getElementById("addStudentToClassroomClassroomDropdownBatch").value;
-        var studentstring = document.getElementById("InputAjouterStudentAClassroomBatch").value;
+        var studentString = document.getElementById("InputAjouterStudentAClassroomBatch").value;
+        var students = ajouterStudentAClassroomBatch.validateDataTextArea(studentString);
 
         var ajaxURL = '/RPLP/POSTAddStudentToClassroomBatch';
 
         $.post(ajaxURL,{
            ClassroomName : classroomName,
-           StudentString: studentstring
+           StudentString: JSON.stringify(students)
         },
         function(data, status){
             alert("Data: " + data + "\nStatus: " + status);
         });
     }
 
+    ajouterStudentAClassroomBatch.validateDataTextArea = function (textAreaData){
+            var studentsList = [];
+            var splitedTextbyRows = textAreaData.split(/\r?\n/);
+            
+            for (let i = 0; i < splitedTextbyRows.length; i++){
+                if (splitedTextbyRows[i].length == 0 || splitedTextbyRows[i]*1 == NaN){
+                    alert("les données saisis ne sont pas bien formatées");
+                    return [];
+                    }
+                else{
+                    studentsList.push(splitedTextbyRows[i]);
+                } 
+            }
+            return studentsList;
+        };
 
-     ajouterStudentAClassroomBatch.GetClassroomsOfOrganisationByName = function (organisationName)
+    ajouterStudentAClassroomBatch.GetClassroomsOfOrganisationByName = function (organisationName)
      {
        var ajaxURL = '/RPLP/GetClassroomsOfOrganisationByName';
         $.ajax({
