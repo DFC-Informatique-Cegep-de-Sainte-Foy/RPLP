@@ -2559,6 +2559,33 @@ namespace RPLP.MVC.Controllers
                 throw;
             }
         }
+        
+        [HttpPost]
+        public ActionResult<string> POSTReactivateOrg(string orgName)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(orgName))
+                {
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                        new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                        "RPLPController - POSTReactivateOrg - orgName passé en paramètre est vide", 0));
+                }
+
+                Task<HttpResponseMessage> response = this._httpClient
+                    .GetAsync($"Organisation/Reactivate/{orgName}");
+                response.Wait();
+
+                Logging.Instance.Journal(new Log("api", (int)response.Result.StatusCode,
+                    $"RPLPController - POST méthode POSTReactivateOrg(string orgName = {orgName})"));
+
+                return response.Result.StatusCode.ToString();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
 
         [HttpPost]
         public ActionResult<string> POSTReactivateStudent(string username)
