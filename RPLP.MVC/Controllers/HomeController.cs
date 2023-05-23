@@ -32,12 +32,12 @@ namespace RPLP.MVC.Controllers
                 }
                 else
                 {
-                    return View(400);
+                    return View((object)400);
                 }
             }
             else
             {
-                return View(400);
+                return View((object)400);
             }
         }
     }

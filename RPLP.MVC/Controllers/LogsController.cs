@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using RPLP.JOURNALISATION;
+using RPLP.MVC.Models;
 
 namespace RPLP.MVC.Controllers;
 
@@ -55,12 +56,12 @@ public class LogsController : Controller
             }
             else
             {
-                return View(400);
+                return View((object)400);
             }
         }
         else
         {
-            return View(400);
+            return View((object)400);
         }
     }
 
