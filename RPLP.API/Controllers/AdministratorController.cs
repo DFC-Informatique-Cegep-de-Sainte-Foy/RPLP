@@ -103,9 +103,12 @@ namespace RPLP.API.Controllers
                 {
                     RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "AdministratorController - GetAdministratorByEmail - email passé en paramêtre vide", 0));
+
+                    return BadRequest();
                 }
 
                 RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"api/Administrator/Email/{email}", 200, "AdministratorController - GET méthode GetAdministratorByEmail"));
+
 
                 return Ok(this._depot.GetAdministratorByEmail(email));
             }
@@ -156,14 +159,13 @@ namespace RPLP.API.Controllers
                     RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "AdministratorController - GetAdminOrganisationsByEmail - username récupéré à partir du email est vide", 0));
 
-                    return BadRequest();
+                    return Ok(new List<Organisation>());
                 }
 
                 return Ok(this._depot.GetAdminOrganisations(username));
             }
             catch (Exception)
             {
-
                 throw;
             }
         }

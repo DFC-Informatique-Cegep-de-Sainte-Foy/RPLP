@@ -47,10 +47,12 @@ try
     var app = builder.Build();
 
     // Configure the HTTP request pipeline.
-    if (!app.Environment.IsDevelopment())
-    {
-        app.UseExceptionHandler("/Home/Error");
-    }
+    //if (!app.Environment.IsDevelopment())
+    //{
+        //app.UseExceptionHandler("/Home/Error/{0}");
+
+    app.UseStatusCodePagesWithReExecute("/Home/Error", "?statusCode={0}");
+    //}
 
     app.UseStaticFiles();
 

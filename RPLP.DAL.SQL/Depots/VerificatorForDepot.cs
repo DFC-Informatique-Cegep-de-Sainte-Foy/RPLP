@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.ComponentModel.Design;
 
 namespace RPLP.DAL.SQL.Depots
 {
@@ -33,17 +34,17 @@ namespace RPLP.DAL.SQL.Depots
                      "VerificatorForDepot - GetGetUserTypeByEmailTeacherByEmail - p_email passé en paramètre est vide", 0));
             }
 
-            if (this._context.Administrators.Any(a => a.Email == p_email))
+            if (this._context.Administrators.Any(a => a.Email == p_email && a.Active == true))
             {
                 return typeof(Administrator); 
             }
 
-            else if (this._context.Students.Any(s => s.Email == p_email))
+            else if (this._context.Students.Any(s => s.Email == p_email && s.Active == true))
             {
                 return typeof(Student);
             }
                 
-            else if (this._context.Teachers.Any(t => t.Email == p_email))
+            else if (this._context.Teachers.Any(t => t.Email == p_email && t.Active == true))
             {
                 return typeof(Teacher);
             }
