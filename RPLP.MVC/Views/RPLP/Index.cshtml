@@ -208,35 +208,38 @@
         return td;
     }
     StartChoosedScript = function () {
-
-        switch (selectBoxScripts.options[selectBoxScripts.selectedIndex].value) {
-            case "StartStudentAssignationScript":
-                if (!StudentAssignationScriptAlreadyDone()) {
-                    StartStudentAssignationScript();
-                }
-                break;
-            case "StartTeacherAssignationScript":
-                if (!TeacherAssignationScriptAlreadyDone()) {
-                    StartTeacherAssignationScript();
-                }
-                break;
-            case "StartTutorAssignationScript":
-                if (!TutorAssignationScriptAlreadyDone()) {
-                    StartTutorAssignationScript();
-                }
-                break;
-            //case "RemoveCollaboratorFromAssignment":
-            //    RemoveCollaboratorFromAssignment();
-            //    break;
-            case "DownloadComments":
-                DownloadComments();
-                break;
-            case "DownloadAllRepositoriesForAssignment":
-                DownloadAllRepositoriesForAssignment();
-                break;
-            case "DownloadSingleRepository":
-                DownloadSingleRepository();
-                break;
+        let scriptText = selectBoxScripts.options[selectBoxScripts.selectedIndex].innerHTML;
+        let text = "Êtes-vous sûr de vouloir lancer le script : " + scriptText + " ?";
+        if (confirm(text)) {
+            switch (selectBoxScripts.options[selectBoxScripts.selectedIndex].value) {
+                case "StartStudentAssignationScript":
+                    if (!StudentAssignationScriptAlreadyDone()) {
+                        StartStudentAssignationScript();
+                    }
+                    break;
+                case "StartTeacherAssignationScript":
+                    if (!TeacherAssignationScriptAlreadyDone()) {
+                        StartTeacherAssignationScript();
+                    }
+                    break;
+                case "StartTutorAssignationScript":
+                    if (!TutorAssignationScriptAlreadyDone()) {
+                        StartTutorAssignationScript();
+                    }
+                    break;
+                //case "RemoveCollaboratorFromAssignment":
+                //    RemoveCollaboratorFromAssignment();
+                //    break;
+                case "DownloadComments":
+                    DownloadComments();
+                    break;
+                case "DownloadAllRepositoriesForAssignment":
+                    DownloadAllRepositoriesForAssignment();
+                    break;
+                case "DownloadSingleRepository":
+                    DownloadSingleRepository();
+                    break;
+            }
         }
     }
 

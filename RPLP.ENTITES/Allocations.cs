@@ -52,12 +52,6 @@ namespace RPLP.ENTITES
 
         public void CreateRandomReviewsAllocation(int p_numberOfReviews)
         {
-            // RPLP.JOURNALISATION.Logging.Instance.Journal(
-            //     new Log($"Allocations.cs - CreateRandomReviewsAllocation(int p_numberOfReviews)" +
-            //             $"p_numberOfReviews={p_numberOfReviews}" +
-            //             $"this._repositories.Count={this._repositories.Count}" +
-            //             $"this.Pairs={this.Pairs.Count}"));
-
             if (p_numberOfReviews > 0 && p_numberOfReviews < this._repositories.Count)
             {
                 List<string> usernamesFromCurrentRepos = ExtractUsernameFromRepoName();
@@ -80,10 +74,7 @@ namespace RPLP.ENTITES
 
                         int reviewerId = GetReviewerIdParUsername(usernamesFromCurrentRepos[indexReviewer]);
                         string thisAllocationUniqueId = $"r{repoId}s{reviewerId}t0";
-                        // RPLP.JOURNALISATION.Logging.Instance.Journal(
-                        //     new Log($"Allocations.cs - CreateRandomReviewsAllocation(int p_numberOfReviews)" +
-                        //             $"i={i} repoId={repoId}" +
-                        //             $"j={j} reviewerId={reviewerId}"));
+
                         if (this.Pairs.FirstOrDefault(all => all.Id == thisAllocationUniqueId) is null)
                             this.Pairs.Add(new Allocation(thisAllocationUniqueId, repoId, reviewerId, null, 31));
                     }
@@ -264,13 +255,8 @@ namespace RPLP.ENTITES
         private int GetReviewerIdParUsername(string reviewerUsername)
         {
             int reviewerId = this._classroom.Students
-                .Where(reviewer => reviewer.Username.ToLower() == reviewerUsername.ToLower()).FirstOrDefault()
-                .Id;
+                .Where(reviewer => reviewer.Username.ToLower() == reviewerUsername.ToLower()).FirstOrDefault().Id;
 
-            // RPLP.JOURNALISATION.Logging.Instance.Journal(
-            //     new Log($"Allocations.cs - GetReviewerIdParUsername(string reviewerUsername)" +
-            //             $"reviewerUsername={reviewerUsername}" +
-            //             $"reviewerId={reviewerId}"));
             return reviewerId;
         }
 
