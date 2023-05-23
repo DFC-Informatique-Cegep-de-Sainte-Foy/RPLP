@@ -333,7 +333,7 @@ namespace RPLP.DAL.SQL.Depots
             }
 
             Organisation_SQLDTO organisationResult = this._context.Organisations
-                .FirstOrDefault(organisation => organisation.Id == p_organisation.Id);
+                .FirstOrDefault(organisation => organisation.Name == p_organisation.Name);
             if (organisationResult != null)
             {
                 organisationResult.Name = p_organisation.Name;
