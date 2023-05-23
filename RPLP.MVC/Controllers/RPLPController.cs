@@ -225,6 +225,7 @@ namespace RPLP.MVC.Controllers
                         model.DeactivatedAdministrators = GetDeactivatedAdministratorsList();
                         model.DeactivatedStudents = GetDeactivatedStudentsList();
                         model.DeactivatedTeachers = GetDeactivatedTeachersList();
+                        model.DeactivateOrganisations = GetDeactivatedOrganisationsList();
                     }
                     else if (userType == typeof(Teacher).ToString())
                     {
@@ -356,6 +357,26 @@ namespace RPLP.MVC.Controllers
                     .ToList();
 
                 return administratorViewModels;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        
+        private List<OrganisationViewModel> GetDeactivatedOrganisationsList()
+        {
+            try
+            {
+                List<Organisation> deactivatedOrganisations = this._httpClient
+                    .GetFromJsonAsync<List<Organisation>>("Organisation/Deactivated")
+                    .Result;
+                List<OrganisationViewModel> organisationViewModels = new List<OrganisationViewModel>();
+                
+                deactivatedOrganisations.ForEach(org => organisationViewModels.Add(new OrganisationViewModel
+                    { Id = org.Id, Name = org.Name }));
+
+                return organisationViewModels;
             }
             catch (Exception)
             {
