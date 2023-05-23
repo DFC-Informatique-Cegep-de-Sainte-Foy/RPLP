@@ -124,7 +124,7 @@ namespace RPLP.MVC.Controllers
             }
         }
 
-        
+        [Authorize]
 
         public IActionResult GestionDonnees()
         {
