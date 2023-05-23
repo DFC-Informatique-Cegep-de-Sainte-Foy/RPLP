@@ -1,6 +1,7 @@
 using System.Data;
 using System.Diagnostics;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RPLP.JOURNALISATION;
 using RPLP.MVC.Models;
@@ -64,7 +65,7 @@ public class LogsController : Controller
             return View((object)400);
         }
     }
-
+    [Authorize]
     public IActionResult Index()
     {
         string? email = User.FindFirst(u => u.Type == ClaimTypes.Email)?.Value;
