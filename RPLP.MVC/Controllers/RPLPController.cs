@@ -1402,7 +1402,10 @@ namespace RPLP.MVC.Controllers
 
                 stream = await this._httpClient.GetStreamAsync(
                     $"Github/{organisationName}/{classroomName}/{assignmentName}/PullRequests/Comments/File");
+
                 fileStreamResult = new FileStreamResult(stream, "application/octet-stream");
+
+
                 fileStreamResult.FileDownloadName = $"Comments_{assignmentName}_{DateTime.Now}.json";
             }
             catch (Exception)

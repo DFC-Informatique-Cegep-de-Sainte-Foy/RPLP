@@ -684,6 +684,7 @@ namespace RPLP.API.Controllers
             }
         }
 
+
         [HttpGet("{organisationName}/{classroomName}/{assignmentName}/PullRequests/Comments/File")]
         public FileStreamResult GetFileWithCommentsOfPullRequestByAssignmentForAllRepositories(string organisationName, string classroomName, string assignmentName)
         {
@@ -715,7 +716,7 @@ namespace RPLP.API.Controllers
                     RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "GithubController - GetFileWithCommentsOfPullRequestByAssignmentForAllRepositories - variable reviewerUsers assigné de la méthode GetCommentsReviewsAndIssuesByReviewersAsync est null", 0));
                 }
-                
+
                 var stream = new MemoryStream(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(reviewerUsers)));
 
                 if (stream.Length <= 0)

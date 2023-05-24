@@ -278,7 +278,7 @@ namespace RPLP.SERVICES.Github.GithubReviewCommentFetcher
 
             List<string> jsons = GetPullRequestsJSONFromRepositoriesAsync(p_owner, p_classroom, p_assignment).ToList();
 
-            if(jsons.Count == 0)
+            if (jsons.Count == 0)
             {
                 RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new  StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "GithubPRCommentFetcher - GetPullRequestsFromRepositoriesAsync - la variable jsons assignée à partir de GetPullRequestsJSONFromRepositoriesAsync est vide ou null", 0));
@@ -533,6 +533,7 @@ namespace RPLP.SERVICES.Github.GithubReviewCommentFetcher
                             "GithubPRCommentFetcher - GetPullRequestsJSONFromRepositoriesAsync - la variable repositories assignée à partir de this.GetRepositoriesForAssignment(p_organisation, p_classroomName, p_assignment) est vide ou null", 0));
             }
 
+
             List<string> jsons = repositories
                 .Select(r =>
                 {
@@ -606,13 +607,11 @@ namespace RPLP.SERVICES.Github.GithubReviewCommentFetcher
 
             foreach (Repository repository in repositoriesResult)
             {
-                string[] splitRepository = repository.Name.Split('-');
-
-                if (splitRepository[0] == assignment.Name)
+                if (repository.Name.ToLower().Contains(assignment.Name.ToLower())) 
                 {
                     foreach (Student student in studentsResult)
                     {
-                        if (splitRepository[1] == student.Username)
+                        if (repository.Name.ToLower().Contains(student.Username.ToLower()))
                         {
                             repositories.Add(repository);
                             break;
@@ -840,13 +839,11 @@ namespace RPLP.SERVICES.Github.GithubReviewCommentFetcher
 
             foreach (Repository repository in p_repositories)
             {
-                string[] splitRepository = repository.Name.Split('-');
-
-                if (splitRepository[0] == assignmentName)
+                if (repository.Name.ToLower().Contains(assignmentName.ToLower()))
                 {
                     foreach (Student student in students)
                     {
-                        if (splitRepository[1] == student.Username)
+                        if (repository.Name.ToLower().Contains(student.Username.ToLower()))
                         {
                             repositories.Add(repository);
                             break;
