@@ -533,7 +533,6 @@ namespace RPLP.SERVICES.Github.GithubReviewCommentFetcher
                             "GithubPRCommentFetcher - GetPullRequestsJSONFromRepositoriesAsync - la variable repositories assignée à partir de this.GetRepositoriesForAssignment(p_organisation, p_classroomName, p_assignment) est vide ou null", 0));
             }
 
-
             List<string> jsons = repositories
                 .Select(r =>
                 {
@@ -542,7 +541,7 @@ namespace RPLP.SERVICES.Github.GithubReviewCommentFetcher
                     //// La donnée requêtes restantes n'est pas accessible avec cette requête puisque la méthode GetStringAsync renvoie un Task<string> et non un HttpResponseMessage (mis valeur bidon pour remaining)
                     //RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"/repos/{r.OrganisationName}/{r.Name}/pulls", 0, 66666, "Requête GET pour le json d'une pull request d'un dépot"));
                     //return a.Result;
-                    Task<HttpResponseMessage> a = this._client.GetAsync($"/repos/{r.OrganisationName}/{r.Name}/pulls");
+                    Task<HttpResponseMessage> a = this._client.GetAsync($"/repos/{p_organisation}/{r.Name}/pulls");
                     a.Wait();
 
                     HttpHeaders headers = a.Result.Headers;
@@ -553,7 +552,7 @@ namespace RPLP.SERVICES.Github.GithubReviewCommentFetcher
                         int.TryParse(headerValues.First(), out remaining);
                     }
                     // La donnée requêtes restantes n'est pas accessible avec cette requête puisque la méthode GetStringAsync renvoie un Task<string> et non un HttpResponseMessage (mis valeur bidon pour remaining)
-                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"/repos/{r.OrganisationName}/{r.Name}/pulls", (int)a.Result.StatusCode, remaining, "Requête GET pour le json d'une pull request d'un dépot"));
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"/repos/{p_organisation}/{r.Name}/pulls", (int)a.Result.StatusCode, remaining, "Requête GET pour le json d'une pull request d'un dépot"));
                     return a.Result.Content.ReadAsStringAsync().Result;
                 }).ToList();
 

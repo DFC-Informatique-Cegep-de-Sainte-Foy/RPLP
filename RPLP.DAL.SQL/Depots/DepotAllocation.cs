@@ -165,7 +165,7 @@ namespace RPLP.DAL.SQL.Depots
             else
             {
                 Classroom_SQLDTO? classroomResult = this._context.Classrooms.SingleOrDefault(classroom =>
-                    classroom.Active && classroom.Name == assignmentResult.ClassroomName);
+                    classroom.Active && classroom.Id == assignmentResult.ClassroomId);
 
                 if (classroomResult is null)
                 {
@@ -176,7 +176,7 @@ namespace RPLP.DAL.SQL.Depots
                 else
                 {
                     List<Repository_SQLDTO> repositoriesResult = this._context.Repositories.Where(repository =>
-                        repository.OrganisationName.ToLower() == classroomResult.OrganisationName.ToLower() &&
+                        repository.OrganisationId == classroomResult.OrganisationId &&
                         repository.Name.ToLower().StartsWith(assignmentResult.Name.ToLower())).ToList();
 
                     if (repositoriesResult is null)

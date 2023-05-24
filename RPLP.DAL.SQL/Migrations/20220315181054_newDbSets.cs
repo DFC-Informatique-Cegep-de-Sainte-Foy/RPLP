@@ -26,10 +26,10 @@ namespace RPLP.DAL.SQL.Migrations
                 nullable: false,
                 defaultValue: false);
 
-            migrationBuilder.AddColumn<string>(
-                name: "OrganisationName",
+            migrationBuilder.AddColumn<int>(
+                name: "OrganisationId",
                 table: "Classrooms",
-                type: "nvarchar(max)",
+                type: "int",
                 nullable: false,
                 defaultValue: "");
 
@@ -56,7 +56,7 @@ namespace RPLP.DAL.SQL.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ClassroomName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ClassroomId = table.Column<int>(type: "int", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DeliveryDeadline = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DistributionDate = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -116,7 +116,7 @@ namespace RPLP.DAL.SQL.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    OrganisationName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OrganisationId = table.Column<int>(type: "int", nullable: false),
                     FullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Active = table.Column<bool>(type: "bit", nullable: false)
                 },

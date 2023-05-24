@@ -303,15 +303,18 @@ namespace RPLP.DAL.SQL.Depots
                     new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "DepotClassroom - AddAssignmentToClassroom - p_assignmentName passé en paramètre est vide", 0));
             }
+            
+            int classroomId = this._context.Classrooms.FirstOrDefault(c => c.Name == p_classroomName).Id;
 
             Classroom_SQLDTO classroomResult = this._context.Classrooms.Where(classroom => classroom.Active)
                 .Include(classroom => classroom.Assignments.Where(assignment => assignment.Active))
                 .FirstOrDefault(classroom => classroom.Name == p_classroomName);
+            
             if (classroomResult != null)
             {
                 Assignment_SQLDTO assignmentResult = this._context.Assignments.Where(assignment => assignment.Active)
                     .SingleOrDefault(assignment => assignment.Name == p_assignmentName &&
-                                                   assignment.ClassroomName == p_classroomName);
+                                                   assignment.ClassroomId == classroomId);
 
                 if (assignmentResult != null && !classroomResult.Assignments.Contains(assignmentResult))
                 {
@@ -523,14 +526,17 @@ namespace RPLP.DAL.SQL.Depots
                     0));
             }
 
+            int classroomId = this._context.Classrooms.FirstOrDefault(c => c.Name == p_classroomName).Id;
+
             Classroom_SQLDTO classroomResult = this._context.Classrooms.Where(classroom => classroom.Active)
                 .Include(classroom => classroom.Assignments.Where(assignment => assignment.Active))
                 .FirstOrDefault(classroom => classroom.Name == p_classroomName);
+            
             if (classroomResult != null)
             {
                 Assignment_SQLDTO assignmentResult = this._context.Assignments.Where(assignment => assignment.Active)
                     .SingleOrDefault(assignment => assignment.Name == p_assignmentName &&
-                                                   assignment.ClassroomName == p_classroomName);
+                                                   assignment.ClassroomId == classroomId);
 
                 if (assignmentResult != null && classroomResult.Assignments.Contains(assignmentResult))
                 {
@@ -745,14 +751,14 @@ namespace RPLP.DAL.SQL.Depots
                     assignments.Add(new Assignment_SQLDTO(assignment));
                 }
             }
-
+            
             Classroom_SQLDTO classroomResult = this._context.Classrooms.Where(classroom => classroom.Active)
                 .FirstOrDefault(classroom => classroom.Id == p_classroom.Id);
 
             if (classroomResult != null)
             {
                 classroomResult.Name = p_classroom.Name;
-                classroomResult.OrganisationName = p_classroom.OrganisationName;
+                classroomResult.OrganisationId = p_classroom.OrganisationId;
 
                 this._context.Update(classroomResult);
                 this._context.SaveChanges();
@@ -764,7 +770,7 @@ namespace RPLP.DAL.SQL.Depots
             {
                 Classroom_SQLDTO classDTO = new Classroom_SQLDTO();
                 classDTO.Name = p_classroom.Name;
-                classDTO.OrganisationName = p_classroom.OrganisationName;
+                classDTO.OrganisationId = p_classroom.OrganisationId;
                 classDTO.Students = students;
                 classDTO.Teachers = teachers;
                 classDTO.Assignments = assignments;
@@ -816,9 +822,11 @@ namespace RPLP.DAL.SQL.Depots
                     "DepotClassroom - GetClassroomsByOrganisationName - p_organisationName passé en paramètre est vide",
                     0));
             }
+            
+            int organisationId = this._context.Organisations.FirstOrDefault(o => o.Name == p_organisationName).Id;
 
             List<Classroom_SQLDTO> classesResult = this._context.Classrooms
-                .Where(classroom => classroom.Active && classroom.OrganisationName == p_organisationName).ToList();
+                .Where(classroom => classroom.Active && classroom.OrganisationId == organisationId).ToList();
 
             if (classesResult.Count <= 0)
             {

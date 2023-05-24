@@ -11,7 +11,7 @@ namespace RPLP.DAL.DTO.Sql
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string OrganisationName { get; set; }
+        public int OrganisationId { get; set; }
         public List<Student_SQLDTO> Students { get; set; }
         public List<Teacher_SQLDTO> Teachers { get; set; }
         public List<Assignment_SQLDTO> Assignments { get; set; }
@@ -32,7 +32,7 @@ namespace RPLP.DAL.DTO.Sql
 
             this.Id = classroom.Id;
             this.Name = classroom.Name;
-            this.OrganisationName = classroom.OrganisationName;
+            this.OrganisationId = classroom.OrganisationId;
 
             if (classroom.Students.Count >= 1)
             {
@@ -66,7 +66,7 @@ namespace RPLP.DAL.DTO.Sql
         {
             return new Classroom(this.Id,
                 this.Name,
-                this.OrganisationName,
+                this.OrganisationId,
                 this.Students.Select(student => student.ToEntity()).ToList(),
                 this.Teachers.Select(teacher => teacher.ToEntity()).ToList(),
                 this.Assignments.Select(assignment => assignment.ToEntity()).ToList());
@@ -74,7 +74,7 @@ namespace RPLP.DAL.DTO.Sql
 
         public Classroom ToEntityWithoutList()
         {
-            return new Classroom(this.Id, this.Name, this.OrganisationName, new List<Student>(), new List<Teacher>(), new List<Assignment>());
+            return new Classroom(this.Id, this.Name, this.OrganisationId, new List<Student>(), new List<Teacher>(), new List<Assignment>());
         }
     }
 }

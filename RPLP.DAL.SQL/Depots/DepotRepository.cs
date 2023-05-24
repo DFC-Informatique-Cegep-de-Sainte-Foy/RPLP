@@ -86,7 +86,7 @@ namespace RPLP.DAL.SQL.Depots
             if (repositoryResult != null)
             {
                 repositoryResult.Name = p_repository.Name;
-                repositoryResult.OrganisationName = p_repository.OrganisationName;
+                repositoryResult.OrganisationId = p_repository.OrganisationId;
                 repositoryResult.FullName = p_repository.FullName;
                 repositoryResult.Active = true;
 
@@ -99,7 +99,7 @@ namespace RPLP.DAL.SQL.Depots
             {
                 Repository_SQLDTO repository = new Repository_SQLDTO();
                 repository.Name = p_repository.Name;
-                repository.OrganisationName = p_repository.OrganisationName;
+                repository.OrganisationId = p_repository.OrganisationId;
                 repository.FullName = p_repository.FullName;
                 repository.Active = true;
 
@@ -156,8 +156,11 @@ namespace RPLP.DAL.SQL.Depots
                 RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotRepository - GetRepositoriesFromOrganisationName - p_organisationName passé en paramètre est vide", 0));
             }
+
+            int organisationId = this._context.Organisations.FirstOrDefault(o => o.Name == p_organisationName).Id;
+            
             List<Repository> repositories = this._context.Repositories
-                .Where(repository => repository.Active && repository.OrganisationName == p_organisationName)
+                .Where(repository => repository.Active && repository.OrganisationId == organisationId)
                 .Select(repository => repository.ToEntity())
                 .ToList();
 

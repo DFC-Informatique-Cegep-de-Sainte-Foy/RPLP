@@ -24,7 +24,6 @@ namespace RPLP.SERVICES.Github
         private readonly IDepotRepository _depotRepository;
         private readonly IDepotOrganisation _depotOrganisation;
         private readonly IDepotAllocation _depotAllocation;
-        //flag: ajout pour les tuteurs
         private readonly IDepotStudent _depotStudent;
         private readonly GithubApiAction _githubApiAction;
         private Classroom _activeClassroom;
@@ -984,7 +983,7 @@ namespace RPLP.SERVICES.Github
                 {
                     FullName = r.full_name,
                     Name = r.name,
-                    OrganisationName = r.full_name.Split('/')[0]
+                    OrganisationId = this._depotOrganisation.GetOrganisationByName(r.full_name.Split('/')[0]).Id
                 }));
 
             repositoriesToAdd.ForEach(r => this._depotRepository.UpsertRepository(r));
@@ -1189,7 +1188,7 @@ namespace RPLP.SERVICES.Github
         {
             foreach (Repository repository in p_repositories)
             {
-                var download = _githubApiAction.DownloadRepository(repository.OrganisationName, repository.Name);
+                var download = _githubApiAction.DownloadRepository(this._depotOrganisation.GetOrganisationById(repository.OrganisationId).Name, repository.Name);
                 Stream stream = download.Content.ReadAsStream();
 
                 using (var fileStream = File.Create("repo.zip"))
@@ -1206,12 +1205,13 @@ namespace RPLP.SERVICES.Github
 
         private string DownloadRepositoryToFile(Repository p_repository)
         {
+            string activeOrganisationName = this._activeClassroom.OrganisationName;
             if (File.Exists("repo.zip"))
             {
                 File.Delete("repo.zip");
             }
 
-            var download = _githubApiAction.DownloadRepository(p_repository.OrganisationName, p_repository.Name);
+            var download = _githubApiAction.DownloadRepository(this._depotOrganisation.GetOrganisationById(p_repository.OrganisationId).Name, p_repository.Name);
             Stream stream = download.Content.ReadAsStream();
 
             using (var fileStream = File.Create("repo.zip"))

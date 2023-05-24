@@ -595,10 +595,11 @@ namespace RPLP.MVC.Controllers
                         {
                             Id = classroom.Id,
                             Name = classroom.Name,
-                            OrganisationName = classroom.OrganisationName
+                            OrganisationName = orgName
                         });
                     }
                 }
+                
                 else if (userType == typeof(Teacher).ToString())
                 {
                     Teacher? teacher = this._httpClient
@@ -706,7 +707,7 @@ namespace RPLP.MVC.Controllers
                 foreach (Classroom classroom in databaseClasses)
                 {
                     classes.Add(new ClassroomViewModel
-                        { Id = classroom.Id, Name = classroom.Name, OrganisationName = classroom.OrganisationName });
+                        { Id = classroom.Id, Name = classroom.Name, OrganisationName = p_organisationName });
                 }
 
                 return classes;
@@ -1555,12 +1556,17 @@ namespace RPLP.MVC.Controllers
                         new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                         "RPLPController - POSTUpsertClassroom - OrganisationName passé en paramètre est vide", 0));
                 }
+                
+                Organisation organisation = this._httpClient
+                    .GetFromJsonAsync<List<Organisation>>("Organisation")
+                    .Result
+                    .FirstOrDefault(o=>o.Name == OrganisationName);
 
                 Classroom classroom = new Classroom
                 {
                     Id = Id,
                     Name = ClassroomName,
-                    OrganisationName = OrganisationName,
+                    OrganisationId = organisation.Id,
                     Assignments = new List<Assignment>(),
                     Students = new List<Student>(),
                     Teachers = new List<Teacher>(),
@@ -1601,7 +1607,7 @@ namespace RPLP.MVC.Controllers
                 }
 
                 Logging.Instance.Journal(new Log(
-                    $"new classroomName = {classroom.Name}, new classroomOrganisation = {classroom.OrganisationName}"));
+                    $"new classroomName = {classroom.Name}, new classroomOrganisation = {classroom.OrganisationId}"));
 
                 Task<HttpResponseMessage> response = this._httpClient
                     .PostAsJsonAsync<Classroom>($"Classroom", classroom);
@@ -1975,11 +1981,14 @@ namespace RPLP.MVC.Controllers
                 Logging.Instance.Journal(new Log("api", 0,
                     $"RPLPController - POST méthode POSTNewAssignment(string Name = {Name}, string ClassroomName = {ClassroomName}, string Description = {Description}, DateTime? DeliveryDeadline = {DeliveryDeadline})"));
 
+                Classroom classroom = this._httpClient.GetFromJsonAsync<List<Classroom>>("Classroom").Result
+                    .FirstOrDefault(c => c.Name == ClassroomName);
+                
                 Assignment newAssignment = new Assignment
                 {
                     Id = 0,
                     Name = Name,
-                    ClassroomName = ClassroomName,
+                    ClassroomId = classroom.Id,
                     Description = Description,
                     DeliveryDeadline = DeliveryDeadline,
                     DistributionDate = DateTime.Now
@@ -2048,6 +2057,9 @@ namespace RPLP.MVC.Controllers
                         "RPLPController - POSTModifyAssignment - DeliveryDeadline passé en paramètre n'est pas conforme",
                         0));
                 }
+                
+                Classroom classroom = this._httpClient.GetFromJsonAsync<List<Classroom>>("Classroom").Result
+                    .FirstOrDefault(c => c.Name == ClassroomName);
 
                 Assignment Assignment = new Assignment
                 {
@@ -2055,7 +2067,7 @@ namespace RPLP.MVC.Controllers
                     Name = Name,
                     Description = Description,
                     DeliveryDeadline = DeliveryDeadline,
-                    ClassroomName = ClassroomName,
+                    ClassroomId = classroom.Id,
                     DistributionDate = DateTime.Now
                 };
 

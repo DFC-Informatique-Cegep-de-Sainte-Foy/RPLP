@@ -94,8 +94,10 @@ namespace RPLP.DAL.SQL.Depots
                      "DepotAssignment - GetAssignmentsByClassroomName - p_classroomName passé en paramètre est vide", 0));
             }
 
+            int classroomId = this._context.Classrooms.FirstOrDefault(c => c.Name == p_classroomName).Id;
+
             List<Assignment> assignments = this._context.Assignments
-                .Where(assignment => assignment.ClassroomName == p_classroomName && assignment.Active)
+                .Where(assignment => assignment.ClassroomId == classroomId && assignment.Active)
                 .Select(s => s.ToEntity())
                 .ToList();
 
@@ -125,7 +127,7 @@ namespace RPLP.DAL.SQL.Depots
             if (assignmentResult != null)
             {
                 assignmentResult.Name = p_assignment.Name;
-                assignmentResult.ClassroomName = p_assignment.ClassroomName;
+                assignmentResult.ClassroomId = p_assignment.ClassroomId;
                 assignmentResult.Description = p_assignment.Description;
                 assignmentResult.DeliveryDeadline = p_assignment.DeliveryDeadline;
 
@@ -139,7 +141,7 @@ namespace RPLP.DAL.SQL.Depots
                 Assignment_SQLDTO assignmentDTO = new Assignment_SQLDTO();
                 assignmentDTO.Name = p_assignment.Name;
                 assignmentDTO.Description = p_assignment.Description;
-                assignmentDTO.ClassroomName = p_assignment.ClassroomName;
+                assignmentDTO.ClassroomId = p_assignment.ClassroomId;
                 assignmentDTO.DistributionDate = p_assignment.DistributionDate;
                 assignmentDTO.DeliveryDeadline = p_assignment.DeliveryDeadline;
                 assignmentDTO.Active = true;

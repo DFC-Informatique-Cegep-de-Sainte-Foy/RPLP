@@ -11,7 +11,7 @@ namespace RPLP.DAL.DTO.Sql
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string ClassroomName { get; set; }
+        public int ClassroomId { get; set; }
         public string Description { get; set; }
         public DateTime? DeliveryDeadline { get; set; }
         public DateTime DistributionDate { get; set; }
@@ -26,7 +26,7 @@ namespace RPLP.DAL.DTO.Sql
         {
             this.Id = p_assignment.Id;
             this.Name = p_assignment.Name;
-            this.ClassroomName = p_assignment.ClassroomName;
+            this.ClassroomId = p_assignment.ClassroomId;
             this.Description = p_assignment.Description;
             this.DeliveryDeadline = p_assignment.DeliveryDeadline;
             this.DistributionDate = p_assignment.DistributionDate;
@@ -37,10 +37,10 @@ namespace RPLP.DAL.DTO.Sql
         {
             if (this.DeliveryDeadline != null)
             {
-                return new Assignment(this.Id, this.Name, this.ClassroomName, this.Description, this.DeliveryDeadline, this.DistributionDate);
+                return new Assignment(this.Id, this.Name, this.ClassroomId, this.Description, this.DeliveryDeadline, this.DistributionDate);
             }
 
-            return new Assignment(this.Id, this.Name, this.ClassroomName, this.Description, this.DistributionDate);
+            return new Assignment(this.Id, this.Name, this.ClassroomId, this.Description, this.DistributionDate);
         }
     }
 }
