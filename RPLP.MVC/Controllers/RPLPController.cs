@@ -2550,7 +2550,7 @@ namespace RPLP.MVC.Controllers
         }
 
         [HttpPost]
-        public ActionResult<string> POSTReactivateOrg(string orgName)
+        public ActionResult<string> POSTReactivateOrg(int orgId, string orgName)
         {
             try
             {
@@ -2560,13 +2560,15 @@ namespace RPLP.MVC.Controllers
                         new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                         "RPLPController - POSTReactivateOrg - orgName passé en paramètre est vide", 0));
                 }
+                
+                Organisation org = new Organisation { Id = orgId, Name = orgName };
 
                 Task<HttpResponseMessage> response = this._httpClient
-                    .GetAsync($"Organisation/Reactivate/{orgName}");
+                    .PostAsJsonAsync($"Organisation/Reactivate", org);
                 response.Wait();
 
                 Logging.Instance.Journal(new Log("api", (int)response.Result.StatusCode,
-                    $"RPLPController - POST méthode POSTReactivateOrg(string orgName = {orgName})"));
+                    $"RPLPController - POST méthode POSTReactivateOrg()"));
 
                 return response.Result.StatusCode.ToString();
             }
