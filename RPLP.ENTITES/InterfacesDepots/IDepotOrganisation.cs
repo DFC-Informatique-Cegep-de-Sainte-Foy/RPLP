@@ -18,6 +18,7 @@ namespace RPLP.ENTITES.InterfacesDepots
         public void RemoveAdministratorFromOrganisation(string p_organisationName, string p_adminUsername);
         public void UpsertOrganisation(Organisation p_organisation);
         public void DeleteOrganisation(string p_organisationName);
-        public void ReactivateOrganisation(string orgName);
+        //public void ReactivateOrganisation(string orgName);
+        public void ReactivateOrganisation(Organisation p_organisation);
     }
 }

@@ -240,20 +240,42 @@ namespace RPLP.API.Controllers
             }
         }
         
-        [HttpGet("Reactivate/{orgName}")]
-        public ActionResult ReactivateOrganisation(string orgName)
+        // [HttpGet("Reactivate/{orgName}")]
+        // public ActionResult ReactivateOrganisation(string orgName)
+        // {
+        //     try
+        //     {
+        //         if (string.IsNullOrWhiteSpace(orgName))
+        //         {
+        //             RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+        //                 "OrganisationController - ReactivateOrganisation - orgName passé en paramêtre vide", 0));
+        //         }
+        //
+        //         RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"api/Organisation/Reactivate/{orgName}", 204, "OrganisationController - GET méthode ReactivateOrganisation"));
+        //
+        //         this._depot.ReactivateOrganisation(orgName);
+        //         return NoContent();
+        //     }
+        //     catch (Exception)
+        //     {
+        //         throw;
+        //     }
+        // }
+        
+        [HttpPost("Reactivate")]
+        public ActionResult ReactivateOrganisation([FromBody] Organisation p_organisation)
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(orgName))
+                if (p_organisation is null)
                 {
                     RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                        "OrganisationController - ReactivateOrganisation - orgName passé en paramêtre vide", 0));
+                        "OrganisationController - ReactivateOrganisation - p_organisation passé en paramêtre null", 0));
                 }
 
-                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"api/Organisation/Reactivate/{orgName}", 204, "OrganisationController - GET méthode ReactivateOrganisation"));
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"api/Organisation/Reactivate", 204, "OrganisationController - POST méthode ReactivateOrganisation"));
 
-                this._depot.ReactivateOrganisation(orgName);
+                this._depot.ReactivateOrganisation(p_organisation);
                 return NoContent();
             }
             catch (Exception)
