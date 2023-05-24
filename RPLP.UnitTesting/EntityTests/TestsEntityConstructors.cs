@@ -19,8 +19,7 @@ namespace RPLP.UnitTesting.EntityTests
             Assert.NotNull(administrator.Organisations);
             Assert.Empty(administrator.Organisations);
         }
-
-
+        
         [Fact]
         public void Test_AdministratorConstructor_WithArguments()
         {
@@ -56,16 +55,16 @@ namespace RPLP.UnitTesting.EntityTests
         {
             int id = 2;
             string name = "NewAssignment";
-            string classroomName = "ProjetSynthese";
+            int classroomId = 1;
             string repositoryName = "PiFou86";
             string description = "RPLP";
             DateTime distributionDate = DateTime.Now;
 
-            Assignment assignment = new Assignment(id, name, classroomName, description, distributionDate);
+            Assignment assignment = new Assignment(id, name, classroomId, description, distributionDate);
 
             Assert.Equal(id, assignment.Id);
             Assert.Equal(name, assignment.Name);
-            Assert.Equal(classroomName, assignment.ClassroomName);
+            Assert.Equal(classroomId, assignment.ClassroomId);
             Assert.Equal(description, assignment.Description);
             Assert.Equal(distributionDate, assignment.DistributionDate);
         }
@@ -75,17 +74,17 @@ namespace RPLP.UnitTesting.EntityTests
         {
             int id = 2;
             string name = "NewAssignment";
-            string classroomName = "ProjetSynthese";
+            int classroomId = 1;
             string repositoryName = "PiFou86";
             string description = "RPLP";
             DateTime distributionDate = DateTime.Now;
             DateTime deadline = DateTime.Now.AddDays(1);
 
-            Assignment assignment = new Assignment(id, name, classroomName, description, deadline, distributionDate);
+            Assignment assignment = new Assignment(id, name, classroomId, description, deadline, distributionDate);
 
             Assert.Equal(id, assignment.Id);
             Assert.Equal(name, assignment.Name);
-            Assert.Equal(classroomName, assignment.ClassroomName);
+            Assert.Equal(classroomId, assignment.ClassroomId);
             Assert.Equal(description, assignment.Description);
             Assert.Equal(distributionDate, assignment.DistributionDate);
             Assert.Equal(deadline, assignment.DeliveryDeadline);
@@ -110,16 +109,16 @@ namespace RPLP.UnitTesting.EntityTests
         {
             int id = 3;
             string name = "ProjetSynthese";
-            string organisationName = "CEGEP Ste-Foy";
+            int organisationId = 1;
             List<Student> students = new List<Student>();
             List<Teacher> teachers = new List<Teacher>();
             List<Assignment> assignments = new List<Assignment>();
 
-            Classroom classroom = new Classroom(id, name, organisationName, students, teachers, assignments);
+            Classroom classroom = new Classroom(id, name, organisationId, students, teachers, assignments);
 
             Assert.Equal(id, classroom.Id);
             Assert.Equal(name, classroom.Name);
-            Assert.Equal(organisationName, classroom.OrganisationName);
+            Assert.Equal(organisationId, classroom.OrganisationId);
             Assert.Equal(students, classroom.Students);
             Assert.Equal(teachers, classroom.Teachers);
             Assert.Equal(assignments, classroom.Assignments);
@@ -223,15 +222,15 @@ namespace RPLP.UnitTesting.EntityTests
         {
             int id = 6;
             string name = "ThPaquet";
-            string organisationName = "CEGEP Ste-Foy";
+            int organisationId = 1;
             string fullName = "Thierry Paquet";
 
-            Repository repository = new Repository(id, name, organisationName, fullName);
+            Repository repository = new Repository(id, name, organisationId, fullName);
 
             Assert.NotNull(repository);
             Assert.Equal(id, repository.Id);
             Assert.Equal(name, repository.Name);
-            Assert.Equal(organisationName, repository.OrganisationName);
+            Assert.Equal(organisationId, repository.OrganisationId);
             Assert.Equal(fullName, repository.FullName);
         }
 

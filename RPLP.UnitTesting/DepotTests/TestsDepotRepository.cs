@@ -25,7 +25,7 @@ namespace RPLP.UnitTesting.DepotTests
                         Id= 1,
                         Name = "ThPaquet",
                         FullName = "Thierry Paquet",
-                        OrganisationName = "RPLP",
+                        OrganisationId = 1,
                         Active = true
                     },
                     new Repository_SQLDTO()
@@ -33,7 +33,7 @@ namespace RPLP.UnitTesting.DepotTests
                         Id= 2,
                         Name = "ikeameatbol",
                         FullName = "Jonathan Blouin",
-                        OrganisationName = "RPLP",
+                        OrganisationId = 1,
                         Active = true
                     },
                     new Repository_SQLDTO()
@@ -41,7 +41,7 @@ namespace RPLP.UnitTesting.DepotTests
                         Id= 3,
                         Name = "BACenComm",
                         FullName = "Melissa Lachapelle",
-                        OrganisationName = "RPLP",
+                        OrganisationId = 1,
                         Active = false
                     },
                 };
@@ -75,7 +75,7 @@ namespace RPLP.UnitTesting.DepotTests
                         Id = 1,
                         Name = "ThPaquet",
                         FullName = "Thierry Paquet",
-                        OrganisationName = "RPLP",
+                        OrganisationId = 1,
                         Active = true
                     },
                     new Repository_SQLDTO()
@@ -83,7 +83,7 @@ namespace RPLP.UnitTesting.DepotTests
                         Id = 2,
                         Name = "ikeameatbol",
                         FullName = "Jonathan Blouin",
-                        OrganisationName = "RPLP",
+                        OrganisationId = 1,
                         Active = true
                     },
                     new Repository_SQLDTO()
@@ -91,7 +91,7 @@ namespace RPLP.UnitTesting.DepotTests
                         Id = 3,
                         Name = "BACenComm",
                         FullName = "Melissa Lachapelle",
-                        OrganisationName = "RPLP",
+                        OrganisationId = 1,
                         Active = false
                     },
                 };
@@ -125,7 +125,7 @@ namespace RPLP.UnitTesting.DepotTests
                         Id= 1,
                         Name = "ThPaquet",
                         FullName = "Thierry Paquet",
-                        OrganisationName = "RPLP",
+                        OrganisationId = 1,
                         Active = true
                     },
                     new Repository_SQLDTO()
@@ -133,7 +133,7 @@ namespace RPLP.UnitTesting.DepotTests
                         Id= 2,
                         Name = "ikeameatbol",
                         FullName = "Jonathan Blouin",
-                        OrganisationName = "RPLP",
+                        OrganisationId = 1,
                         Active = true
                     },
                     new Repository_SQLDTO()
@@ -141,7 +141,7 @@ namespace RPLP.UnitTesting.DepotTests
                         Id= 3,
                         Name = "BACenComm",
                         FullName = "Melissa Lachapelle",
-                        OrganisationName = "RPLP",
+                        OrganisationId = 1,
                         Active = false
                     },
                 };
@@ -170,7 +170,7 @@ namespace RPLP.UnitTesting.DepotTests
                         Id=1,
                         Name = "ThPaquet",
                         FullName = "Thierry Paquet",
-                        OrganisationName = "RPLP",
+                        OrganisationId = 1,
                         Active = true
                     },
                     new Repository_SQLDTO()
@@ -178,7 +178,7 @@ namespace RPLP.UnitTesting.DepotTests
                         Id=2,
                         Name = "ikeameatbol",
                         FullName = "Jonathan Blouin",
-                        OrganisationName = "RPLP",
+                        OrganisationId = 1,
                         Active = true
                     },
                     new Repository_SQLDTO()
@@ -186,7 +186,7 @@ namespace RPLP.UnitTesting.DepotTests
                         Id=3,
                         Name = "BACenComm",
                         FullName = "Melissa Lachapelle",
-                        OrganisationName = "RPLP",
+                        OrganisationId = 1,
                         Active = false
                     },
                 };
@@ -215,7 +215,7 @@ namespace RPLP.UnitTesting.DepotTests
                         Id=1,
                         Name = "ThPaquet",
                         FullName = "Thierry Paquet",
-                        OrganisationName = "RPLP",
+                        OrganisationId = 1,
                         Active = true
                     },
                     new Repository_SQLDTO()
@@ -223,7 +223,7 @@ namespace RPLP.UnitTesting.DepotTests
                         Id=2,
                         Name = "ikeameatbol",
                         FullName = "Jonathan Blouin",
-                        OrganisationName = "RPLP",
+                        OrganisationId = 1,
                         Active = true
                     },
                     new Repository_SQLDTO()
@@ -231,7 +231,7 @@ namespace RPLP.UnitTesting.DepotTests
                         Id=3,
                         Name = "BACenComm",
                         FullName = "Melissa Lachapelle",
-                        OrganisationName = "RPLP",
+                        OrganisationId = 1,
                         Active = false
                     },
                 };
@@ -248,7 +248,7 @@ namespace RPLP.UnitTesting.DepotTests
             {
                 Name = "testrepo",
                 FullName = "Test Repository",
-                OrganisationName = "test organisation"
+                OrganisationId = 1
             };
 
             depot.UpsertRepository(repository);
@@ -258,7 +258,7 @@ namespace RPLP.UnitTesting.DepotTests
             Assert.NotNull(repositorySQL);
             Assert.Equal("testrepo", repositorySQL.Name);
             Assert.Equal("Test Repository", repositorySQL.FullName);
-            Assert.Equal("test organisation", repositorySQL.OrganisationName);
+            Assert.Equal(1, repositorySQL.OrganisationId);
             Assert.True(repositorySQL.Active);
            
             
@@ -274,7 +274,7 @@ namespace RPLP.UnitTesting.DepotTests
                         Id=1,
                         Name = "ThPaquet",
                         FullName = "Thierry Paquet",
-                        OrganisationName = "RPLP",
+                        OrganisationId = 1,
                         Active = true
                     },
                     new Repository_SQLDTO()
@@ -282,7 +282,7 @@ namespace RPLP.UnitTesting.DepotTests
                         Id=2,
                         Name = "ikeameatbol",
                         FullName = "Jonathan Blouin",
-                        OrganisationName = "RPLP",
+                        OrganisationId = 1,
                         Active = true
                     },
                     new Repository_SQLDTO()
@@ -290,7 +290,7 @@ namespace RPLP.UnitTesting.DepotTests
                         Id=3,
                         Name = "BACenComm",
                         FullName = "Melissa Lachapelle",
-                        OrganisationName = "RPLP",
+                        OrganisationId = 1,
                         Active = false
                     },
                 };
@@ -306,7 +306,7 @@ namespace RPLP.UnitTesting.DepotTests
             Assert.NotNull(repository);
 
             repository.FullName = "Test Repository";
-            repository.OrganisationName = "test organisation";
+            repository.OrganisationId = 1;
 
             depot.UpsertRepository(repository);
 
@@ -315,7 +315,7 @@ namespace RPLP.UnitTesting.DepotTests
             Assert.NotNull(repositorySQL);
             Assert.Equal("ThPaquet", repositorySQL.Name);
             Assert.Equal("Test Repository", repositorySQL.FullName);
-            Assert.Equal("test organisation", repositorySQL.OrganisationName);
+            Assert.Equal(1, repositorySQL.OrganisationId);
             Assert.True(repositorySQL.Active);
            
             
@@ -331,7 +331,7 @@ namespace RPLP.UnitTesting.DepotTests
                         Id=1,
                         Name = "ThPaquet",
                         FullName = "Thierry Paquet",
-                        OrganisationName = "RPLP",
+                        OrganisationId = 1,
                         Active = true
                     },
                     new Repository_SQLDTO()
@@ -339,7 +339,7 @@ namespace RPLP.UnitTesting.DepotTests
                         Id=2,
                         Name = "ikeameatbol",
                         FullName = "Jonathan Blouin",
-                        OrganisationName = "RPLP",
+                        OrganisationId = 1,
                         Active = true
                     },
                     new Repository_SQLDTO()
@@ -347,7 +347,7 @@ namespace RPLP.UnitTesting.DepotTests
                         Id=3,
                         Name = "BACenComm",
                         FullName = "Melissa Lachapelle",
-                        OrganisationName = "RPLP",
+                        OrganisationId = 1,
                         Active = false
                     },
                 };
@@ -377,7 +377,7 @@ namespace RPLP.UnitTesting.DepotTests
                         Id=1,
                         Name = "ThPaquet",
                         FullName = "Thierry Paquet",
-                        OrganisationName = "RPLP",
+                        OrganisationId = 1,
                         Active = true
                     },
                     new Repository_SQLDTO()
@@ -385,7 +385,7 @@ namespace RPLP.UnitTesting.DepotTests
                         Id=2,
                         Name = "ikeameatbol",
                         FullName = "Jonathan Blouin",
-                        OrganisationName = "RPLP",
+                        OrganisationId = 1,
                         Active = true
                     },
                     new Repository_SQLDTO()
@@ -393,7 +393,7 @@ namespace RPLP.UnitTesting.DepotTests
                         Id=3,
                         Name = "BACenComm",
                         FullName = "Melissa Lachapelle",
-                        OrganisationName = "RPLP",
+                        OrganisationId = 1,
                         Active = false
                     },
                 };
@@ -422,7 +422,7 @@ namespace RPLP.UnitTesting.DepotTests
                         Id=1,
                         Name = "ThPaquet",
                         FullName = "Thierry Paquet",
-                        OrganisationName = "RPLP",
+                        OrganisationId = 1,
                         Active = true
                     },
                     new Repository_SQLDTO()
@@ -430,7 +430,7 @@ namespace RPLP.UnitTesting.DepotTests
                         Id=2,
                         Name = "ikeameatbol",
                         FullName = "Jonathan Blouin",
-                        OrganisationName = "RPLP",
+                        OrganisationId = 1,
                         Active = true
                     },
                     new Repository_SQLDTO()
@@ -438,7 +438,7 @@ namespace RPLP.UnitTesting.DepotTests
                         Id=3,
                         Name = "BACenComm",
                         FullName = "Melissa Lachapelle",
-                        OrganisationName = "RPLP",
+                        OrganisationId = 1,
                         Active = false
                     },
                 };
@@ -467,7 +467,7 @@ namespace RPLP.UnitTesting.DepotTests
                         Id=1,
                         Name = "ThPaquet",
                         FullName = "Thierry Paquet",
-                        OrganisationName = "RPLP",
+                        OrganisationId = 1,
                         Active = true
                     },
                     new Repository_SQLDTO()
@@ -475,7 +475,7 @@ namespace RPLP.UnitTesting.DepotTests
                         Id=2,
                         Name = "ikeameatbol",
                         FullName = "Jonathan Blouin",
-                        OrganisationName = "RPLP",
+                        OrganisationId = 1,
                         Active = true
                     },
                     new Repository_SQLDTO()
@@ -483,7 +483,7 @@ namespace RPLP.UnitTesting.DepotTests
                         Id=3,
                         Name = "BACenComm",
                         FullName = "Melissa Lachapelle",
-                        OrganisationName = "RPLP",
+                        OrganisationId = 1,
                         Active = false
                     },
                 };
@@ -511,7 +511,7 @@ namespace RPLP.UnitTesting.DepotTests
                         Id=1,
                         Name = "ThPaquet",
                         FullName = "Thierry Paquet",
-                        OrganisationName = "RPLP",
+                        OrganisationId = 1,
                         Active = true
                     },
                     new Repository_SQLDTO()
@@ -519,7 +519,7 @@ namespace RPLP.UnitTesting.DepotTests
                         Id=2,
                         Name = "ikeameatbol",
                         FullName = "Jonathan Blouin",
-                        OrganisationName = "RPLP",
+                        OrganisationId = 1,
                         Active = true
                     },
                     new Repository_SQLDTO()
@@ -527,7 +527,7 @@ namespace RPLP.UnitTesting.DepotTests
                         Id=3,
                         Name = "BACenComm",
                         FullName = "Melissa Lachapelle",
-                        OrganisationName = "RPLP",
+                        OrganisationId = 1,
                         Active = false
                     },
                 };
@@ -555,7 +555,7 @@ namespace RPLP.UnitTesting.DepotTests
                         Id=1,
                         Name = "ThPaquet",
                         FullName = "Thierry Paquet",
-                        OrganisationName = "RPLP",
+                        OrganisationId = 1,
                         Active = true
                     },
                     new Repository_SQLDTO()
@@ -563,7 +563,7 @@ namespace RPLP.UnitTesting.DepotTests
                         Id=2,
                         Name = "ikeameatbol",
                         FullName = "Jonathan Blouin",
-                        OrganisationName = "RPLP",
+                        OrganisationId = 1,
                         Active = true
                     },
                     new Repository_SQLDTO()
@@ -571,7 +571,7 @@ namespace RPLP.UnitTesting.DepotTests
                         Id=3,
                         Name = "BACenComm",
                         FullName = "Melissa Lachapelle",
-                        OrganisationName = "RPLP",
+                        OrganisationId = 1,
                         Active = false
                     },
                 };
@@ -599,7 +599,7 @@ namespace RPLP.UnitTesting.DepotTests
                         Id=1,
                         Name = "ThPaquet",
                         FullName = "Thierry Paquet",
-                        OrganisationName = "RPLP",
+                        OrganisationId = 1,
                         Active = true
                     },
                     new Repository_SQLDTO()
@@ -607,7 +607,7 @@ namespace RPLP.UnitTesting.DepotTests
                         Id=2,
                         Name = "ikeameatbol",
                         FullName = "Jonathan Blouin",
-                        OrganisationName = "RPLP",
+                        OrganisationId = 1,
                         Active = true
                     },
                     new Repository_SQLDTO()
@@ -615,7 +615,7 @@ namespace RPLP.UnitTesting.DepotTests
                         Id=3,
                         Name = "BACenComm",
                         FullName = "Melissa Lachapelle",
-                        OrganisationName = "RPLP",
+                        OrganisationId = 1,
                         Active = false
                     },
                 };
@@ -642,7 +642,7 @@ namespace RPLP.UnitTesting.DepotTests
                         Id=1,
                         Name = "ThPaquet",
                         FullName = "Thierry Paquet",
-                        OrganisationName = "RPLP",
+                        OrganisationId = 1,
                         Active = true
                     },
                     new Repository_SQLDTO()
@@ -650,7 +650,7 @@ namespace RPLP.UnitTesting.DepotTests
                         Id=2,
                         Name = "ikeameatbol",
                         FullName = "Jonathan Blouin",
-                        OrganisationName = "RPLP",
+                        OrganisationId = 1,
                         Active = true
                     },
                     new Repository_SQLDTO()
@@ -658,7 +658,7 @@ namespace RPLP.UnitTesting.DepotTests
                         Id=3,
                         Name = "BACenComm",
                         FullName = "Melissa Lachapelle",
-                        OrganisationName = "RPLP",
+                        OrganisationId = 1,
                         Active = false
                     },
                 };

@@ -126,13 +126,13 @@ namespace RPLP.UnitTesting.APITests
                 {
                     Id = 1,
                     Name = "RPLP",
-                    ClassroomName = "RPLP"
+                    ClassroomId = 1
                 },
                 new Assignment()
                 {
                     Id = 2,
                     Name = "Scrum",
-                    ClassroomName = "RPLP"
+                    ClassroomId = 1
                 }
             };
 
@@ -147,7 +147,7 @@ namespace RPLP.UnitTesting.APITests
 
             assignments = result.Value as List<Assignment>;
 
-            Assert.Contains(assignments, a => a.ClassroomName == "RPLP");
+            Assert.Contains(assignments, a => a.ClassroomId == 1);
         }
 
         [Fact]
