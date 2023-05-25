@@ -88,6 +88,11 @@ namespace RPLP.DAL.SQL.Depots
 
         public void UpsertRepository(Repository p_repository)
         {
+            if (this._context.ChangeTracker != null)
+            {
+                this._context.ChangeTracker.Clear();
+            }
+
             if (p_repository == null)
             {
                 RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
@@ -100,9 +105,14 @@ namespace RPLP.DAL.SQL.Depots
 
             if (repositoryResult != null)
             {
+                // if (repositoryResult.Organisation is null)
+                // {
+                //     repositoryResult.Organisation = this._context.Organisations.AsNoTrackingWithIdentityResolution()
+                //         .SingleOrDefault(o => o.Id == repositoryResult.OrganisationId);
+                // }
+
+                repositoryResult.OrganisationId = p_repository.Organisation.Id;
                 repositoryResult.Name = p_repository.Name;
-                repositoryResult.Organisation = this._context.Organisations.AsNoTrackingWithIdentityResolution()
-                    .SingleOrDefault(o => o.Id == repositoryResult.OrganisationId);
                 repositoryResult.FullName = p_repository.FullName;
                 repositoryResult.Active = true;
 
@@ -118,8 +128,9 @@ namespace RPLP.DAL.SQL.Depots
             {
                 Repository_SQLDTO repository = new Repository_SQLDTO();
                 repository.Name = p_repository.Name;
-                repository.Organisation = this._context.Organisations.AsNoTrackingWithIdentityResolution()
-                    .SingleOrDefault(o => o.Id == p_repository.Organisation.Id);
+                repository.Organisation = new Organisation_SQLDTO(p_repository.Organisation);
+                // repository.Organisation = this._context.Organisations.AsNoTrackingWithIdentityResolution()
+                //     .SingleOrDefault(o => o.Id == p_repository.Organisation.Id);
                 repository.FullName = p_repository.FullName;
                 repository.Active = true;
 
@@ -133,35 +144,46 @@ namespace RPLP.DAL.SQL.Depots
             }
         }
 
-        public void DeleteRepository(string p_repositoryName)
+        public void DeleteRepository(Repository p_repository)
         {
-            if (this._context.ChangeTracker != null)
+            if (p_repository is null)
             {
-                this._context.ChangeTracker.Clear();
-            }
-
-            if (string.IsNullOrWhiteSpace(p_repositoryName))
-            {
-                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
                     new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                    "DepotRepository - DeleteRepository - p_repositoryName passé en paramètre est vide", 0));
+                    "DepotRepository - ReactivateRepository - p_repositoryName passé en paramètre est vide", 0));
+                throw new ArgumentNullException(nameof(p_repository));
             }
 
             Repository_SQLDTO? repositoryResult =
-                this._context.Repositories.FirstOrDefault(repository => repository.Name == p_repositoryName);
+                this._context.Repositories.AsNoTrackingWithIdentityResolution()
+                    .SingleOrDefault(repository => repository.Id == p_repository.Id);
 
             if (repositoryResult != null)
             {
-                repositoryResult.Organisation =
-                    this._context.Organisations.AsNoTracking().SingleOrDefault(o => o.Id == repositoryResult.OrganisationId);
+                if (this._context.ChangeTracker != null)
+                {
+                    this._context.ChangeTracker.Clear();
+                }
+
+                repositoryResult.Organisation = this._context.Organisations.AsNoTrackingWithIdentityResolution()
+                    .SingleOrDefault(o => o.Id == repositoryResult.OrganisationId);
+
                 repositoryResult.Active = false;
                 this._context.Entry<Organisation_SQLDTO>(repositoryResult.Organisation).State = EntityState.Unchanged;
+
+                Logging.Instance.Journal(new Log($"ReactivateRepository(Repository p_repository)" +
+                                                 $"Repository Name: {repositoryResult.Name}, " +
+                                                 $"Repository p_repository: {repositoryResult.Id}" +
+                                                 $"repositoryResult.Active: {repositoryResult.Active}" +
+                                                 $"repositoryResult.OrganisationId: {repositoryResult.OrganisationId}" +
+                                                 $"repositoryResult.Organisation.Id: {repositoryResult.Organisation.Id}"));
+
 
                 this._context.Update(repositoryResult);
                 this._context.SaveChanges();
 
                 RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Repository",
-                    $"DepotRepository - Method - DeleteRepository(string p_repositoryName : {p_repositoryName}) - Void - delete repository"));
+                    $"DepotRepository - Method - DeleteRepository(string p_repositoryName : {p_repository.Name}) - Void - delete repository"));
             }
             else
             {
@@ -179,7 +201,8 @@ namespace RPLP.DAL.SQL.Depots
             List<Repository_SQLDTO> reposInDb =
                 this._context.Repositories.Where(repository => repository.Active).ToList();
             reposInDb.ForEach(r =>
-                r.Organisation = this._context.Organisations.AsNoTracking().SingleOrDefault(o => o.Id == r.OrganisationId));
+                r.Organisation = this._context.Organisations.AsNoTracking()
+                    .SingleOrDefault(o => o.Id == r.OrganisationId));
             return reposInDb.Select(r => r.ToEntity()).ToList();
         }
 
@@ -193,10 +216,17 @@ namespace RPLP.DAL.SQL.Depots
                     0));
             }
 
-            int organisationId = this._context.Organisations.AsNoTracking().SingleOrDefault(o => o.Name == p_organisationName).Id;
+            int organisationId = this._context.Organisations.AsNoTrackingWithIdentityResolution()
+                .SingleOrDefault(o => o.Name == p_organisationName).Id;
 
-            List<Repository> repositories = this._context.Repositories
-                .Where(repository => repository.Active && repository.Organisation.Id == organisationId)
+            List<Repository_SQLDTO> repositoriesInBd = this._context.Repositories.AsNoTrackingWithIdentityResolution()
+                .Where(r => r.OrganisationId == organisationId).ToList();
+
+            repositoriesInBd.ForEach(rbd => rbd.Organisation = this._context.Organisations
+                .AsNoTrackingWithIdentityResolution()
+                .SingleOrDefault(o => o.Id == organisationId));
+
+            List<Repository> repositories = repositoriesInBd
                 .Select(repository => repository.ToEntity())
                 .ToList();
 
@@ -206,36 +236,51 @@ namespace RPLP.DAL.SQL.Depots
             return repositories;
         }
 
-        public void ReactivateRepository(string p_repositoryName)
+        public void DeleteRepositoryParRepoName(string p_repositoryName)
         {
-            if (string.IsNullOrWhiteSpace(p_repositoryName))
+            throw new NotImplementedException();
+        }
+
+        public void ReactivateRepository(Repository p_repository)
+        {
+            if (p_repository is null)
             {
                 Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
                     new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "DepotRepository - ReactivateRepository - p_repositoryName passé en paramètre est vide", 0));
-                throw new ArgumentNullException(nameof(p_repositoryName));
+                throw new ArgumentNullException(nameof(p_repository));
             }
 
             Repository_SQLDTO? repositoryResult =
-                this._context.Repositories.FirstOrDefault(repository => repository.Name == p_repositoryName);
+                this._context.Repositories.AsNoTrackingWithIdentityResolution()
+                    .SingleOrDefault(repository => repository.Id == p_repository.Id);
 
             if (repositoryResult != null)
             {
                 if (this._context.ChangeTracker != null)
                 {
                     this._context.ChangeTracker.Clear();
-                    repositoryResult.Organisation =
-                        this._context.Organisations.AsNoTracking().SingleOrDefault(o => o.Id == repositoryResult.OrganisationId);
-                    repositoryResult.Active = true;
-                    this._context.Entry<Organisation_SQLDTO>(repositoryResult.Organisation).State =
-                        EntityState.Unchanged;
                 }
+
+                repositoryResult.Organisation = this._context.Organisations.AsNoTrackingWithIdentityResolution()
+                    .SingleOrDefault(o => o.Id == repositoryResult.OrganisationId);
+
+                repositoryResult.Active = true;
+                this._context.Entry<Organisation_SQLDTO>(repositoryResult.Organisation).State = EntityState.Unchanged;
+
+                Logging.Instance.Journal(new Log($"ReactivateRepository(Repository p_repository)" +
+                                                 $"Repository Name: {repositoryResult.Name}, " +
+                                                 $"Repository p_repository: {repositoryResult.Id}" +
+                                                 $"repositoryResult.Active: {repositoryResult.Active}" +
+                                                 $"repositoryResult.OrganisationId: {repositoryResult.OrganisationId}" +
+                                                 $"repositoryResult.Organisation.Id: {repositoryResult.Organisation.Id}"));
+
 
                 this._context.Update(repositoryResult);
                 this._context.SaveChanges();
 
-                Logging.Instance.Journal(new Log("Repository",
-                    $"DepotRepository - Method - ReactivateRepository(string p_repositoryName) - Void - reactivate repository"));
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Repository",
+                    $"DepotRepository - Method - ReactivateRepository(string p_repositoryName) - Void - Update Repository"));
             }
             else
             {

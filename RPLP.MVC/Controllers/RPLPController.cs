@@ -1998,16 +1998,6 @@ namespace RPLP.MVC.Controllers
                     .PostAsJsonAsync<Assignment>($"Assignment", newAssignment);
                 response.Wait();
 
-                if (!response.IsCompleted)
-                {
-                    return response.Result.StatusCode.ToString();
-                }
-
-                response = this._httpClient
-                    .PostAsJsonAsync($"Classroom/Name/{ClassroomName}/Assignments/Add/{Name}", "");
-
-                response.Wait();
-
                 return response.Result.StatusCode.ToString();
             }
             catch (Exception)
