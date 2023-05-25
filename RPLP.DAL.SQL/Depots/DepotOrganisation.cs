@@ -33,6 +33,7 @@ namespace RPLP.DAL.SQL.Depots
         public List<Organisation> GetOrganisations()
         {
             List<Organisation_SQLDTO> organisationResult = this._context.Organisations
+                .AsNoTracking()
                 .Where(organisation => organisation.Active)
                 .Include(organisation => organisation.Administrators.Where(admin => admin.Active)).ToList();
 
@@ -54,6 +55,7 @@ namespace RPLP.DAL.SQL.Depots
         public List<Organisation> GetOrganisationsInactives()
         {
             List<Organisation_SQLDTO> organisationResult = this._context.Organisations
+                .AsNoTracking()
                 .Where(organisation => !organisation.Active)
                 .Include(organisation => organisation.Administrators.Where(admin => admin.Active)).ToList();
 
@@ -82,6 +84,7 @@ namespace RPLP.DAL.SQL.Depots
             }
 
             Organisation_SQLDTO organisationResult = this._context.Organisations
+                .AsNoTracking()
                 .Where(organisation => organisation.Active)
                 .Include(organisation => organisation.Administrators.Where(admin => admin.Active))
                 .FirstOrDefault(organisation => organisation.Id == p_id);
@@ -126,6 +129,7 @@ namespace RPLP.DAL.SQL.Depots
             }
 
             Organisation_SQLDTO organisationResult = this._context.Organisations
+                .AsNoTracking()
                 .Where(organisation => organisation.Active)
                 .Include(organisation => organisation.Administrators.Where(admin => admin.Active))
                 .FirstOrDefault(organisation => organisation.Name == p_name);
@@ -173,6 +177,7 @@ namespace RPLP.DAL.SQL.Depots
             }
 
             Organisation_SQLDTO organisationResult = this._context.Organisations
+                .AsNoTracking()
                 .Include(organisation => organisation.Administrators.Where(a => a.Active))
                 .FirstOrDefault(organisation => organisation.Name == p_organisationName && organisation.Active);
 
@@ -429,7 +434,7 @@ namespace RPLP.DAL.SQL.Depots
             }
 
             Organisation_SQLDTO orgResult = this._context.Organisations.Where(o => !o.Active)
-                .FirstOrDefault(o => o.Id == p_organisation.Id);
+                .SingleOrDefault(o => o.Id == p_organisation.Id);
             if (orgResult != null)
             {
                 orgResult.Active = true;

@@ -236,12 +236,12 @@ namespace RPLP.DAL.SQL.Depots
                      "DepotTeacher - GetTeacherClassesInOrganisation - p_organisationName passé en paramètre est vide", 0));
             }
             
-            int organisationId = this._context.Organisations.FirstOrDefault(o => o.Name == p_organisationName).Id;
+            int organisationId = this._context.Organisations.AsNoTracking().SingleOrDefault(o => o.Name == p_organisationName).Id;
 
             List<Classroom> databaseClasses = this._context.Classrooms
                 .Where(c =>
                 c.Teachers.FirstOrDefault(t => t.Username == p_teacherUsername) != null &&
-                c.OrganisationId == organisationId &&
+                c.Organisation.Id == organisationId &&
                 c.Active)
                 .Select(c => c.ToEntityWithoutList())
                 .ToList();
@@ -265,12 +265,12 @@ namespace RPLP.DAL.SQL.Depots
                      "DepotTeacher - GetTeacherClassesInOrganisationByEmail - p_organisationName passé en paramètre est vide", 0));
             }
             
-            int organisationId = this._context.Organisations.FirstOrDefault(o => o.Name == p_organisationName).Id;
+            int organisationId = this._context.Organisations.AsNoTracking().SingleOrDefault(o => o.Name == p_organisationName).Id;
 
             List<Classroom> databaseClasses = this._context.Classrooms
                 .Where(c =>
                 c.Teachers.FirstOrDefault(t => t.Email == p_teacherEmail) != null &&
-                c.OrganisationId == organisationId &&
+                c.Organisation.Id == organisationId &&
                 c.Active)
                 .Select(c => c.ToEntityWithoutList())
                 .ToList();
@@ -296,11 +296,11 @@ namespace RPLP.DAL.SQL.Depots
 
             classrooms = teacher.Classes;
 
-            HashSet<int> organisationIds = classrooms.Select(c => c.OrganisationId).ToHashSet();
+            HashSet<int> organisationIds = classrooms.Select(c => c.Organisation.Id).ToHashSet();
 
             foreach (int id in organisationIds)
             {
-                Organisation_SQLDTO? organisationToAdd = this._context.Organisations.FirstOrDefault(o => o.Id == id);
+                Organisation_SQLDTO? organisationToAdd = this._context.Organisations.AsNoTracking().SingleOrDefault(o => o.Id == id);
 
                 if (organisationToAdd != null)
                 {

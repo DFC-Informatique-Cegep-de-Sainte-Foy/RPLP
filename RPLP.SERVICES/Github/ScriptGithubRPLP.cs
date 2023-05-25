@@ -983,7 +983,7 @@ namespace RPLP.SERVICES.Github
                 {
                     FullName = r.full_name,
                     Name = r.name,
-                    OrganisationId = this._depotOrganisation.GetOrganisationByName(r.full_name.Split('/')[0]).Id
+                    Organisation = this._depotOrganisation.GetOrganisationByName(r.full_name.Split('/')[0])
                 }));
 
             repositoriesToAdd.ForEach(r => this._depotRepository.UpsertRepository(r));
@@ -1188,7 +1188,7 @@ namespace RPLP.SERVICES.Github
         {
             foreach (Repository repository in p_repositories)
             {
-                var download = _githubApiAction.DownloadRepository(this._depotOrganisation.GetOrganisationById(repository.OrganisationId).Name, repository.Name);
+                var download = _githubApiAction.DownloadRepository(repository.Organisation.Name, repository.Name);
                 Stream stream = download.Content.ReadAsStream();
 
                 using (var fileStream = File.Create("repo.zip"))
@@ -1211,7 +1211,7 @@ namespace RPLP.SERVICES.Github
                 File.Delete("repo.zip");
             }
 
-            var download = _githubApiAction.DownloadRepository(this._depotOrganisation.GetOrganisationById(p_repository.OrganisationId).Name, p_repository.Name);
+            var download = _githubApiAction.DownloadRepository(p_repository.Organisation.Name, p_repository.Name);
             Stream stream = download.Content.ReadAsStream();
 
             using (var fileStream = File.Create("repo.zip"))

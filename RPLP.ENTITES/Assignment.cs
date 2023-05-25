@@ -10,7 +10,7 @@ namespace RPLP.ENTITES
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public int ClassroomId { get; set; }
+        public Classroom Classroom { get; set; }
         public string Description { get; set; }
         public DateTime? DeliveryDeadline { get; set; }
         public DateTime DistributionDate { get; set; }
@@ -20,21 +20,21 @@ namespace RPLP.ENTITES
 
         }
 
-        public Assignment(int p_id, string p_name, int p_classroomId, string p_description, DateTime p_distributionDate)
+        public Assignment(int p_id, string p_name, Classroom p_classroom, string p_description, DateTime p_distributionDate)
         {
             this.Id = p_id;
             this.Name = p_name;
-            this.ClassroomId = p_classroomId;
+            this.Classroom = p_classroom;
             this.Description = p_description;
             this.DistributionDate = p_distributionDate;
         }
 
-        public Assignment(int p_id, string p_name, int p_classroomId,
+        public Assignment(int p_id, string p_name, Classroom p_classroom,
             string p_description, DateTime? p_deliveryDeadline, DateTime p_distributionDate)
         {
             this.Id = p_id;
             this.Name = p_name;
-            this.ClassroomId = p_classroomId;
+            this.Classroom = p_classroom;
             this.Description = p_description;
             this.DeliveryDeadline = p_deliveryDeadline;
             this.DistributionDate = p_distributionDate;

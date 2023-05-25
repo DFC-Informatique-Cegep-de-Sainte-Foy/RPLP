@@ -1566,7 +1566,7 @@ namespace RPLP.MVC.Controllers
                 {
                     Id = Id,
                     Name = ClassroomName,
-                    OrganisationId = organisation.Id,
+                    Organisation = organisation,
                     Assignments = new List<Assignment>(),
                     Students = new List<Student>(),
                     Teachers = new List<Teacher>(),
@@ -1607,7 +1607,7 @@ namespace RPLP.MVC.Controllers
                 }
 
                 Logging.Instance.Journal(new Log(
-                    $"new classroomName = {classroom.Name}, new classroomOrganisation = {classroom.OrganisationId}"));
+                    $"new classroomName = {classroom.Name}, new classroomOrganisation = {classroom.Organisation}"));
 
                 Task<HttpResponseMessage> response = this._httpClient
                     .PostAsJsonAsync<Classroom>($"Classroom", classroom);
@@ -1988,7 +1988,7 @@ namespace RPLP.MVC.Controllers
                 {
                     Id = 0,
                     Name = Name,
-                    ClassroomId = classroom.Id,
+                    Classroom = classroom,
                     Description = Description,
                     DeliveryDeadline = DeliveryDeadline,
                     DistributionDate = DateTime.Now
@@ -2067,7 +2067,7 @@ namespace RPLP.MVC.Controllers
                     Name = Name,
                     Description = Description,
                     DeliveryDeadline = DeliveryDeadline,
-                    ClassroomId = classroom.Id,
+                    Classroom = classroom,
                     DistributionDate = DateTime.Now
                 };
 

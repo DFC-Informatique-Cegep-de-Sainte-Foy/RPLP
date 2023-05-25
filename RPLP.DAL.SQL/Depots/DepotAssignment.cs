@@ -30,9 +30,11 @@ namespace RPLP.DAL.SQL.Depots
         public List<Assignment> GetAssignments()
         {
             RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Assignments", $"DepotAssignment - Method - GetAssignments() - Return List<Assignment>"));
+            List<Assignment_SQLDTO> assigmentsInDb =
+                this._context.Assignments.AsNoTracking().Where(assignment => assignment.Active).ToList();
+            assigmentsInDb.ForEach(a=>a.Classroom = this._context.Classrooms.AsNoTracking().SingleOrDefault(cl => cl.Id == a.ClassroomId));
             
-            return this._context.Assignments.Where(assignment => assignment.Active)
-                                            .Select(assignment => assignment.ToEntity()).ToList();
+            return assigmentsInDb.Select(assignment => assignment.ToEntity()).ToList();
         }
 
         public Assignment GetAssignmentById(int p_id)
@@ -43,7 +45,7 @@ namespace RPLP.DAL.SQL.Depots
                        "DepotAssignment - GetAssignmentById - p_id passé en paramêtre est hors des limites", 0));
             }
 
-            Assignment assignment = this._context.Assignments.FirstOrDefault(assignment => assignment.Id == p_id && assignment.Active)
+            Assignment assignment = this._context.Assignments.AsNoTracking().SingleOrDefault(assignment => assignment.Id == p_id && assignment.Active)
                                                              .ToEntity();
 
             if (assignment == null)
@@ -69,7 +71,7 @@ namespace RPLP.DAL.SQL.Depots
             }
 
             Assignment assignment = this._context.Assignments
-                                                .FirstOrDefault(assignment => assignment.Name == p_assignmentName && assignment.Active)
+                                                .AsNoTracking().SingleOrDefault(assignment => assignment.Name == p_assignmentName && assignment.Active)
                                                 .ToEntity();
 
             if (assignment == null)
@@ -94,12 +96,14 @@ namespace RPLP.DAL.SQL.Depots
                      "DepotAssignment - GetAssignmentsByClassroomName - p_classroomName passé en paramètre est vide", 0));
             }
 
-            int classroomId = this._context.Classrooms.FirstOrDefault(c => c.Name == p_classroomName).Id;
+            int classroomId = this._context.Classrooms.AsNoTracking().SingleOrDefault(c => c.Name == p_classroomName).Id;
 
-            List<Assignment> assignments = this._context.Assignments
-                .Where(assignment => assignment.ClassroomId == classroomId && assignment.Active)
-                .Select(s => s.ToEntity())
+            List<Assignment_SQLDTO> assignmentsDTO = this._context.Assignments
+                .Where(assignment => assignment.Classroom.Id == classroomId && assignment.Active)
                 .ToList();
+            assignmentsDTO.ForEach(ass=>ass.Classroom = this._context.Classrooms.AsNoTracking().SingleOrDefault(cl=>cl.Id==classroomId));
+
+            List<Assignment> assignments = assignmentsDTO.Select(ass => ass.ToEntity()).ToList();
 
             if (assignments == null)
             {
@@ -116,6 +120,11 @@ namespace RPLP.DAL.SQL.Depots
 
         public void UpsertAssignment(Assignment p_assignment)
         {
+            if (this._context.ChangeTracker != null)
+            {
+                this._context.ChangeTracker.Clear();
+            }
+            
             if (p_assignment == null)
             {
                 RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
@@ -127,9 +136,11 @@ namespace RPLP.DAL.SQL.Depots
             if (assignmentResult != null)
             {
                 assignmentResult.Name = p_assignment.Name;
-                assignmentResult.ClassroomId = p_assignment.ClassroomId;
+                assignmentResult.Classroom = new Classroom_SQLDTO(p_assignment.Classroom);
                 assignmentResult.Description = p_assignment.Description;
                 assignmentResult.DeliveryDeadline = p_assignment.DeliveryDeadline;
+                
+                this._context.Entry<Classroom_SQLDTO>(assignmentResult.Classroom).State = EntityState.Unchanged;
 
                 this._context.Update(assignmentResult);
                 this._context.SaveChanges();
@@ -141,10 +152,12 @@ namespace RPLP.DAL.SQL.Depots
                 Assignment_SQLDTO assignmentDTO = new Assignment_SQLDTO();
                 assignmentDTO.Name = p_assignment.Name;
                 assignmentDTO.Description = p_assignment.Description;
-                assignmentDTO.ClassroomId = p_assignment.ClassroomId;
+                assignmentDTO.Classroom = new Classroom_SQLDTO(p_assignment.Classroom);
                 assignmentDTO.DistributionDate = p_assignment.DistributionDate;
                 assignmentDTO.DeliveryDeadline = p_assignment.DeliveryDeadline;
                 assignmentDTO.Active = true;
+
+                this._context.Entry<Classroom_SQLDTO>(assignmentDTO.Classroom).State = EntityState.Unchanged;
 
                 this._context.Assignments.Add(assignmentDTO);
                 this._context.SaveChanges();
@@ -165,7 +178,12 @@ namespace RPLP.DAL.SQL.Depots
                                                                           .FirstOrDefault(assignment => assignment.Name == p_assignmentName);
             if (assignmentResult != null)
             {
+                
+                assignmentResult.Classroom =
+                    this._context.Classrooms.AsNoTracking().SingleOrDefault(c => c.Id == assignmentResult.ClassroomId);
+                
                 assignmentResult.Active = false;
+                this._context.Entry<Classroom_SQLDTO>(assignmentResult.Classroom).State = EntityState.Unchanged;
 
                 this._context.Update(assignmentResult);
                 this._context.SaveChanges();
