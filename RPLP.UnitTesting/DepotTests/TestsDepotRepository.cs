@@ -243,12 +243,19 @@ namespace RPLP.UnitTesting.DepotTests
             context.Setup(x => x.Repositories).ReturnsDbSet(repositoriesDB);
             context.Setup(m => m.Repositories.Add(It.IsAny<Repository_SQLDTO>())).Callback<Repository_SQLDTO>(repositoriesDB.Add);
             DepotRepository depot = new DepotRepository(context.Object);
+            
+            Organisation mockOrganisation = new Organisation()
+            {
+                Administrators = new List<Administrator>(),
+                Id = 1,
+                Name = "Mock Organisation"
+            };
 
             Repository repository = new Repository()
             {
                 Name = "testrepo",
                 FullName = "Test Repository",
-                OrganisationId = 1
+                Organisation = mockOrganisation
             };
 
             depot.UpsertRepository(repository);
@@ -301,12 +308,19 @@ namespace RPLP.UnitTesting.DepotTests
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Repositories).ReturnsDbSet(repositoriesDB);
             DepotRepository depot = new DepotRepository(context.Object);
+            
+            Organisation mockOrganisation = new Organisation()
+            {
+                Administrators = new List<Administrator>(),
+                Id = 1,
+                Name = "Mock Organisation"
+            };
 
             Repository? repository = repositoriesDB.FirstOrDefault(r => r.Name == "ThPaquet").ToEntity();
             Assert.NotNull(repository);
 
             repository.FullName = "Test Repository";
-            repository.OrganisationId = 1;
+            repository.Organisation = mockOrganisation;
 
             depot.UpsertRepository(repository);
 
@@ -358,8 +372,16 @@ namespace RPLP.UnitTesting.DepotTests
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Repositories).ReturnsDbSet(repositoriesDB);
             DepotRepository depot = new DepotRepository(context.Object);
+            
+            Repository mockRepository = new Repository()
+            {
+                FullName = "ThPaquet",
+                Id = 1,
+                Name = "ThPaquet",
+                Organisation = new Organisation()
+            };
 
-            depot.DeleteRepository("ThPaquet");
+            depot.DeleteRepository(mockRepository);
 
             Repository_SQLDTO? repository = repositoriesDB.FirstOrDefault(r => r.Name == "ThPaquet" && r.Active);
             Assert.Null(repository);
@@ -494,8 +516,16 @@ namespace RPLP.UnitTesting.DepotTests
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Repositories).ReturnsDbSet(repositoriesDB);
             DepotRepository depot = new DepotRepository(context.Object);
+            
+            Repository mockRepository = new Repository()
+            {
+                FullName = "BACenComm",
+                Id = 1,
+                Name = "BACenComm",
+                Organisation = new Organisation()
+            };
 
-            depot.ReactivateRepository("BACenComm");
+            depot.ReactivateRepository(mockRepository);
 
             Repository_SQLDTO? repository = repositoriesDB.FirstOrDefault(r => r.Name == "BACenComm");
             Assert.True(repository.Active);
@@ -538,8 +568,16 @@ namespace RPLP.UnitTesting.DepotTests
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Repositories).ReturnsDbSet(repositoriesDB);
             DepotRepository depot = new DepotRepository(context.Object);
+            
+            Repository mockRepository = new Repository()
+            {
+                FullName = "BACenComm",
+                Id = 1,
+                Name = "BACenComm",
+                Organisation = new Organisation()
+            };
 
-            depot.ReactivateRepository("BACenComm");
+            depot.ReactivateRepository(mockRepository);
 
             Repository_SQLDTO? repository = repositoriesDB.FirstOrDefault(r => r.Name == "BACenComm");
             Assert.True(repository.Active);
@@ -583,7 +621,7 @@ namespace RPLP.UnitTesting.DepotTests
             context.Setup(x => x.Repositories).ReturnsDbSet(repositoriesDB);
             DepotRepository depot = new DepotRepository(context.Object);
 
-            depot.ReactivateRepository("InexistantRepo");
+            depot.ReactivateRepository(new Repository());
 
             Repository_SQLDTO? repository = repositoriesDB.FirstOrDefault(r => r.Name == "InexistantRepo");
             Assert.Null(repository);
@@ -627,7 +665,7 @@ namespace RPLP.UnitTesting.DepotTests
             context.Setup(x => x.Repositories).ReturnsDbSet(repositoriesDB);
             DepotRepository depot = new DepotRepository(context.Object);
 
-            string repositoryName = null;
+            Repository repositoryName = null;
 
             Assert.Throws<ArgumentNullException>(() => { depot.ReactivateRepository(repositoryName); });
         }
@@ -670,7 +708,7 @@ namespace RPLP.UnitTesting.DepotTests
             context.Setup(x => x.Repositories).ReturnsDbSet(repositoriesDB);
             DepotRepository depot = new DepotRepository(context.Object);
 
-            string repositoryName = " ";
+            Repository repositoryName = null;
 
             Assert.Throws<ArgumentNullException>(() => { depot.ReactivateRepository(repositoryName); });
         }

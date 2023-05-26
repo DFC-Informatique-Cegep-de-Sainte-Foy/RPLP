@@ -120,19 +120,25 @@ namespace RPLP.UnitTesting.APITests
             Mock<IDepotAssignment> depot = new Mock<IDepotAssignment>();
             AssignmentController controller = new AssignmentController(depot.Object);
 
+            Classroom mockClassroom = new Classroom()
+            {
+                Id = 1,
+                Name = "ProjetSynthese"
+            };
+
             List<Assignment> assignments = new List<Assignment>()
             {
                 new Assignment()
                 {
                     Id = 1,
                     Name = "RPLP",
-                    ClassroomId = 1
+                    Classroom = mockClassroom
                 },
                 new Assignment()
                 {
                     Id = 2,
                     Name = "Scrum",
-                    ClassroomId = 1
+                    Classroom = mockClassroom
                 }
             };
 
@@ -147,7 +153,7 @@ namespace RPLP.UnitTesting.APITests
 
             assignments = result.Value as List<Assignment>;
 
-            Assert.Contains(assignments, a => a.ClassroomId == 1);
+            Assert.Contains(assignments, a => a.Classroom.Id == 1);
         }
 
         [Fact]

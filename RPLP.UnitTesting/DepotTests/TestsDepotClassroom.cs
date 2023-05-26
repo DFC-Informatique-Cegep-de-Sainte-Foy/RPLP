@@ -1730,6 +1730,13 @@ namespace RPLP.UnitTesting.DepotTests
                 }
             };
 
+            Organisation mockOrganisation = new Organisation()
+            {
+                Administrators = new List<Administrator>(),
+                Id = 1,
+                Name = "Mock Organisation"
+            };
+
 
             classroomBD[0].Assignments.Add(new Assignment_SQLDTO()
             {
@@ -1810,7 +1817,7 @@ namespace RPLP.UnitTesting.DepotTests
             Classroom newClassroom = new Classroom()
             {
                 Name = "RPLP",
-                OrganisationId = 1,
+                Organisation = mockOrganisation,
                 Assignments = new List<Assignment>(),
                 Students = new List<Student>(),
                 Teachers = new List<Teacher>()

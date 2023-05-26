@@ -1048,8 +1048,6 @@ namespace RPLP.SERVICES.Github
             List<Branch_JSONDTO>? branches =
                 _githubApiAction.GetRepositoryBranchesGithub(p_organisationName, p_repository.Name);
             
-            Logging.Instance.Journal(new Log($"ValidateOneRepositoryHasBranch(string p_organisationName : {p_organisationName}, Repository p_repository : {p_repository.Name})"));
-
             if (branches is null || branches.Count == 0)
             {
                 _depotRepository.DeleteRepository(p_repository);

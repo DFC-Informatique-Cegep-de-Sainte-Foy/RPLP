@@ -171,14 +171,6 @@ namespace RPLP.DAL.SQL.Depots
                 repositoryResult.Active = false;
                 this._context.Entry<Organisation_SQLDTO>(repositoryResult.Organisation).State = EntityState.Unchanged;
 
-                Logging.Instance.Journal(new Log($"ReactivateRepository(Repository p_repository)" +
-                                                 $"Repository Name: {repositoryResult.Name}, " +
-                                                 $"Repository p_repository: {repositoryResult.Id}" +
-                                                 $"repositoryResult.Active: {repositoryResult.Active}" +
-                                                 $"repositoryResult.OrganisationId: {repositoryResult.OrganisationId}" +
-                                                 $"repositoryResult.Organisation.Id: {repositoryResult.Organisation.Id}"));
-
-
                 this._context.Update(repositoryResult);
                 this._context.SaveChanges();
 
@@ -267,14 +259,6 @@ namespace RPLP.DAL.SQL.Depots
 
                 repositoryResult.Active = true;
                 this._context.Entry<Organisation_SQLDTO>(repositoryResult.Organisation).State = EntityState.Unchanged;
-
-                Logging.Instance.Journal(new Log($"ReactivateRepository(Repository p_repository)" +
-                                                 $"Repository Name: {repositoryResult.Name}, " +
-                                                 $"Repository p_repository: {repositoryResult.Id}" +
-                                                 $"repositoryResult.Active: {repositoryResult.Active}" +
-                                                 $"repositoryResult.OrganisationId: {repositoryResult.OrganisationId}" +
-                                                 $"repositoryResult.Organisation.Id: {repositoryResult.Organisation.Id}"));
-
 
                 this._context.Update(repositoryResult);
                 this._context.SaveChanges();

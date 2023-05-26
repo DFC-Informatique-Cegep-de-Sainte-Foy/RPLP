@@ -137,9 +137,9 @@ namespace RPLP.ENTITES
                         }
                         catch (Exception e)
                         {
-                            //flag
-                            RPLP.JOURNALISATION.Logging.Instance.Journal(
-                                new Log($"error ! ={e.Message}"));
+                            Logging.Instance.Journal(new Log(e.Message,
+                                e.StackTrace.Replace(System.Environment.NewLine, "."),
+                                "CreateTeacherReviewsAllocation(string p_teacherUsername) - catch", 0));
                         }
                     }
                 }
@@ -161,9 +161,9 @@ namespace RPLP.ENTITES
                         }
                         catch (Exception e)
                         {
-                            //flag
-                            RPLP.JOURNALISATION.Logging.Instance.Journal(
-                                new Log($"error ! ={e.Message}"));
+                            Logging.Instance.Journal(new Log(e.Message,
+                                e.StackTrace.Replace(System.Environment.NewLine, "."),
+                                "CreateTeacherReviewsAllocation(string p_teacherUsername) - catch", 0));
                         }
                     }
                 }
@@ -175,7 +175,7 @@ namespace RPLP.ENTITES
                 throw new ArgumentException("Teacher name cannot be missing", nameof(p_teacherUsername));
             }
         }
-        
+
         public void CreateTutorReviewsAllocation(string p_tutorUsername, int p_tutorId)
         {
             if (p_tutorUsername != string.Empty)
@@ -200,9 +200,9 @@ namespace RPLP.ENTITES
                         }
                         catch (Exception e)
                         {
-                            //flag
-                            RPLP.JOURNALISATION.Logging.Instance.Journal(
-                                new Log($"error ! ={e.Message}"));
+                            Logging.Instance.Journal(new Log(e.Message,
+                                e.StackTrace.Replace(System.Environment.NewLine, "."),
+                                "CreateTutorReviewsAllocation(string p_tutorUsername, int p_tutorId) - catch", 0));
                         }
                     }
                 }
@@ -224,9 +224,9 @@ namespace RPLP.ENTITES
                         }
                         catch (Exception e)
                         {
-                            //flag
-                            RPLP.JOURNALISATION.Logging.Instance.Journal(
-                                new Log($"error ! ={e.Message}"));
+                            Logging.Instance.Journal(new Log(e.Message,
+                                e.StackTrace.Replace(System.Environment.NewLine, "."),
+                                "CreateTutorReviewsAllocation(string p_tutorUsername, int p_tutorId) - catch", 0));
                         }
                     }
                 }

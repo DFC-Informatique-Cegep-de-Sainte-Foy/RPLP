@@ -542,10 +542,8 @@ namespace RPLP.DAL.SQL.Depots
                     }
                     catch (Exception e)
                     {
-                        //flag
-                        Logging.Instance.Journal(new Log($"Exception e:{e.Message}"));
+                        Logging.Instance.Journal(new Log(e.Message,e.StackTrace.Replace(System.Environment.NewLine, "."), "UpsertAllocationsBatch(List<Allocation> p_allocations - catch)", 0));
                     }
-
 
                     Logging.Instance.Journal(new Log("Allocation",
                         $"DepotAllocation - Method - UpsertAllocationsBatch(List<Allocation> p_allocations) - Void - Add Allocations"));

@@ -71,11 +71,16 @@ namespace RPLP.UnitTesting.EntityTests
         [Fact]
         public void Test_AssignmentSQLDTOConstructor_FromEntity()
         {
+            Classroom classroom = new Classroom()
+            {
+                Id = 1,
+                Name = "classroom"
+            };
             Assignment assignment = new Assignment()
             {
                 Id = 2,
                 Name = "RPLP",
-                ClassroomId = 1,
+                Classroom = classroom,
                 Description = "Do it",
                 DistributionDate = DateTime.Now,
                 DeliveryDeadline = DateTime.Now.AddDays(1)
@@ -86,7 +91,7 @@ namespace RPLP.UnitTesting.EntityTests
             Assert.NotNull(assignment_SQLDTO);
             Assert.Equal(assignment.Id, assignment_SQLDTO.Id);
             Assert.Equal(assignment.Name, assignment_SQLDTO.Name);
-            Assert.Equal(assignment.ClassroomId, assignment_SQLDTO.ClassroomId);
+            Assert.Equal(assignment.Classroom.Id, assignment_SQLDTO.ClassroomId);
             Assert.Equal(assignment.Description, assignment_SQLDTO.Description);
             Assert.Equal(assignment.DeliveryDeadline, assignment_SQLDTO.DeliveryDeadline);
             Assert.Equal(assignment.DistributionDate, assignment_SQLDTO.DistributionDate);
@@ -111,10 +116,17 @@ namespace RPLP.UnitTesting.EntityTests
         [Fact]
         public void Test_ClassroomSQLDTOConstructor_FromEntity()
         {
+            Organisation organisation = new Organisation()
+            {
+                Id = 1,
+                Name = "organisation"
+            };
+            
             Classroom classroom = new Classroom()
             {
                 Id = 1,
                 Name = "ProjetSynthese",
+                Organisation = organisation,
                 Assignments = new List<Assignment>()
                 {
                     new Assignment()
@@ -141,12 +153,11 @@ namespace RPLP.UnitTesting.EntityTests
                 }
             };
 
-
             Classroom_SQLDTO classroom_SQLDTO = new Classroom_SQLDTO(classroom);
 
             Assert.NotNull(classroom_SQLDTO);
             Assert.Equal(classroom.Id, classroom_SQLDTO.Id);
-            Assert.Equal(classroom.OrganisationId, classroom_SQLDTO.OrganisationId);
+            Assert.Equal(classroom.Organisation.Id, classroom_SQLDTO.OrganisationId);
             Assert.Equal(classroom.Name, classroom_SQLDTO.Name);
             Assert.Equal(classroom.Students.First().Username, classroom_SQLDTO.Students.First().Username);
             Assert.Equal(classroom.Teachers.First().Username, classroom_SQLDTO.Teachers.First().Username);
@@ -248,12 +259,18 @@ namespace RPLP.UnitTesting.EntityTests
         [Fact]
         public void Test_RepositorySQLDTOConstructor_FromEntity()
         {
+            Organisation organisation = new Organisation()
+            {
+                Id = 1,
+                Name = "organisation"
+            };
+            
             Repository repository = new Repository()
             {
                 Id = 3,
                 Name = "ThPaquet",
                 FullName = "Thierry Paquet",
-                OrganisationId = 1
+                Organisation = organisation
             };
 
             Repository_SQLDTO repository_SQLDTO = new Repository_SQLDTO(repository);
@@ -262,7 +279,7 @@ namespace RPLP.UnitTesting.EntityTests
             Assert.Equal(repository.Id, repository_SQLDTO.Id);
             Assert.Equal(repository.Name, repository_SQLDTO.Name);
             Assert.Equal(repository.FullName, repository_SQLDTO.FullName);
-            Assert.Equal(repository.OrganisationId, repository_SQLDTO.OrganisationId);
+            Assert.Equal(repository.Organisation.Id, repository_SQLDTO.OrganisationId);
             Assert.True(repository_SQLDTO.Active);
         }
 

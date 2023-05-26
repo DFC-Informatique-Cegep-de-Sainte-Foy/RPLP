@@ -491,8 +491,6 @@ namespace RPLP.SERVICES.Github
             Task<string> statusCode = AddStudentAsCollaboratorToPeerRepositoryGithubApiRequest(fullPath);
             statusCode.Wait();
             
-            Logging.Instance.Journal(new Log($"debug - AddStudentAsCollaboratorToPeerRepositoryGithub({p_organisationName}, {p_repositoryName}, {p_studentUsername} -- statusCode: {statusCode})"));
-
             return statusCode.Result;
         }
 
@@ -562,8 +560,6 @@ namespace RPLP.SERVICES.Github
             }
 
             RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(p_githubLink, (int)response.StatusCode, remaining, "Requête PUT pour l'ajout d'un étudiant en tant que collaborateur à un dépot"));
-            Logging.Instance.Journal(new Log($"debug - AddStudentAsCollaboratorToPeerRepositoryGithubApiRequest({p_githubLink}) -- response.StatusCode: {response.StatusCode.ToString()})"));
-
             return response.StatusCode.ToString();
         }
 
