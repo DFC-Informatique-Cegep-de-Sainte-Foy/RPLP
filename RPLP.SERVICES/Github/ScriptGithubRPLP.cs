@@ -327,17 +327,21 @@ namespace RPLP.SERVICES.Github
 
                     if (result == "Created")
                     {
+                         
                         string resultAddStudent =
-                            this._githubApiAction.AddStudentAsCollaboratorToPeerRepositoryGithub(p_organisationName,
-                                p_repositoryName, p_username);
-
+                            this._githubApiAction.AddStudentAsCollaboratorToPeerRepositoryGithub(p_organisationName, p_repositoryName, p_username);
+                        
+                        // FLAG : here we accept 'NoContent' as 'Created', as both work for our purposes
                         result = resultAddStudent;
+                        if (result == "NoContent")
+                            result = "Created";
+                        // FLAG : here we accept 'NoContent' as 'Created', as both work for our purposes
 
                         if (result != "Created")
                         {
                             RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
                                 new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                                "ScriptGithubRPLP - createPullRequestAndAssignUser - la variable resultAddStudent retourne que l'utilisateur n'as pas été créée à partir de la méthode his._githubApiAction.CreateNewPullRequestFeedbackGitHub(p_organisationName, p_repositoryName, newBranchName, newBranchName.ToLower(), \"Voici où vous devez mettre vos commentaires\"); ",
+                                $"ScriptGithubRPLP - createPullRequestAndAssignUser - la variable resultAddStudent retourne que l'utilisateur n'as pas été créée à partir de la méthode this._githubApiAction.AddStudentAsCollaboratorToPeerRepositoryGithub({p_organisationName}, {p_repositoryName}, {p_username});",
                                 0));
                         }
                     }
@@ -345,7 +349,7 @@ namespace RPLP.SERVICES.Github
                     {
                         RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
                             new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                            "ScriptGithubRPLP - createPullRequestAndAssignUser - la variable resultCreatePR retourne que la requête de tirage n'as pas été créée à partir de la méthode this._githubApiAction.CreateNewPullRequestFeedbackGitHub(p_organisationName, p_repositoryName, newBranchName, newBranchName.ToLower(), \"Voici où vous devez mettre vos commentaires\"); ",
+                            $"ScriptGithubRPLP - createPullRequestAndAssignUser - la variable resultCreatePR retourne que la requête de tirage n'as pas été créée à partir de la méthode this._githubApiAction.AddStudentAsCollaboratorToPeerRepositoryGithub({p_organisationName}, {p_repositoryName}, {p_username});",
                             0));
                     }
                 }
@@ -353,7 +357,7 @@ namespace RPLP.SERVICES.Github
                 {
                     RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
                         new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                        "ScriptGithubRPLP - createPullRequestAndAssignUser - la variable resultCreateBranch retourne que la branche n'as pas été créée à partir de la méthode this._githubApiAction.CreateNewBranchForFeedbackGitHub(p_organisationName, p_repositoryName, p_sha, newBranchName); ",
+                        "ScriptGithubRPLP - createPullRequestAndAssignUser - la variable resultCreateBranch retourne que la branche n'as pas été créée à partir de la méthode this._githubApiAction.AddStudentAsCollaboratorToPeerRepositoryGithub({p_organisationName}, {p_repositoryName}, {p_username});",
                         0));
                 }
             }

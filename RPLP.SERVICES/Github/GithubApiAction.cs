@@ -485,11 +485,13 @@ namespace RPLP.SERVICES.Github
             if (string.IsNullOrWhiteSpace(fullPath))
             {
                 RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                    "GithubApiAction - AddStudentAsCollaboratorToPeerRepositoryGithub - la variable fullPath assigné par la méthode _addorRemoveCollaboratorToRepositoryGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName).Replace(studentUsername, p_studentUsername) est vide", 0));
+                    $"GithubApiAction - AddStudentAsCollaboratorToPeerRepositoryGithub - la variable fullPath assigné par la méthode _addorRemoveCollaboratorToRepositoryGithub.Replace(organisationName, {p_organisationName}).Replace(repositoryName, {p_repositoryName}).Replace(studentUsername, {p_studentUsername}) est vide", 0));
             }
 
             Task<string> statusCode = AddStudentAsCollaboratorToPeerRepositoryGithubApiRequest(fullPath);
             statusCode.Wait();
+            
+            Logging.Instance.Journal(new Log($"debug - AddStudentAsCollaboratorToPeerRepositoryGithub({p_organisationName}, {p_repositoryName}, {p_studentUsername} -- statusCode: {statusCode})"));
 
             return statusCode.Result;
         }
@@ -521,9 +523,7 @@ namespace RPLP.SERVICES.Github
 
             return collaboratorsResult.Result;
         }
-
-
-      
+        
         private async Task<List<Collaborator_JSONDTO>> GetCollaboratorFromStudentRepositoryGithubGithubApiRequest(string p_githubLink)
         {
             List<Collaborator_JSONDTO> collaborators = new List<Collaborator_JSONDTO>();
@@ -548,7 +548,6 @@ namespace RPLP.SERVICES.Github
             return collaborators;
         }
 
-
         private async Task<string> AddStudentAsCollaboratorToPeerRepositoryGithubApiRequest(string p_githubLink)
         {
             string permission = "{\"permission\":\"Triage\"}";
@@ -563,6 +562,7 @@ namespace RPLP.SERVICES.Github
             }
 
             RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(p_githubLink, (int)response.StatusCode, remaining, "Requête PUT pour l'ajout d'un étudiant en tant que collaborateur à un dépot"));
+            Logging.Instance.Journal(new Log($"debug - AddStudentAsCollaboratorToPeerRepositoryGithubApiRequest({p_githubLink}) -- response.StatusCode: {response.StatusCode.ToString()})"));
 
             return response.StatusCode.ToString();
         }

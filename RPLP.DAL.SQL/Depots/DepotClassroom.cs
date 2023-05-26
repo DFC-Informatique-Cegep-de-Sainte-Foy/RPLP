@@ -819,8 +819,8 @@ namespace RPLP.DAL.SQL.Depots
                 }
             }
 
-            Classroom_SQLDTO classroomResult = this._context.Classrooms.Where(classroom => classroom.Active)
-                .FirstOrDefault(classroom => classroom.Id == p_classroom.Id);
+            Classroom_SQLDTO classroomResult = this._context.Classrooms
+                .FirstOrDefault(classroom => classroom.Id == p_classroom.Id || classroom.Name == p_classroom.Name);
 
             if (classroomResult != null)
             {
