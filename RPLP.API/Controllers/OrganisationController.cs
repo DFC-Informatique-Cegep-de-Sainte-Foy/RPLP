@@ -240,28 +240,6 @@ namespace RPLP.API.Controllers
             }
         }
         
-        // [HttpGet("Reactivate/{orgName}")]
-        // public ActionResult ReactivateOrganisation(string orgName)
-        // {
-        //     try
-        //     {
-        //         if (string.IsNullOrWhiteSpace(orgName))
-        //         {
-        //             RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-        //                 "OrganisationController - ReactivateOrganisation - orgName passé en paramêtre vide", 0));
-        //         }
-        //
-        //         RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"api/Organisation/Reactivate/{orgName}", 204, "OrganisationController - GET méthode ReactivateOrganisation"));
-        //
-        //         this._depot.ReactivateOrganisation(orgName);
-        //         return NoContent();
-        //     }
-        //     catch (Exception)
-        //     {
-        //         throw;
-        //     }
-        // }
-        
         [HttpPost("Reactivate")]
         public ActionResult ReactivateOrganisation([FromBody] Organisation p_organisation)
         {

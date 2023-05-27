@@ -10,6 +10,7 @@ namespace RPLP.ENTITES.InterfacesDepots
     public interface IDepotClassroom
     {
         public List<Classroom> GetClassrooms();
+        public List<Classroom> GetClassroomsInactives();
         public Classroom GetClassroomById(int p_id);
         public Classroom GetClassroomByName(string p_classroomName);
         public List<Student> GetStudentsByClassroomName(string p_classroomName);
@@ -25,5 +26,6 @@ namespace RPLP.ENTITES.InterfacesDepots
         public void RemoveAssignmentFromClassroom(string p_classroomName, string p_assignmentName);
         public void UpsertClassroom(Classroom p_classroom);
         public void DeleteClassroom(string p_classroomName);
+        public void ReactivateClassroom(string p_classroomName, int p_classroomId);
     }
 }

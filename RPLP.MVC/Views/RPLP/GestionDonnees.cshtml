@@ -60,6 +60,7 @@
                     <option id="btnCreateClassroom" value="createClassroom">Créer</option>
                     <option id="btnModifyClassroom" value="modifyClassroom">Modifier</option>
                     <option id="btnDeleteClassroom" value="deleteClassroom">Supprimer</option>
+                    <option id="btnReactivateClassroom" value="reactivateClassroom">Reactivate</option>
                     <option id="btnAddTeacherToClassroom" value="addTeacherToClassroom">Ajouter professeur</option>
                     <option id="btnRemoveTeacherFromClassroom" value="removeTeacherFromClassroom">Retirer professeur</option>
                     <option id="btnAddStudentToClassroom" value="addStudentToClassroom">Ajouter Étudiant</option>
@@ -77,6 +78,7 @@
                     <option id="btnCreateAssignment" value="createAssignment">Créer</option>
                     <option id="btnModifyAssignment" value="modifyAssignment">Modifier</option>
                     <option id="btnDeleteAssignment" value="deleteAssignment">Supprimer</option>
+                    <option id="btnReactivateAssignment" value="reactivateAssignment">Reactivate</option>
                 </select>
             </div>
         </div>
@@ -236,6 +238,12 @@
         }
     </div>
 
+    <div id="reactivateClassroom" hidden>
+        @{
+            Html.RenderPartial(@"../Shared/GestionDonnees/_ActionReactiverClassroom.cshtml", Model);
+        }
+    </div>
+
     <div id="createAssignment" hidden>
         @{
             Html.RenderPartial(@"../Shared/GestionDonnees/_ActionAjouterAssignment.cshtml", Model);
@@ -251,6 +259,11 @@
     <div id="deleteAssignment" hidden>
         @{
             Html.RenderPartial(@"../Shared/GestionDonnees/_ActionSupprimerAssignment.cshtml", Model);
+        }
+    </div>
+    <div id="reactivateAssignment" hidden>
+        @{
+            Html.RenderPartial(@"../Shared/GestionDonnees/_ActionReactiverAssignment.cshtml", Model);
         }
     </div>
 
@@ -296,8 +309,8 @@
         var forms = ["createAdmin", "modifyAdmin", "deleteAdmin", "addAdminToOrg", "removeAdminFromOrg", "reactivateAdminInOrg",
         "createOrganisation", "modifyOrganisation", "deleteOrganisation", "reactivateOrganisation",
         "createTeacher", "modifyTeacher", "deleteTeacher", "reactivateTeacherInOrg",
-        "createClassroom", "modifyClassroom", "deleteClassroom", "addTeacherToClassroom", "removeTeacherFromClassroom", "removeStudentFromClassroom", "addStudentToClassroom", "addStudentToClassroomBatch",
-        "createAssignment", "modifyAssignment", "deleteAssignment",
+        "createClassroom", "modifyClassroom", "deleteClassroom", "reactivateClassroom","addTeacherToClassroom", "removeTeacherFromClassroom", "removeStudentFromClassroom", "addStudentToClassroom", "addStudentToClassroomBatch",
+        "createAssignment", "modifyAssignment", "deleteAssignment","reactivateAssignment",
         "createStudent", 'createStudentBatch', "modifyStudent", "deleteStudent", "reactivateStudentInOrg"];
 
 

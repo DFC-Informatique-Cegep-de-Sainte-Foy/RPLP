@@ -395,34 +395,6 @@ namespace RPLP.DAL.SQL.Depots
                     0));
             }
         }
-
-        // public void ReactivateOrganisation(string orgName)
-        // {
-        //     if (string.IsNullOrWhiteSpace(orgName))
-        //     {
-        //         RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
-        //             new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-        //             "DepotOrganisation - ReactivateOrganisation - orgName passé en paramètre est vide", 0));
-        //     }
-        //
-        //     Organisation_SQLDTO orgResult = this._context.Organisations.Where(o => !o.Active)
-        //         .FirstOrDefault(o => o.Name == orgName);
-        //     if (orgResult != null)
-        //     {
-        //         orgResult.Active = true;
-        //
-        //         this._context.Update(orgResult);
-        //         this._context.SaveChanges();
-        //
-        //         RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Administrators",
-        //             $"DepotOrganisation - Method - ReactivateOrganisation(string orgName) - Void - reactive organisation"));
-        //     }
-        //     else
-        //     {
-        //         RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Administrators",
-        //             $"DepotOrganisation - Method - ReactivateOrganisation(string orgName) - Void - orgResult est null"));
-        //     }
-        // }
         
         public void ReactivateOrganisation(Organisation p_organisation)
         {
@@ -433,7 +405,9 @@ namespace RPLP.DAL.SQL.Depots
                     "DepotOrganisation - ReactivateOrganisation - p_organisation passé en paramètre est null", 0));
             }
 
-            Organisation_SQLDTO orgResult = this._context.Organisations.Where(o => !o.Active)
+            Organisation_SQLDTO orgResult = this._context.Organisations
+                .AsNoTrackingWithIdentityResolution()
+                .Where(o => !o.Active)
                 .SingleOrDefault(o => o.Id == p_organisation.Id);
             if (orgResult != null)
             {

@@ -1,0 +1,74 @@
+﻿@model RPLP.MVC.Models.GestionDonneeViewModel
+
+<form id="reactivateClassroomForm">
+    <div class="titlePartial">
+    <h2 >Reactiver une Classe</H2>
+    </div>
+
+    <div class="form-group">
+        <select id="reactiverClassroomDropdown" class="form-control">
+
+        </select>
+        <br />
+    </div>
+
+  <input type="button" id="btnReactiverClassroom" class="btn-lg btn-danger titlePartial" onclick="reactiverClassroom.choisirClassroom()" value="Reactiver">
+  <input type="button" class="btn-lg btn-primary titlePartial" onclick="reactiverClassroom.refreshForm()" value=" Rafraîchir le formulaire">
+</form>
+
+<script src="/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        var option = document.createElement("option");
+        option.text = "Faites un choix";
+        option.value = -1;
+        var select = document.getElementById("reactiverClassroomDropdown");
+        select.appendChild(option);
+
+        @foreach (var d in Model.DeactivateClassroom)
+        {
+            @:var option = document.createElement("option");
+            @:option.text = "@d.Name";
+            @:option.value = "@d.Name";
+            @:var select = document.getElementById("reactiverClassroomDropdown");
+            @:select.appendChild(option);
+        }
+    });
+
+    var reactiverClassroom = {};
+    var Classroom;
+
+    reactiverClassroom.refreshForm = function ()
+    {
+       document.getElementById("reactivateClassroomForm").reset();
+       document.getElementById("reactiverClassroomDropdown").value = -1;
+    }
+    
+    reactiverClassroom.choisirClassroom = function ()
+        {
+           if(document.getElementById("reactiverClassroomDropdown").value == -1)
+           {
+                $('input[name=btnReactiverClassroom]').prop('disabled', true);
+           } else {
+               $('input[name=btnReactiverClassroom]').prop('disabled', '');
+    
+                var name = document.getElementById("reactiverClassroomDropdown").value;  
+                var Classrooms = JSON.parse('@Html.Raw(Json.Serialize(Model.DeactivateClassroom))');
+                Classroom = Classrooms.find(Classroom => Classroom.name == name);
+                reactiverClassroom.reactivateClassroom(Classroom.id, name);
+           }
+        }
+
+    reactiverClassroom.reactivateClassroom = function (ClassroomId, ClassroomName)
+    {
+        var ajaxURL = '/RPLP/POSTReactivateClassroom';
+
+        $.post(ajaxURL,{
+           ClassroomId : ClassroomId,
+           ClassroomName : ClassroomName,
+        },
+        function(data, status){
+            alert("Data: " + data + "\nStatus: " + status);
+        });
+    }
+</script>
