@@ -8,10 +8,10 @@
         <input type="text" class="form-control" id="InputGithubUsernameAjouterAdmin">
     </div>
 
-    <div class="form-group">
+@*    <div class="form-group">
         <label for="InputGithubTokenAjouterAdmin">Github Token</label>
         <input type="text" class="form-control" id="InputGithubTokenAjouterAdmin">
-    </div>
+    </div>*@
 
     <div class="form-group">
         <label for="InputPrenomAjouterAdmin">Prénom</label>
@@ -45,7 +45,7 @@
     ajouterAdmin.verifyDataThenCreate = function()
     {
         var username = document.getElementById("InputGithubUsernameAjouterAdmin").value ;
-        var token = document.getElementById("InputGithubTokenAjouterAdmin").value ;
+        var token = "none";
         var prenom = document.getElementById("InputPrenomAjouterAdmin").value ;
         var nom = document.getElementById("InputNomAjouterAdmin").value ;
         var email = document.getElementById("inputEmailAjouterAdmin").value ;
