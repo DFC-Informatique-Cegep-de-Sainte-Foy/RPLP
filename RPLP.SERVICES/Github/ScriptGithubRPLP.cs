@@ -24,7 +24,6 @@ namespace RPLP.SERVICES.Github
         private readonly IDepotRepository _depotRepository;
         private readonly IDepotOrganisation _depotOrganisation;
         private readonly IDepotAllocation _depotAllocation;
-        //flag: ajout pour les tuteurs
         private readonly IDepotStudent _depotStudent;
         private readonly GithubApiAction _githubApiAction;
         private Classroom _activeClassroom;
@@ -328,17 +327,21 @@ namespace RPLP.SERVICES.Github
 
                     if (result == "Created")
                     {
+                         
                         string resultAddStudent =
-                            this._githubApiAction.AddStudentAsCollaboratorToPeerRepositoryGithub(p_organisationName,
-                                p_repositoryName, p_username);
-
+                            this._githubApiAction.AddStudentAsCollaboratorToPeerRepositoryGithub(p_organisationName, p_repositoryName, p_username);
+                        
+                        // FLAG : here we accept 'NoContent' as 'Created', as both work for our purposes
                         result = resultAddStudent;
+                        if (result == "NoContent")
+                            result = "Created";
+                        // FLAG : here we accept 'NoContent' as 'Created', as both work for our purposes
 
                         if (result != "Created")
                         {
                             RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
                                 new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                                "ScriptGithubRPLP - createPullRequestAndAssignUser - la variable resultAddStudent retourne que l'utilisateur n'as pas été créée à partir de la méthode his._githubApiAction.CreateNewPullRequestFeedbackGitHub(p_organisationName, p_repositoryName, newBranchName, newBranchName.ToLower(), \"Voici où vous devez mettre vos commentaires\"); ",
+                                $"ScriptGithubRPLP - createPullRequestAndAssignUser - la variable resultAddStudent retourne que l'utilisateur n'as pas été créée à partir de la méthode this._githubApiAction.AddStudentAsCollaboratorToPeerRepositoryGithub({p_organisationName}, {p_repositoryName}, {p_username});",
                                 0));
                         }
                     }
@@ -346,7 +349,7 @@ namespace RPLP.SERVICES.Github
                     {
                         RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
                             new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                            "ScriptGithubRPLP - createPullRequestAndAssignUser - la variable resultCreatePR retourne que la requête de tirage n'as pas été créée à partir de la méthode this._githubApiAction.CreateNewPullRequestFeedbackGitHub(p_organisationName, p_repositoryName, newBranchName, newBranchName.ToLower(), \"Voici où vous devez mettre vos commentaires\"); ",
+                            $"ScriptGithubRPLP - createPullRequestAndAssignUser - la variable resultCreatePR retourne que la requête de tirage n'as pas été créée à partir de la méthode this._githubApiAction.AddStudentAsCollaboratorToPeerRepositoryGithub({p_organisationName}, {p_repositoryName}, {p_username});",
                             0));
                     }
                 }
@@ -354,7 +357,7 @@ namespace RPLP.SERVICES.Github
                 {
                     RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
                         new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                        "ScriptGithubRPLP - createPullRequestAndAssignUser - la variable resultCreateBranch retourne que la branche n'as pas été créée à partir de la méthode this._githubApiAction.CreateNewBranchForFeedbackGitHub(p_organisationName, p_repositoryName, p_sha, newBranchName); ",
+                        "ScriptGithubRPLP - createPullRequestAndAssignUser - la variable resultCreateBranch retourne que la branche n'as pas été créée à partir de la méthode this._githubApiAction.AddStudentAsCollaboratorToPeerRepositoryGithub({p_organisationName}, {p_repositoryName}, {p_username});",
                         0));
                 }
             }
@@ -984,7 +987,7 @@ namespace RPLP.SERVICES.Github
                 {
                     FullName = r.full_name,
                     Name = r.name,
-                    OrganisationName = r.full_name.Split('/')[0]
+                    Organisation = this._depotOrganisation.GetOrganisationByName(r.full_name.Split('/')[0])
                 }));
 
             repositoriesToAdd.ForEach(r => this._depotRepository.UpsertRepository(r));
@@ -1014,7 +1017,7 @@ namespace RPLP.SERVICES.Github
                 }
             }
 
-            repositoriesDesactivate.ForEach(r => this._depotRepository.DeleteRepository(r.Name));
+            repositoriesDesactivate.ForEach(r => this._depotRepository.DeleteRepository(r));
         }
 
         public void ValidateAllRepositoriesHasBranch()
@@ -1044,19 +1047,19 @@ namespace RPLP.SERVICES.Github
         {
             List<Branch_JSONDTO>? branches =
                 _githubApiAction.GetRepositoryBranchesGithub(p_organisationName, p_repository.Name);
-
+            
             if (branches is null || branches.Count == 0)
             {
-                _depotRepository.DeleteRepository(p_repository.Name);
+                _depotRepository.DeleteRepository(p_repository);
             }
             else if (ValidateMainBranchExistsFromBranchList(branches))
             {
-                _depotRepository.ReactivateRepository(p_repository.Name);
+                _depotRepository.ReactivateRepository(p_repository);
             }
             else
             {
                 // flag Revalider si on fait autre chose s'il manque la branche main
-                _depotRepository.DeleteRepository(p_repository.Name);
+                _depotRepository.DeleteRepository(p_repository);
             }
         }
 
@@ -1189,7 +1192,7 @@ namespace RPLP.SERVICES.Github
         {
             foreach (Repository repository in p_repositories)
             {
-                var download = _githubApiAction.DownloadRepository(repository.OrganisationName, repository.Name);
+                var download = _githubApiAction.DownloadRepository(repository.Organisation.Name, repository.Name);
                 Stream stream = download.Content.ReadAsStream();
 
                 using (var fileStream = File.Create("repo.zip"))
@@ -1206,12 +1209,13 @@ namespace RPLP.SERVICES.Github
 
         private string DownloadRepositoryToFile(Repository p_repository)
         {
+            string activeOrganisationName = this._activeClassroom.OrganisationName;
             if (File.Exists("repo.zip"))
             {
                 File.Delete("repo.zip");
             }
 
-            var download = _githubApiAction.DownloadRepository(p_repository.OrganisationName, p_repository.Name);
+            var download = _githubApiAction.DownloadRepository(p_repository.Organisation.Name, p_repository.Name);
             Stream stream = download.Content.ReadAsStream();
 
             using (var fileStream = File.Create("repo.zip"))

@@ -23,7 +23,7 @@ namespace RPLP.UnitTesting.DepotTests
                 new Classroom_SQLDTO
                 {
                     Name = "ProjetSynthese",
-                    OrganisationName = "CEGEP Ste-Foy",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -32,7 +32,7 @@ namespace RPLP.UnitTesting.DepotTests
                 new Classroom_SQLDTO()
                 {
                     Name = "OOP",
-                    OrganisationName = "CEGEP Ste-Foy",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -44,7 +44,7 @@ namespace RPLP.UnitTesting.DepotTests
             classroomBD[0].Assignments.Add(new Assignment_SQLDTO()
             {
                 Name = "Review",
-                ClassroomName = "ProjetSynthese",
+                ClassroomId = 1,
                 DistributionDate = System.DateTime.Now,
                 Description = "Review a partner\'s code",
                 DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -54,7 +54,7 @@ namespace RPLP.UnitTesting.DepotTests
             classroomBD[0].Assignments.Add(new Assignment_SQLDTO()
             {
                 Name = "Scrum",
-                ClassroomName = "ProjetSynthese",
+                ClassroomId = 1,
                 DistributionDate = System.DateTime.Now,
                 Description = "Daily briefing",
                 DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -83,7 +83,7 @@ namespace RPLP.UnitTesting.DepotTests
             classroomBD[1].Assignments.Add(new Assignment_SQLDTO()
             {
                 Name = "UnitTests",
-                ClassroomName = "OOP",
+                ClassroomId = 2,
                 DistributionDate = System.DateTime.Now,
                 Description = "Review a partner\'s code",
                 DeliveryDeadline = System.DateTime.Now.AddDays(1)
@@ -137,7 +137,7 @@ namespace RPLP.UnitTesting.DepotTests
                 new Classroom_SQLDTO
                 {
                     Name = "ProjetSynthese",
-                    OrganisationName = "CEGEP Ste-Foy",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -146,7 +146,7 @@ namespace RPLP.UnitTesting.DepotTests
                 new Classroom_SQLDTO()
                 {
                     Name = "OOP",
-                    OrganisationName = "CEGEP Ste-Foy",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -158,7 +158,7 @@ namespace RPLP.UnitTesting.DepotTests
             classroomBD[0].Assignments.Add(new Assignment_SQLDTO()
             {
                 Name = "Review",
-                ClassroomName = "ProjetSynthese",
+                ClassroomId = 1,
                 DistributionDate = System.DateTime.Now,
                 Description = "Review a partner\'s code",
                 DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -168,7 +168,7 @@ namespace RPLP.UnitTesting.DepotTests
             classroomBD[0].Assignments.Add(new Assignment_SQLDTO()
             {
                 Name = "Scrum",
-                ClassroomName = "ProjetSynthese",
+                ClassroomId = 1,
                 DistributionDate = System.DateTime.Now,
                 Description = "Daily briefing",
                 DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -196,7 +196,7 @@ namespace RPLP.UnitTesting.DepotTests
             classroomBD[1].Assignments.Add(new Assignment_SQLDTO()
             {
                 Name = "UnitTests",
-                ClassroomName = "OOP",
+                ClassroomId = 2,
                 DistributionDate = System.DateTime.Now,
                 Description = "Review a partner\'s code",
                 DeliveryDeadline = System.DateTime.Now.AddDays(1)
@@ -247,7 +247,7 @@ namespace RPLP.UnitTesting.DepotTests
                 new Classroom_SQLDTO
                 {
                     Name = "ProjetSynthese",
-                    OrganisationName = "CEGEP Ste-Foy",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -256,7 +256,7 @@ namespace RPLP.UnitTesting.DepotTests
                 new Classroom_SQLDTO()
                 {
                     Name = "OOP",
-                    OrganisationName = "CEGEP Ste-Foy",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -268,7 +268,7 @@ namespace RPLP.UnitTesting.DepotTests
             classroomBD[0].Assignments.Add(new Assignment_SQLDTO()
             {
                 Name = "Review",
-                ClassroomName = "ProjetSynthese",
+                ClassroomId = 1,
                 DistributionDate = System.DateTime.Now,
                 Description = "Review a partner\'s code",
                 DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -278,7 +278,7 @@ namespace RPLP.UnitTesting.DepotTests
             classroomBD[0].Assignments.Add(new Assignment_SQLDTO()
             {
                 Name = "Scrum",
-                ClassroomName = "ProjetSynthese",
+                ClassroomId = 1,
                 DistributionDate = System.DateTime.Now,
                 Description = "Daily briefing",
                 DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -307,7 +307,7 @@ namespace RPLP.UnitTesting.DepotTests
             classroomBD[1].Assignments.Add(new Assignment_SQLDTO()
             {
                 Name = "UnitTests",
-                ClassroomName = "OOP",
+                ClassroomId = 2,
                 DistributionDate = System.DateTime.Now,
                 Description = "Review a partner\'s code",
                 DeliveryDeadline = System.DateTime.Now.AddDays(1)
@@ -356,7 +356,7 @@ namespace RPLP.UnitTesting.DepotTests
                 new Classroom_SQLDTO
                 {
                     Name = "ProjetSynthese",
-                    OrganisationName = "CEGEP Ste-Foy",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -365,7 +365,7 @@ namespace RPLP.UnitTesting.DepotTests
                 new Classroom_SQLDTO()
                 {
                     Name = "OOP",
-                    OrganisationName = "CEGEP Ste-Foy",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -377,7 +377,7 @@ namespace RPLP.UnitTesting.DepotTests
             classroomBD[0].Assignments.Add(new Assignment_SQLDTO()
             {
                 Name = "Review",
-                ClassroomName = "ProjetSynthese",
+                ClassroomId = 1,
                 DistributionDate = System.DateTime.Now,
                 Description = "Review a partner\'s code",
                 DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -387,7 +387,7 @@ namespace RPLP.UnitTesting.DepotTests
             classroomBD[0].Assignments.Add(new Assignment_SQLDTO()
             {
                 Name = "Scrum",
-                ClassroomName = "ProjetSynthese",
+                ClassroomId = 1,
                 DistributionDate = System.DateTime.Now,
                 Description = "Daily briefing",
                 DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -415,7 +415,7 @@ namespace RPLP.UnitTesting.DepotTests
             classroomBD[1].Assignments.Add(new Assignment_SQLDTO()
             {
                 Name = "UnitTests",
-                ClassroomName = "OOP",
+                ClassroomId = 2,
                 DistributionDate = System.DateTime.Now,
                 Description = "Review a partner\'s code",
                 DeliveryDeadline = System.DateTime.Now.AddDays(1)
@@ -450,7 +450,7 @@ namespace RPLP.UnitTesting.DepotTests
             classroomBD.Add(new Classroom_SQLDTO()
             {
                 Name = "false",
-                OrganisationName = "CEGEP Ste-Foy",
+                OrganisationId = 1,
                 Active = false,
                 Assignments = new List<Assignment_SQLDTO>(),
                 Students = new List<Student_SQLDTO>(),
@@ -476,7 +476,7 @@ namespace RPLP.UnitTesting.DepotTests
                 new Classroom_SQLDTO
                 {
                     Name = "ProjetSynthese",
-                    OrganisationName = "CEGEP Ste-Foy",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -485,7 +485,7 @@ namespace RPLP.UnitTesting.DepotTests
                 new Classroom_SQLDTO()
                 {
                     Name = "OOP",
-                    OrganisationName = "CEGEP Ste-Foy",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -497,7 +497,7 @@ namespace RPLP.UnitTesting.DepotTests
             classroomBD[0].Assignments.Add(new Assignment_SQLDTO()
             {
                 Name = "Review",
-                ClassroomName = "ProjetSynthese",
+                ClassroomId = 1,
                 DistributionDate = System.DateTime.Now,
                 Description = "Review a partner\'s code",
                 DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -507,7 +507,7 @@ namespace RPLP.UnitTesting.DepotTests
             classroomBD[0].Assignments.Add(new Assignment_SQLDTO()
             {
                 Name = "Scrum",
-                ClassroomName = "ProjetSynthese",
+                ClassroomId = 1,
                 DistributionDate = System.DateTime.Now,
                 Description = "Daily briefing",
                 DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -535,7 +535,7 @@ namespace RPLP.UnitTesting.DepotTests
             classroomBD[1].Assignments.Add(new Assignment_SQLDTO()
             {
                 Name = "UnitTests",
-                ClassroomName = "OOP",
+                ClassroomId = 2,
                 DistributionDate = System.DateTime.Now,
                 Description = "Review a partner\'s code",
                 DeliveryDeadline = System.DateTime.Now.AddDays(1)
@@ -584,7 +584,7 @@ namespace RPLP.UnitTesting.DepotTests
                 new Classroom_SQLDTO
                 {
                     Name = "ProjetSynthese",
-                    OrganisationName = "CEGEP Ste-Foy",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -593,7 +593,7 @@ namespace RPLP.UnitTesting.DepotTests
                 new Classroom_SQLDTO()
                 {
                     Name = "OOP",
-                    OrganisationName = "CEGEP Ste-Foy",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -605,7 +605,7 @@ namespace RPLP.UnitTesting.DepotTests
             classroomBD[0].Assignments.Add(new Assignment_SQLDTO()
             {
                 Name = "Review",
-                ClassroomName = "ProjetSynthese",
+                ClassroomId = 1,
                 DistributionDate = System.DateTime.Now,
                 Description = "Review a partner\'s code",
                 DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -615,7 +615,7 @@ namespace RPLP.UnitTesting.DepotTests
             classroomBD[0].Assignments.Add(new Assignment_SQLDTO()
             {
                 Name = "Scrum",
-                ClassroomName = "ProjetSynthese",
+                ClassroomId = 1,
                 DistributionDate = System.DateTime.Now,
                 Description = "Daily briefing",
                 DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -643,7 +643,7 @@ namespace RPLP.UnitTesting.DepotTests
             classroomBD[1].Assignments.Add(new Assignment_SQLDTO()
             {
                 Name = "UnitTests",
-                ClassroomName = "OOP",
+                ClassroomId = 2,
                 DistributionDate = System.DateTime.Now,
                 Description = "Review a partner\'s code",
                 DeliveryDeadline = System.DateTime.Now.AddDays(1)
@@ -693,7 +693,7 @@ namespace RPLP.UnitTesting.DepotTests
                 new Classroom_SQLDTO
                 {
                     Name = "ProjetSynthese",
-                    OrganisationName = "CEGEP Ste-Foy",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -702,7 +702,7 @@ namespace RPLP.UnitTesting.DepotTests
                 new Classroom_SQLDTO()
                 {
                     Name = "OOP",
-                    OrganisationName = "CEGEP Ste-Foy",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -714,7 +714,7 @@ namespace RPLP.UnitTesting.DepotTests
             classroomBD[0].Assignments.Add(new Assignment_SQLDTO()
             {
                 Name = "Review",
-                ClassroomName = "ProjetSynthese",
+                ClassroomId = 1,
                 DistributionDate = System.DateTime.Now,
                 Description = "Review a partner\'s code",
                 DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -724,7 +724,7 @@ namespace RPLP.UnitTesting.DepotTests
             classroomBD[0].Assignments.Add(new Assignment_SQLDTO()
             {
                 Name = "Scrum",
-                ClassroomName = "ProjetSynthese",
+                ClassroomId = 1,
                 DistributionDate = System.DateTime.Now,
                 Description = "Daily briefing",
                 DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -752,7 +752,7 @@ namespace RPLP.UnitTesting.DepotTests
             classroomBD[1].Assignments.Add(new Assignment_SQLDTO()
             {
                 Name = "UnitTests",
-                ClassroomName = "OOP",
+                ClassroomId = 2,
                 DistributionDate = System.DateTime.Now,
                 Description = "Review a partner\'s code",
                 DeliveryDeadline = System.DateTime.Now.AddDays(1)
@@ -802,7 +802,7 @@ namespace RPLP.UnitTesting.DepotTests
                 new Classroom_SQLDTO
                 {
                     Name = "ProjetSynthese",
-                    OrganisationName = "CEGEP Ste-Foy",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -811,7 +811,7 @@ namespace RPLP.UnitTesting.DepotTests
                 new Classroom_SQLDTO()
                 {
                     Name = "OOP",
-                    OrganisationName = "CEGEP Ste-Foy",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -823,7 +823,7 @@ namespace RPLP.UnitTesting.DepotTests
             classroomBD[0].Assignments.Add(new Assignment_SQLDTO()
             {
                 Name = "Review",
-                ClassroomName = "ProjetSynthese",
+                ClassroomId = 1,
                 DistributionDate = System.DateTime.Now,
                 Description = "Review a partner\'s code",
                 DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -833,7 +833,7 @@ namespace RPLP.UnitTesting.DepotTests
             classroomBD[0].Assignments.Add(new Assignment_SQLDTO()
             {
                 Name = "Scrum",
-                ClassroomName = "ProjetSynthese",
+                ClassroomId = 1,
                 DistributionDate = System.DateTime.Now,
                 Description = "Daily briefing",
                 DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -861,7 +861,7 @@ namespace RPLP.UnitTesting.DepotTests
             classroomBD[1].Assignments.Add(new Assignment_SQLDTO()
             {
                 Name = "UnitTests",
-                ClassroomName = "OOP",
+                ClassroomId = 2,
                 DistributionDate = System.DateTime.Now,
                 Description = "Review a partner\'s code",
                 DeliveryDeadline = System.DateTime.Now.AddDays(1)
@@ -889,7 +889,7 @@ namespace RPLP.UnitTesting.DepotTests
                 new Assignment_SQLDTO()
                 {
                     Name = "UnitTests",
-                    ClassroomName = "ProjetSynthese",
+                    ClassroomId = 1,
                     DistributionDate = System.DateTime.Now,
                     Description = "Review a partner\'s code",
                     DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -898,7 +898,7 @@ namespace RPLP.UnitTesting.DepotTests
                 new Assignment_SQLDTO()
                 {
                     Name = "AnotherOne",
-                    ClassroomName = "RPLP",
+                    ClassroomId = 3,
                     DistributionDate = System.DateTime.Now,
                     Description = "Review another partner\'s code",
                     DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -940,7 +940,7 @@ namespace RPLP.UnitTesting.DepotTests
                 new Classroom_SQLDTO
                 {
                     Name = "ProjetSynthese",
-                    OrganisationName = "CEGEP Ste-Foy",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -949,7 +949,7 @@ namespace RPLP.UnitTesting.DepotTests
                 new Classroom_SQLDTO()
                 {
                     Name = "OOP",
-                    OrganisationName = "CEGEP Ste-Foy",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -961,7 +961,7 @@ namespace RPLP.UnitTesting.DepotTests
             classroomBD[0].Assignments.Add(new Assignment_SQLDTO()
             {
                 Name = "Review",
-                ClassroomName = "ProjetSynthese",
+                ClassroomId = 1,
                 DistributionDate = System.DateTime.Now,
                 Description = "Review a partner\'s code",
                 DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -971,7 +971,7 @@ namespace RPLP.UnitTesting.DepotTests
             classroomBD[0].Assignments.Add(new Assignment_SQLDTO()
             {
                 Name = "Scrum",
-                ClassroomName = "ProjetSynthese",
+                ClassroomId = 1,
                 DistributionDate = System.DateTime.Now,
                 Description = "Daily briefing",
                 DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -999,7 +999,7 @@ namespace RPLP.UnitTesting.DepotTests
             classroomBD[1].Assignments.Add(new Assignment_SQLDTO()
             {
                 Name = "UnitTests",
-                ClassroomName = "OOP",
+                ClassroomId = 2,
                 DistributionDate = System.DateTime.Now,
                 Description = "Review a partner\'s code",
                 DeliveryDeadline = System.DateTime.Now.AddDays(1)
@@ -1028,19 +1028,19 @@ namespace RPLP.UnitTesting.DepotTests
                         new Classroom_SQLDTO()
                         {
                             Name = "ProjetSynthese",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "RPLP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "OOP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = false
                         }
                     },
@@ -1098,7 +1098,7 @@ namespace RPLP.UnitTesting.DepotTests
                 new Classroom_SQLDTO
                 {
                     Name = "ProjetSynthese",
-                    OrganisationName = "CEGEP Ste-Foy",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -1107,7 +1107,7 @@ namespace RPLP.UnitTesting.DepotTests
                 new Classroom_SQLDTO()
                 {
                     Name = "OOP",
-                    OrganisationName = "CEGEP Ste-Foy",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -1119,7 +1119,7 @@ namespace RPLP.UnitTesting.DepotTests
             classroomBD[0].Assignments.Add(new Assignment_SQLDTO()
             {
                 Name = "Review",
-                ClassroomName = "ProjetSynthese",
+                ClassroomId = 1,
                 DistributionDate = System.DateTime.Now,
                 Description = "Review a partner\'s code",
                 DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -1129,7 +1129,7 @@ namespace RPLP.UnitTesting.DepotTests
             classroomBD[0].Assignments.Add(new Assignment_SQLDTO()
             {
                 Name = "Scrum",
-                ClassroomName = "ProjetSynthese",
+                ClassroomId = 1,
                 DistributionDate = System.DateTime.Now,
                 Description = "Daily briefing",
                 DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -1157,7 +1157,7 @@ namespace RPLP.UnitTesting.DepotTests
             classroomBD[1].Assignments.Add(new Assignment_SQLDTO()
             {
                 Name = "UnitTests",
-                ClassroomName = "OOP",
+                ClassroomId = 2,
                 DistributionDate = System.DateTime.Now,
                 Description = "Review a partner\'s code",
                 DeliveryDeadline = System.DateTime.Now.AddDays(1)
@@ -1195,19 +1195,19 @@ namespace RPLP.UnitTesting.DepotTests
                         new Classroom_SQLDTO()
                         {
                             Name = "ProjetSynthese",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "RPLP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "OOP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = false
                         }
                     },
@@ -1263,7 +1263,7 @@ namespace RPLP.UnitTesting.DepotTests
                 new Classroom_SQLDTO
                 {
                     Name = "ProjetSynthese",
-                    OrganisationName = "CEGEP Ste-Foy",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -1272,7 +1272,7 @@ namespace RPLP.UnitTesting.DepotTests
                 new Classroom_SQLDTO()
                 {
                     Name = "OOP",
-                    OrganisationName = "CEGEP Ste-Foy",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -1283,7 +1283,7 @@ namespace RPLP.UnitTesting.DepotTests
             classroomBD[0].Assignments.Add(new Assignment_SQLDTO()
             {
                 Name = "Scrum",
-                ClassroomName = "ProjetSynthese",
+                ClassroomId = 1,
                 DistributionDate = System.DateTime.Now,
                 Description = "Daily briefing",
                 DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -1311,7 +1311,7 @@ namespace RPLP.UnitTesting.DepotTests
             classroomBD[1].Assignments.Add(new Assignment_SQLDTO()
             {
                 Name = "UnitTests",
-                ClassroomName = "OOP",
+                ClassroomId = 2,
                 DistributionDate = System.DateTime.Now,
                 Description = "Review a partner\'s code",
                 DeliveryDeadline = System.DateTime.Now.AddDays(1)
@@ -1341,7 +1341,7 @@ namespace RPLP.UnitTesting.DepotTests
                 new Assignment_SQLDTO()
                 {
                     Name = "Review",
-                    ClassroomName = "ProjetSynthese",
+                    ClassroomId = 1,
                     DistributionDate = System.DateTime.Now,
                     Description = "Review a partner\'s code",
                     DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -1350,7 +1350,7 @@ namespace RPLP.UnitTesting.DepotTests
                 new Assignment_SQLDTO()
                 {
                     Name = "AnotherOne",
-                    ClassroomName = "RPLP",
+                    ClassroomId = 3,
                     DistributionDate = System.DateTime.Now,
                     Description = "Review another partner\'s code",
                     DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -1394,7 +1394,7 @@ namespace RPLP.UnitTesting.DepotTests
                 new Classroom_SQLDTO
                 {
                     Name = "ProjetSynthese",
-                    OrganisationName = "CEGEP Ste-Foy",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -1403,7 +1403,7 @@ namespace RPLP.UnitTesting.DepotTests
                 new Classroom_SQLDTO()
                 {
                     Name = "OOP",
-                    OrganisationName = "CEGEP Ste-Foy",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -1415,7 +1415,7 @@ namespace RPLP.UnitTesting.DepotTests
             classroomBD[0].Assignments.Add(new Assignment_SQLDTO()
             {
                 Name = "Review",
-                ClassroomName = "ProjetSynthese",
+                ClassroomId = 1,
                 DistributionDate = System.DateTime.Now,
                 Description = "Review a partner\'s code",
                 DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -1425,7 +1425,7 @@ namespace RPLP.UnitTesting.DepotTests
             classroomBD[0].Assignments.Add(new Assignment_SQLDTO()
             {
                 Name = "Scrum",
-                ClassroomName = "ProjetSynthese",
+                ClassroomId = 1,
                 DistributionDate = System.DateTime.Now,
                 Description = "Daily briefing",
                 DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -1444,7 +1444,7 @@ namespace RPLP.UnitTesting.DepotTests
             classroomBD[1].Assignments.Add(new Assignment_SQLDTO()
             {
                 Name = "UnitTests",
-                ClassroomName = "OOP",
+                ClassroomId = 2,
                 DistributionDate = System.DateTime.Now,
                 Description = "Review a partner\'s code",
                 DeliveryDeadline = System.DateTime.Now.AddDays(1)
@@ -1481,19 +1481,19 @@ namespace RPLP.UnitTesting.DepotTests
                         new Classroom_SQLDTO()
                         {
                             Name = "ProjetSynthese",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "RPLP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "OOP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = false
                         }
                     },
@@ -1555,7 +1555,7 @@ namespace RPLP.UnitTesting.DepotTests
                 new Classroom_SQLDTO
                 {
                     Name = "ProjetSynthese",
-                    OrganisationName = "CEGEP Ste-Foy",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -1564,7 +1564,7 @@ namespace RPLP.UnitTesting.DepotTests
                 new Classroom_SQLDTO()
                 {
                     Name = "OOP",
-                    OrganisationName = "CEGEP Ste-Foy",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -1576,7 +1576,7 @@ namespace RPLP.UnitTesting.DepotTests
             classroomBD[0].Assignments.Add(new Assignment_SQLDTO()
             {
                 Name = "Review",
-                ClassroomName = "ProjetSynthese",
+                ClassroomId = 1,
                 DistributionDate = System.DateTime.Now,
                 Description = "Review a partner\'s code",
                 DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -1586,7 +1586,7 @@ namespace RPLP.UnitTesting.DepotTests
             classroomBD[0].Assignments.Add(new Assignment_SQLDTO()
             {
                 Name = "Scrum",
-                ClassroomName = "ProjetSynthese",
+                ClassroomId = 1,
                 DistributionDate = System.DateTime.Now,
                 Description = "Daily briefing",
                 DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -1606,7 +1606,7 @@ namespace RPLP.UnitTesting.DepotTests
             classroomBD[1].Assignments.Add(new Assignment_SQLDTO()
             {
                 Name = "UnitTests",
-                ClassroomName = "OOP",
+                ClassroomId = 2,
                 DistributionDate = System.DateTime.Now,
                 Description = "Review a partner\'s code",
                 DeliveryDeadline = System.DateTime.Now.AddDays(1)
@@ -1643,19 +1643,19 @@ namespace RPLP.UnitTesting.DepotTests
                         new Classroom_SQLDTO()
                         {
                             Name = "ProjetSynthese",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "RPLP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "OOP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = false
                         }
                     },
@@ -1713,7 +1713,7 @@ namespace RPLP.UnitTesting.DepotTests
                 new Classroom_SQLDTO
                 {
                     Name = "ProjetSynthese",
-                    OrganisationName = "CEGEP Ste-Foy",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -1722,7 +1722,7 @@ namespace RPLP.UnitTesting.DepotTests
                 new Classroom_SQLDTO()
                 {
                     Name = "OOP",
-                    OrganisationName = "CEGEP Ste-Foy",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -1730,11 +1730,18 @@ namespace RPLP.UnitTesting.DepotTests
                 }
             };
 
+            Organisation mockOrganisation = new Organisation()
+            {
+                Administrators = new List<Administrator>(),
+                Id = 1,
+                Name = "Mock Organisation"
+            };
+
 
             classroomBD[0].Assignments.Add(new Assignment_SQLDTO()
             {
                 Name = "Review",
-                ClassroomName = "ProjetSynthese",
+                ClassroomId = 1,
                 DistributionDate = System.DateTime.Now,
                 Description = "Review a partner\'s code",
                 DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -1744,7 +1751,7 @@ namespace RPLP.UnitTesting.DepotTests
             classroomBD[0].Assignments.Add(new Assignment_SQLDTO()
             {
                 Name = "Scrum",
-                ClassroomName = "ProjetSynthese",
+                ClassroomId = 1,
                 DistributionDate = System.DateTime.Now,
                 Description = "Daily briefing",
                 DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -1773,7 +1780,7 @@ namespace RPLP.UnitTesting.DepotTests
             classroomBD[1].Assignments.Add(new Assignment_SQLDTO()
             {
                 Name = "UnitTests",
-                ClassroomName = "OOP",
+                ClassroomId = 2,
                 DistributionDate = System.DateTime.Now,
                 Description = "Review a partner\'s code",
                 DeliveryDeadline = System.DateTime.Now.AddDays(1)
@@ -1810,7 +1817,7 @@ namespace RPLP.UnitTesting.DepotTests
             Classroom newClassroom = new Classroom()
             {
                 Name = "RPLP",
-                OrganisationName = "CEGEP Ste-Foy",
+                Organisation = mockOrganisation,
                 Assignments = new List<Assignment>(),
                 Students = new List<Student>(),
                 Teachers = new List<Teacher>()
@@ -1832,7 +1839,7 @@ namespace RPLP.UnitTesting.DepotTests
                 new Classroom_SQLDTO
                 {
                     Name = "ProjetSynthese",
-                    OrganisationName = "CEGEP Ste-Foy",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -1841,7 +1848,7 @@ namespace RPLP.UnitTesting.DepotTests
                 new Classroom_SQLDTO()
                 {
                     Name = "OOP",
-                    OrganisationName = "CEGEP Ste-Foy",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -1853,7 +1860,7 @@ namespace RPLP.UnitTesting.DepotTests
             classroomBD[0].Assignments.Add(new Assignment_SQLDTO()
             {
                 Name = "Review",
-                ClassroomName = "ProjetSynthese",
+                ClassroomId = 1,
                 DistributionDate = System.DateTime.Now,
                 Description = "Review a partner\'s code",
                 DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -1863,7 +1870,7 @@ namespace RPLP.UnitTesting.DepotTests
             classroomBD[0].Assignments.Add(new Assignment_SQLDTO()
             {
                 Name = "Scrum",
-                ClassroomName = "ProjetSynthese",
+                ClassroomId = 1,
                 DistributionDate = System.DateTime.Now,
                 Description = "Daily briefing",
                 DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -1891,7 +1898,7 @@ namespace RPLP.UnitTesting.DepotTests
             classroomBD[1].Assignments.Add(new Assignment_SQLDTO()
             {
                 Name = "UnitTests",
-                ClassroomName = "OOP",
+                ClassroomId = 2,
                 DistributionDate = System.DateTime.Now,
                 Description = "Review a partner\'s code",
                 DeliveryDeadline = System.DateTime.Now.AddDays(1)
@@ -1926,11 +1933,11 @@ namespace RPLP.UnitTesting.DepotTests
             Classroom_SQLDTO? classroom = classroomBD.FirstOrDefault(c => c.Name == "ProjetSynthese");
             Assert.NotNull(classroom);
 
-            classroom.OrganisationName = "Test";
+            classroom.OrganisationId = 2;
             classroom.Assignments.Add(new Assignment_SQLDTO()
             {
                 Name = "TestAssignment",
-                ClassroomName = "ProjetSynthese",
+                ClassroomId = 1,
                 DistributionDate = System.DateTime.Now,
                 Description = "AssignmentUpsertTest",
                 DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -1976,7 +1983,7 @@ namespace RPLP.UnitTesting.DepotTests
                 new Classroom_SQLDTO
                 {
                     Name = "ProjetSynthese",
-                    OrganisationName = "CEGEP Ste-Foy",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -1985,7 +1992,7 @@ namespace RPLP.UnitTesting.DepotTests
                 new Classroom_SQLDTO()
                 {
                     Name = "OOP",
-                    OrganisationName = "CEGEP Ste-Foy",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -1997,7 +2004,7 @@ namespace RPLP.UnitTesting.DepotTests
             classroomBD[0].Assignments.Add(new Assignment_SQLDTO()
             {
                 Name = "Review",
-                ClassroomName = "ProjetSynthese",
+                ClassroomId = 1,
                 DistributionDate = System.DateTime.Now,
                 Description = "Review a partner\'s code",
                 DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -2007,7 +2014,7 @@ namespace RPLP.UnitTesting.DepotTests
             classroomBD[0].Assignments.Add(new Assignment_SQLDTO()
             {
                 Name = "Scrum",
-                ClassroomName = "ProjetSynthese",
+                ClassroomId = 1,
                 DistributionDate = System.DateTime.Now,
                 Description = "Daily briefing",
                 DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -2035,7 +2042,7 @@ namespace RPLP.UnitTesting.DepotTests
             classroomBD[1].Assignments.Add(new Assignment_SQLDTO()
             {
                 Name = "UnitTests",
-                ClassroomName = "OOP",
+                ClassroomId = 2,
                 DistributionDate = System.DateTime.Now,
                 Description = "Review a partner\'s code",
                 DeliveryDeadline = System.DateTime.Now.AddDays(1)

@@ -226,6 +226,8 @@ namespace RPLP.MVC.Controllers
                         model.DeactivatedStudents = GetDeactivatedStudentsList();
                         model.DeactivatedTeachers = GetDeactivatedTeachersList();
                         model.DeactivateOrganisations = GetDeactivatedOrganisationsList();
+                        model.DeactivateClassroom = GetDeactivateClassroomList();
+                        model.DeactivateAssignment = GetDeactivateAssignmentList();
                     }
                     else if (userType == typeof(Teacher).ToString())
                     {
@@ -375,6 +377,46 @@ namespace RPLP.MVC.Controllers
                     { Id = org.Id, Name = org.Name }));
 
                 return organisationViewModels;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        
+        private List<ClassroomViewModel> GetDeactivateClassroomList()
+        {
+            try
+            {
+                List<Classroom> deactivatedClassrooms = this._httpClient
+                    .GetFromJsonAsync<List<Classroom>>("Classroom/Deactivated")
+                    .Result;
+                List<ClassroomViewModel> classroomViewModels = new List<ClassroomViewModel>();
+
+                deactivatedClassrooms.ForEach(clas => classroomViewModels.Add(new ClassroomViewModel()
+                    { Id = clas.Id, Name = clas.Name , OrganisationName = clas.Organisation.Name}));
+
+                return classroomViewModels;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        
+        private List<AssignmentViewModel> GetDeactivateAssignmentList()
+        {
+            try
+            {
+                List<Assignment> deactivatedAssignments = this._httpClient
+                    .GetFromJsonAsync<List<Assignment>>("Assignment/Deactivated")
+                    .Result;
+                List<AssignmentViewModel> assignmentViewModels = new List<AssignmentViewModel>();
+
+                deactivatedAssignments.ForEach(ass => assignmentViewModels.Add(new AssignmentViewModel()
+                    { Id = ass.Id, Name = ass.Name, Description = ass.Description}));
+
+                return assignmentViewModels;
             }
             catch (Exception)
             {
@@ -595,10 +637,11 @@ namespace RPLP.MVC.Controllers
                         {
                             Id = classroom.Id,
                             Name = classroom.Name,
-                            OrganisationName = classroom.OrganisationName
+                            OrganisationName = orgName
                         });
                     }
                 }
+                
                 else if (userType == typeof(Teacher).ToString())
                 {
                     Teacher? teacher = this._httpClient
@@ -706,7 +749,7 @@ namespace RPLP.MVC.Controllers
                 foreach (Classroom classroom in databaseClasses)
                 {
                     classes.Add(new ClassroomViewModel
-                        { Id = classroom.Id, Name = classroom.Name, OrganisationName = classroom.OrganisationName });
+                        { Id = classroom.Id, Name = classroom.Name, OrganisationName = p_organisationName });
                 }
 
                 return classes;
@@ -1555,12 +1598,17 @@ namespace RPLP.MVC.Controllers
                         new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                         "RPLPController - POSTUpsertClassroom - OrganisationName passé en paramètre est vide", 0));
                 }
+                
+                Organisation organisation = this._httpClient
+                    .GetFromJsonAsync<List<Organisation>>("Organisation")
+                    .Result
+                    .FirstOrDefault(o=>o.Name == OrganisationName);
 
                 Classroom classroom = new Classroom
                 {
                     Id = Id,
                     Name = ClassroomName,
-                    OrganisationName = OrganisationName,
+                    Organisation = organisation,
                     Assignments = new List<Assignment>(),
                     Students = new List<Student>(),
                     Teachers = new List<Teacher>(),
@@ -1599,9 +1647,6 @@ namespace RPLP.MVC.Controllers
                                 assignment.DeliveryDeadline);
                         }
                 }
-
-                Logging.Instance.Journal(new Log(
-                    $"new classroomName = {classroom.Name}, new classroomOrganisation = {classroom.OrganisationName}"));
 
                 Task<HttpResponseMessage> response = this._httpClient
                     .PostAsJsonAsync<Classroom>($"Classroom", classroom);
@@ -1975,11 +2020,14 @@ namespace RPLP.MVC.Controllers
                 Logging.Instance.Journal(new Log("api", 0,
                     $"RPLPController - POST méthode POSTNewAssignment(string Name = {Name}, string ClassroomName = {ClassroomName}, string Description = {Description}, DateTime? DeliveryDeadline = {DeliveryDeadline})"));
 
+                Classroom classroom = this._httpClient.GetFromJsonAsync<List<Classroom>>("Classroom").Result
+                    .FirstOrDefault(c => c.Name == ClassroomName);
+                
                 Assignment newAssignment = new Assignment
                 {
                     Id = 0,
                     Name = Name,
-                    ClassroomName = ClassroomName,
+                    Classroom = classroom,
                     Description = Description,
                     DeliveryDeadline = DeliveryDeadline,
                     DistributionDate = DateTime.Now
@@ -1987,16 +2035,6 @@ namespace RPLP.MVC.Controllers
 
                 Task<HttpResponseMessage> response = this._httpClient
                     .PostAsJsonAsync<Assignment>($"Assignment", newAssignment);
-                response.Wait();
-
-                if (!response.IsCompleted)
-                {
-                    return response.Result.StatusCode.ToString();
-                }
-
-                response = this._httpClient
-                    .PostAsJsonAsync($"Classroom/Name/{ClassroomName}/Assignments/Add/{Name}", "");
-
                 response.Wait();
 
                 return response.Result.StatusCode.ToString();
@@ -2048,6 +2086,9 @@ namespace RPLP.MVC.Controllers
                         "RPLPController - POSTModifyAssignment - DeliveryDeadline passé en paramètre n'est pas conforme",
                         0));
                 }
+                
+                Classroom classroom = this._httpClient.GetFromJsonAsync<List<Classroom>>("Classroom").Result
+                    .FirstOrDefault(c => c.Name == ClassroomName);
 
                 Assignment Assignment = new Assignment
                 {
@@ -2055,7 +2096,7 @@ namespace RPLP.MVC.Controllers
                     Name = Name,
                     Description = Description,
                     DeliveryDeadline = DeliveryDeadline,
-                    ClassroomName = ClassroomName,
+                    Classroom = classroom,
                     DistributionDate = DateTime.Now
                 };
 
@@ -2572,6 +2613,72 @@ namespace RPLP.MVC.Controllers
 
                 Logging.Instance.Journal(new Log("api", (int)response.Result.StatusCode,
                     $"RPLPController - POST méthode POSTReactivateOrg()"));
+
+                return response.Result.StatusCode.ToString();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        
+        public ActionResult<string> POSTReactivateClassroom(int ClassroomId, string ClassroomName)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(ClassroomName))
+                {
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                        new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                        "RPLPController - POSTReactivateClassroom - ClassroomName passé en paramètre est vide", 0));
+                }
+
+                if (ClassroomId <= 0)
+                {
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                        new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                        "RPLPController - POSTReactivateClassroom - ClassroomId passé en paramètre est invalide", 0));
+                }
+                
+                Task<HttpResponseMessage> response = this._httpClient
+                    .PostAsJsonAsync($"Classroom/Name/{ClassroomName}/Id/{ClassroomId}Reactivate", "");
+                response.Wait();
+
+                Logging.Instance.Journal(new Log("api", (int)response.Result.StatusCode,
+                    $"RPLPController - POST méthode POSTReactivateClassroom()"));
+
+                return response.Result.StatusCode.ToString();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        
+        public ActionResult<string> POSTReactivateAssignment(int AssignmentId, string AssignmentName)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(AssignmentName))
+                {
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                        new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                        "RPLPController - POSTReactivateAssignment - AssignmentName passé en paramètre est vide", 0));
+                }
+
+                if (AssignmentId <= 0)
+                {
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                        new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                        "RPLPController - POSTReactivateAssignment - AssignmentId passé en paramètre est invalide", 0));
+                }                
+                
+                Task<HttpResponseMessage> response = this._httpClient
+                    .PostAsJsonAsync($"Assignment/Name/{AssignmentName}/Id/{AssignmentId}Reactivate", "");
+                response.Wait();
+
+                Logging.Instance.Journal(new Log("api", (int)response.Result.StatusCode,
+                    $"RPLPController - POST méthode POSTReactivateAssignment()"));
 
                 return response.Result.StatusCode.ToString();
             }

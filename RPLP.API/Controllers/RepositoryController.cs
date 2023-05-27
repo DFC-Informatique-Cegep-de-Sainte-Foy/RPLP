@@ -127,7 +127,7 @@ namespace RPLP.API.Controllers
 
                 Logging.Instance.Journal(new Log($"api/Repository/Name/{repositoryName}", 204, "RepositoryController - DELETE méthode DeleteRepository"));
 
-                this._depot.DeleteRepository(repositoryName);
+                this._depot.DeleteRepositoryParRepoName(repositoryName);
                 return NoContent();
             }
             catch (Exception)

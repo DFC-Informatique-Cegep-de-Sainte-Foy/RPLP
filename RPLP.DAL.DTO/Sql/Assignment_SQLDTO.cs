@@ -1,9 +1,11 @@
 ﻿using RPLP.ENTITES;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace RPLP.DAL.DTO.Sql
 {
@@ -11,7 +13,9 @@ namespace RPLP.DAL.DTO.Sql
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string ClassroomName { get; set; }
+        public int ClassroomId { get; set; }
+        [ForeignKey("ClassroomId")]
+        public Classroom_SQLDTO Classroom { get; set; }
         public string Description { get; set; }
         public DateTime? DeliveryDeadline { get; set; }
         public DateTime DistributionDate { get; set; }
@@ -26,7 +30,7 @@ namespace RPLP.DAL.DTO.Sql
         {
             this.Id = p_assignment.Id;
             this.Name = p_assignment.Name;
-            this.ClassroomName = p_assignment.ClassroomName;
+            this.Classroom = new Classroom_SQLDTO(p_assignment.Classroom);
             this.Description = p_assignment.Description;
             this.DeliveryDeadline = p_assignment.DeliveryDeadline;
             this.DistributionDate = p_assignment.DistributionDate;
@@ -37,10 +41,10 @@ namespace RPLP.DAL.DTO.Sql
         {
             if (this.DeliveryDeadline != null)
             {
-                return new Assignment(this.Id, this.Name, this.ClassroomName, this.Description, this.DeliveryDeadline, this.DistributionDate);
+                return new Assignment(this.Id, this.Name, new Classroom(this.Id, this.Name, this.Classroom.Organisation.ToEntity()), this.Description, this.DeliveryDeadline, this.DistributionDate);
             }
 
-            return new Assignment(this.Id, this.Name, this.ClassroomName, this.Description, this.DistributionDate);
+            return new Assignment(this.Id, this.Name, new Classroom(this.Id, this.Name, this.Classroom.Organisation.ToEntity()), this.Description, this.DistributionDate);
         }
     }
 }

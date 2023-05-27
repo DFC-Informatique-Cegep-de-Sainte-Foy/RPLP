@@ -106,7 +106,32 @@ namespace RPLP.DAL.SQL.Migrations
                     b.HasIndex("Username")
                         .IsUnique();
 
+                    b.HasIndex("Username", "Email")
+                        .IsUnique();
+
                     b.ToTable("Administrators");
+                });
+
+            modelBuilder.Entity("RPLP.DAL.DTO.Sql.Allocation_SQLDTO", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("RepositoryId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("StudentId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TeacherId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Allocations");
                 });
 
             modelBuilder.Entity("RPLP.DAL.DTO.Sql.Assignment_SQLDTO", b =>
@@ -120,11 +145,7 @@ namespace RPLP.DAL.SQL.Migrations
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
-                    b.Property<string>("ClassroomName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("Classroom_SQLDTOId")
+                    b.Property<int>("ClassroomId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("DeliveryDeadline")
@@ -143,7 +164,7 @@ namespace RPLP.DAL.SQL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Classroom_SQLDTOId");
+                    b.HasIndex("ClassroomId");
 
                     b.ToTable("Assignments");
                 });
@@ -163,11 +184,12 @@ namespace RPLP.DAL.SQL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("OrganisationName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("OrganisationId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OrganisationId");
 
                     b.ToTable("Classrooms");
                 });
@@ -257,11 +279,12 @@ namespace RPLP.DAL.SQL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("OrganisationName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("OrganisationId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OrganisationId");
 
                     b.ToTable("Repositories");
                 });
@@ -285,6 +308,9 @@ namespace RPLP.DAL.SQL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsTutor")
+                        .HasColumnType("bit");
+
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -303,6 +329,9 @@ namespace RPLP.DAL.SQL.Migrations
                         .IsUnique();
 
                     b.HasIndex("Username")
+                        .IsUnique();
+
+                    b.HasIndex("Username", "Email")
                         .IsUnique();
 
                     b.ToTable("Students");
@@ -341,6 +370,9 @@ namespace RPLP.DAL.SQL.Migrations
                         .IsUnique();
 
                     b.HasIndex("Username")
+                        .IsUnique();
+
+                    b.HasIndex("Username", "Email")
                         .IsUnique();
 
                     b.ToTable("Teachers");
@@ -393,9 +425,35 @@ namespace RPLP.DAL.SQL.Migrations
 
             modelBuilder.Entity("RPLP.DAL.DTO.Sql.Assignment_SQLDTO", b =>
                 {
-                    b.HasOne("RPLP.DAL.DTO.Sql.Classroom_SQLDTO", null)
+                    b.HasOne("RPLP.DAL.DTO.Sql.Classroom_SQLDTO", "Classroom")
                         .WithMany("Assignments")
-                        .HasForeignKey("Classroom_SQLDTOId");
+                        .HasForeignKey("ClassroomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Classroom");
+                });
+
+            modelBuilder.Entity("RPLP.DAL.DTO.Sql.Classroom_SQLDTO", b =>
+                {
+                    b.HasOne("RPLP.DAL.DTO.Sql.Organisation_SQLDTO", "Organisation")
+                        .WithMany()
+                        .HasForeignKey("OrganisationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Organisation");
+                });
+
+            modelBuilder.Entity("RPLP.DAL.DTO.Sql.Repository_SQLDTO", b =>
+                {
+                    b.HasOne("RPLP.DAL.DTO.Sql.Organisation_SQLDTO", "Organisation")
+                        .WithMany()
+                        .HasForeignKey("OrganisationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Organisation");
                 });
 
             modelBuilder.Entity("RPLP.DAL.DTO.Sql.Classroom_SQLDTO", b =>

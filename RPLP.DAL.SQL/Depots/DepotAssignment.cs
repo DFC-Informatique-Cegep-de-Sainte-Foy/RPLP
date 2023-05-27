@@ -30,9 +30,23 @@ namespace RPLP.DAL.SQL.Depots
         public List<Assignment> GetAssignments()
         {
             RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Assignments", $"DepotAssignment - Method - GetAssignments() - Return List<Assignment>"));
+            List<Assignment_SQLDTO> assigmentsInDb =
+                this._context.Assignments.AsNoTracking().Where(assignment => assignment.Active).ToList();
+            assigmentsInDb.ForEach(a=>a.Classroom = this._context.Classrooms.AsNoTracking().SingleOrDefault(cl => cl.Id == a.ClassroomId));
             
-            return this._context.Assignments.Where(assignment => assignment.Active)
-                                            .Select(assignment => assignment.ToEntity()).ToList();
+            return assigmentsInDb.Select(assignment => assignment.ToEntity()).ToList();
+        }
+        
+        public List<Assignment> GetAssignmentsInactives()
+        {
+            RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Assignments", $"DepotAssignment - Method - GetAssignments() - Return List<Assignment>"));
+            List<Assignment_SQLDTO> assigmentsInDb =
+                this._context.Assignments.AsNoTrackingWithIdentityResolution().Where(assignment => !assignment.Active).ToList();
+            assigmentsInDb.ForEach(a=>a.Classroom = this._context.Classrooms
+                .AsNoTrackingWithIdentityResolution()
+                .SingleOrDefault(cl => cl.Id == a.ClassroomId));
+            
+            return assigmentsInDb.Select(assignment => assignment.ToEntity()).ToList();
         }
 
         public Assignment GetAssignmentById(int p_id)
@@ -43,7 +57,7 @@ namespace RPLP.DAL.SQL.Depots
                        "DepotAssignment - GetAssignmentById - p_id passé en paramêtre est hors des limites", 0));
             }
 
-            Assignment assignment = this._context.Assignments.FirstOrDefault(assignment => assignment.Id == p_id && assignment.Active)
+            Assignment assignment = this._context.Assignments.AsNoTracking().SingleOrDefault(assignment => assignment.Id == p_id && assignment.Active)
                                                              .ToEntity();
 
             if (assignment == null)
@@ -69,7 +83,7 @@ namespace RPLP.DAL.SQL.Depots
             }
 
             Assignment assignment = this._context.Assignments
-                                                .FirstOrDefault(assignment => assignment.Name == p_assignmentName && assignment.Active)
+                                                .AsNoTracking().SingleOrDefault(assignment => assignment.Name == p_assignmentName && assignment.Active)
                                                 .ToEntity();
 
             if (assignment == null)
@@ -94,10 +108,14 @@ namespace RPLP.DAL.SQL.Depots
                      "DepotAssignment - GetAssignmentsByClassroomName - p_classroomName passé en paramètre est vide", 0));
             }
 
-            List<Assignment> assignments = this._context.Assignments
-                .Where(assignment => assignment.ClassroomName == p_classroomName && assignment.Active)
-                .Select(s => s.ToEntity())
+            int classroomId = this._context.Classrooms.AsNoTracking().SingleOrDefault(c => c.Name == p_classroomName).Id;
+
+            List<Assignment_SQLDTO> assignmentsDTO = this._context.Assignments
+                .Where(assignment => assignment.Classroom.Id == classroomId && assignment.Active)
                 .ToList();
+            assignmentsDTO.ForEach(ass=>ass.Classroom = this._context.Classrooms.AsNoTracking().SingleOrDefault(cl=>cl.Id==classroomId));
+
+            List<Assignment> assignments = assignmentsDTO.Select(ass => ass.ToEntity()).ToList();
 
             if (assignments == null)
             {
@@ -114,20 +132,30 @@ namespace RPLP.DAL.SQL.Depots
 
         public void UpsertAssignment(Assignment p_assignment)
         {
+            if (this._context.ChangeTracker != null)
+            {
+                this._context.ChangeTracker.Clear();
+            }
+            
             if (p_assignment == null)
             {
                 RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotAssignment - UpsertAssignment - p_assignment passé en paramètre est null", 0));
             }
 
-            Assignment_SQLDTO assignmentResult = this._context.Assignments.Where(assignment => assignment.Active)
-                                                                          .FirstOrDefault(assignment => assignment.Id == p_assignment.Id);
+            Assignment_SQLDTO assignmentResult = this._context.Assignments
+                .AsNoTrackingWithIdentityResolution()
+                .Where(assignment => assignment.Active)
+                .SingleOrDefault(assignment => assignment.Id == p_assignment.Id);
+            
             if (assignmentResult != null)
             {
                 assignmentResult.Name = p_assignment.Name;
-                assignmentResult.ClassroomName = p_assignment.ClassroomName;
+                assignmentResult.Classroom = new Classroom_SQLDTO(p_assignment.Classroom);
                 assignmentResult.Description = p_assignment.Description;
                 assignmentResult.DeliveryDeadline = p_assignment.DeliveryDeadline;
+                
+                this._context.Entry<Classroom_SQLDTO>(assignmentResult.Classroom).State = EntityState.Unchanged;
 
                 this._context.Update(assignmentResult);
                 this._context.SaveChanges();
@@ -139,10 +167,12 @@ namespace RPLP.DAL.SQL.Depots
                 Assignment_SQLDTO assignmentDTO = new Assignment_SQLDTO();
                 assignmentDTO.Name = p_assignment.Name;
                 assignmentDTO.Description = p_assignment.Description;
-                assignmentDTO.ClassroomName = p_assignment.ClassroomName;
+                assignmentDTO.Classroom = new Classroom_SQLDTO(p_assignment.Classroom);
                 assignmentDTO.DistributionDate = p_assignment.DistributionDate;
                 assignmentDTO.DeliveryDeadline = p_assignment.DeliveryDeadline;
                 assignmentDTO.Active = true;
+
+                this._context.Entry<Classroom_SQLDTO>(assignmentDTO.Classroom).State = EntityState.Unchanged;
 
                 this._context.Assignments.Add(assignmentDTO);
                 this._context.SaveChanges();
@@ -159,11 +189,19 @@ namespace RPLP.DAL.SQL.Depots
                      "DepotAssignment - DeleteAssignment - p_assignmentName passé en paramètre est vide", 0));
             }
 
-            Assignment_SQLDTO assignmentResult = this._context.Assignments.Where(assignment => assignment.Active)
-                                                                          .FirstOrDefault(assignment => assignment.Name == p_assignmentName);
+            Assignment_SQLDTO assignmentResult = this._context.Assignments
+                .AsNoTrackingWithIdentityResolution()
+                .Where(assignment => assignment.Active)
+                .SingleOrDefault(assignment => assignment.Name == p_assignmentName);
+            
             if (assignmentResult != null)
             {
+                
+                assignmentResult.Classroom =
+                    this._context.Classrooms.AsNoTracking().SingleOrDefault(c => c.Id == assignmentResult.ClassroomId);
+                
                 assignmentResult.Active = false;
+                this._context.Entry<Classroom_SQLDTO>(assignmentResult.Classroom).State = EntityState.Unchanged;
 
                 this._context.Update(assignmentResult);
                 this._context.SaveChanges();
@@ -175,6 +213,51 @@ namespace RPLP.DAL.SQL.Depots
                 RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "DepotAssignment - DeleteAssignment(string p_assignmentName) - assignmentResult est null", 0));
             }
-        }  
+        }
+
+        public void ReactivateAssignment(string p_assignmentName, int p_assignmentId)
+        {
+            if (this._context.ChangeTracker != null)
+            {
+                this._context.ChangeTracker.Clear();
+            }
+            
+            if (string.IsNullOrWhiteSpace(p_assignmentName))
+            {
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    "DepotAssignment - ReactivateAssignment - assignmentName passé en paramêtre est invalide", 0));
+            }
+                
+            if (p_assignmentId <=0)
+            {
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    "DepotAssignment - ReactivateAssignment - assignmentId passé en paramêtre est invalide", 0));
+            }
+            
+            Assignment_SQLDTO assignmentResult = this._context.Assignments
+                .AsNoTrackingWithIdentityResolution()
+                .Where(ass => !ass.Active)
+                .FirstOrDefault(assignment => assignment.Id == p_assignmentId && assignment.Name == p_assignmentName);
+            
+            if (assignmentResult != null)
+            {
+                assignmentResult.Classroom =
+                    this._context.Classrooms.AsNoTracking().SingleOrDefault(c => c.Id == assignmentResult.ClassroomId);
+                
+                assignmentResult.Active = true;
+                this._context.Entry<Classroom_SQLDTO>(assignmentResult.Classroom).State = EntityState.Unchanged;
+
+                this._context.Update(assignmentResult);
+                this._context.SaveChanges();
+
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Assignments", $"DepotAssignment - Method - ReactivateAssignment(Assignment p_assignment) - Void - Reactivate Assignment"));
+            }
+            else
+            {
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    "DepotAssignment - ReactivateAssignment(Assignment p_assignment) - assignmentResult est null", 0));
+            }
+            
+        }
     }
 }

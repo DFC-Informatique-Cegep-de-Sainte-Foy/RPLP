@@ -33,6 +33,7 @@ namespace RPLP.DAL.SQL.Depots
         public List<Organisation> GetOrganisations()
         {
             List<Organisation_SQLDTO> organisationResult = this._context.Organisations
+                .AsNoTracking()
                 .Where(organisation => organisation.Active)
                 .Include(organisation => organisation.Administrators.Where(admin => admin.Active)).ToList();
 
@@ -54,6 +55,7 @@ namespace RPLP.DAL.SQL.Depots
         public List<Organisation> GetOrganisationsInactives()
         {
             List<Organisation_SQLDTO> organisationResult = this._context.Organisations
+                .AsNoTracking()
                 .Where(organisation => !organisation.Active)
                 .Include(organisation => organisation.Administrators.Where(admin => admin.Active)).ToList();
 
@@ -82,6 +84,7 @@ namespace RPLP.DAL.SQL.Depots
             }
 
             Organisation_SQLDTO organisationResult = this._context.Organisations
+                .AsNoTracking()
                 .Where(organisation => organisation.Active)
                 .Include(organisation => organisation.Administrators.Where(admin => admin.Active))
                 .FirstOrDefault(organisation => organisation.Id == p_id);
@@ -126,6 +129,7 @@ namespace RPLP.DAL.SQL.Depots
             }
 
             Organisation_SQLDTO organisationResult = this._context.Organisations
+                .AsNoTracking()
                 .Where(organisation => organisation.Active)
                 .Include(organisation => organisation.Administrators.Where(admin => admin.Active))
                 .FirstOrDefault(organisation => organisation.Name == p_name);
@@ -173,6 +177,7 @@ namespace RPLP.DAL.SQL.Depots
             }
 
             Organisation_SQLDTO organisationResult = this._context.Organisations
+                .AsNoTracking()
                 .Include(organisation => organisation.Administrators.Where(a => a.Active))
                 .FirstOrDefault(organisation => organisation.Name == p_organisationName && organisation.Active);
 
@@ -390,34 +395,6 @@ namespace RPLP.DAL.SQL.Depots
                     0));
             }
         }
-
-        // public void ReactivateOrganisation(string orgName)
-        // {
-        //     if (string.IsNullOrWhiteSpace(orgName))
-        //     {
-        //         RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
-        //             new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-        //             "DepotOrganisation - ReactivateOrganisation - orgName passé en paramètre est vide", 0));
-        //     }
-        //
-        //     Organisation_SQLDTO orgResult = this._context.Organisations.Where(o => !o.Active)
-        //         .FirstOrDefault(o => o.Name == orgName);
-        //     if (orgResult != null)
-        //     {
-        //         orgResult.Active = true;
-        //
-        //         this._context.Update(orgResult);
-        //         this._context.SaveChanges();
-        //
-        //         RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Administrators",
-        //             $"DepotOrganisation - Method - ReactivateOrganisation(string orgName) - Void - reactive organisation"));
-        //     }
-        //     else
-        //     {
-        //         RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Administrators",
-        //             $"DepotOrganisation - Method - ReactivateOrganisation(string orgName) - Void - orgResult est null"));
-        //     }
-        // }
         
         public void ReactivateOrganisation(Organisation p_organisation)
         {
@@ -428,8 +405,10 @@ namespace RPLP.DAL.SQL.Depots
                     "DepotOrganisation - ReactivateOrganisation - p_organisation passé en paramètre est null", 0));
             }
 
-            Organisation_SQLDTO orgResult = this._context.Organisations.Where(o => !o.Active)
-                .FirstOrDefault(o => o.Id == p_organisation.Id);
+            Organisation_SQLDTO orgResult = this._context.Organisations
+                .AsNoTrackingWithIdentityResolution()
+                .Where(o => !o.Active)
+                .SingleOrDefault(o => o.Id == p_organisation.Id);
             if (orgResult != null)
             {
                 orgResult.Active = true;

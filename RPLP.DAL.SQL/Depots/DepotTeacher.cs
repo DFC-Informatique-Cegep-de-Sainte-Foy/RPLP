@@ -229,16 +229,19 @@ namespace RPLP.DAL.SQL.Depots
                 RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotTeacher - GetTeacherClassesInOrganisation - p_teacherUsername passé en paramètre est vide", 0));
             }
+            
             if (string.IsNullOrWhiteSpace(p_organisationName))
             {
                 RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotTeacher - GetTeacherClassesInOrganisation - p_organisationName passé en paramètre est vide", 0));
             }
+            
+            int organisationId = this._context.Organisations.AsNoTracking().SingleOrDefault(o => o.Name == p_organisationName).Id;
 
             List<Classroom> databaseClasses = this._context.Classrooms
                 .Where(c =>
                 c.Teachers.FirstOrDefault(t => t.Username == p_teacherUsername) != null &&
-                c.OrganisationName == p_organisationName &&
+                c.Organisation.Id == organisationId &&
                 c.Active)
                 .Select(c => c.ToEntityWithoutList())
                 .ToList();
@@ -255,16 +258,19 @@ namespace RPLP.DAL.SQL.Depots
                 RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotTeacher - GetTeacherClassesInOrganisationByEmail - p_teacherEmail passé en paramètre est vide", 0));
             }
+            
             if (string.IsNullOrWhiteSpace(p_organisationName))
             {
                 RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                      "DepotTeacher - GetTeacherClassesInOrganisationByEmail - p_organisationName passé en paramètre est vide", 0));
             }
+            
+            int organisationId = this._context.Organisations.AsNoTracking().SingleOrDefault(o => o.Name == p_organisationName).Id;
 
             List<Classroom> databaseClasses = this._context.Classrooms
                 .Where(c =>
                 c.Teachers.FirstOrDefault(t => t.Email == p_teacherEmail) != null &&
-                c.OrganisationName == p_organisationName &&
+                c.Organisation.Id == organisationId &&
                 c.Active)
                 .Select(c => c.ToEntityWithoutList())
                 .ToList();
@@ -283,18 +289,18 @@ namespace RPLP.DAL.SQL.Depots
             }
 
             List<Organisation> organisations = new List<Organisation>();
+            
             List<Classroom_SQLDTO> classrooms = new List<Classroom_SQLDTO>();
 
-            Teacher_SQLDTO? teacher = this._context.Teachers.Include(teacher => teacher.Classes.Where(classroom => classroom.Active))
-                                                           .FirstOrDefault(teacher => teacher.Username == p_teacherUsername && teacher.Active);
+            Teacher_SQLDTO? teacher = this._context.Teachers.Include(teacher => teacher.Classes.Where(classroom => classroom.Active)).FirstOrDefault(teacher => teacher.Username == p_teacherUsername && teacher.Active);
 
             classrooms = teacher.Classes;
 
-            HashSet<string> organisationNames = classrooms.Select(c => c.OrganisationName).ToHashSet();
+            HashSet<int> organisationIds = classrooms.Select(c => c.Organisation.Id).ToHashSet();
 
-            foreach (string organisationName in organisationNames)
+            foreach (int id in organisationIds)
             {
-                Organisation_SQLDTO? organisationToAdd = this._context.Organisations.FirstOrDefault(o => o.Name == organisationName);
+                Organisation_SQLDTO? organisationToAdd = this._context.Organisations.AsNoTracking().SingleOrDefault(o => o.Id == id);
 
                 if (organisationToAdd != null)
                 {

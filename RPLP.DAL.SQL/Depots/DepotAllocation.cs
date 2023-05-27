@@ -153,7 +153,7 @@ namespace RPLP.DAL.SQL.Depots
             List<Allocation> allocations = new List<Allocation>();
 
             Assignment_SQLDTO? assignmentResult =
-                this._context.Assignments.SingleOrDefault(assignment =>
+                this._context.Assignments.AsNoTracking().SingleOrDefault(assignment =>
                     assignment.Id == p_assignmentId && assignment.Active);
 
             if (assignmentResult is null)
@@ -165,7 +165,7 @@ namespace RPLP.DAL.SQL.Depots
             else
             {
                 Classroom_SQLDTO? classroomResult = this._context.Classrooms.SingleOrDefault(classroom =>
-                    classroom.Active && classroom.Name == assignmentResult.ClassroomName);
+                    classroom.Active && classroom.Id == assignmentResult.Classroom.Id);
 
                 if (classroomResult is null)
                 {
@@ -176,7 +176,7 @@ namespace RPLP.DAL.SQL.Depots
                 else
                 {
                     List<Repository_SQLDTO> repositoriesResult = this._context.Repositories.Where(repository =>
-                        repository.OrganisationName.ToLower() == classroomResult.OrganisationName.ToLower() &&
+                        repository.Organisation.Id == classroomResult.Organisation.Id &&
                         repository.Name.ToLower().StartsWith(assignmentResult.Name.ToLower())).ToList();
 
                     if (repositoriesResult is null)
@@ -358,13 +358,14 @@ namespace RPLP.DAL.SQL.Depots
 
             try
             {
-                Assignment_SQLDTO? assignmentResult = this._context.Assignments.SingleOrDefault(assignment =>
-                    assignment.Name == p_assignmentName && assignment.Active);
+                Assignment_SQLDTO? assignmentResult = this._context.Assignments.AsNoTracking().SingleOrDefault(
+                    assignment =>
+                        assignment.Name == p_assignmentName && assignment.Active);
 
                 if (assignmentResult is null)
                 {
                     Logging.Instance.Journal(new Log("Allocations",
-                        $"DepotAllocation - Method - GetAllocationsByAssignmentName(string p_assignmentName) - Return List<Allocation> - assignmentResult est null",
+                        $"DepotAllocation - Method - GetAllocationsByAssignmentName({p_assignmentName}) - Return List<Allocation> - assignmentResult est null",
                         0));
                 }
                 else
@@ -372,14 +373,14 @@ namespace RPLP.DAL.SQL.Depots
                     allocations = this.GetAllocationsByAssignmentID(assignmentResult.Id);
                 }
             }
+            
             catch (InvalidOperationException e)
             {
-                Logging.Instance.Journal(new Log(e.ToString(),
+                Logging.Instance.Journal(new Log(e.Message,
                     new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                    "DepotAllocation - GetAllocationsByAssignmentName - _context.Assignments.SingleOrDefault trouve plus qu'un élément",
+                    $"DepotAllocation - GetAllocationsByAssignmentName({p_assignmentName}) - _context.Assignments.SingleOrDefault trouve plus qu'un élément",
                     0));
             }
-
             return allocations;
         }
 
@@ -401,15 +402,11 @@ namespace RPLP.DAL.SQL.Depots
 
             try
             {
-                Allocation_SQLDTO? allocationResult = this._context.Allocations.
-                    SingleOrDefault(allocation =>
-                        allocation.Id == p_allocation.Id && allocation.StudentId == p_allocation.StudentId &&
-                        allocation.RepositoryId == p_allocation.RepositoryId);
+                Allocation_SQLDTO? allocationResult =
+                    this._context.Allocations.SingleOrDefault(allocation => allocation.Id == p_allocation.Id);
 
                 if (allocationResult is not null)
                 {
-                    allocationResult.StudentId = p_allocation.StudentId;
-                    allocationResult.RepositoryId = p_allocation.RepositoryId;
                     allocationResult.Status = p_allocation.Status;
 
                     this._context.Update(allocationResult);
@@ -421,10 +418,10 @@ namespace RPLP.DAL.SQL.Depots
                 else
                 {
                     Allocation_SQLDTO allocation = new Allocation_SQLDTO();
+                    allocation.TeacherId = p_allocation.TeacherId;
                     allocation.StudentId = p_allocation.StudentId;
                     allocation.RepositoryId = p_allocation.RepositoryId;
                     allocation.Status = p_allocation.Status;
-                    ;
 
                     this._context.Allocations.Add(allocation);
                     this._context.SaveChanges();
@@ -456,10 +453,9 @@ namespace RPLP.DAL.SQL.Depots
 
             try
             {
-                Allocation_SQLDTO? allocationResult = this._context.Allocations.
-                    SingleOrDefault(allocation =>
-                        allocation.Id == p_allocation.Id && allocation.StudentId == p_allocation.StudentId &&
-                        allocation.RepositoryId == p_allocation.RepositoryId);
+                Allocation_SQLDTO? allocationResult = this._context.Allocations.SingleOrDefault(allocation =>
+                    allocation.Id == p_allocation.Id && allocation.StudentId == p_allocation.StudentId &&
+                    allocation.RepositoryId == p_allocation.RepositoryId);
 
                 if (allocationResult is not null)
                 {
@@ -517,10 +513,8 @@ namespace RPLP.DAL.SQL.Depots
                     throw new ArgumentNullException(nameof(a));
                 }
 
-                Allocation_SQLDTO? allocationResult = this._context.Allocations.
-                    SingleOrDefault(allocation =>
-                        allocation.Id == a.Id && allocation.StudentId == a.StudentId &&
-                        allocation.RepositoryId == a.RepositoryId);
+                Allocation_SQLDTO? allocationResult =
+                    this._context.Allocations.SingleOrDefault(allocation => allocation.Id == a.Id);
 
                 if (allocationResult is not null)
                 {
@@ -548,10 +542,8 @@ namespace RPLP.DAL.SQL.Depots
                     }
                     catch (Exception e)
                     {
-                        //flag
-                        Logging.Instance.Journal(new Log($"Exception e:{e.Message}"));
+                        Logging.Instance.Journal(new Log(e.Message,e.StackTrace.Replace(System.Environment.NewLine, "."), "UpsertAllocationsBatch(List<Allocation> p_allocations - catch)", 0));
                     }
-
 
                     Logging.Instance.Journal(new Log("Allocation",
                         $"DepotAllocation - Method - UpsertAllocationsBatch(List<Allocation> p_allocations) - Void - Add Allocations"));
@@ -668,10 +660,9 @@ namespace RPLP.DAL.SQL.Depots
                     throw new ArgumentNullException(nameof(a));
                 }
 
-                Allocation_SQLDTO? allocationResult = this._context.Allocations.
-                    SingleOrDefault(allocation =>
-                        allocation.Id == a.Id && allocation.StudentId == a.StudentId &&
-                        allocation.RepositoryId == a.RepositoryId);
+                Allocation_SQLDTO? allocationResult = this._context.Allocations.SingleOrDefault(allocation =>
+                    allocation.Id == a.Id && allocation.StudentId == a.StudentId &&
+                    allocation.RepositoryId == a.RepositoryId);
 
                 if (allocationResult is not null)
                 {

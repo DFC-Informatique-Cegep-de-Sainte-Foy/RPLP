@@ -39,6 +39,21 @@ namespace RPLP.API.Controllers
                 throw;
             }
         }
+        
+        [HttpGet("Deactivated")]
+        public ActionResult<IEnumerable<Classroom>> GetDeactivatedClassrooms()
+        {
+            try
+            {
+                Logging.Instance.Journal(new Log("api/Classroom/Deactivated", 200, "ClassroomController - GET méthode GetDeactivatedClassroom"));
+
+                return Ok(this._depot.GetClassroomsInactives());
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
 
         [HttpGet("Id/{id}")]
         public ActionResult<Classroom> GetClassroomById(int id)
@@ -528,6 +543,36 @@ namespace RPLP.API.Controllers
             }
             catch (Exception)
             {
+                throw;
+            }
+        }
+        
+        [HttpPost("Name/{ClassroomName}/Id/{ClassroomId}Reactivate")]
+        public ActionResult ReactivateClassroom(string ClassroomName, int ClassroomId)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(ClassroomName))
+                {
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                        "ClassroomController - ReactivateClassroom - p_classroomName passé en paramêtre est invalide", 0));
+                }
+                
+                if (ClassroomId <=0)
+                {
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                        "ClassroomController - ReactivateClassroom - p_classroomId passé en paramêtre est invalide", 0));
+                }
+
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"api/Classroom/Reactivate", 204, "ClassroomController - POST méthode ReactivateClassroom"));
+
+                this._depot.ReactivateClassroom(ClassroomName, ClassroomId);
+                return NoContent();
+            }
+            catch (Exception e)
+            {
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(e.Message, e.StackTrace.Replace(System.Environment.NewLine, "."),
+                    "ClassroomController - ReactivateClassroom - catch", 0));
                 throw;
             }
         }
