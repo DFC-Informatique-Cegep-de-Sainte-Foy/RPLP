@@ -407,7 +407,7 @@ namespace RPLP.DAL.SQL.Depots
                         this._context.Entry(classroomResult.Organisation).State = EntityState.Unchanged;
                     }
 
-                    
+
 
                     classroomResult.Assignments.Add(assignmentResult);
                     this._context.SaveChanges();
@@ -467,7 +467,7 @@ namespace RPLP.DAL.SQL.Depots
                         this._context.Entry(classroomResult).Collection(x => x.Students).Load();
                         this._context.Entry(classroomResult.Organisation).State = EntityState.Unchanged;
                     }
-                 
+
                     classroomResult.Students.Add(studentResult);
                     this._context.SaveChanges();
 
@@ -664,9 +664,9 @@ namespace RPLP.DAL.SQL.Depots
                         this._context.ChangeTracker.Clear();
                         this._context.Attach(classroomResult);
                         this._context.Entry(classroomResult).Collection(x => x.Students).Load();
+                        this._context.Entry(classroomResult.Organisation).State = EntityState.Unchanged;
                     }
 
-                    this._context.Entry(classroomResult.Organisation).State = EntityState.Unchanged;
                     classroomResult.Assignments.RemoveAt(index);
                     this._context.SaveChanges();
 
@@ -726,9 +726,8 @@ namespace RPLP.DAL.SQL.Depots
                         this._context.ChangeTracker.Clear();
                         this._context.Attach(classroomResult);
                         this._context.Entry(classroomResult).Collection(x => x.Students).Load();
+                        this._context.Entry(classroomResult.Organisation).State = EntityState.Unchanged;
                     }
-
-                    this._context.Entry(classroomResult.Organisation).State = EntityState.Unchanged;
 
                     classroomResult.Students.RemoveAt(index);
                     this._context.SaveChanges();
@@ -797,9 +796,8 @@ namespace RPLP.DAL.SQL.Depots
                         this._context.ChangeTracker.Clear();
                         this._context.Attach(classroomResult);
                         this._context.Entry(classroomResult).Collection(x => x.Teachers).Load();
+                        this._context.Entry(classroomResult.Organisation).State = EntityState.Unchanged;
                     }
-
-                    this._context.Entry(classroomResult.Organisation).State = EntityState.Unchanged;
 
                     classroomResult.Teachers.RemoveAt(index);
                     this._context.SaveChanges();
@@ -896,8 +894,10 @@ namespace RPLP.DAL.SQL.Depots
                 classroomResult.Name = p_classroom.Name;
                 classroomResult.Organisation = new Organisation_SQLDTO(p_classroom.Organisation);
 
-                this._context.Entry<Organisation_SQLDTO>(classroomResult.Organisation).State = EntityState.Unchanged;
-
+                if (this._context.ChangeTracker != null)
+                {
+                    this._context.Entry<Organisation_SQLDTO>(classroomResult.Organisation).State = EntityState.Unchanged;
+                }
                 this._context.Update(classroomResult);
                 this._context.SaveChanges();
 
@@ -914,8 +914,10 @@ namespace RPLP.DAL.SQL.Depots
                 classDTO.Assignments = assignments;
                 classDTO.Active = true;
 
-                this._context.Entry<Organisation_SQLDTO>(classDTO.Organisation).State = EntityState.Unchanged;
-
+                if (this._context.ChangeTracker != null)
+                {
+                    this._context.Entry<Organisation_SQLDTO>(classDTO.Organisation).State = EntityState.Unchanged;
+                }
                 this._context.Classrooms.Add(classDTO);
                 this._context.SaveChanges();
 
@@ -941,7 +943,11 @@ namespace RPLP.DAL.SQL.Depots
                     this._context.Organisations.AsNoTracking()
                         .SingleOrDefault(o => o.Id == classroomResult.OrganisationId);
                 classroomResult.Active = false;
-                this._context.Entry<Organisation_SQLDTO>(classroomResult.Organisation).State = EntityState.Unchanged;
+
+                if (this._context.ChangeTracker != null)
+                {
+                    this._context.Entry<Organisation_SQLDTO>(classroomResult.Organisation).State = EntityState.Unchanged;
+                }
 
                 this._context.Update(classroomResult);
                 this._context.SaveChanges();

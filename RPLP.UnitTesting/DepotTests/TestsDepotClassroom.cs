@@ -38,6 +38,7 @@ namespace RPLP.UnitTesting.DepotTests
             {
                 new Classroom_SQLDTO
                 {
+                    Id= 1,
                     Name = "ProjetSynthese",
                     OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
@@ -47,6 +48,7 @@ namespace RPLP.UnitTesting.DepotTests
                 },
                 new Classroom_SQLDTO()
                 {
+                    Id= 2,
                     Name = "OOP",
                     OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
@@ -56,79 +58,97 @@ namespace RPLP.UnitTesting.DepotTests
                 }
             };
 
+            List<Assignment_SQLDTO> assignmentsBD = new List<Assignment_SQLDTO>()
+            {
+                new Assignment_SQLDTO()
+                {
+                    Id= 1,
+                    Name = "Review",
+                    ClassroomId = 1,
+                    DistributionDate = DateTime.Now,
+                    Description = "Review a partner's code",
+                    DeliveryDeadline = DateTime.Now.AddDays(1),
+                    Active = true
+                },
+                new Assignment_SQLDTO()
+                {
+                    Id= 2,
+                    Name = "Scrum",
+                    ClassroomId = 1,
+                    DistributionDate = DateTime.Now,
+                    Description = "Daily briefing",
+                    DeliveryDeadline = DateTime.Now.AddDays(1),
+                    Active = true
+                },
+                new Assignment_SQLDTO()
+                {
+                    Id= 3,
+                    Name = "UnitTests",
+                    ClassroomId = 1,
+                    DistributionDate = DateTime.Now,
+                    Description = "tests",
+                    DeliveryDeadline = DateTime.Now.AddDays(1),
+                    Active = true
+                }
+            };
 
-            classroomBD[0].Assignments.Add(new Assignment_SQLDTO()
+            List<Organisation_SQLDTO> organisationsDB = new List<Organisation_SQLDTO>()
             {
-                Name = "Review",
-                ClassroomId = 1,
-                DistributionDate = System.DateTime.Now,
-                Description = "Review a partner\'s code",
-                DeliveryDeadline = System.DateTime.Now.AddDays(1),
-                Active = true
-            });
+                new Organisation_SQLDTO()
+                {
+                    Id = 1,
+                    Name = "CEGEP Ste-Foy",
+                    Administrators = new List<Administrator_SQLDTO>(),
+                    Active = true
+                },
+            };
+            List<Student_SQLDTO> studentsBD = new List<Student_SQLDTO>()
+            {
+                new Student_SQLDTO()
+                {
+                    Id = 1,
+                    Username = "ThPaquet",
+                    FirstName = "Thierry",
+                    LastName = "Paquet",
+                    Email = "ThPaquet@hotmail.com",
+                    Matricule = "1141200",
+                    Active = true
+                }
+            };
+            List<Teacher_SQLDTO> teachersDB = new List<Teacher_SQLDTO>()
+            {
+                new Teacher_SQLDTO()
+                {
+                    Username = "BACenComm",
+                    FirstName = "Melissa",
+                    LastName = "Lachapelle",
+                    Email = "BACenComm@hotmail.com",
+                    Active = false
+                }
+            };
 
-            classroomBD[0].Assignments.Add(new Assignment_SQLDTO()
-            {
-                Name = "Scrum",
-                ClassroomId = 1,
-                DistributionDate = System.DateTime.Now,
-                Description = "Daily briefing",
-                DeliveryDeadline = System.DateTime.Now.AddDays(1),
-                Active = true
-            });
+            classroomBD[0].Assignments.Add(assignmentsBD[0]);
+            classroomBD[0].Assignments.Add(assignmentsBD[1]);
+            classroomBD[1].Assignments.Add(assignmentsBD[2]);
 
-            classroomBD[0].Students.Add(new Student_SQLDTO()
-            {
-                Username = "ThPaquet",
-                FirstName = "Thierry",
-                LastName = "Paquet",
-                Email = "ThPaquet@hotmail.com",
-                Matricule = "1141200",
-                Active = true
-            });
-
-            classroomBD[0].Teachers.Add(new Teacher_SQLDTO()
-            {
-                Username = "PiFou86",
-                FirstName = "Pierre-Francois",
-                LastName = "Leon",
-                Email = "PiFou86@hotmail.com",
-                Active = true
-            });
-
-            classroomBD[1].Assignments.Add(new Assignment_SQLDTO()
-            {
-                Name = "UnitTests",
-                ClassroomId = 2,
-                DistributionDate = System.DateTime.Now,
-                Description = "Review a partner\'s code",
-                DeliveryDeadline = System.DateTime.Now.AddDays(1)
-            });
-            classroomBD[1].Students.Add(new Student_SQLDTO()
-            {
-                Username = "ikeameatbol",
-                FirstName = "Jonathan",
-                LastName = "Blouin",
-                Email = "ikeameatbol@hotmail.com",
-                Matricule = "1122334",
-                Active = true
-            });
-
-            classroomBD[1].Teachers.Add(new Teacher_SQLDTO()
-            {
-                Username = "BACenComm",
-                FirstName = "Melissa",
-                LastName = "Lachapelle",
-                Email = "BACenComm@hotmail.com",
-                Active = true
-            });
+            classroomBD[0].Students.Add(studentsBD[0]);
+            classroomBD[0].Teachers.Add(teachersDB[0]);
 
             var logMock = new Mock<IManipulationLogs>();
             Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Students).ReturnsDbSet(studentsBD);
+            context.Setup(x => x.Teachers).ReturnsDbSet(teachersDB);
             context.Setup(x => x.Classrooms).ReturnsDbSet(classroomBD);
+            context.Setup(x => x.Organisations).ReturnsDbSet(organisationsDB);
+            context.Setup(x => x.Assignments).ReturnsDbSet(assignmentsBD);
             DepotClassroom depot = new DepotClassroom(context.Object);
+
+            foreach (Assignment_SQLDTO assignment in assignmentsBD)
+            {
+                assignment.Classroom = classroomBD.Where(x => x.Id == assignment.ClassroomId).FirstOrDefault();
+            }
 
             List<Classroom> classrooms = depot.GetClassrooms();
 
@@ -140,7 +160,7 @@ namespace RPLP.UnitTesting.DepotTests
             Assert.Equal(2, projetSyntheseClassroom.Assignments.Count);
             Assert.Contains(projetSyntheseClassroom.Assignments, a => a.Name == "Review");
             Assert.Contains(projetSyntheseClassroom.Students, s => s.Username == "ThPaquet");
-            Assert.Contains(projetSyntheseClassroom.Teachers, t => t.Username == "PiFou86");
+            Assert.Contains(projetSyntheseClassroom.Teachers, t => t.Username == "BACenComm");
 
 
         }
@@ -152,6 +172,7 @@ namespace RPLP.UnitTesting.DepotTests
             {
                 new Classroom_SQLDTO
                 {
+                    Id= 1,
                     Name = "ProjetSynthese",
                     OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
@@ -161,6 +182,7 @@ namespace RPLP.UnitTesting.DepotTests
                 },
                 new Classroom_SQLDTO()
                 {
+                    Id= 2,
                     Name = "OOP",
                     OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
@@ -170,87 +192,106 @@ namespace RPLP.UnitTesting.DepotTests
                 }
             };
 
+            List<Assignment_SQLDTO> assignmentsBD = new List<Assignment_SQLDTO>()
+            {
+                new Assignment_SQLDTO()
+                {
+                    Id= 1,
+                    Name = "Review",
+                    ClassroomId = 1,
+                    DistributionDate = DateTime.Now,
+                    Description = "Review a partner's code",
+                    DeliveryDeadline = DateTime.Now.AddDays(1),
+                    Active = true
+                },
+                new Assignment_SQLDTO()
+                {
+                    Id= 2,
+                    Name = "Scrum",
+                    ClassroomId = 1,
+                    DistributionDate = DateTime.Now,
+                    Description = "Daily briefing",
+                    DeliveryDeadline = DateTime.Now.AddDays(1),
+                    Active = true
+                },
+                new Assignment_SQLDTO()
+                {
+                    Id= 3,
+                    Name = "UnitTests",
+                    ClassroomId = 1,
+                    DistributionDate = DateTime.Now,
+                    Description = "tests",
+                    DeliveryDeadline = DateTime.Now.AddDays(1),
+                    Active = true
+                }
+            };
 
-            classroomBD[0].Assignments.Add(new Assignment_SQLDTO()
+            List<Organisation_SQLDTO> organisationsDB = new List<Organisation_SQLDTO>()
             {
-                Name = "Review",
-                ClassroomId = 1,
-                DistributionDate = System.DateTime.Now,
-                Description = "Review a partner\'s code",
-                DeliveryDeadline = System.DateTime.Now.AddDays(1),
-                Active = true
-            });
+                new Organisation_SQLDTO()
+                {
+                    Id = 1,
+                    Name = "CEGEP Ste-Foy",
+                    Administrators = new List<Administrator_SQLDTO>(),
+                    Active = true
+                },
+            };
+            List<Student_SQLDTO> studentsBD = new List<Student_SQLDTO>()
+            {
+                new Student_SQLDTO()
+                {
+                    Id = 1,
+                    Username = "ThPaquet",
+                    FirstName = "Thierry",
+                    LastName = "Paquet",
+                    Email = "ThPaquet@hotmail.com",
+                    Matricule = "1141200",
+                    Active = true
+                }
+            };
+            List<Teacher_SQLDTO> teachersDB = new List<Teacher_SQLDTO>()
+            {
+                new Teacher_SQLDTO()
+                {
+                    Username = "BACenComm",
+                    FirstName = "Melissa",
+                    LastName = "Lachapelle",
+                    Email = "BACenComm@hotmail.com",
+                    Active = false
+                }
+            };
 
-            classroomBD[0].Assignments.Add(new Assignment_SQLDTO()
-            {
-                Name = "Scrum",
-                ClassroomId = 1,
-                DistributionDate = System.DateTime.Now,
-                Description = "Daily briefing",
-                DeliveryDeadline = System.DateTime.Now.AddDays(1),
-                Active = true
-            });
+            classroomBD[0].Assignments.Add(assignmentsBD[0]);
+            classroomBD[0].Assignments.Add(assignmentsBD[1]);
+            classroomBD[1].Assignments.Add(assignmentsBD[2]);
 
-            classroomBD[0].Students.Add(new Student_SQLDTO()
-            {
-                Username = "ThPaquet",
-                FirstName = "Thierry",
-                LastName = "Paquet",
-                Email = "ThPaquet@hotmail.com",
-                Matricule = "1141200",
-                Active = true
-            });
-
-            classroomBD[0].Teachers.Add(new Teacher_SQLDTO()
-            {
-                Username = "PiFou86",
-                FirstName = "Pierre-Francois",
-                LastName = "Leon",
-                Email = "PiFou86@hotmail.com",
-                Active = true
-            });
-            classroomBD[1].Assignments.Add(new Assignment_SQLDTO()
-            {
-                Name = "UnitTests",
-                ClassroomId = 2,
-                DistributionDate = System.DateTime.Now,
-                Description = "Review a partner\'s code",
-                DeliveryDeadline = System.DateTime.Now.AddDays(1)
-            });
-            classroomBD[1].Students.Add(new Student_SQLDTO()
-            {
-                Username = "ikeameatbol",
-                FirstName = "Jonathan",
-                LastName = "Blouin",
-                Email = "ikeameatbol@hotmail.com",
-                Matricule = "1122334",
-                Active = true
-            });
-
-            classroomBD[1].Teachers.Add(new Teacher_SQLDTO()
-            {
-                Username = "BACenComm",
-                FirstName = "Melissa",
-                LastName = "Lachapelle",
-                Email = "BACenComm@hotmail.com",
-                Active = true
-            });
+            classroomBD[0].Students.Add(studentsBD[0]);
+            classroomBD[0].Teachers.Add(teachersDB[0]);
 
             var logMock = new Mock<IManipulationLogs>();
             Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Students).ReturnsDbSet(studentsBD);
+            context.Setup(x => x.Teachers).ReturnsDbSet(teachersDB);
             context.Setup(x => x.Classrooms).ReturnsDbSet(classroomBD);
+            context.Setup(x => x.Organisations).ReturnsDbSet(organisationsDB);
+            context.Setup(x => x.Assignments).ReturnsDbSet(assignmentsBD);
             DepotClassroom depot = new DepotClassroom(context.Object);
 
             int classroomId = classroomBD.FirstOrDefault(c => c.Name == "ProjetSynthese").Id;
+
+            foreach (Assignment_SQLDTO assignment in assignmentsBD)
+            {
+                assignment.Classroom = classroomBD.Where(x => x.Id == assignment.ClassroomId).FirstOrDefault();
+            }
 
             Classroom classroom = depot.GetClassroomById(classroomId);
 
             Assert.NotNull(classroom);
             Assert.Contains(classroom.Assignments, a => a.Name == "Review");
             Assert.Contains(classroom.Students, s => s.Username == "ThPaquet");
-            Assert.Contains(classroom.Teachers, t => t.Username == "PiFou86");
+            Assert.Contains(classroom.Teachers, t => t.Username == "BACenComm");
 
 
         }
@@ -262,6 +303,7 @@ namespace RPLP.UnitTesting.DepotTests
             {
                 new Classroom_SQLDTO
                 {
+                    Id= 1,
                     Name = "ProjetSynthese",
                     OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
@@ -271,6 +313,7 @@ namespace RPLP.UnitTesting.DepotTests
                 },
                 new Classroom_SQLDTO()
                 {
+                    Id= 2,
                     Name = "OOP",
                     OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
@@ -280,86 +323,104 @@ namespace RPLP.UnitTesting.DepotTests
                 }
             };
 
+            List<Assignment_SQLDTO> assignmentsBD = new List<Assignment_SQLDTO>()
+            {
+                new Assignment_SQLDTO()
+                {
+                    Id= 1,
+                    Name = "Review",
+                    ClassroomId = 1,
+                    DistributionDate = DateTime.Now,
+                    Description = "Review a partner's code",
+                    DeliveryDeadline = DateTime.Now.AddDays(1),
+                    Active = true
+                },
+                new Assignment_SQLDTO()
+                {
+                    Id= 2,
+                    Name = "Scrum",
+                    ClassroomId = 1,
+                    DistributionDate = DateTime.Now,
+                    Description = "Daily briefing",
+                    DeliveryDeadline = DateTime.Now.AddDays(1),
+                    Active = true
+                },
+                new Assignment_SQLDTO()
+                {
+                    Id= 3,
+                    Name = "UnitTests",
+                    ClassroomId = 1,
+                    DistributionDate = DateTime.Now,
+                    Description = "tests",
+                    DeliveryDeadline = DateTime.Now.AddDays(1),
+                    Active = true
+                }
+            };
 
-            classroomBD[0].Assignments.Add(new Assignment_SQLDTO()
+            List<Organisation_SQLDTO> organisationsDB = new List<Organisation_SQLDTO>()
             {
-                Name = "Review",
-                ClassroomId = 1,
-                DistributionDate = System.DateTime.Now,
-                Description = "Review a partner\'s code",
-                DeliveryDeadline = System.DateTime.Now.AddDays(1),
-                Active = true
-            });
+                new Organisation_SQLDTO()
+                {
+                    Id = 1,
+                    Name = "CEGEP Ste-Foy",
+                    Administrators = new List<Administrator_SQLDTO>(),
+                    Active = true
+                },
+            };
+            List<Student_SQLDTO> studentsBD = new List<Student_SQLDTO>()
+            {
+                new Student_SQLDTO()
+                {
+                    Id = 1,
+                    Username = "ThPaquet",
+                    FirstName = "Thierry",
+                    LastName = "Paquet",
+                    Email = "ThPaquet@hotmail.com",
+                    Matricule = "1141200",
+                    Active = true
+                }
+            };
+            List<Teacher_SQLDTO> teachersDB = new List<Teacher_SQLDTO>()
+            {
+                new Teacher_SQLDTO()
+                {
+                    Username = "BACenComm",
+                    FirstName = "Melissa",
+                    LastName = "Lachapelle",
+                    Email = "BACenComm@hotmail.com",
+                    Active = false
+                }
+            };
 
-            classroomBD[0].Assignments.Add(new Assignment_SQLDTO()
-            {
-                Name = "Scrum",
-                ClassroomId = 1,
-                DistributionDate = System.DateTime.Now,
-                Description = "Daily briefing",
-                DeliveryDeadline = System.DateTime.Now.AddDays(1),
-                Active = true
-            });
+            classroomBD[0].Assignments.Add(assignmentsBD[0]);
+            classroomBD[0].Assignments.Add(assignmentsBD[1]);
+            classroomBD[1].Assignments.Add(assignmentsBD[2]);
 
-            classroomBD[0].Students.Add(new Student_SQLDTO()
-            {
-                Username = "ThPaquet",
-                FirstName = "Thierry",
-                LastName = "Paquet",
-                Email = "ThPaquet@hotmail.com",
-                Matricule = "1141200",
-                Active = true
-            });
-
-            classroomBD[0].Teachers.Add(new Teacher_SQLDTO()
-            {
-                Username = "PiFou86",
-                FirstName = "Pierre-Francois",
-                LastName = "Leon",
-                Email = "PiFou86@hotmail.com",
-                Active = true
-            });
-
-            classroomBD[1].Assignments.Add(new Assignment_SQLDTO()
-            {
-                Name = "UnitTests",
-                ClassroomId = 2,
-                DistributionDate = System.DateTime.Now,
-                Description = "Review a partner\'s code",
-                DeliveryDeadline = System.DateTime.Now.AddDays(1)
-            });
-            classroomBD[1].Students.Add(new Student_SQLDTO()
-            {
-                Username = "ikeameatbol",
-                FirstName = "Jonathan",
-                LastName = "Blouin",
-                Email = "ikeameatbol@hotmail.com",
-                Matricule = "1122334",
-                Active = true
-            });
-
-            classroomBD[1].Teachers.Add(new Teacher_SQLDTO()
-            {
-                Username = "BACenComm",
-                FirstName = "Melissa",
-                LastName = "Lachapelle",
-                Email = "BACenComm@hotmail.com",
-                Active = true
-            });
+            classroomBD[0].Students.Add(studentsBD[0]);
+            classroomBD[0].Teachers.Add(teachersDB[0]);
 
             var logMock = new Mock<IManipulationLogs>();
             Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Students).ReturnsDbSet(studentsBD);
+            context.Setup(x => x.Teachers).ReturnsDbSet(teachersDB);
             context.Setup(x => x.Classrooms).ReturnsDbSet(classroomBD);
+            context.Setup(x => x.Organisations).ReturnsDbSet(organisationsDB);
+            context.Setup(x => x.Assignments).ReturnsDbSet(assignmentsBD);
             DepotClassroom depot = new DepotClassroom(context.Object);
+
+            foreach (Assignment_SQLDTO assignment in assignmentsBD)
+            {
+                assignment.Classroom = classroomBD.Where(x => x.Id == assignment.ClassroomId).FirstOrDefault();
+            }
 
             Classroom classroom = depot.GetClassroomByName("ProjetSynthese");
 
             Assert.NotNull(classroom);
             Assert.Contains(classroom.Assignments, a => a.Name == "Review");
             Assert.Contains(classroom.Students, s => s.Username == "ThPaquet");
-            Assert.Contains(classroom.Teachers, t => t.Username == "PiFou86");
+            Assert.Contains(classroom.Teachers, t => t.Username == "BACenComm");
 
 
         }
@@ -371,6 +432,7 @@ namespace RPLP.UnitTesting.DepotTests
             {
                 new Classroom_SQLDTO
                 {
+                    Id= 1,
                     Name = "ProjetSynthese",
                     OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
@@ -380,6 +442,7 @@ namespace RPLP.UnitTesting.DepotTests
                 },
                 new Classroom_SQLDTO()
                 {
+                    Id= 2,
                     Name = "OOP",
                     OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
@@ -389,78 +452,91 @@ namespace RPLP.UnitTesting.DepotTests
                 }
             };
 
+            List<Assignment_SQLDTO> assignmentsBD = new List<Assignment_SQLDTO>()
+            {
+                new Assignment_SQLDTO()
+                {
+                    Id= 1,
+                    Name = "Review",
+                    ClassroomId = 1,
+                    DistributionDate = DateTime.Now,
+                    Description = "Review a partner's code",
+                    DeliveryDeadline = DateTime.Now.AddDays(1),
+                    Active = true
+                },
+                new Assignment_SQLDTO()
+                {
+                    Id= 2,
+                    Name = "Scrum",
+                    ClassroomId = 1,
+                    DistributionDate = DateTime.Now,
+                    Description = "Daily briefing",
+                    DeliveryDeadline = DateTime.Now.AddDays(1),
+                    Active = true
+                },
+                new Assignment_SQLDTO()
+                {
+                    Id= 3,
+                    Name = "UnitTests",
+                    ClassroomId = 1,
+                    DistributionDate = DateTime.Now,
+                    Description = "tests",
+                    DeliveryDeadline = DateTime.Now.AddDays(1),
+                    Active = true
+                }
+            };
 
-            classroomBD[0].Assignments.Add(new Assignment_SQLDTO()
+            List<Organisation_SQLDTO> organisationsDB = new List<Organisation_SQLDTO>()
             {
-                Name = "Review",
-                ClassroomId = 1,
-                DistributionDate = System.DateTime.Now,
-                Description = "Review a partner\'s code",
-                DeliveryDeadline = System.DateTime.Now.AddDays(1),
-                Active = true
-            });
+                new Organisation_SQLDTO()
+                {
+                    Id = 1,
+                    Name = "CEGEP Ste-Foy",
+                    Administrators = new List<Administrator_SQLDTO>(),
+                    Active = true
+                },
+            };
+            List<Student_SQLDTO> studentsBD = new List<Student_SQLDTO>()
+            {
+                new Student_SQLDTO()
+                {
+                    Id = 1,
+                    Username = "ThPaquet",
+                    FirstName = "Thierry",
+                    LastName = "Paquet",
+                    Email = "ThPaquet@hotmail.com",
+                    Matricule = "1141200",
+                    Active = true
+                }
+            };
+            List<Teacher_SQLDTO> teachersDB = new List<Teacher_SQLDTO>()
+            {
+                new Teacher_SQLDTO()
+                {
+                    Username = "BACenComm",
+                    FirstName = "Melissa",
+                    LastName = "Lachapelle",
+                    Email = "BACenComm@hotmail.com",
+                    Active = false
+                }
+            };
 
-            classroomBD[0].Assignments.Add(new Assignment_SQLDTO()
-            {
-                Name = "Scrum",
-                ClassroomId = 1,
-                DistributionDate = System.DateTime.Now,
-                Description = "Daily briefing",
-                DeliveryDeadline = System.DateTime.Now.AddDays(1),
-                Active = true
-            });
+            classroomBD[0].Assignments.Add(assignmentsBD[0]);
+            classroomBD[0].Assignments.Add(assignmentsBD[1]);
+            classroomBD[1].Assignments.Add(assignmentsBD[2]);
 
-            classroomBD[0].Students.Add(new Student_SQLDTO()
-            {
-                Username = "ThPaquet",
-                FirstName = "Thierry",
-                LastName = "Paquet",
-                Email = "ThPaquet@hotmail.com",
-                Matricule = "1141200",
-                Active = true
-            });
-
-            classroomBD[0].Teachers.Add(new Teacher_SQLDTO()
-            {
-                Username = "PiFou86",
-                FirstName = "Pierre-Francois",
-                LastName = "Leon",
-                Email = "PiFou86@hotmail.com",
-                Active = true
-            });
-            classroomBD[1].Assignments.Add(new Assignment_SQLDTO()
-            {
-                Name = "UnitTests",
-                ClassroomId = 2,
-                DistributionDate = System.DateTime.Now,
-                Description = "Review a partner\'s code",
-                DeliveryDeadline = System.DateTime.Now.AddDays(1)
-            });
-
-            classroomBD[1].Students.Add(new Student_SQLDTO()
-            {
-                Username = "ikeameatbol",
-                FirstName = "Jonathan",
-                LastName = "Blouin",
-                Email = "ikeameatbol@hotmail.com",
-                Matricule = "1122334",
-                Active = true
-            });
-
-            classroomBD[1].Teachers.Add(new Teacher_SQLDTO()
-            {
-                Username = "BACenComm",
-                FirstName = "Melissa",
-                LastName = "Lachapelle",
-                Email = "BACenComm@hotmail.com",
-                Active = true
-            });
+            classroomBD[0].Students.Add(studentsBD[0]);
+            classroomBD[0].Teachers.Add(teachersDB[0]);
 
             var logMock = new Mock<IManipulationLogs>();
             Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Students).ReturnsDbSet(studentsBD);
+            context.Setup(x => x.Teachers).ReturnsDbSet(teachersDB);
             context.Setup(x => x.Classrooms).ReturnsDbSet(classroomBD);
+            context.Setup(x => x.Organisations).ReturnsDbSet(organisationsDB);
+            context.Setup(x => x.Assignments).ReturnsDbSet(assignmentsBD);
             DepotClassroom depot = new DepotClassroom(context.Object);
 
             classroomBD.Add(new Classroom_SQLDTO()
@@ -472,10 +548,15 @@ namespace RPLP.UnitTesting.DepotTests
                 Students = new List<Student_SQLDTO>(),
                 Teachers = new List<Teacher_SQLDTO>()
             });
-
+          
             Assert.True(classroomBD.Count() == 3);
             Assert.True(classroomBD.Any(c => c.Name == "false" && !c.Active));
             Assert.True(classroomBD.Where(c => c.Active).Count() == 2);
+
+            foreach (Classroom_SQLDTO classroom in classroomBD)
+            {
+                classroom.Organisation = organisationsDB.Where(x => x.Id == classroom.OrganisationId).FirstOrDefault();
+            }
 
             List<Classroom> classrooms = depot.GetClassroomsByOrganisationName("CEGEP Ste-Foy");
 
@@ -491,6 +572,7 @@ namespace RPLP.UnitTesting.DepotTests
             {
                 new Classroom_SQLDTO
                 {
+                    Id= 1,
                     Name = "ProjetSynthese",
                     OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
@@ -500,6 +582,7 @@ namespace RPLP.UnitTesting.DepotTests
                 },
                 new Classroom_SQLDTO()
                 {
+                    Id= 2,
                     Name = "OOP",
                     OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
@@ -509,80 +592,94 @@ namespace RPLP.UnitTesting.DepotTests
                 }
             };
 
+            List<Assignment_SQLDTO> assignmentsBD = new List<Assignment_SQLDTO>()
+            {
+                new Assignment_SQLDTO()
+                {
+                    Id= 1,
+                    Name = "Review",
+                    ClassroomId = 1,
+                    DistributionDate = DateTime.Now,
+                    Description = "Review a partner's code",
+                    DeliveryDeadline = DateTime.Now.AddDays(1),
+                    Active = true
+                },
+                new Assignment_SQLDTO()
+                {
+                    Id= 2,
+                    Name = "Scrum",
+                    ClassroomId = 1,
+                    DistributionDate = DateTime.Now,
+                    Description = "Daily briefing",
+                    DeliveryDeadline = DateTime.Now.AddDays(1),
+                    Active = true
+                },
+                new Assignment_SQLDTO()
+                {
+                    Id= 3,
+                    Name = "UnitTests",
+                    ClassroomId = 1,
+                    DistributionDate = DateTime.Now,
+                    Description = "tests",
+                    DeliveryDeadline = DateTime.Now.AddDays(1),
+                    Active = true
+                }
+            };
 
-            classroomBD[0].Assignments.Add(new Assignment_SQLDTO()
+            List<Organisation_SQLDTO> organisationsDB = new List<Organisation_SQLDTO>()
             {
-                Name = "Review",
-                ClassroomId = 1,
-                DistributionDate = System.DateTime.Now,
-                Description = "Review a partner\'s code",
-                DeliveryDeadline = System.DateTime.Now.AddDays(1),
-                Active = true
-            });
+                new Organisation_SQLDTO()
+                {
+                    Id = 1,
+                    Name = "CEGEP Ste-Foy",
+                    Administrators = new List<Administrator_SQLDTO>(),
+                    Active = true
+                },
+            };
+            List<Student_SQLDTO> studentsBD = new List<Student_SQLDTO>()
+            {
+                new Student_SQLDTO()
+                {
+                    Id = 1,
+                    Username = "ThPaquet",
+                    FirstName = "Thierry",
+                    LastName = "Paquet",
+                    Email = "ThPaquet@hotmail.com",
+                    Matricule = "1141200",
+                    Active = true
+                },
+                new Student_SQLDTO()
+                {
+                    Id = 2,
+                    Username = "BACenComm",
+                    FirstName = "Melissa",
+                    LastName = "Lachapelle",
+                    Email = "BACenComm@hotmail.com",
+                    Matricule = "1324354",
+                    Active = false
+                }
+            };
 
-            classroomBD[0].Assignments.Add(new Assignment_SQLDTO()
-            {
-                Name = "Scrum",
-                ClassroomId = 1,
-                DistributionDate = System.DateTime.Now,
-                Description = "Daily briefing",
-                DeliveryDeadline = System.DateTime.Now.AddDays(1),
-                Active = true
-            });
+            classroomBD[0].Assignments.Add(assignmentsBD[0]);
+            classroomBD[0].Assignments.Add(assignmentsBD[1]);
+            classroomBD[1].Assignments.Add(assignmentsBD[2]);
 
-            classroomBD[0].Students.Add(new Student_SQLDTO()
-            {
-                Username = "ThPaquet",
-                FirstName = "Thierry",
-                LastName = "Paquet",
-                Email = "ThPaquet@hotmail.com",
-                Matricule = "1141200",
-                Active = true
-            });
-
-            classroomBD[0].Teachers.Add(new Teacher_SQLDTO()
-            {
-                Username = "PiFou86",
-                FirstName = "Pierre-Francois",
-                LastName = "Leon",
-                Email = "PiFou86@hotmail.com",
-                Active = true
-            });
-            classroomBD[1].Assignments.Add(new Assignment_SQLDTO()
-            {
-                Name = "UnitTests",
-                ClassroomId = 2,
-                DistributionDate = System.DateTime.Now,
-                Description = "Review a partner\'s code",
-                DeliveryDeadline = System.DateTime.Now.AddDays(1)
-            });
-
-            classroomBD[1].Students.Add(new Student_SQLDTO()
-            {
-                Username = "ikeameatbol",
-                FirstName = "Jonathan",
-                LastName = "Blouin",
-                Email = "ikeameatbol@hotmail.com",
-                Matricule = "1122334",
-                Active = true
-            });
-
-            classroomBD[1].Teachers.Add(new Teacher_SQLDTO()
-            {
-                Username = "BACenComm",
-                FirstName = "Melissa",
-                LastName = "Lachapelle",
-                Email = "BACenComm@hotmail.com",
-                Active = true
-            });
+            classroomBD[0].Students.Add(studentsBD[0]);
 
             var logMock = new Mock<IManipulationLogs>();
             Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Students).ReturnsDbSet(studentsBD);
             context.Setup(x => x.Classrooms).ReturnsDbSet(classroomBD);
+            context.Setup(x => x.Organisations).ReturnsDbSet(organisationsDB);
+            context.Setup(x => x.Assignments).ReturnsDbSet(assignmentsBD);
             DepotClassroom depot = new DepotClassroom(context.Object);
 
+            foreach (Assignment_SQLDTO assignment in assignmentsBD)
+            {
+                assignment.Classroom = classroomBD.Where(x => x.Id == assignment.ClassroomId).FirstOrDefault();
+            }
             List<Assignment> assignments = depot.GetAssignmentsByClassroomName("ProjetSynthese");
 
             Assert.NotNull(assignments);
@@ -1194,6 +1291,7 @@ namespace RPLP.UnitTesting.DepotTests
             {
                 new Classroom_SQLDTO
                 {
+                    Id= 1,
                     Name = "ProjetSynthese",
                     OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
@@ -1203,6 +1301,7 @@ namespace RPLP.UnitTesting.DepotTests
                 },
                 new Classroom_SQLDTO()
                 {
+                    Id= 2,
                     Name = "OOP",
                     OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
@@ -1212,92 +1311,91 @@ namespace RPLP.UnitTesting.DepotTests
                 }
             };
 
-            classroomBD[0].Assignments.Add(new Assignment_SQLDTO()
-            {
-                Name = "Scrum",
-                ClassroomId = 1,
-                DistributionDate = System.DateTime.Now,
-                Description = "Daily briefing",
-                DeliveryDeadline = System.DateTime.Now.AddDays(1),
-                Active = true
-            });
-
-            classroomBD[0].Students.Add(new Student_SQLDTO()
-            {
-                Username = "ThPaquet",
-                FirstName = "Thierry",
-                LastName = "Paquet",
-                Email = "ThPaquet@hotmail.com",
-                Matricule = "1141200",
-                Active = true
-            });
-
-            classroomBD[0].Teachers.Add(new Teacher_SQLDTO()
-            {
-                Username = "PiFou86",
-                FirstName = "Pierre-Francois",
-                LastName = "Leon",
-                Email = "PiFou86@hotmail.com",
-                Active = true
-            });
-            classroomBD[1].Assignments.Add(new Assignment_SQLDTO()
-            {
-                Name = "UnitTests",
-                ClassroomId = 2,
-                DistributionDate = System.DateTime.Now,
-                Description = "Review a partner\'s code",
-                DeliveryDeadline = System.DateTime.Now.AddDays(1)
-            });
-
-            classroomBD[1].Students.Add(new Student_SQLDTO()
-            {
-                Username = "ikeameatbol",
-                FirstName = "Jonathan",
-                LastName = "Blouin",
-                Email = "ikeameatbol@hotmail.com",
-                Matricule = "1122334",
-                Active = true
-            });
-
-            classroomBD[1].Teachers.Add(new Teacher_SQLDTO()
-            {
-                Username = "BACenComm",
-                FirstName = "Melissa",
-                LastName = "Lachapelle",
-                Email = "BACenComm@hotmail.com",
-                Active = true
-            });
-
             List<Assignment_SQLDTO> assignmentsBD = new List<Assignment_SQLDTO>()
             {
                 new Assignment_SQLDTO()
                 {
+                    Id= 1,
                     Name = "Review",
                     ClassroomId = 1,
-                    DistributionDate = System.DateTime.Now,
-                    Description = "Review a partner\'s code",
-                    DeliveryDeadline = System.DateTime.Now.AddDays(1),
+                    DistributionDate = DateTime.Now,
+                    Description = "Review a partner's code",
+                    DeliveryDeadline = DateTime.Now.AddDays(1),
                     Active = true
                 },
                 new Assignment_SQLDTO()
                 {
-                    Name = "AnotherOne",
-                    ClassroomId = 3,
-                    DistributionDate = System.DateTime.Now,
-                    Description = "Review another partner\'s code",
-                    DeliveryDeadline = System.DateTime.Now.AddDays(1),
+                    Id= 2,
+                    Name = "Scrum",
+                    ClassroomId = 1,
+                    DistributionDate = DateTime.Now,
+                    Description = "Daily briefing",
+                    DeliveryDeadline = DateTime.Now.AddDays(1),
+                    Active = true
+                },
+                new Assignment_SQLDTO()
+                {
+                    Id= 3,
+                    Name = "UnitTests",
+                    ClassroomId = 1,
+                    DistributionDate = DateTime.Now,
+                    Description = "tests",
+                    DeliveryDeadline = DateTime.Now.AddDays(1),
                     Active = true
                 }
             };
 
+            List<Organisation_SQLDTO> organisationsDB = new List<Organisation_SQLDTO>()
+            {
+                new Organisation_SQLDTO()
+                {
+                    Id = 1,
+                    Name = "CEGEP Ste-Foy",
+                    Administrators = new List<Administrator_SQLDTO>(),
+                    Active = true
+                },
+            };
+            List<Student_SQLDTO> studentsBD = new List<Student_SQLDTO>()
+            {
+                new Student_SQLDTO()
+                {
+                    Id = 1,
+                    Username = "ThPaquet",
+                    FirstName = "Thierry",
+                    LastName = "Paquet",
+                    Email = "ThPaquet@hotmail.com",
+                    Matricule = "1141200",
+                    Active = true
+                }
+            };
+            List<Teacher_SQLDTO> teachersDB = new List<Teacher_SQLDTO>()
+            {
+                new Teacher_SQLDTO()
+                {
+                    Username = "BACenComm",
+                    FirstName = "Melissa",
+                    LastName = "Lachapelle",
+                    Email = "BACenComm@hotmail.com",
+                    Active = false
+                }
+            };
+
             classroomBD[0].Assignments.Add(assignmentsBD[0]);
+            classroomBD[0].Assignments.Add(assignmentsBD[1]);
+            classroomBD[1].Assignments.Add(assignmentsBD[2]);
+
+            classroomBD[0].Students.Add(studentsBD[0]);
+            classroomBD[0].Teachers.Add(teachersDB[0]);
 
             var logMock = new Mock<IManipulationLogs>();
             Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
-            context.Setup(x => x.Assignments).ReturnsDbSet(assignmentsBD);
+            context.Setup(x => x.Students).ReturnsDbSet(studentsBD);
+            context.Setup(x => x.Teachers).ReturnsDbSet(teachersDB);
             context.Setup(x => x.Classrooms).ReturnsDbSet(classroomBD);
+            context.Setup(x => x.Organisations).ReturnsDbSet(organisationsDB);
+            context.Setup(x => x.Assignments).ReturnsDbSet(assignmentsBD);
             DepotClassroom depot = new DepotClassroom(context.Object);
 
             Classroom_SQLDTO? classroom = classroomBD.FirstOrDefault(c => c.Name == "ProjetSynthese");
@@ -1308,6 +1406,10 @@ namespace RPLP.UnitTesting.DepotTests
             Assert.NotNull(assignment);
             Assert.Contains(classroom.Assignments, a => a.Id == assignment.Id);
 
+            foreach (Assignment_SQLDTO assignment_ in assignmentsBD)
+            {
+                assignment.Classroom = classroomBD.Where(x => x.Id == assignment.ClassroomId).FirstOrDefault();
+            }
             depot.RemoveAssignmentFromClassroom("ProjetSynthese", "Review");
 
             classroom = classroomBD.FirstOrDefault(c => c.Name == "ProjetSynthese");
@@ -1325,6 +1427,7 @@ namespace RPLP.UnitTesting.DepotTests
             {
                 new Classroom_SQLDTO
                 {
+                    Id= 1,
                     Name = "ProjetSynthese",
                     OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
@@ -1334,6 +1437,7 @@ namespace RPLP.UnitTesting.DepotTests
                 },
                 new Classroom_SQLDTO()
                 {
+                    Id= 2,
                     Name = "OOP",
                     OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
@@ -1343,122 +1447,91 @@ namespace RPLP.UnitTesting.DepotTests
                 }
             };
 
+            List<Assignment_SQLDTO> assignmentsBD = new List<Assignment_SQLDTO>()
+            {
+                new Assignment_SQLDTO()
+                {
+                    Id= 1,
+                    Name = "Review",
+                    ClassroomId = 1,
+                    DistributionDate = DateTime.Now,
+                    Description = "Review a partner's code",
+                    DeliveryDeadline = DateTime.Now.AddDays(1),
+                    Active = true
+                },
+                new Assignment_SQLDTO()
+                {
+                    Id= 2,
+                    Name = "Scrum",
+                    ClassroomId = 1,
+                    DistributionDate = DateTime.Now,
+                    Description = "Daily briefing",
+                    DeliveryDeadline = DateTime.Now.AddDays(1),
+                    Active = true
+                },
+                new Assignment_SQLDTO()
+                {
+                    Id= 3,
+                    Name = "UnitTests",
+                    ClassroomId = 1,
+                    DistributionDate = DateTime.Now,
+                    Description = "tests",
+                    DeliveryDeadline = DateTime.Now.AddDays(1),
+                    Active = true
+                }
+            };
 
-            classroomBD[0].Assignments.Add(new Assignment_SQLDTO()
+            List<Organisation_SQLDTO> organisationsDB = new List<Organisation_SQLDTO>()
             {
-                Name = "Review",
-                ClassroomId = 1,
-                DistributionDate = System.DateTime.Now,
-                Description = "Review a partner\'s code",
-                DeliveryDeadline = System.DateTime.Now.AddDays(1),
-                Active = true
-            });
-
-            classroomBD[0].Assignments.Add(new Assignment_SQLDTO()
-            {
-                Name = "Scrum",
-                ClassroomId = 1,
-                DistributionDate = System.DateTime.Now,
-                Description = "Daily briefing",
-                DeliveryDeadline = System.DateTime.Now.AddDays(1),
-                Active = true
-            });
-
-            classroomBD[0].Teachers.Add(new Teacher_SQLDTO()
-            {
-                Username = "PiFou86",
-                FirstName = "Pierre-Francois",
-                LastName = "Leon",
-                Email = "PiFou86@hotmail.com",
-                Active = true
-            });
-
-            classroomBD[1].Assignments.Add(new Assignment_SQLDTO()
-            {
-                Name = "UnitTests",
-                ClassroomId = 2,
-                DistributionDate = System.DateTime.Now,
-                Description = "Review a partner\'s code",
-                DeliveryDeadline = System.DateTime.Now.AddDays(1)
-            });
-            classroomBD[1].Students.Add(new Student_SQLDTO()
-            {
-                Username = "ikeameatbol",
-                FirstName = "Jonathan",
-                LastName = "Blouin",
-                Email = "ikeameatbol@hotmail.com",
-                Matricule = "1122334",
-                Active = true
-            });
-
-            classroomBD[1].Teachers.Add(new Teacher_SQLDTO()
-            {
-                Username = "BACenComm",
-                FirstName = "Melissa",
-                LastName = "Lachapelle",
-                Email = "BACenComm@hotmail.com",
-                Active = true
-            });
+                new Organisation_SQLDTO()
+                {
+                    Id = 1,
+                    Name = "CEGEP Ste-Foy",
+                    Administrators = new List<Administrator_SQLDTO>(),
+                    Active = true
+                },
+            };
             List<Student_SQLDTO> studentsBD = new List<Student_SQLDTO>()
             {
                 new Student_SQLDTO()
                 {
+                    Id = 1,
                     Username = "ThPaquet",
                     FirstName = "Thierry",
                     LastName = "Paquet",
                     Email = "ThPaquet@hotmail.com",
                     Matricule = "1141200",
-                    Classes =
-                    {
-                        new Classroom_SQLDTO()
-                        {
-                            Name = "ProjetSynthese",
-                            OrganisationId = 1,
-                            Active = true
-                        },
-                        new Classroom_SQLDTO()
-                        {
-                            Name = "RPLP",
-                            OrganisationId = 1,
-                            Active = true
-                        },
-                        new Classroom_SQLDTO()
-                        {
-                            Name = "OOP",
-                            OrganisationId = 1,
-                            Active = false
-                        }
-                    },
                     Active = true
-                },
-                new Student_SQLDTO()
-                {
-                    Username = "ikeameatbol",
-                    FirstName = "Jonathan",
-                    LastName = "Blouin",
-                    Email = "ikeameatbol@hotmail.com",
-                    Matricule = "1122334",
-                    Active = true
-                },
-                new Student_SQLDTO()
+                }
+            };
+            List<Teacher_SQLDTO> teachersDB = new List<Teacher_SQLDTO>()
+            {
+                new Teacher_SQLDTO()
                 {
                     Username = "BACenComm",
                     FirstName = "Melissa",
                     LastName = "Lachapelle",
                     Email = "BACenComm@hotmail.com",
-                    Matricule = "1324354",
                     Active = false
                 }
             };
 
+            classroomBD[0].Assignments.Add(assignmentsBD[0]);
+            classroomBD[0].Assignments.Add(assignmentsBD[1]);
+            classroomBD[1].Assignments.Add(assignmentsBD[2]);
+
             classroomBD[0].Students.Add(studentsBD[0]);
+            classroomBD[0].Teachers.Add(teachersDB[0]);
 
             var logMock = new Mock<IManipulationLogs>();
             Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Students).ReturnsDbSet(studentsBD);
+            context.Setup(x => x.Teachers).ReturnsDbSet(teachersDB);
             context.Setup(x => x.Classrooms).ReturnsDbSet(classroomBD);
+            context.Setup(x => x.Organisations).ReturnsDbSet(organisationsDB);
+            context.Setup(x => x.Assignments).ReturnsDbSet(assignmentsBD);
             DepotClassroom depot = new DepotClassroom(context.Object);
 
             Classroom_SQLDTO? classroom = classroomBD.FirstOrDefault(c => c.Name == "ProjetSynthese");
@@ -1486,6 +1559,7 @@ namespace RPLP.UnitTesting.DepotTests
             {
                 new Classroom_SQLDTO
                 {
+                    Id= 1,
                     Name = "ProjetSynthese",
                     OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
@@ -1495,6 +1569,7 @@ namespace RPLP.UnitTesting.DepotTests
                 },
                 new Classroom_SQLDTO()
                 {
+                    Id= 2,
                     Name = "OOP",
                     OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
@@ -1504,133 +1579,103 @@ namespace RPLP.UnitTesting.DepotTests
                 }
             };
 
-
-            classroomBD[0].Assignments.Add(new Assignment_SQLDTO()
+            List<Assignment_SQLDTO> assignmentsBD = new List<Assignment_SQLDTO>()
             {
-                Name = "Review",
-                ClassroomId = 1,
-                DistributionDate = System.DateTime.Now,
-                Description = "Review a partner\'s code",
-                DeliveryDeadline = System.DateTime.Now.AddDays(1),
-                Active = true
-            });
-
-            classroomBD[0].Assignments.Add(new Assignment_SQLDTO()
-            {
-                Name = "Scrum",
-                ClassroomId = 1,
-                DistributionDate = System.DateTime.Now,
-                Description = "Daily briefing",
-                DeliveryDeadline = System.DateTime.Now.AddDays(1),
-                Active = true
-            });
-
-            classroomBD[0].Students.Add(new Student_SQLDTO()
-            {
-                Username = "ThPaquet",
-                FirstName = "Thierry",
-                LastName = "Paquet",
-                Email = "ThPaquet@hotmail.com",
-                Matricule = "1141200",
-                Active = true
-            });
-
-            classroomBD[1].Assignments.Add(new Assignment_SQLDTO()
-            {
-                Name = "UnitTests",
-                ClassroomId = 2,
-                DistributionDate = System.DateTime.Now,
-                Description = "Review a partner\'s code",
-                DeliveryDeadline = System.DateTime.Now.AddDays(1)
-            });
-            classroomBD[1].Students.Add(new Student_SQLDTO()
-            {
-                Username = "ikeameatbol",
-                FirstName = "Jonathan",
-                LastName = "Blouin",
-                Email = "ikeameatbol@hotmail.com",
-                Matricule = "1122334",
-                Active = true
-            });
-
-            classroomBD[1].Teachers.Add(new Teacher_SQLDTO()
-            {
-                Username = "BACenComm",
-                FirstName = "Melissa",
-                LastName = "Lachapelle",
-                Email = "BACenComm@hotmail.com",
-                Active = true
-            });
-
-            List<Teacher_SQLDTO> teachersDB = new List<Teacher_SQLDTO>()
-            {
-                new Teacher_SQLDTO()
+                new Assignment_SQLDTO()
                 {
+                    Id= 1,
+                    Name = "Review",
+                    ClassroomId = 1,
+                    DistributionDate = DateTime.Now,
+                    Description = "Review a partner's code",
+                    DeliveryDeadline = DateTime.Now.AddDays(1),
+                    Active = true
+                },
+                new Assignment_SQLDTO()
+                {
+                    Id= 2,
+                    Name = "Scrum",
+                    ClassroomId = 1,
+                    DistributionDate = DateTime.Now,
+                    Description = "Daily briefing",
+                    DeliveryDeadline = DateTime.Now.AddDays(1),
+                    Active = true
+                },
+                new Assignment_SQLDTO()
+                {
+                    Id= 3,
+                    Name = "UnitTests",
+                    ClassroomId = 1,
+                    DistributionDate = DateTime.Now,
+                    Description = "tests",
+                    DeliveryDeadline = DateTime.Now.AddDays(1),
+                    Active = true
+                }
+            };
+
+            List<Organisation_SQLDTO> organisationsDB = new List<Organisation_SQLDTO>()
+            {
+                new Organisation_SQLDTO()
+                {
+                    Id = 1,
+                    Name = "CEGEP Ste-Foy",
+                    Administrators = new List<Administrator_SQLDTO>(),
+                    Active = true
+                },
+            };
+            List<Student_SQLDTO> studentsBD = new List<Student_SQLDTO>()
+            {
+                new Student_SQLDTO()
+                {
+                    Id = 1,
                     Username = "ThPaquet",
                     FirstName = "Thierry",
                     LastName = "Paquet",
                     Email = "ThPaquet@hotmail.com",
-                    Classes =
-                    {
-                        new Classroom_SQLDTO()
-                        {
-                            Name = "ProjetSynthese",
-                            OrganisationId = 1,
-                            Active = true
-                        },
-                        new Classroom_SQLDTO()
-                        {
-                            Name = "RPLP",
-                            OrganisationId = 1,
-                            Active = true
-                        },
-                        new Classroom_SQLDTO()
-                        {
-                            Name = "OOP",
-                            OrganisationId = 1,
-                            Active = false
-                        }
-                    },
+                    Matricule = "1141200",
                     Active = true
-                },
-                new Teacher_SQLDTO()
-                {
-                    Username = "PiFou86",
-                    FirstName = "Pierre-Francois",
-                    LastName = "Leon",
-                    Email = "PiFou86@hotmail.com",
-                    Active = true
-                },
+                }
+            };
+            List<Teacher_SQLDTO> teachersDB = new List<Teacher_SQLDTO>()
+            {
                 new Teacher_SQLDTO()
                 {
                     Username = "BACenComm",
                     FirstName = "Melissa",
                     LastName = "Lachapelle",
                     Email = "BACenComm@hotmail.com",
-                    Active = false
+                    Active = true
                 }
             };
 
-            classroomBD[0].Teachers.Add(teachersDB[1]);
+            classroomBD[0].Assignments.Add(assignmentsBD[0]);
+            classroomBD[0].Assignments.Add(assignmentsBD[1]);
+            classroomBD[1].Assignments.Add(assignmentsBD[2]);
+
+            classroomBD[0].Students.Add(studentsBD[0]);
+            classroomBD[0].Teachers.Add(teachersDB[0]);
 
             var logMock = new Mock<IManipulationLogs>();
             Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Students).ReturnsDbSet(studentsBD);
             context.Setup(x => x.Teachers).ReturnsDbSet(teachersDB);
             context.Setup(x => x.Classrooms).ReturnsDbSet(classroomBD);
+            context.Setup(x => x.Organisations).ReturnsDbSet(organisationsDB);
+            context.Setup(x => x.Assignments).ReturnsDbSet(assignmentsBD);
             DepotClassroom depot = new DepotClassroom(context.Object);
 
             Classroom_SQLDTO? classroom = classroomBD.FirstOrDefault(c => c.Name == "ProjetSynthese");
-            Teacher_SQLDTO teacher = classroom.Teachers.FirstOrDefault(a => a.Username == "PiFou86");
+            Teacher_SQLDTO teacher = classroom.Teachers.FirstOrDefault(a => a.Username == "BACenComm");
 
 
             Assert.NotNull(teacher);
 
-            depot.RemoveTeacherFromClassroom("ProjetSynthese", "PiFou86");
+            depot.RemoveTeacherFromClassroom("ProjetSynthese", "BACenComm");
 
             classroom = classroomBD.FirstOrDefault(c => c.Name == "ProjetSynthese");
-            teacher = classroom.Teachers.FirstOrDefault(a => a.Username == "PiFou86");
+            teacher = classroom.Teachers.FirstOrDefault(a => a.Username == "BACenComm");
 
             Assert.Null(teacher);
 
@@ -1640,10 +1685,17 @@ namespace RPLP.UnitTesting.DepotTests
         [Fact]
         public void Test_UpsertClassroom_Inserts()
         {
+            Organisation mockOrganisation = new Organisation()
+            {
+                Administrators = new List<Administrator>(),
+                Id = 1,
+                Name = "Mock Organisation"
+            };
             List<Classroom_SQLDTO> classroomBD = new List<Classroom_SQLDTO>
             {
                 new Classroom_SQLDTO
                 {
+                    Id= 1,
                     Name = "ProjetSynthese",
                     OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
@@ -1653,6 +1705,7 @@ namespace RPLP.UnitTesting.DepotTests
                 },
                 new Classroom_SQLDTO()
                 {
+                    Id= 2,
                     Name = "OOP",
                     OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
@@ -1662,85 +1715,92 @@ namespace RPLP.UnitTesting.DepotTests
                 }
             };
 
-            Organisation mockOrganisation = new Organisation()
+            List<Assignment_SQLDTO> assignmentsBD = new List<Assignment_SQLDTO>()
             {
-                Administrators = new List<Administrator>(),
-                Id = 1,
-                Name = "Mock Organisation"
+                new Assignment_SQLDTO()
+                {
+                    Id= 1,
+                    Name = "Review",
+                    ClassroomId = 1,
+                    DistributionDate = DateTime.Now,
+                    Description = "Review a partner's code",
+                    DeliveryDeadline = DateTime.Now.AddDays(1),
+                    Active = true
+                },
+                new Assignment_SQLDTO()
+                {
+                    Id= 2,
+                    Name = "Scrum",
+                    ClassroomId = 1,
+                    DistributionDate = DateTime.Now,
+                    Description = "Daily briefing",
+                    DeliveryDeadline = DateTime.Now.AddDays(1),
+                    Active = true
+                },
+                new Assignment_SQLDTO()
+                {
+                    Id= 3,
+                    Name = "UnitTests",
+                    ClassroomId = 1,
+                    DistributionDate = DateTime.Now,
+                    Description = "tests",
+                    DeliveryDeadline = DateTime.Now.AddDays(1),
+                    Active = true
+                }
             };
 
+            List<Organisation_SQLDTO> organisationsDB = new List<Organisation_SQLDTO>()
+            {
+                new Organisation_SQLDTO()
+                {
+                    Id = 1,
+                    Name = "CEGEP Ste-Foy",
+                    Administrators = new List<Administrator_SQLDTO>(),
+                    Active = true
+                },
+            };
+            List<Student_SQLDTO> studentsBD = new List<Student_SQLDTO>()
+            {
+                new Student_SQLDTO()
+                {
+                    Id = 1,
+                    Username = "ThPaquet",
+                    FirstName = "Thierry",
+                    LastName = "Paquet",
+                    Email = "ThPaquet@hotmail.com",
+                    Matricule = "1141200",
+                    Active = true
+                }
+            };
+            List<Teacher_SQLDTO> teachersDB = new List<Teacher_SQLDTO>()
+            {
+                new Teacher_SQLDTO()
+                {
+                    Username = "BACenComm",
+                    FirstName = "Melissa",
+                    LastName = "Lachapelle",
+                    Email = "BACenComm@hotmail.com",
+                    Active = true
+                }
+            };
 
-            classroomBD[0].Assignments.Add(new Assignment_SQLDTO()
-            {
-                Name = "Review",
-                ClassroomId = 1,
-                DistributionDate = System.DateTime.Now,
-                Description = "Review a partner\'s code",
-                DeliveryDeadline = System.DateTime.Now.AddDays(1),
-                Active = true
-            });
+            classroomBD[0].Assignments.Add(assignmentsBD[0]);
+            classroomBD[0].Assignments.Add(assignmentsBD[1]);
+            classroomBD[1].Assignments.Add(assignmentsBD[2]);
 
-            classroomBD[0].Assignments.Add(new Assignment_SQLDTO()
-            {
-                Name = "Scrum",
-                ClassroomId = 1,
-                DistributionDate = System.DateTime.Now,
-                Description = "Daily briefing",
-                DeliveryDeadline = System.DateTime.Now.AddDays(1),
-                Active = true
-            });
-
-            classroomBD[0].Students.Add(new Student_SQLDTO()
-            {
-                Username = "ThPaquet",
-                FirstName = "Thierry",
-                LastName = "Paquet",
-                Email = "ThPaquet@hotmail.com",
-                Matricule = "1141200",
-                Active = true
-            });
-
-            classroomBD[0].Teachers.Add(new Teacher_SQLDTO()
-            {
-                Username = "PiFou86",
-                FirstName = "Pierre-Francois",
-                LastName = "Leon",
-                Email = "PiFou86@hotmail.com",
-                Active = true
-            });
-
-            classroomBD[1].Assignments.Add(new Assignment_SQLDTO()
-            {
-                Name = "UnitTests",
-                ClassroomId = 2,
-                DistributionDate = System.DateTime.Now,
-                Description = "Review a partner\'s code",
-                DeliveryDeadline = System.DateTime.Now.AddDays(1)
-            });
-            classroomBD[1].Students.Add(new Student_SQLDTO()
-            {
-                Username = "ikeameatbol",
-                FirstName = "Jonathan",
-                LastName = "Blouin",
-                Email = "ikeameatbol@hotmail.com",
-                Matricule = "1122334",
-                Active = true
-            });
-
-            classroomBD[1].Teachers.Add(new Teacher_SQLDTO()
-            {
-                Username = "BACenComm",
-                FirstName = "Melissa",
-                LastName = "Lachapelle",
-                Email = "BACenComm@hotmail.com",
-                Active = true
-            });
+            classroomBD[0].Students.Add(studentsBD[0]);
+            classroomBD[0].Teachers.Add(teachersDB[0]);
 
             var logMock = new Mock<IManipulationLogs>();
             Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Students).ReturnsDbSet(studentsBD);
+            context.Setup(x => x.Teachers).ReturnsDbSet(teachersDB);
             context.Setup(x => x.Classrooms).ReturnsDbSet(classroomBD);
+            context.Setup(x => x.Organisations).ReturnsDbSet(organisationsDB);
+            context.Setup(x => x.Assignments).ReturnsDbSet(assignmentsBD);
+            context.Setup(m => m.Classrooms.Add(It.IsAny<Classroom_SQLDTO>())).Callback<Classroom_SQLDTO>(classroomBD.Add);
             DepotClassroom depot = new DepotClassroom(context.Object);
 
             Classroom_SQLDTO? classroom = classroomBD.FirstOrDefault(c => c.Name == "RPLP");
@@ -1748,6 +1808,7 @@ namespace RPLP.UnitTesting.DepotTests
 
             Classroom newClassroom = new Classroom()
             {
+                Id = 3,
                 Name = "RPLP",
                 Organisation = mockOrganisation,
                 Assignments = new List<Assignment>(),
@@ -1766,10 +1827,17 @@ namespace RPLP.UnitTesting.DepotTests
         [Fact]
         public void Test_UpsertClassroom_Updates()
         {
+            Organisation mockOrganisation = new Organisation()
+            {
+                Administrators = new List<Administrator>(),
+                Id = 1,
+                Name = "Mock Organisation"
+            };
             List<Classroom_SQLDTO> classroomBD = new List<Classroom_SQLDTO>
             {
                 new Classroom_SQLDTO
                 {
+                    Id= 1,
                     Name = "ProjetSynthese",
                     OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
@@ -1779,6 +1847,7 @@ namespace RPLP.UnitTesting.DepotTests
                 },
                 new Classroom_SQLDTO()
                 {
+                    Id= 2,
                     Name = "OOP",
                     OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
@@ -1788,114 +1857,140 @@ namespace RPLP.UnitTesting.DepotTests
                 }
             };
 
+            List<Assignment_SQLDTO> assignmentsBD = new List<Assignment_SQLDTO>()
+            {
+                new Assignment_SQLDTO()
+                {
+                    Id= 1,
+                    Name = "Review",
+                    ClassroomId = 1,
+                    DistributionDate = DateTime.Now,
+                    Description = "Review a partner's code",
+                    DeliveryDeadline = DateTime.Now.AddDays(1),
+                    Active = true
+                },
+                new Assignment_SQLDTO()
+                {
+                    Id= 2,
+                    Name = "Scrum",
+                    ClassroomId = 1,
+                    DistributionDate = DateTime.Now,
+                    Description = "Daily briefing",
+                    DeliveryDeadline = DateTime.Now.AddDays(1),
+                    Active = true
+                },
+                new Assignment_SQLDTO()
+                {
+                    Id= 3,
+                    Name = "UnitTests",
+                    ClassroomId = 1,
+                    DistributionDate = DateTime.Now,
+                    Description = "tests",
+                    DeliveryDeadline = DateTime.Now.AddDays(1),
+                    Active = true
+                }
+            };
 
-            classroomBD[0].Assignments.Add(new Assignment_SQLDTO()
+            List<Organisation_SQLDTO> organisationsDB = new List<Organisation_SQLDTO>()
             {
-                Name = "Review",
-                ClassroomId = 1,
-                DistributionDate = System.DateTime.Now,
-                Description = "Review a partner\'s code",
-                DeliveryDeadline = System.DateTime.Now.AddDays(1),
-                Active = true
-            });
+                new Organisation_SQLDTO()
+                {
+                    Id = 1,
+                    Name = "CEGEP Ste-Foy",
+                    Administrators = new List<Administrator_SQLDTO>(),
+                    Active = true
+                },
+            };
+            List<Student_SQLDTO> studentsBD = new List<Student_SQLDTO>()
+            {
+                new Student_SQLDTO()
+                {
+                    Id = 1,
+                    Username = "ThPaquet",
+                    FirstName = "Thierry",
+                    LastName = "Paquet",
+                    Email = "ThPaquet@hotmail.com",
+                    Matricule = "1141200",
+                    Active = true
+                }
+            };
+            List<Teacher_SQLDTO> teachersDB = new List<Teacher_SQLDTO>()
+            {
+                new Teacher_SQLDTO()
+                {
+                    Username = "BACenComm",
+                    FirstName = "Melissa",
+                    LastName = "Lachapelle",
+                    Email = "BACenComm@hotmail.com",
+                    Active = true
+                }
+            };
 
-            classroomBD[0].Assignments.Add(new Assignment_SQLDTO()
-            {
-                Name = "Scrum",
-                ClassroomId = 1,
-                DistributionDate = System.DateTime.Now,
-                Description = "Daily briefing",
-                DeliveryDeadline = System.DateTime.Now.AddDays(1),
-                Active = true
-            });
+            classroomBD[0].Assignments.Add(assignmentsBD[0]);
+            classroomBD[0].Assignments.Add(assignmentsBD[1]);
+            classroomBD[1].Assignments.Add(assignmentsBD[2]);
 
-            classroomBD[0].Students.Add(new Student_SQLDTO()
-            {
-                Username = "ThPaquet",
-                FirstName = "Thierry",
-                LastName = "Paquet",
-                Email = "ThPaquet@hotmail.com",
-                Matricule = "1141200",
-                Active = true
-            });
-
-            classroomBD[0].Teachers.Add(new Teacher_SQLDTO()
-            {
-                Username = "PiFou86",
-                FirstName = "Pierre-Francois",
-                LastName = "Leon",
-                Email = "PiFou86@hotmail.com",
-                Active = true
-            });
-            classroomBD[1].Assignments.Add(new Assignment_SQLDTO()
-            {
-                Name = "UnitTests",
-                ClassroomId = 2,
-                DistributionDate = System.DateTime.Now,
-                Description = "Review a partner\'s code",
-                DeliveryDeadline = System.DateTime.Now.AddDays(1)
-            });
-
-            classroomBD[1].Students.Add(new Student_SQLDTO()
-            {
-                Username = "ikeameatbol",
-                FirstName = "Jonathan",
-                LastName = "Blouin",
-                Email = "ikeameatbol@hotmail.com",
-                Matricule = "1122334",
-                Active = true
-            });
-
-            classroomBD[1].Teachers.Add(new Teacher_SQLDTO()
-            {
-                Username = "BACenComm",
-                FirstName = "Melissa",
-                LastName = "Lachapelle",
-                Email = "BACenComm@hotmail.com",
-                Active = true
-            });
+            classroomBD[0].Students.Add(studentsBD[0]);
+            classroomBD[0].Teachers.Add(teachersDB[0]);
 
             var logMock = new Mock<IManipulationLogs>();
             Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Students).ReturnsDbSet(studentsBD);
+            context.Setup(x => x.Teachers).ReturnsDbSet(teachersDB);
             context.Setup(x => x.Classrooms).ReturnsDbSet(classroomBD);
+            context.Setup(x => x.Organisations).ReturnsDbSet(organisationsDB);
+            context.Setup(x => x.Assignments).ReturnsDbSet(assignmentsBD);
             DepotClassroom depot = new DepotClassroom(context.Object);
 
             Classroom_SQLDTO? classroom = classroomBD.FirstOrDefault(c => c.Name == "ProjetSynthese");
             Assert.NotNull(classroom);
-
-            classroom.OrganisationId = 2;
-            classroom.Assignments.Add(new Assignment_SQLDTO()
+            foreach (Assignment_SQLDTO assignment in assignmentsBD)
             {
+                assignment.Classroom = classroomBD.Where(x => x.Id == assignment.ClassroomId).FirstOrDefault();
+            }
+
+
+            Classroom newClassroom = new Classroom()
+            {
+                Id = 1,
+                Name = "RPLP",
+                Organisation = mockOrganisation,
+                OrganisationName = mockOrganisation.Name,
+                Assignments = new List<Assignment>(),
+                Students = new List<Student>(),
+                Teachers = new List<Teacher>()
+            };
+            newClassroom.Assignments.Add(new Assignment()
+            {
+                Id = 3,
                 Name = "TestAssignment",
-                ClassroomId = 1,
                 DistributionDate = System.DateTime.Now,
+                Classroom = newClassroom,
                 Description = "AssignmentUpsertTest",
                 DeliveryDeadline = System.DateTime.Now.AddDays(1),
-                Active = true
             });
 
-            classroom.Students.Add(new Student_SQLDTO()
+            newClassroom.Students.Add(new Student()
             {
+                Id = 3,
                 Username = "TestStudent",
                 FirstName = "Testy",
                 LastName = "McTestson",
                 Email = "Test@hotmail.com",
                 Matricule = "1133221",
-                Active = true
             });
 
-            classroom.Teachers.Add(new Teacher_SQLDTO()
+            newClassroom.Teachers.Add(new Teacher()
             {
+                Id = 3,
                 Username = "TestTeacher",
                 FirstName = "Test-Francois",
                 LastName = "Testeon",
                 Email = "Testeon@hotmail.com",
-                Active = true
             });
-
-            depot.UpsertClassroom(classroom.ToEntity());
+            depot.UpsertClassroom(newClassroom);
 
             classroom = classroomBD.FirstOrDefault(c => c.Name == "ProjetSynthese");
 
@@ -1914,6 +2009,7 @@ namespace RPLP.UnitTesting.DepotTests
             {
                 new Classroom_SQLDTO
                 {
+                    Id= 1,
                     Name = "ProjetSynthese",
                     OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
@@ -1923,6 +2019,7 @@ namespace RPLP.UnitTesting.DepotTests
                 },
                 new Classroom_SQLDTO()
                 {
+                    Id= 2,
                     Name = "OOP",
                     OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
@@ -1932,82 +2029,29 @@ namespace RPLP.UnitTesting.DepotTests
                 }
             };
 
-
-            classroomBD[0].Assignments.Add(new Assignment_SQLDTO()
+            List<Organisation_SQLDTO> organisationsDB = new List<Organisation_SQLDTO>()
             {
-                Name = "Review",
-                ClassroomId = 1,
-                DistributionDate = System.DateTime.Now,
-                Description = "Review a partner\'s code",
-                DeliveryDeadline = System.DateTime.Now.AddDays(1),
-                Active = true
-            });
-
-            classroomBD[0].Assignments.Add(new Assignment_SQLDTO()
-            {
-                Name = "Scrum",
-                ClassroomId = 1,
-                DistributionDate = System.DateTime.Now,
-                Description = "Daily briefing",
-                DeliveryDeadline = System.DateTime.Now.AddDays(1),
-                Active = true
-            });
-
-            classroomBD[0].Students.Add(new Student_SQLDTO()
-            {
-                Username = "ThPaquet",
-                FirstName = "Thierry",
-                LastName = "Paquet",
-                Email = "ThPaquet@hotmail.com",
-                Matricule = "1141200",
-                Active = true
-            });
-
-            classroomBD[0].Teachers.Add(new Teacher_SQLDTO()
-            {
-                Username = "PiFou86",
-                FirstName = "Pierre-Francois",
-                LastName = "Leon",
-                Email = "PiFou86@hotmail.com",
-                Active = true
-            });
-            classroomBD[1].Assignments.Add(new Assignment_SQLDTO()
-            {
-                Name = "UnitTests",
-                ClassroomId = 2,
-                DistributionDate = System.DateTime.Now,
-                Description = "Review a partner\'s code",
-                DeliveryDeadline = System.DateTime.Now.AddDays(1)
-            });
-
-            classroomBD[1].Students.Add(new Student_SQLDTO()
-            {
-                Username = "ikeameatbol",
-                FirstName = "Jonathan",
-                LastName = "Blouin",
-                Email = "ikeameatbol@hotmail.com",
-                Matricule = "1122334",
-                Active = true
-            });
-
-            classroomBD[1].Teachers.Add(new Teacher_SQLDTO()
-            {
-                Username = "BACenComm",
-                FirstName = "Melissa",
-                LastName = "Lachapelle",
-                Email = "BACenComm@hotmail.com",
-                Active = true
-            });
+                new Organisation_SQLDTO()
+                {
+                    Id = 1,
+                    Name = "CEGEP Ste-Foy",
+                    Administrators = new List<Administrator_SQLDTO>(),
+                    Active = true
+                },
+            };
 
             var logMock = new Mock<IManipulationLogs>();
             Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Classrooms).ReturnsDbSet(classroomBD);
+            context.Setup(x => x.Organisations).ReturnsDbSet(organisationsDB);
             DepotClassroom depot = new DepotClassroom(context.Object);
 
             Classroom_SQLDTO? classroom = classroomBD.FirstOrDefault(c => c.Name == "ProjetSynthese");
             Assert.NotNull(classroom);
+
+            classroom.Organisation = organisationsDB.Where(x => x.Id == classroom.OrganisationId).FirstOrDefault();
 
             depot.DeleteClassroom("ProjetSynthese");
 
