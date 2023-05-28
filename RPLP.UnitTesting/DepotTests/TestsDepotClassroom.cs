@@ -1,10 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Moq;
 using Moq.EntityFrameworkCore;
+using RPLP.API.Controllers;
 using RPLP.DAL.DTO.Sql;
 using RPLP.DAL.SQL;
 using RPLP.DAL.SQL.Depots;
 using RPLP.ENTITES;
+using RPLP.ENTITES.InterfacesDepots;
 using RPLP.JOURNALISATION;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +20,17 @@ namespace RPLP.UnitTesting.DepotTests
         [Fact]
         public void Test_GetClassrooms()
         {
+            List<Organisation_SQLDTO> organisation = new List<Organisation_SQLDTO>
+            {
+                new Organisation_SQLDTO
+                {
+                  Id = 1,
+                  Name = "TestOrg",
+                  Administrators = new List<Administrator_SQLDTO>(),
+                  Active = true
+                }
+            };
+
             List<Classroom_SQLDTO> classroomBD = new List<Classroom_SQLDTO>
             {
                 new Classroom_SQLDTO
@@ -111,6 +124,7 @@ namespace RPLP.UnitTesting.DepotTests
             Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Organisations).ReturnsDbSet(organisation);
             context.Setup(x => x.Classrooms).ReturnsDbSet(classroomBD);
             DepotClassroom depot = new DepotClassroom(context.Object);
 
@@ -351,6 +365,17 @@ namespace RPLP.UnitTesting.DepotTests
         [Fact]
         public void Test_GetClassroomsByOrganisationName()
         {
+            List<Organisation_SQLDTO> organisation = new List<Organisation_SQLDTO>
+            {
+                new Organisation_SQLDTO
+                {
+                  Id = 1,
+                  Name = "CEGEP Ste-Foy",
+                  Administrators = new List<Administrator_SQLDTO>(),
+                  Active = true
+                }
+            };
+
             List<Classroom_SQLDTO> classroomBD = new List<Classroom_SQLDTO>
             {
                 new Classroom_SQLDTO
@@ -444,6 +469,7 @@ namespace RPLP.UnitTesting.DepotTests
             Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Organisations).ReturnsDbSet(organisation);
             context.Setup(x => x.Classrooms).ReturnsDbSet(classroomBD);
             DepotClassroom depot = new DepotClassroom(context.Object);
 
@@ -463,7 +489,7 @@ namespace RPLP.UnitTesting.DepotTests
 
             List<Classroom> classrooms = depot.GetClassroomsByOrganisationName("CEGEP Ste-Foy");
 
-            Assert.True(classrooms.Count == 2);
+            Assert.True(classrooms.Count == 1);
            
             
         }
@@ -797,6 +823,17 @@ namespace RPLP.UnitTesting.DepotTests
         [Fact]
         public void Test_AddAssignmentToClassroom()
         {
+            List<Organisation_SQLDTO> organisation = new List<Organisation_SQLDTO>
+            {
+                new Organisation_SQLDTO
+                {
+                  Id = 1,
+                  Name = "TestOrg",
+                  Administrators = new List<Administrator_SQLDTO>(),
+                  Active = true
+                }
+            };
+
             List<Classroom_SQLDTO> classroomBD = new List<Classroom_SQLDTO>
             {
                 new Classroom_SQLDTO
@@ -910,6 +947,7 @@ namespace RPLP.UnitTesting.DepotTests
             Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Organisations).ReturnsDbSet(organisation);
             context.Setup(x => x.Assignments).ReturnsDbSet(assignmentsBD);
             context.Setup(x => x.Classrooms).ReturnsDbSet(classroomBD);
             DepotClassroom depot = new DepotClassroom(context.Object);
@@ -928,13 +966,22 @@ namespace RPLP.UnitTesting.DepotTests
             assignment = classroom.Assignments.FirstOrDefault(a => a.Name == "UnitTests");
 
             Assert.NotNull(assignment);
-           
-            
         }
 
         [Fact]
         public void Test_AddStudentToClassroom()
         {
+            List<Organisation_SQLDTO> organisation = new List<Organisation_SQLDTO>
+            {
+                new Organisation_SQLDTO
+                {
+                  Id = 1,
+                  Name = "TestOrg",
+                  Administrators = new List<Administrator_SQLDTO>(),
+                  Active = true
+                }
+            };
+
             List<Classroom_SQLDTO> classroomBD = new List<Classroom_SQLDTO>
             {
                 new Classroom_SQLDTO
@@ -1056,10 +1103,13 @@ namespace RPLP.UnitTesting.DepotTests
                     Active = false
                 }
             };
+
+
             var logMock = new Mock<IManipulationLogs>();
             Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Organisations).ReturnsDbSet(organisation);
             context.Setup(x => x.Students).ReturnsDbSet(studentsBD);
             context.Setup(x => x.Classrooms).ReturnsDbSet(classroomBD);
             DepotClassroom depot = new DepotClassroom(context.Object);
@@ -1093,6 +1143,17 @@ namespace RPLP.UnitTesting.DepotTests
         [Fact]
         public void Test_AddTeacherToClassroom()
         {
+            List<Organisation_SQLDTO> organisation = new List<Organisation_SQLDTO>
+            {
+                new Organisation_SQLDTO
+                {
+                  Id = 1,
+                  Name = "TestOrg",
+                  Administrators = new List<Administrator_SQLDTO>(),
+                  Active = true
+                }
+            };
+
             List<Classroom_SQLDTO> classroomBD = new List<Classroom_SQLDTO>
             {
                 new Classroom_SQLDTO
@@ -1258,6 +1319,17 @@ namespace RPLP.UnitTesting.DepotTests
         [Fact]
         public void Test_RemoveAssignmentFromClassroom()
         {
+            List<Organisation_SQLDTO> organisation = new List<Organisation_SQLDTO>
+            {
+                new Organisation_SQLDTO
+                {
+                  Id = 1,
+                  Name = "TestOrg",
+                  Administrators = new List<Administrator_SQLDTO>(),
+                  Active = true
+                }
+            };
+
             List<Classroom_SQLDTO> classroomBD = new List<Classroom_SQLDTO>
             {
                 new Classroom_SQLDTO
@@ -1389,6 +1461,17 @@ namespace RPLP.UnitTesting.DepotTests
         [Fact]
         public void Test_RemoveStudentFromClassroom()
         {
+            List<Organisation_SQLDTO> organisation = new List<Organisation_SQLDTO>
+            {
+                new Organisation_SQLDTO
+                {
+                  Id = 1,
+                  Name = "TestOrg",
+                  Administrators = new List<Administrator_SQLDTO>(),
+                  Active = true
+                }
+            };
+
             List<Classroom_SQLDTO> classroomBD = new List<Classroom_SQLDTO>
             {
                 new Classroom_SQLDTO
@@ -1525,6 +1608,7 @@ namespace RPLP.UnitTesting.DepotTests
             Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Organisations).ReturnsDbSet(organisation);
             context.Setup(x => x.Students).ReturnsDbSet(studentsBD);
             context.Setup(x => x.Classrooms).ReturnsDbSet(classroomBD);
             DepotClassroom depot = new DepotClassroom(context.Object);
@@ -1550,6 +1634,17 @@ namespace RPLP.UnitTesting.DepotTests
         [Fact]
         public void Test_RemoveTeacherFromClassroom()
         {
+            List<Organisation_SQLDTO> organisation = new List<Organisation_SQLDTO>
+            {
+                new Organisation_SQLDTO
+                {
+                  Id = 1,
+                  Name = "TestOrg",
+                  Administrators = new List<Administrator_SQLDTO>(),
+                  Active = true
+                }
+            };
+
             List<Classroom_SQLDTO> classroomBD = new List<Classroom_SQLDTO>
             {
                 new Classroom_SQLDTO
@@ -1708,6 +1803,17 @@ namespace RPLP.UnitTesting.DepotTests
         [Fact]
         public void Test_UpsertClassroom_Inserts()
         {
+            List<Organisation_SQLDTO> organisation = new List<Organisation_SQLDTO>
+            {
+                new Organisation_SQLDTO
+                {
+                  Id = 1,
+                  Name = "TestOrg",
+                  Administrators = new List<Administrator_SQLDTO>(),
+                  Active = true
+                }
+            };
+
             List<Classroom_SQLDTO> classroomBD = new List<Classroom_SQLDTO>
             {
                 new Classroom_SQLDTO
@@ -1834,6 +1940,17 @@ namespace RPLP.UnitTesting.DepotTests
         [Fact]
         public void Test_UpsertClassroom_Updates()
         {
+            List<Organisation_SQLDTO> organisation = new List<Organisation_SQLDTO>
+            {
+                new Organisation_SQLDTO
+                {
+                  Id = 1,
+                  Name = "TestOrg",
+                  Administrators = new List<Administrator_SQLDTO>(),
+                  Active = true
+                }
+            };
+
             List<Classroom_SQLDTO> classroomBD = new List<Classroom_SQLDTO>
             {
                 new Classroom_SQLDTO
@@ -1978,6 +2095,17 @@ namespace RPLP.UnitTesting.DepotTests
         [Fact]
         public void Test_DeleteClassroom()
         {
+            List<Organisation_SQLDTO> organisation = new List<Organisation_SQLDTO>
+            {
+                new Organisation_SQLDTO
+                {
+                  Id = 1,
+                  Name = "TestOrg",
+                  Administrators = new List<Administrator_SQLDTO>(),
+                  Active = true
+                }
+            };
+
             List<Classroom_SQLDTO> classroomBD = new List<Classroom_SQLDTO>
             {
                 new Classroom_SQLDTO
@@ -2071,6 +2199,7 @@ namespace RPLP.UnitTesting.DepotTests
             Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Organisations).ReturnsDbSet(organisation);
             context.Setup(x => x.Classrooms).ReturnsDbSet(classroomBD);
             DepotClassroom depot = new DepotClassroom(context.Object);
 
