@@ -63,4 +63,5 @@ namespace RPLP.DAL.SQL
         public virtual DbSet<Student_SQLDTO> Students { get; set; }
         public virtual DbSet<Teacher_SQLDTO> Teachers { get; set; }
     }
+
 }

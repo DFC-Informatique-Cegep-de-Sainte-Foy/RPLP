@@ -1254,6 +1254,9 @@ namespace RPLP.UnitTesting.DepotTests
             DepotAllocation da = new DepotAllocation(context.Object);
 
             int assignmentId = 2;
+            //Add classroom in assignemntId 2
+            Assignment_SQLDTO assignment = assignmentsDTO.Where(x => x.Id == assignmentId).FirstOrDefault();
+            assignment.Classroom = classroomsDTO.Where(x => x.Id == assignment.ClassroomId).FirstOrDefault();
 
             // Act
             List<Allocation> la = da.GetAllocationsByAssignmentID(assignmentId);
@@ -1412,6 +1415,9 @@ namespace RPLP.UnitTesting.DepotTests
             DepotAllocation da = new DepotAllocation(context.Object);
 
             int assignmentId = 2;
+            //Add classroom in assignemntId 2
+            Assignment_SQLDTO assignment = assignmentsDTO.Where(x => x.Id == assignmentId).FirstOrDefault();
+            assignment.Classroom = classroomsDTO.Where(x => x.Id == assignment.ClassroomId).FirstOrDefault();
 
             // Act
             List<Allocation> la = da.GetAllocationsByAssignmentID(assignmentId);
@@ -1565,6 +1571,9 @@ namespace RPLP.UnitTesting.DepotTests
             DepotAllocation da = new DepotAllocation(context.Object);
 
             int assignmentId = 1;
+            //Add classroom in assignemntId 1
+            Assignment_SQLDTO assignment = assignmentsDTO.Where(x => x.Id == assignmentId).FirstOrDefault();
+            assignment.Classroom = classroomsDTO.Where(x => x.Id == assignment.ClassroomId).FirstOrDefault();
 
             // Act
             List<Allocation> la = da.GetAllocationsByAssignmentID(assignmentId);
@@ -1628,7 +1637,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 1,
                     Name = "Assigmnent1",
-                    ClassroomId = 3,
+                    ClassroomId = 1,
                     DistributionDate = System.DateTime.Now,
                     Description = "Review a partner\'s code",
                     DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -1718,6 +1727,9 @@ namespace RPLP.UnitTesting.DepotTests
             DepotAllocation da = new DepotAllocation(context.Object);
 
             int assignmentId = 1;
+            //Add classroom in assignemntId 1
+            Assignment_SQLDTO assignment = assignmentsDTO.Where(x => x.Id == assignmentId).FirstOrDefault();
+            assignment.Classroom = classroomsDTO.Where(x => x.Id == assignment.ClassroomId).FirstOrDefault();
 
             // Act
             List<Allocation> la = da.GetAllocationsByAssignmentID(assignmentId);
@@ -2027,7 +2039,12 @@ namespace RPLP.UnitTesting.DepotTests
             context.Setup(x => x.Repositories).ReturnsDbSet(repositoriesDTO);
             DepotAllocation da = new DepotAllocation(context.Object);
 
+            
             int assignmentId = 1;
+
+            //Add classroom in assignemntId 1
+            Assignment_SQLDTO assignment = assignmentsDTO.Where(x => x.Id == assignmentId).FirstOrDefault();
+            assignment.Classroom = classroomsDTO.Where(x => x.Id == assignment.ClassroomId).FirstOrDefault();
 
             // Act
             List<Allocation> la = da.GetAllocationsByAssignmentID(assignmentId);
@@ -3962,6 +3979,9 @@ namespace RPLP.UnitTesting.DepotTests
             DepotAllocation da = new DepotAllocation(context.Object);
 
             string assignmentName = "Assigmnent2";
+            //Add classroom in assignmentName Assigmnent1
+            Assignment_SQLDTO assignment = assignmentsDTO.Where(x => x.Name == assignmentName).FirstOrDefault();
+            assignment.Classroom = classroomsDTO.Where(x => x.Id == assignment.ClassroomId).FirstOrDefault();
 
             // Act
             List<Allocation> la = da.GetAllocationsByAssignmentName(assignmentName);
@@ -4120,6 +4140,9 @@ namespace RPLP.UnitTesting.DepotTests
             DepotAllocation da = new DepotAllocation(context.Object);
 
             string assignmentName = "Assigmnent2";
+            //Add classroom in assignmentName Assigmnent2
+            Assignment_SQLDTO assignment = assignmentsDTO.Where(x => x.Name == assignmentName).FirstOrDefault();
+            assignment.Classroom = classroomsDTO.Where(x => x.Id == assignment.ClassroomId).FirstOrDefault();
 
             // Act
             List<Allocation> la = da.GetAllocationsByAssignmentName(assignmentName);
@@ -4274,6 +4297,10 @@ namespace RPLP.UnitTesting.DepotTests
 
             string assignmentName = "Assigmnent1";
 
+            //Add classroom in assignmentName Assigmnent1
+            Assignment_SQLDTO assignment = assignmentsDTO.Where(x => x.Name == assignmentName).FirstOrDefault();
+            assignment.Classroom = classroomsDTO.Where(x => x.Id == assignment.ClassroomId).FirstOrDefault();
+
             // Act
             List<Allocation> la = da.GetAllocationsByAssignmentName(assignmentName);
 
@@ -4336,7 +4363,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 1,
                     Name = "Assigmnent1",
-                    ClassroomId = 3,
+                    ClassroomId = 1,
                     DistributionDate = System.DateTime.Now,
                     Description = "Review a partner\'s code",
                     DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -4426,6 +4453,9 @@ namespace RPLP.UnitTesting.DepotTests
             DepotAllocation da = new DepotAllocation(context.Object);
 
             string assignmentName = "Assigmnent1";
+            //Add classroom in assignmentName Assigmnent1
+            Assignment_SQLDTO assignment = assignmentsDTO.Where(x => x.Name == assignmentName).FirstOrDefault();
+            assignment.Classroom = classroomsDTO.Where(x => x.Id == assignment.ClassroomId).FirstOrDefault();
 
             // Act
             List<Allocation> la = da.GetAllocationsByAssignmentName(assignmentName);
@@ -4736,6 +4766,10 @@ namespace RPLP.UnitTesting.DepotTests
             DepotAllocation da = new DepotAllocation(context.Object);
 
             string assignmentName = "Assigmnent1";
+
+            //Add classroom in assignmentName Assigmnent1
+            Assignment_SQLDTO assignment = assignmentsDTO.Where(x => x.Name == assignmentName).FirstOrDefault();
+            assignment.Classroom = classroomsDTO.Where(x => x.Id == assignment.ClassroomId).FirstOrDefault();
 
             // Act
             List<Allocation> la = da.GetAllocationsByAssignmentName(assignmentName);

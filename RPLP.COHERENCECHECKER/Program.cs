@@ -46,7 +46,7 @@ ScriptGithubRPLP scripts = new ScriptGithubRPLP(
 while (true)
 {
     scripts.EnsureOrganisationRepositoriesAreInDB();
-    scripts.ValidateAllRepositoriesHasBranch();
+    //scripts.ValidateAllRepositoriesHasBranch();
     Console.WriteLine("Interval");
     Thread.Sleep(3600000);
 }

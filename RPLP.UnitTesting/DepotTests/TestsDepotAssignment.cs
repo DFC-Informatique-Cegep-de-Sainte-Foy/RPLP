@@ -302,15 +302,45 @@ namespace RPLP.UnitTesting.DepotTests
                     Active = true
                 }
             };
+            List<Classroom_SQLDTO> classroomsDTO = new List<Classroom_SQLDTO>()
+            {
+                new Classroom_SQLDTO()
+                {
+                    Id = 1,
+                    Name = "Classroom1",
+                    OrganisationId = 1,
+                    Assignments = new List<Assignment_SQLDTO>(),
+                    Students = new List<Student_SQLDTO>(),
+                    Teachers = new List<Teacher_SQLDTO>(),
+                    Active = true
+                },
+
+                new Classroom_SQLDTO()
+                {
+                    Id = 2,
+                    Name = "Classroom2",
+                    OrganisationId = 1,
+                    Assignments = new List<Assignment_SQLDTO>(),
+                    Students = new List<Student_SQLDTO>(),
+                    Teachers = new List<Teacher_SQLDTO>(),
+                    Active = true
+                }
+           };
 
             var logMock = new Mock<IManipulationLogs>();
             Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Assignments).ReturnsDbSet(assignmentsBD);
+            context.Setup(x => x.Classrooms).ReturnsDbSet(classroomsDTO);
             DepotAssignment depot = new DepotAssignment(context.Object);
 
-            Assert.NotNull(assignmentsBD.FirstOrDefault(a => a.Name == "Review" && a.Active == true));
+            string assignmentName = "Review";
+
+            Assert.NotNull(assignmentsBD.FirstOrDefault(a => a.Name == assignmentName && a.Active == true));
+
+            Assignment_SQLDTO assignment = assignmentsBD.Where(x => x.Name == assignmentName).FirstOrDefault();
+            assignment.Classroom = classroomsDTO.Where(x => x.Id == assignment.ClassroomId).FirstOrDefault();
 
             depot.DeleteAssignment("Review");
 
