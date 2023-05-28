@@ -148,7 +148,7 @@ namespace RPLP.SERVICES.Github
                 throw new ArgumentException("the provided value is incorrect or null");
             }
 
-            ValidateAllRepositoriesHasBranch();
+            ValidateAllRepositoriesByAssignementHasBranch(p_organisationName, p_assignmentName);
 
             CreateOrUpdateActiveClassroom(p_organisationName, p_classRoomName, p_assignmentName);
 
@@ -1061,6 +1061,34 @@ namespace RPLP.SERVICES.Github
                 // flag Revalider si on fait autre chose s'il manque la branche main
                 _depotRepository.DeleteRepository(p_repository);
             }
+        }
+
+        public void ValidateAllRepositoriesByAssignementHasBranch(string p_organisationName, string p_assignementName)
+        {
+            if (string.IsNullOrWhiteSpace(p_organisationName))
+            {
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                    new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    "ScriptGithubRPLP - ValidateAllRepositoriesByAssignementHasBranch - p_organisationName est vide",
+                    0));
+            }
+            if (string.IsNullOrWhiteSpace(p_assignementName))
+            {
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                    new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    "ScriptGithubRPLP - ValidateAllRepositoriesByAssignementHasBranch - p_assignementName assignée est vide",
+                    0));
+            }
+
+           
+            List<Repository> repositoriesInDB = this._depotRepository.GetRepositoriesFromAssignementName(p_organisationName, p_assignementName);
+
+           
+            foreach (Repository r in repositoriesInDB)
+            {
+                this.ValidateOneRepositoryHasBranch(p_organisationName, r);
+            }
+            
         }
 
         #endregion
