@@ -120,7 +120,7 @@ namespace RPLP.UnitTesting.APITests
             Mock<IDepotRepository> depot = new Mock<IDepotRepository>();
             RepositoryController controller = new RepositoryController(depot.Object);
 
-            var response = controller.DeleteRepository(repository.Name);
+            var response = controller.DeleteRepository("ThPaquet");
 
             var result = Assert.IsType<NoContentResult>(response);
             depot.Verify(d => d.DeleteRepositoryParRepoName("ThPaquet"));
