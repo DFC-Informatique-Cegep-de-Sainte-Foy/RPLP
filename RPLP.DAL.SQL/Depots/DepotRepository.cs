@@ -230,7 +230,42 @@ namespace RPLP.DAL.SQL.Depots
 
         public void DeleteRepositoryParRepoName(string p_repositoryName)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrWhiteSpace(p_repositoryName))
+            {
+                Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                    new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    "DepotRepository - ReactivateRepository - p_repositoryName passé en paramètre est vide", 0));
+            }
+
+            Repository_SQLDTO? repositoryResult =
+                this._context.Repositories.AsNoTrackingWithIdentityResolution()
+                    .SingleOrDefault(repository => repository.Name == p_repositoryName);
+
+            if (repositoryResult != null)
+            {
+                if (this._context.ChangeTracker != null)
+                {
+                    this._context.ChangeTracker.Clear();
+                }
+
+                repositoryResult.Organisation = this._context.Organisations.AsNoTrackingWithIdentityResolution()
+                    .SingleOrDefault(o => o.Id == repositoryResult.OrganisationId);
+
+                repositoryResult.Active = false;
+                this._context.Entry<Organisation_SQLDTO>(repositoryResult.Organisation).State = EntityState.Unchanged;
+
+                this._context.Update(repositoryResult);
+                this._context.SaveChanges();
+
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Repository",
+                    $"DepotRepository - Method - DeleteRepositoryParRepoName(string p_repositoryName) - Void - delete repository"));
+            }
+            else
+            {
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Repository",
+                    $"DepotRepository - Method - DeleteRepositoryParRepoName(string p_repositoryName) - Void - repositoryResult est null",
+                    0));
+            }
         }
 
         public void ReactivateRepository(Repository p_repository)

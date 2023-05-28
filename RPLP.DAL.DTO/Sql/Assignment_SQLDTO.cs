@@ -41,10 +41,10 @@ namespace RPLP.DAL.DTO.Sql
         {
             if (this.DeliveryDeadline != null)
             {
-                return new Assignment(this.Id, this.Name, new Classroom(this.Id, this.Name, this.Classroom.Organisation.ToEntity()), this.Description, this.DeliveryDeadline, this.DistributionDate);
+                return new Assignment(this.Id, this.Name, new Classroom(this.Classroom.Id, this.Classroom.Name, this.Classroom.Organisation.ToEntity()), this.Description, this.DeliveryDeadline, this.DistributionDate);
             }
 
-            return new Assignment(this.Id, this.Name, new Classroom(this.Id, this.Name, this.Classroom.Organisation.ToEntity()), this.Description, this.DistributionDate);
+            return new Assignment(this.Id, this.Name, new Classroom(this.Classroom.Id, this.Classroom.Name, this.Classroom.Organisation.ToEntity()), this.Description, this.DistributionDate);
         }
     }
 }

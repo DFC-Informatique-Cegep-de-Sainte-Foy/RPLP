@@ -857,6 +857,13 @@ namespace RPLP.UnitTesting.DepotTests
         [Fact]
         private void Test_GetTeacherClassesInOrganisation()
         {
+            Organisation_SQLDTO organisation = new Organisation_SQLDTO
+            {
+                Active = true,
+                Administrators = new List<Administrator_SQLDTO>(),
+                Id = 1,
+                Name = "CEGEP Ste-Foy"
+            };
             List<Teacher_SQLDTO> teachersDB = new List<Teacher_SQLDTO>()
             {
                 new Teacher_SQLDTO()
@@ -911,6 +918,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Name = "ProjetSynthese",
                     OrganisationId = 1,
+                    Organisation = organisation,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = teachersDB,
@@ -920,11 +928,16 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Name = "RPLP",
                     OrganisationId = 1,
+                    Organisation = organisation,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = teachersDB,
                     Active = true
                 }
+            };
+            List<Organisation_SQLDTO> organisationDB = new List<Organisation_SQLDTO>
+            {
+                organisation
             };
 
             var logMock = new Mock<IManipulationLogs>();
@@ -933,6 +946,7 @@ namespace RPLP.UnitTesting.DepotTests
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Classrooms).ReturnsDbSet(classroomBD);
             context.Setup(x => x.Teachers).ReturnsDbSet(teachersDB);
+            context.Setup(x => x.Organisations).ReturnsDbSet(organisationDB);
             DepotTeacher depot = new DepotTeacher(context.Object);
 
             List<Classroom> classes = depot.GetTeacherClassesInOrganisation("ThPaquet", "CEGEP Ste-Foy");
@@ -940,8 +954,6 @@ namespace RPLP.UnitTesting.DepotTests
             Assert.Equal(2, classes.Count);
             Assert.Contains(classes, c => c.Name == "RPLP");
             Assert.DoesNotContain(classes, c => c.Name == "OOP");
-           
-            
         }
 
         [Fact]
