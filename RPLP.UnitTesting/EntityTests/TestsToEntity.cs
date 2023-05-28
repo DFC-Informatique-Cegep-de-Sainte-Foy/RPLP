@@ -306,6 +306,19 @@ namespace RPLP.UnitTesting.EntityTests
                 FullName = "Thierry Paquet",
                 OrganisationId = 1
             };
+            Organisation_SQLDTO organisation_SQLDTO = new Organisation_SQLDTO()
+            {
+                Id = 1,
+                Name = "CEGEP Ste-Foy",
+                Administrators = new List<Administrator_SQLDTO>()
+                {
+                    new Administrator_SQLDTO()
+                    {
+                        Username = "ThPaquet"
+                    }
+                }
+            };
+            repository_SQLDTO.Organisation = organisation_SQLDTO;
 
             Repository repository = repository_SQLDTO.ToEntity();
 

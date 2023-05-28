@@ -116,7 +116,10 @@ namespace RPLP.DAL.SQL.Depots
                 repositoryResult.FullName = p_repository.FullName;
                 repositoryResult.Active = true;
 
-                this._context.Entry<Organisation_SQLDTO>(repositoryResult.Organisation).State = EntityState.Unchanged;
+                if (this._context.ChangeTracker != null)
+                {
+                    this._context.Entry<Organisation_SQLDTO>(repositoryResult.Organisation).State = EntityState.Unchanged;
+                }
 
                 this._context.Update(repositoryResult);
                 this._context.SaveChanges();
@@ -134,7 +137,10 @@ namespace RPLP.DAL.SQL.Depots
                 repository.FullName = p_repository.FullName;
                 repository.Active = true;
 
-                this._context.Entry<Organisation_SQLDTO>(repository.Organisation).State = EntityState.Unchanged;
+                if (this._context.ChangeTracker != null)
+                {
+                    this._context.Entry<Organisation_SQLDTO>(repository.Organisation).State = EntityState.Unchanged;
+                }
 
                 this._context.Repositories.Add(repository);
                 this._context.SaveChanges();
@@ -169,7 +175,11 @@ namespace RPLP.DAL.SQL.Depots
                     .SingleOrDefault(o => o.Id == repositoryResult.OrganisationId);
 
                 repositoryResult.Active = false;
-                this._context.Entry<Organisation_SQLDTO>(repositoryResult.Organisation).State = EntityState.Unchanged;
+
+                if (this._context.ChangeTracker != null)
+                {
+                    this._context.Entry<Organisation_SQLDTO>(repositoryResult.Organisation).State = EntityState.Unchanged;
+                }
 
                 this._context.Update(repositoryResult);
                 this._context.SaveChanges();
@@ -293,8 +303,11 @@ namespace RPLP.DAL.SQL.Depots
                     .SingleOrDefault(o => o.Id == repositoryResult.OrganisationId);
 
                 repositoryResult.Active = true;
-                this._context.Entry<Organisation_SQLDTO>(repositoryResult.Organisation).State = EntityState.Unchanged;
 
+                if (this._context.ChangeTracker != null)
+                {
+                    this._context.Entry<Organisation_SQLDTO>(repositoryResult.Organisation).State = EntityState.Unchanged;
+                }
                 this._context.Update(repositoryResult);
                 this._context.SaveChanges();
 
