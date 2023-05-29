@@ -83,14 +83,12 @@
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             beforeSend: function () {
-                console.log('firing ajax call');
             },
             success: function (data) {
                 admins = data;
                 retirerAdmindeOrg.ShowAdmins();
             },
             error: function (ex) {
-                console.log('Error');
             }
         });
     }
@@ -115,7 +113,7 @@
         });
     }
 
-        retirerAdmindeOrg.RemoveAdminFromOrg = function ()
+    retirerAdmindeOrg.RemoveAdminFromOrg = function ()
     {
         var orgName = document.getElementById("retirerAdmindeOrgOrgDropdown").value;
         var adminUsername = document.getElementById("retirerAdmindeOrgAdminDropdown").value;

@@ -103,9 +103,12 @@ namespace RPLP.API.Controllers
                 {
                     RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "AdministratorController - GetAdministratorByEmail - email passé en paramêtre vide", 0));
+
+                    return BadRequest();
                 }
 
                 RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"api/Administrator/Email/{email}", 200, "AdministratorController - GET méthode GetAdministratorByEmail"));
+
 
                 return Ok(this._depot.GetAdministratorByEmail(email));
             }
@@ -156,19 +159,17 @@ namespace RPLP.API.Controllers
                     RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "AdministratorController - GetAdminOrganisationsByEmail - username récupéré à partir du email est vide", 0));
 
-                    return BadRequest();
+                    return Ok(new List<Organisation>());
                 }
 
                 return Ok(this._depot.GetAdminOrganisations(username));
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
-
-
+        
         [HttpPost("Username/{adminUsername}/Orgs/Add/{organisationName}")]
         public ActionResult AddAdminToOrganisation(string adminUsername, string organisationName)
         {
@@ -257,33 +258,6 @@ namespace RPLP.API.Controllers
             }
 
             return Created(nameof(this.UpsertAdmin), p_admin);
-            //try
-            //{
-            //    if (p_admin == null)
-            //    {
-            //        RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-            //        "AdministratorController - UpsertAdmin - p_admin passé en paramêtre est null"));
-
-            //        return BadRequest();
-            //    }
-
-            //    if (!ModelState.IsValid)
-            //    {
-            //        RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-            //       "AdministratorController - UpsertAdmin - p_admin n'est pas un model valide"));
-
-            //        return BadRequest();
-            //    }
-
-            //    this._depot.UpsertAdministrator(p_admin);
-
-            //    return Created(nameof(this.UpsertAdmin), p_admin);
-            //}
-            //catch (Exception)
-            //{
-            //    throw;
-            //}
-
         }
 
         [HttpDelete("Username/{username}")]

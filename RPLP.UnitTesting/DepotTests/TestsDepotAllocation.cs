@@ -1164,7 +1164,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 1,
                     Name = "Assigmnent1",
-                    ClassroomName = "Classroom2",
+                    ClassroomId = 2,
                     DistributionDate = System.DateTime.Now,
                     Description = "Review a partner\'s code",
                     DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -1174,7 +1174,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 2,
                     Name = "Assigmnent2",
-                    ClassroomName = "Classroom2",
+                    ClassroomId = 2,
                     DistributionDate = System.DateTime.Now,
                     Description = "Review another partner\'s code",
                     DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -1188,7 +1188,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 1,
                     Name = "Classroom1",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -1199,7 +1199,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 2,
                     Name = "Classroom2",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -1214,7 +1214,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 1,
                     Name = "Assigmnent2-ThPaquet",
                     FullName = "Organisation1/Assigmnent2-ThPaquet",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 },
                 new Repository_SQLDTO()
@@ -1222,7 +1222,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 2,
                     Name = "Assigmnent2-ikeameatbol",
                     FullName = "Organisation1/Assigmnent2-BACenComm",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 },
                 new Repository_SQLDTO()
@@ -1230,7 +1230,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 3,
                     Name = "Assigmnent2-BACenComm",
                     FullName = "Organisation1/Assigmnent2-BACenComm",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = false
                 },
                 new Repository_SQLDTO()
@@ -1238,7 +1238,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 4,
                     Name = "Assigmnent1-2151215",
                     FullName = "Organisation1/Assigmnent1-2151215",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 }
             };
@@ -1254,6 +1254,9 @@ namespace RPLP.UnitTesting.DepotTests
             DepotAllocation da = new DepotAllocation(context.Object);
 
             int assignmentId = 2;
+            //Add classroom in assignemntId 2
+            Assignment_SQLDTO assignment = assignmentsDTO.Where(x => x.Id == assignmentId).FirstOrDefault();
+            assignment.Classroom = classroomsDTO.Where(x => x.Id == assignment.ClassroomId).FirstOrDefault();
 
             // Act
             List<Allocation> la = da.GetAllocationsByAssignmentID(assignmentId);
@@ -1322,7 +1325,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 1,
                     Name = "Assigmnent1",
-                    ClassroomName = "Classroom2",
+                    ClassroomId = 2,
                     DistributionDate = System.DateTime.Now,
                     Description = "Review a partner\'s code",
                     DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -1332,7 +1335,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 2,
                     Name = "Assigmnent2",
-                    ClassroomName = "Classroom2",
+                    ClassroomId = 2,
                     DistributionDate = System.DateTime.Now,
                     Description = "Review another partner\'s code",
                     DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -1346,7 +1349,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 1,
                     Name = "Classroom1",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -1357,7 +1360,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 2,
                     Name = "Classroom2",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -1372,7 +1375,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 1,
                     Name = "Assigmnent2-ThPaquet",
                     FullName = "Organisation1/Assigmnent2-ThPaquet",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 },
                 new Repository_SQLDTO()
@@ -1380,7 +1383,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 2,
                     Name = "Assigmnent2-ikeameatbol",
                     FullName = "Organisation1/Assigmnent2-BACenComm",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 },
                 new Repository_SQLDTO()
@@ -1388,7 +1391,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 3,
                     Name = "Assigmnent2-BACenComm",
                     FullName = "Organisation1/Assigmnent2-BACenComm",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = false
                 },
                 new Repository_SQLDTO()
@@ -1396,7 +1399,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 4,
                     Name = "Assigmnent1-2151215",
                     FullName = "Organisation1/Assigmnent1-2151215",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 }
             };
@@ -1412,6 +1415,9 @@ namespace RPLP.UnitTesting.DepotTests
             DepotAllocation da = new DepotAllocation(context.Object);
 
             int assignmentId = 2;
+            //Add classroom in assignemntId 2
+            Assignment_SQLDTO assignment = assignmentsDTO.Where(x => x.Id == assignmentId).FirstOrDefault();
+            assignment.Classroom = classroomsDTO.Where(x => x.Id == assignment.ClassroomId).FirstOrDefault();
 
             // Act
             List<Allocation> la = da.GetAllocationsByAssignmentID(assignmentId);
@@ -1475,7 +1481,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 1,
                     Name = "Assigmnent1",
-                    ClassroomName = "Classroom2",
+                    ClassroomId = 2,
                     DistributionDate = System.DateTime.Now,
                     Description = "Review a partner\'s code",
                     DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -1485,7 +1491,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 2,
                     Name = "Assigmnent2",
-                    ClassroomName = "Classroom2",
+                    ClassroomId = 2,
                     DistributionDate = System.DateTime.Now,
                     Description = "Review another partner\'s code",
                     DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -1499,7 +1505,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 1,
                     Name = "Classroom1",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -1510,7 +1516,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 2,
                     Name = "Classroom2",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -1525,7 +1531,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 1,
                     Name = "Assigmnent2-ThPaquet",
                     FullName = "Organisation1/Assigmnent2-ThPaquet",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 },
                 new Repository_SQLDTO()
@@ -1533,7 +1539,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 2,
                     Name = "Assigmnent2-ikeameatbol",
                     FullName = "Organisation1/Assigmnent2-BACenComm",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 },
                 new Repository_SQLDTO()
@@ -1541,7 +1547,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 3,
                     Name = "Assigmnent2-BACenComm",
                     FullName = "Organisation1/Assigmnent2-BACenComm",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = false
                 },
                 new Repository_SQLDTO()
@@ -1549,7 +1555,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 4,
                     Name = "Assigmnent2-2151215",
                     FullName = "Organisation1/Assigmnent2-2151215",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 }
             };
@@ -1565,6 +1571,9 @@ namespace RPLP.UnitTesting.DepotTests
             DepotAllocation da = new DepotAllocation(context.Object);
 
             int assignmentId = 1;
+            //Add classroom in assignemntId 1
+            Assignment_SQLDTO assignment = assignmentsDTO.Where(x => x.Id == assignmentId).FirstOrDefault();
+            assignment.Classroom = classroomsDTO.Where(x => x.Id == assignment.ClassroomId).FirstOrDefault();
 
             // Act
             List<Allocation> la = da.GetAllocationsByAssignmentID(assignmentId);
@@ -1628,7 +1637,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 1,
                     Name = "Assigmnent1",
-                    ClassroomName = "Classroom3",
+                    ClassroomId = 1,
                     DistributionDate = System.DateTime.Now,
                     Description = "Review a partner\'s code",
                     DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -1638,7 +1647,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 2,
                     Name = "Assigmnent2",
-                    ClassroomName = "Classroom2",
+                    ClassroomId = 2,
                     DistributionDate = System.DateTime.Now,
                     Description = "Review another partner\'s code",
                     DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -1652,7 +1661,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 1,
                     Name = "Classroom1",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -1663,7 +1672,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 2,
                     Name = "Classroom2",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -1678,7 +1687,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 1,
                     Name = "Assigmnent2-ThPaquet",
                     FullName = "Organisation1/Assigmnent2-ThPaquet",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 },
                 new Repository_SQLDTO()
@@ -1686,7 +1695,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 2,
                     Name = "Assigmnent2-ikeameatbol",
                     FullName = "Organisation1/Assigmnent2-BACenComm",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 },
                 new Repository_SQLDTO()
@@ -1694,7 +1703,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 3,
                     Name = "Assigmnent2-BACenComm",
                     FullName = "Organisation1/Assigmnent2-BACenComm",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = false
                 },
                 new Repository_SQLDTO()
@@ -1702,7 +1711,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 4,
                     Name = "Assigmnent2-2151215",
                     FullName = "Organisation1/Assigmnent2-2151215",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 }
             };
@@ -1718,6 +1727,9 @@ namespace RPLP.UnitTesting.DepotTests
             DepotAllocation da = new DepotAllocation(context.Object);
 
             int assignmentId = 1;
+            //Add classroom in assignemntId 1
+            Assignment_SQLDTO assignment = assignmentsDTO.Where(x => x.Id == assignmentId).FirstOrDefault();
+            assignment.Classroom = classroomsDTO.Where(x => x.Id == assignment.ClassroomId).FirstOrDefault();
 
             // Act
             List<Allocation> la = da.GetAllocationsByAssignmentID(assignmentId);
@@ -1783,7 +1795,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 1,
                     Name = "Assigmnent1",
-                    ClassroomName = "Classroom1",
+                    ClassroomId = 1,
                     DistributionDate = System.DateTime.Now,
                     Description = "Review a partner\'s code",
                     DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -1793,7 +1805,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 2,
                     Name = "Assigmnent2",
-                    ClassroomName = "Classroom2",
+                    ClassroomId = 2,
                     DistributionDate = System.DateTime.Now,
                     Description = "Review another partner\'s code",
                     DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -1807,7 +1819,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 1,
                     Name = "Classroom1",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -1818,7 +1830,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 2,
                     Name = "Classroom2",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -1833,7 +1845,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 1,
                     Name = "Assigmnent2-ThPaquet",
                     FullName = "Organisation1/Assigmnent2-ThPaquet",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 },
                 new Repository_SQLDTO()
@@ -1841,7 +1853,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 2,
                     Name = "Assigmnent2-ikeameatbol",
                     FullName = "Organisation1/Assigmnent2-BACenComm",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 },
                 new Repository_SQLDTO()
@@ -1849,7 +1861,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 3,
                     Name = "Assigmnent2-BACenComm",
                     FullName = "Organisation1/Assigmnent2-BACenComm",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = false
                 },
                 new Repository_SQLDTO()
@@ -1857,7 +1869,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 4,
                     Name = "Assigmnent2-2151215",
                     FullName = "Organisation1/Assigmnent2-2151215",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 }
             };
@@ -1938,7 +1950,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 1,
                     Name = "Assigmnent1",
-                    ClassroomName = "Classroom1",
+                    ClassroomId = 1,
                     DistributionDate = System.DateTime.Now,
                     Description = "Review a partner\'s code",
                     DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -1948,7 +1960,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 2,
                     Name = "Assigmnent2",
-                    ClassroomName = "Classroom2",
+                    ClassroomId = 2,
                     DistributionDate = System.DateTime.Now,
                     Description = "Review another partner\'s code",
                     DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -1962,7 +1974,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 1,
                     Name = "Classroom1",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -1973,7 +1985,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 2,
                     Name = "Classroom2",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -1988,7 +2000,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 1,
                     Name = "Assigmnent2-ThPaquet",
                     FullName = "Organisation1/Assigmnent2-ThPaquet",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 },
                 new Repository_SQLDTO()
@@ -1996,7 +2008,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 2,
                     Name = "Assigmnent2-ikeameatbol",
                     FullName = "Organisation1/Assigmnent2-BACenComm",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 },
                 new Repository_SQLDTO()
@@ -2004,7 +2016,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 3,
                     Name = "Assigmnent2-BACenComm",
                     FullName = "Organisation1/Assigmnent2-BACenComm",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = false
                 },
                 new Repository_SQLDTO()
@@ -2012,7 +2024,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 4,
                     Name = "Assigmnent2-2151215",
                     FullName = "Organisation1/Assigmnent2-2151215",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 }
             };
@@ -2027,7 +2039,12 @@ namespace RPLP.UnitTesting.DepotTests
             context.Setup(x => x.Repositories).ReturnsDbSet(repositoriesDTO);
             DepotAllocation da = new DepotAllocation(context.Object);
 
+            
             int assignmentId = 1;
+
+            //Add classroom in assignemntId 1
+            Assignment_SQLDTO assignment = assignmentsDTO.Where(x => x.Id == assignmentId).FirstOrDefault();
+            assignment.Classroom = classroomsDTO.Where(x => x.Id == assignment.ClassroomId).FirstOrDefault();
 
             // Act
             List<Allocation> la = da.GetAllocationsByAssignmentID(assignmentId);
@@ -2677,7 +2694,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 1,
                     Name = "Assigmnent2-Repo1",
                     FullName = "Organisation1/Assigmnent2-Repo1",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 },
                 new Repository_SQLDTO()
@@ -2685,7 +2702,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 2,
                     Name = "Assigmnent2-Repo2",
                     FullName = "Organisation1/Assigmnent2-Repo2",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 },
                 new Repository_SQLDTO()
@@ -2693,7 +2710,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 3,
                     Name = "Assigmnent2-Repo3",
                     FullName = "Organisation1/Assigmnent2-Repo3",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = false
                 },
                 new Repository_SQLDTO()
@@ -2701,7 +2718,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 4,
                     Name = "Assigmnent1-Repo4",
                     FullName = "Organisation1/Assigmnent1-Repo4",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 }
             };
@@ -2784,7 +2801,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 1,
                     Name = "Assigmnent2-Repo1",
                     FullName = "Organisation1/Assigmnent2-Repo1",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 },
                 new Repository_SQLDTO()
@@ -2792,7 +2809,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 2,
                     Name = "Assigmnent2-Repo2",
                     FullName = "Organisation1/Assigmnent2-Repo2",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 },
                 new Repository_SQLDTO()
@@ -2800,7 +2817,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 3,
                     Name = "Assigmnent2-Repo3",
                     FullName = "Organisation1/Assigmnent2-Repo3",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = false
                 },
                 new Repository_SQLDTO()
@@ -2808,7 +2825,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 4,
                     Name = "Assigmnent1-Repo4",
                     FullName = "Organisation1/Assigmnent1-Repo4",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 }
             };
@@ -2845,7 +2862,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 1,
                     Name = "Assigmnent2-Repo1",
                     FullName = "Organisation1/Assigmnent2-Repo1",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 },
                 new Repository_SQLDTO()
@@ -2853,7 +2870,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 2,
                     Name = "Assigmnent2-Repo2",
                     FullName = "Organisation1/Assigmnent2-Repo2",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 },
                 new Repository_SQLDTO()
@@ -2861,7 +2878,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 3,
                     Name = "Assigmnent2-Repo3",
                     FullName = "Organisation1/Assigmnent2-Repo3",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = false
                 },
                 new Repository_SQLDTO()
@@ -2869,7 +2886,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 4,
                     Name = "Assigmnent1-Repo4",
                     FullName = "Organisation1/Assigmnent1-Repo4",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 }
             };
@@ -2906,7 +2923,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 1,
                     Name = "Assigmnent2-Repo1",
                     FullName = "Organisation1/Assigmnent2-Repo1",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 },
                 new Repository_SQLDTO()
@@ -2914,7 +2931,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 2,
                     Name = "Assigmnent2-Repo2",
                     FullName = "Organisation1/Assigmnent2-Repo2",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 },
                 new Repository_SQLDTO()
@@ -2922,7 +2939,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 3,
                     Name = "Assigmnent2-Repo3",
                     FullName = "Organisation1/Assigmnent2-Repo3",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = false
                 },
                 new Repository_SQLDTO()
@@ -2930,7 +2947,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 4,
                     Name = "Assigmnent1-Repo4",
                     FullName = "Organisation1/Assigmnent1-Repo4",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 }
             };
@@ -3132,7 +3149,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 1,
                     Name = "Assigmnent2-Repo1",
                     FullName = "Organisation1/Assigmnent2-Repo1",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 },
                 new Repository_SQLDTO()
@@ -3140,7 +3157,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 2,
                     Name = "Assigmnent2-Repo2",
                     FullName = "Organisation1/Assigmnent2-Repo2",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 },
                 new Repository_SQLDTO()
@@ -3148,7 +3165,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 3,
                     Name = "Assigmnent2-Repo3",
                     FullName = "Organisation1/Assigmnent2-Repo3",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = false
                 },
                 new Repository_SQLDTO()
@@ -3156,7 +3173,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 4,
                     Name = "Assigmnent1-Repo4",
                     FullName = "Organisation1/Assigmnent1-Repo4",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 }
             };
@@ -3283,7 +3300,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 1,
                     Name = "Assigmnent2-Repo1",
                     FullName = "Organisation1/Assigmnent2-Repo1",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 },
                 new Repository_SQLDTO()
@@ -3291,7 +3308,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 2,
                     Name = "Assigmnent2-Repo2",
                     FullName = "Organisation1/Assigmnent2-Repo2",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 },
                 new Repository_SQLDTO()
@@ -3299,7 +3316,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 3,
                     Name = "Assigmnent2-Repo3",
                     FullName = "Organisation1/Assigmnent2-Repo3",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = false
                 },
                 new Repository_SQLDTO()
@@ -3307,7 +3324,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 4,
                     Name = "Assigmnent1-Repo4",
                     FullName = "Organisation1/Assigmnent1-Repo4",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 }
             };
@@ -3431,7 +3448,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 1,
                     Name = "Assigmnent2-Repo1",
                     FullName = "Organisation1/Assigmnent2-Repo1",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 },
                 new Repository_SQLDTO()
@@ -3439,7 +3456,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 2,
                     Name = "Assigmnent2-Repo2",
                     FullName = "Organisation1/Assigmnent2-Repo2",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 },
                 new Repository_SQLDTO()
@@ -3447,7 +3464,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 3,
                     Name = "Assigmnent2-Repo3",
                     FullName = "Organisation1/Assigmnent2-Repo3",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = false
                 },
                 new Repository_SQLDTO()
@@ -3455,7 +3472,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 4,
                     Name = "Assigmnent1-Repo4",
                     FullName = "Organisation1/Assigmnent1-Repo4",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 }
             };
@@ -3579,7 +3596,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 1,
                     Name = "Assigmnent2-Repo1",
                     FullName = "Organisation1/Assigmnent2-Repo1",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 },
                 new Repository_SQLDTO()
@@ -3587,7 +3604,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 2,
                     Name = "Assigmnent2-Repo2",
                     FullName = "Organisation1/Assigmnent2-Repo2",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 },
                 new Repository_SQLDTO()
@@ -3595,7 +3612,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 3,
                     Name = "Assigmnent2-Repo3",
                     FullName = "Organisation1/Assigmnent2-Repo3",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = false
                 },
                 new Repository_SQLDTO()
@@ -3603,7 +3620,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 4,
                     Name = "Assigmnent1-Repo4",
                     FullName = "Organisation1/Assigmnent1-Repo4",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 }
             };
@@ -3727,7 +3744,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 1,
                     Name = "Assigmnent2-Repo1",
                     FullName = "Organisation1/Assigmnent2-Repo1",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 },
                 new Repository_SQLDTO()
@@ -3735,7 +3752,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 2,
                     Name = "Assigmnent2-Repo2",
                     FullName = "Organisation1/Assigmnent2-Repo2",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 },
                 new Repository_SQLDTO()
@@ -3743,7 +3760,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 3,
                     Name = "Assigmnent2-Repo3",
                     FullName = "Organisation1/Assigmnent2-Repo3",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = false
                 },
                 new Repository_SQLDTO()
@@ -3751,7 +3768,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 4,
                     Name = "Assigmnent1-Repo4",
                     FullName = "Organisation1/Assigmnent1-Repo4",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 }
             };
@@ -3872,7 +3889,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 1,
                     Name = "Assigmnent1",
-                    ClassroomName = "Classroom2",
+                    ClassroomId = 2,
                     DistributionDate = System.DateTime.Now,
                     Description = "Review a partner\'s code",
                     DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -3882,7 +3899,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 2,
                     Name = "Assigmnent2",
-                    ClassroomName = "Classroom2",
+                    ClassroomId = 2,
                     DistributionDate = System.DateTime.Now,
                     Description = "Review another partner\'s code",
                     DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -3896,7 +3913,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 1,
                     Name = "Classroom1",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -3907,7 +3924,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 2,
                     Name = "Classroom2",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -3922,7 +3939,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 1,
                     Name = "Assigmnent2-ThPaquet",
                     FullName = "Organisation1/Assigmnent2-ThPaquet",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 },
                 new Repository_SQLDTO()
@@ -3930,7 +3947,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 2,
                     Name = "Assigmnent2-ikeameatbol",
                     FullName = "Organisation1/Assigmnent2-BACenComm",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 },
                 new Repository_SQLDTO()
@@ -3938,7 +3955,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 3,
                     Name = "Assigmnent2-BACenComm",
                     FullName = "Organisation1/Assigmnent2-BACenComm",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = false
                 },
                 new Repository_SQLDTO()
@@ -3946,7 +3963,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 4,
                     Name = "Assigmnent1-2151215",
                     FullName = "Organisation1/Assigmnent1-2151215",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 }
             };
@@ -3962,6 +3979,9 @@ namespace RPLP.UnitTesting.DepotTests
             DepotAllocation da = new DepotAllocation(context.Object);
 
             string assignmentName = "Assigmnent2";
+            //Add classroom in assignmentName Assigmnent1
+            Assignment_SQLDTO assignment = assignmentsDTO.Where(x => x.Name == assignmentName).FirstOrDefault();
+            assignment.Classroom = classroomsDTO.Where(x => x.Id == assignment.ClassroomId).FirstOrDefault();
 
             // Act
             List<Allocation> la = da.GetAllocationsByAssignmentName(assignmentName);
@@ -4030,7 +4050,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 1,
                     Name = "Assigmnent1",
-                    ClassroomName = "Classroom2",
+                    ClassroomId = 2,
                     DistributionDate = System.DateTime.Now,
                     Description = "Review a partner\'s code",
                     DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -4040,7 +4060,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 2,
                     Name = "Assigmnent2",
-                    ClassroomName = "Classroom2",
+                    ClassroomId = 2,
                     DistributionDate = System.DateTime.Now,
                     Description = "Review another partner\'s code",
                     DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -4054,7 +4074,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 1,
                     Name = "Classroom1",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -4065,7 +4085,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 2,
                     Name = "Classroom2",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -4080,7 +4100,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 1,
                     Name = "Assigmnent2-ThPaquet",
                     FullName = "Organisation1/Assigmnent2-ThPaquet",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 },
                 new Repository_SQLDTO()
@@ -4088,7 +4108,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 2,
                     Name = "Assigmnent2-ikeameatbol",
                     FullName = "Organisation1/Assigmnent2-BACenComm",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 },
                 new Repository_SQLDTO()
@@ -4096,7 +4116,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 3,
                     Name = "Assigmnent2-BACenComm",
                     FullName = "Organisation1/Assigmnent2-BACenComm",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = false
                 },
                 new Repository_SQLDTO()
@@ -4104,7 +4124,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 4,
                     Name = "Assigmnent1-2151215",
                     FullName = "Organisation1/Assigmnent1-2151215",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 }
             };
@@ -4120,6 +4140,9 @@ namespace RPLP.UnitTesting.DepotTests
             DepotAllocation da = new DepotAllocation(context.Object);
 
             string assignmentName = "Assigmnent2";
+            //Add classroom in assignmentName Assigmnent2
+            Assignment_SQLDTO assignment = assignmentsDTO.Where(x => x.Name == assignmentName).FirstOrDefault();
+            assignment.Classroom = classroomsDTO.Where(x => x.Id == assignment.ClassroomId).FirstOrDefault();
 
             // Act
             List<Allocation> la = da.GetAllocationsByAssignmentName(assignmentName);
@@ -4183,7 +4206,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 1,
                     Name = "Assigmnent1",
-                    ClassroomName = "Classroom2",
+                    ClassroomId = 2,
                     DistributionDate = System.DateTime.Now,
                     Description = "Review a partner\'s code",
                     DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -4193,7 +4216,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 2,
                     Name = "Assigmnent2",
-                    ClassroomName = "Classroom2",
+                    ClassroomId = 2,
                     DistributionDate = System.DateTime.Now,
                     Description = "Review another partner\'s code",
                     DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -4207,7 +4230,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 1,
                     Name = "Classroom1",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -4218,7 +4241,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 2,
                     Name = "Classroom2",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -4233,7 +4256,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 1,
                     Name = "Assigmnent2-ThPaquet",
                     FullName = "Organisation1/Assigmnent2-ThPaquet",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 },
                 new Repository_SQLDTO()
@@ -4241,7 +4264,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 2,
                     Name = "Assigmnent2-ikeameatbol",
                     FullName = "Organisation1/Assigmnent2-BACenComm",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 },
                 new Repository_SQLDTO()
@@ -4249,7 +4272,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 3,
                     Name = "Assigmnent2-BACenComm",
                     FullName = "Organisation1/Assigmnent2-BACenComm",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = false
                 },
                 new Repository_SQLDTO()
@@ -4257,7 +4280,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 4,
                     Name = "Assigmnent2-2151215",
                     FullName = "Organisation1/Assigmnent2-2151215",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 }
             };
@@ -4273,6 +4296,10 @@ namespace RPLP.UnitTesting.DepotTests
             DepotAllocation da = new DepotAllocation(context.Object);
 
             string assignmentName = "Assigmnent1";
+
+            //Add classroom in assignmentName Assigmnent1
+            Assignment_SQLDTO assignment = assignmentsDTO.Where(x => x.Name == assignmentName).FirstOrDefault();
+            assignment.Classroom = classroomsDTO.Where(x => x.Id == assignment.ClassroomId).FirstOrDefault();
 
             // Act
             List<Allocation> la = da.GetAllocationsByAssignmentName(assignmentName);
@@ -4336,7 +4363,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 1,
                     Name = "Assigmnent1",
-                    ClassroomName = "Classroom3",
+                    ClassroomId = 1,
                     DistributionDate = System.DateTime.Now,
                     Description = "Review a partner\'s code",
                     DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -4346,7 +4373,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 2,
                     Name = "Assigmnent2",
-                    ClassroomName = "Classroom2",
+                    ClassroomId = 2,
                     DistributionDate = System.DateTime.Now,
                     Description = "Review another partner\'s code",
                     DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -4360,7 +4387,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 1,
                     Name = "Classroom1",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -4371,7 +4398,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 2,
                     Name = "Classroom2",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -4386,7 +4413,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 1,
                     Name = "Assigmnent2-ThPaquet",
                     FullName = "Organisation1/Assigmnent2-ThPaquet",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 },
                 new Repository_SQLDTO()
@@ -4394,7 +4421,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 2,
                     Name = "Assigmnent2-ikeameatbol",
                     FullName = "Organisation1/Assigmnent2-BACenComm",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 },
                 new Repository_SQLDTO()
@@ -4402,7 +4429,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 3,
                     Name = "Assigmnent2-BACenComm",
                     FullName = "Organisation1/Assigmnent2-BACenComm",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = false
                 },
                 new Repository_SQLDTO()
@@ -4410,7 +4437,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 4,
                     Name = "Assigmnent2-2151215",
                     FullName = "Organisation1/Assigmnent2-2151215",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 }
             };
@@ -4426,6 +4453,9 @@ namespace RPLP.UnitTesting.DepotTests
             DepotAllocation da = new DepotAllocation(context.Object);
 
             string assignmentName = "Assigmnent1";
+            //Add classroom in assignmentName Assigmnent1
+            Assignment_SQLDTO assignment = assignmentsDTO.Where(x => x.Name == assignmentName).FirstOrDefault();
+            assignment.Classroom = classroomsDTO.Where(x => x.Id == assignment.ClassroomId).FirstOrDefault();
 
             // Act
             List<Allocation> la = da.GetAllocationsByAssignmentName(assignmentName);
@@ -4491,7 +4521,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 1,
                     Name = "Assigmnent1",
-                    ClassroomName = "Classroom1",
+                    ClassroomId = 1,
                     DistributionDate = System.DateTime.Now,
                     Description = "Review a partner\'s code",
                     DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -4501,7 +4531,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 2,
                     Name = "Assigmnent2",
-                    ClassroomName = "Classroom2",
+                    ClassroomId = 2,
                     DistributionDate = System.DateTime.Now,
                     Description = "Review another partner\'s code",
                     DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -4515,7 +4545,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 1,
                     Name = "Classroom1",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -4526,7 +4556,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 2,
                     Name = "Classroom2",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -4541,7 +4571,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 1,
                     Name = "Assigmnent2-ThPaquet",
                     FullName = "Organisation1/Assigmnent2-ThPaquet",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 },
                 new Repository_SQLDTO()
@@ -4549,7 +4579,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 2,
                     Name = "Assigmnent2-ikeameatbol",
                     FullName = "Organisation1/Assigmnent2-BACenComm",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 },
                 new Repository_SQLDTO()
@@ -4557,7 +4587,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 3,
                     Name = "Assigmnent2-BACenComm",
                     FullName = "Organisation1/Assigmnent2-BACenComm",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = false
                 },
                 new Repository_SQLDTO()
@@ -4565,7 +4595,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 4,
                     Name = "Assigmnent2-2151215",
                     FullName = "Organisation1/Assigmnent2-2151215",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 }
             };
@@ -4646,7 +4676,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 1,
                     Name = "Assigmnent1",
-                    ClassroomName = "Classroom1",
+                    ClassroomId = 1,
                     DistributionDate = System.DateTime.Now,
                     Description = "Review a partner\'s code",
                     DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -4656,7 +4686,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 2,
                     Name = "Assigmnent2",
-                    ClassroomName = "Classroom2",
+                    ClassroomId = 2,
                     DistributionDate = System.DateTime.Now,
                     Description = "Review another partner\'s code",
                     DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -4670,7 +4700,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 1,
                     Name = "Classroom1",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -4681,7 +4711,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 2,
                     Name = "Classroom2",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -4696,7 +4726,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 1,
                     Name = "Assigmnent2-ThPaquet",
                     FullName = "Organisation1/Assigmnent2-ThPaquet",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 },
                 new Repository_SQLDTO()
@@ -4704,7 +4734,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 2,
                     Name = "Assigmnent2-ikeameatbol",
                     FullName = "Organisation1/Assigmnent2-BACenComm",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 },
                 new Repository_SQLDTO()
@@ -4712,7 +4742,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 3,
                     Name = "Assigmnent2-BACenComm",
                     FullName = "Organisation1/Assigmnent2-BACenComm",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = false
                 },
                 new Repository_SQLDTO()
@@ -4720,7 +4750,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 4,
                     Name = "Assigmnent2-2151215",
                     FullName = "Organisation1/Assigmnent2-2151215",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 }
             };
@@ -4736,6 +4766,10 @@ namespace RPLP.UnitTesting.DepotTests
             DepotAllocation da = new DepotAllocation(context.Object);
 
             string assignmentName = "Assigmnent1";
+
+            //Add classroom in assignmentName Assigmnent1
+            Assignment_SQLDTO assignment = assignmentsDTO.Where(x => x.Name == assignmentName).FirstOrDefault();
+            assignment.Classroom = classroomsDTO.Where(x => x.Id == assignment.ClassroomId).FirstOrDefault();
 
             // Act
             List<Allocation> la = da.GetAllocationsByAssignmentName(assignmentName);
@@ -4801,7 +4835,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 1,
                     Name = "Assigmnent1",
-                    ClassroomName = "Classroom2",
+                    ClassroomId = 2,
                     DistributionDate = System.DateTime.Now,
                     Description = "Review a partner\'s code",
                     DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -4811,7 +4845,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 2,
                     Name = "Assigmnent2",
-                    ClassroomName = "Classroom2",
+                    ClassroomId = 2,
                     DistributionDate = System.DateTime.Now,
                     Description = "Review another partner\'s code",
                     DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -4821,7 +4855,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 3,
                     Name = "Assigmnent1",
-                    ClassroomName = "Classroom1",
+                    ClassroomId = 1,
                     DistributionDate = System.DateTime.Now,
                     Description = "Review another partner\'s code",
                     DeliveryDeadline = System.DateTime.Now.AddDays(1),
@@ -4835,7 +4869,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 1,
                     Name = "Classroom1",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -4846,7 +4880,7 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 2,
                     Name = "Classroom2",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -4861,7 +4895,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 1,
                     Name = "Assigmnent2-ThPaquet",
                     FullName = "Organisation1/Assigmnent2-ThPaquet",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 },
                 new Repository_SQLDTO()
@@ -4869,7 +4903,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 2,
                     Name = "Assigmnent2-ikeameatbol",
                     FullName = "Organisation1/Assigmnent2-BACenComm",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 },
                 new Repository_SQLDTO()
@@ -4877,7 +4911,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 3,
                     Name = "Assigmnent2-BACenComm",
                     FullName = "Organisation1/Assigmnent2-BACenComm",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = false
                 },
                 new Repository_SQLDTO()
@@ -4885,7 +4919,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Id = 4,
                     Name = "Assigmnent1-2151215",
                     FullName = "Organisation1/Assigmnent1-2151215",
-                    OrganisationName = "Organisation1",
+                    OrganisationId = 1,
                     Active = true
                 }
             };

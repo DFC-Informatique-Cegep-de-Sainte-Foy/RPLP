@@ -100,10 +100,10 @@
 
     modifierTeacher.verifyDataThenCreate = function()
     {
-        var username = document.getElementById("InputGithubUsernameModifyTeacher").value ;
-        var prenom = document.getElementById("InputPrenomModifyTeacher").value ;
-        var nom = document.getElementById("InputNomModifyTeacher").value ;
-        var email = document.getElementById("InputEmailModifyTeacher").value ;
+        var username = document.getElementById("InputGithubUsernameModifyTeacher").value.trim() ;
+        var prenom = document.getElementById("InputPrenomModifyTeacher").value.trim() ;
+        var nom = document.getElementById("InputNomModifyTeacher").value.trim() ;
+        var email = document.getElementById("InputEmailModifyTeacher").value.trim() ;
 
         if(username == "" || prenom == "" || nom == "" || email == "" )
         {

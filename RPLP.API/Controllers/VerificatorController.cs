@@ -31,6 +31,8 @@ namespace RPLP.API.Controllers
                 {
                     RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "VerificatorForDepot - GetUserTypeByEmail - email passé en paramêtre est vide", 0));
+
+                    return "";
                 }
 
                 Logging.Instance.Journal(new Log($"api/Verificator/UserType/{email}", 0, "VerificatorController - GET méthode GetUserTypeByEmail"));
@@ -42,7 +44,7 @@ namespace RPLP.API.Controllers
                     RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                    "VerificatorForDepot - GetUserTypeByEmail - variable type assigné par la méthode GetUserTypeByEmail est null", 0));
 
-                    return BadRequest();
+                    return "";
                 }
 
                 return type.ToString();

@@ -138,14 +138,12 @@
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             beforeSend: function () {
-                console.log('firing ajax call');
             },
             success: function (data) {
                 classrooms = data;
                 retirerTeacherdeClassroom.ShowClassrooms();
             },
             error: function (ex) {
-                console.log('Error');
             }
         });
     }
@@ -160,14 +158,12 @@
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             beforeSend: function () {
-                console.log('firing ajax call');
             },
             success: function (data) {
                 teachers = data;
                 retirerTeacherdeClassroom.ShowTeachers();
             },
             error: function (ex) {
-                console.log('Error');
             }
         });
     }

@@ -1,6 +1,6 @@
 ﻿<form id="ajouterStudentForm">
     <div class="titlePartial">
-    <h2 >Créer un compte étudiant</H2>
+        <h2 >Créer un compte étudiant</H2>
     </div>
 
     <div class="form-group">
@@ -28,8 +28,13 @@
         <input type="email" class="form-control" id="inputEmailAjouterStudent">
     </div>
 
-  <input type="button" class="btn-lg btn-success titlePartial" onclick="ajouterStudent.verifyDataThenCreate()" value="Créer">
-  <input type="button" class="btn-lg btn-primary titlePartial" onclick="ajouterStudent.refreshForm()" value=" Rafraîchir le formulaire">
+    <div class="form-group">
+        <input type="checkbox" class="form-check-input" id="inputCheckBoxIsTutor">
+        <label for="inputCheckBoxIsTutor" class="form-check-label">Check pour Tuteur</label>
+    </div>
+
+    <input type="button" class="btn-lg btn-success titlePartial" onclick="ajouterStudent.verifyDataThenCreate()" value="Créer">
+    <input type="button" class="btn-lg btn-primary titlePartial" onclick="ajouterStudent.refreshForm()" value=" Rafraîchir le formulaire">
 </form>
 
 
@@ -44,21 +49,22 @@
 
     ajouterStudent.verifyDataThenCreate = function()
     {
-        var username = document.getElementById("InputGithubUsernameAjouterStudent").value ;
-        var prenom = document.getElementById("InputPrenomAjouterStudent").value ;
-        var nom = document.getElementById("InputNomAjouterStudent").value ;
-        var email = document.getElementById("inputEmailAjouterStudent").value ;
-        var matricule = document.getElementById("InputMatriculeAjouterStudent").value ;
+        var username = document.getElementById("InputGithubUsernameAjouterStudent").value.trim() ;
+        var prenom = document.getElementById("InputPrenomAjouterStudent").value.trim() ;
+        var nom = document.getElementById("InputNomAjouterStudent").value.trim() ;
+        var email = document.getElementById("inputEmailAjouterStudent").value.trim() ;
+        var matricule = document.getElementById("InputMatriculeAjouterStudent").value.trim() ;
+        var isTuteur = document.getElementById("inputCheckBoxIsTutor").checked;
 
         if(username == "" || prenom == "" || nom == "" || email == "" || matricule == "" )
         {
             alert("Veulliez remplir les champs vide");
         } else {
-           ajouterStudent.createNewStudent(username, prenom, nom, email, matricule);
+           ajouterStudent.createNewStudent(username, prenom, nom, email, isTuteur, matricule);
         }
     }
 
-    ajouterStudent.createNewStudent = function(username, firstName, lastName, email, matricule)
+    ajouterStudent.createNewStudent = function(username, firstName, lastName, email, isTuteur, matricule)
     {
         var ajaxURL = '/RPLP/POSTUpsertStudent';
 
@@ -68,6 +74,7 @@
            FirstName : firstName,
            LastName : lastName,
            Email : email,
+           IsTuteur : isTuteur,
            Matricule : matricule
         },
         function(data, status){

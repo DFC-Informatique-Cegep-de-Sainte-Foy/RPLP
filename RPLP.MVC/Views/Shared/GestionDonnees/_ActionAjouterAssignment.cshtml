@@ -92,8 +92,8 @@
 
     ajouterAssignment.verifyDataThenCreate = function()
     {
-        var name = document.getElementById("InputAssignmentNameCreateAssignment").value;
-        var description = document.getElementById("InputAssignmentDescriptionCreateAssignment").value;
+        var name = document.getElementById("InputAssignmentNameCreateAssignment").value.trim();
+        var description = document.getElementById("InputAssignmentDescriptionCreateAssignment").value.trim();
         var deadline = document.getElementById("InputAssignmentDeadlineCreateAssignment").value;
         var classroomName = document.getElementById("createAssignmentClassroomDropdown").value;
 
@@ -130,14 +130,12 @@
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             beforeSend: function () {
-                console.log('firing ajax call');
             },
             success: function (data) {
                 classrooms = data;
                 ajouterAssignment.ShowClassrooms();
             },
             error: function (ex) {
-                console.log('Error');
             }
         });
     }

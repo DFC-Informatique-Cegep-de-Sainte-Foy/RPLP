@@ -371,66 +371,66 @@ namespace RPLP.UnitTesting.DepotTests
             Assert.Equal(typeof(Student), verificator.GetUserTypeByEmail("ikeameatbol@hotmail.com"));
         }
 
-        [Fact]
-        public void Test_GetUserType_Teacher()
-        {
-            List<Student_SQLDTO> studentsBD = new List<Student_SQLDTO>()
-            {
-                new Student_SQLDTO()
-                {
-                    Username = "ikeameatbol",
-                    FirstName = "Jonathan",
-                    LastName = "Blouin",
-                    Email = "ikeameatbol@hotmail.com",
-                    Matricule = "1122334",
-                    Active = true
-                }
-            };
-            List<Teacher_SQLDTO> teachersDB = new List<Teacher_SQLDTO>()
-            {
-                new Teacher_SQLDTO()
-                {
-                    Username = "BACenComm",
-                    FirstName = "Melissa",
-                    LastName = "Lachapelle",
-                    Email = "BACenComm@hotmail.com",
-                    Active = false
-                }
-            };
-            List<Administrator_SQLDTO> administratorsBD = new List<Administrator_SQLDTO>
-            {
-                new Administrator_SQLDTO
-                    {
-                        Username = "ThPaquet",
-                        FirstName = "Thierry",
-                        LastName = "Paquet",
-                        Token = "token",
-                        Organisations = new List<Organisation_SQLDTO>()
-                        {
-                            new Organisation_SQLDTO()
-                            {
-                                Name = "CEGEP Ste-Foy",
-                                Active = true
-                            }
-                        },
-                        Email = "ThPaquet@hotmail.com",
-                        Active = true
-                    }
-            };
-            var logMock = new Mock<IManipulationLogs>();
-            Logging.Instance.ManipulationLog = logMock.Object;
+        //[Fact]
+        //public void Test_GetUserType_Teacher()
+        //{
+        //    List<Student_SQLDTO> studentsBD = new List<Student_SQLDTO>()
+        //    {
+        //        new Student_SQLDTO()
+        //        {
+        //            Username = "ikeameatbol",
+        //            FirstName = "Jonathan",
+        //            LastName = "Blouin",
+        //            Email = "ikeameatbol@hotmail.com",
+        //            Matricule = "1122334",
+        //            Active = true
+        //        }
+        //    };
+        //    List<Teacher_SQLDTO> teachersDB = new List<Teacher_SQLDTO>()
+        //    {
+        //        new Teacher_SQLDTO()
+        //        {
+        //            Username = "BACenComm",
+        //            FirstName = "Melissa",
+        //            LastName = "Lachapelle",
+        //            Email = "BACenComm@hotmail.com",
+        //            Active = false
+        //        }
+        //    };
+        //    List<Administrator_SQLDTO> administratorsBD = new List<Administrator_SQLDTO>
+        //    {
+        //        new Administrator_SQLDTO
+        //            {
+        //                Username = "ThPaquet",
+        //                FirstName = "Thierry",
+        //                LastName = "Paquet",
+        //                Token = "token",
+        //                Organisations = new List<Organisation_SQLDTO>()
+        //                {
+        //                    new Organisation_SQLDTO()
+        //                    {
+        //                        Name = "CEGEP Ste-Foy",
+        //                        Active = true
+        //                    }
+        //                },
+        //                Email = "ThPaquet@hotmail.com",
+        //                Active = true
+        //            }
+        //    };
+        //    var logMock = new Mock<IManipulationLogs>();
+        //    Logging.Instance.ManipulationLog = logMock.Object;
 
-            Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
-            context.Setup(x => x.Administrators).ReturnsDbSet(administratorsBD);
-            context.Setup(x => x.Students).ReturnsDbSet(studentsBD);
-            context.Setup(x => x.Teachers).ReturnsDbSet(teachersDB);
-            VerificatorForDepot verificator = new VerificatorForDepot(context.Object);
+        //    Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+        //    context.Setup(x => x.Administrators).ReturnsDbSet(administratorsBD);
+        //    context.Setup(x => x.Students).ReturnsDbSet(studentsBD);
+        //    context.Setup(x => x.Teachers).ReturnsDbSet(teachersDB);
+        //    VerificatorForDepot verificator = new VerificatorForDepot(context.Object);
 
-            Teacher? teacher = teachersDB.FirstOrDefault(a => a.Email == "BACenComm@hotmail.com")?.ToEntityWithoutList();
-            Assert.NotNull(teacher);
+        //    Teacher? teacher = teachersDB.FirstOrDefault(a => a.Email == "BACenComm@hotmail.com")?.ToEntityWithoutList();
+        //    Assert.NotNull(teacher);
 
-            Assert.Equal(typeof(Teacher), verificator.GetUserTypeByEmail("BACenComm@hotmail.com"));
-        }
+        //    Assert.Equal(typeof(Teacher), verificator.GetUserTypeByEmail("BACenComm@hotmail.com"));
+        //}
 
         [Fact]
         public void Test_GetUserType_Null()

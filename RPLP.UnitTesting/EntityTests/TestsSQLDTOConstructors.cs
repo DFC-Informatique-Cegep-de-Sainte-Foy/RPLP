@@ -71,11 +71,18 @@ namespace RPLP.UnitTesting.EntityTests
         [Fact]
         public void Test_AssignmentSQLDTOConstructor_FromEntity()
         {
+            Classroom classroom = new Classroom()
+            {
+                Id = 1,
+                Name = "classroom",
+                Organisation = new Organisation()
+            };
+            
             Assignment assignment = new Assignment()
             {
                 Id = 2,
                 Name = "RPLP",
-                ClassroomName = "ProjetSynthese",
+                Classroom = classroom,
                 Description = "Do it",
                 DistributionDate = DateTime.Now,
                 DeliveryDeadline = DateTime.Now.AddDays(1)
@@ -86,7 +93,6 @@ namespace RPLP.UnitTesting.EntityTests
             Assert.NotNull(assignment_SQLDTO);
             Assert.Equal(assignment.Id, assignment_SQLDTO.Id);
             Assert.Equal(assignment.Name, assignment_SQLDTO.Name);
-            Assert.Equal(assignment.ClassroomName, assignment_SQLDTO.ClassroomName);
             Assert.Equal(assignment.Description, assignment_SQLDTO.Description);
             Assert.Equal(assignment.DeliveryDeadline, assignment_SQLDTO.DeliveryDeadline);
             Assert.Equal(assignment.DistributionDate, assignment_SQLDTO.DistributionDate);
@@ -111,18 +117,17 @@ namespace RPLP.UnitTesting.EntityTests
         [Fact]
         public void Test_ClassroomSQLDTOConstructor_FromEntity()
         {
+            Organisation organisation = new Organisation()
+            {
+                Id = 1,
+                Name = "organisation"
+            };
+
             Classroom classroom = new Classroom()
             {
                 Id = 1,
                 Name = "ProjetSynthese",
-                Assignments = new List<Assignment>()
-                {
-                    new Assignment()
-                    {
-                        Id = 1,
-                        Name = "RPLP"
-                    }
-                },
+                Organisation = organisation,
                 Students = new List<Student>()
                 {
                     new Student()
@@ -140,13 +145,29 @@ namespace RPLP.UnitTesting.EntityTests
                     }
                 }
             };
+            
+            List<Assignment> assignments = new List<Assignment>()
+            {
+                new Assignment()
+                {
+                    Id = 1,
+                    Name = "RPLP",
+                    Classroom = new Classroom
+                    {
+                        Id = 1,
+                        Name = "ProjetSynthese",
+                        Organisation = organisation,
+                    }
+                }
+            };
 
+            classroom.Assignments = assignments;
 
             Classroom_SQLDTO classroom_SQLDTO = new Classroom_SQLDTO(classroom);
 
             Assert.NotNull(classroom_SQLDTO);
             Assert.Equal(classroom.Id, classroom_SQLDTO.Id);
-            Assert.Equal(classroom.OrganisationName, classroom_SQLDTO.OrganisationName);
+            Assert.Equal(classroom.Organisation.Id, classroom_SQLDTO.Organisation.Id);
             Assert.Equal(classroom.Name, classroom_SQLDTO.Name);
             Assert.Equal(classroom.Students.First().Username, classroom_SQLDTO.Students.First().Username);
             Assert.Equal(classroom.Teachers.First().Username, classroom_SQLDTO.Teachers.First().Username);
@@ -248,12 +269,18 @@ namespace RPLP.UnitTesting.EntityTests
         [Fact]
         public void Test_RepositorySQLDTOConstructor_FromEntity()
         {
+            Organisation organisation = new Organisation()
+            {
+                Id = 1,
+                Name = "organisation"
+            };
+            
             Repository repository = new Repository()
             {
                 Id = 3,
                 Name = "ThPaquet",
                 FullName = "Thierry Paquet",
-                OrganisationName = "CEGEP Ste-Foy"
+                Organisation = organisation
             };
 
             Repository_SQLDTO repository_SQLDTO = new Repository_SQLDTO(repository);
@@ -262,7 +289,7 @@ namespace RPLP.UnitTesting.EntityTests
             Assert.Equal(repository.Id, repository_SQLDTO.Id);
             Assert.Equal(repository.Name, repository_SQLDTO.Name);
             Assert.Equal(repository.FullName, repository_SQLDTO.FullName);
-            Assert.Equal(repository.OrganisationName, repository_SQLDTO.OrganisationName);
+            Assert.Equal(repository.Organisation.Id, repository_SQLDTO.Organisation.Id);
             Assert.True(repository_SQLDTO.Active);
         }
 
@@ -280,6 +307,12 @@ namespace RPLP.UnitTesting.EntityTests
         [Fact]
         public void Test_StudentSQLDTOConstructor_FromEntity()
         {
+            Organisation organisation = new Organisation()
+            {
+                Id = 1,
+                Name = "organisation"
+            };
+            
             Student student = new Student()
             {
                 Id = 9,
@@ -292,7 +325,8 @@ namespace RPLP.UnitTesting.EntityTests
                     new Classroom()
                     {
                         Id = 2,
-                        Name = "ProjetSynthese"
+                        Name = "ProjetSynthese",
+                        Organisation = organisation
                     }
                 }
             };
@@ -323,6 +357,12 @@ namespace RPLP.UnitTesting.EntityTests
         [Fact]
         public void Test_TeacherSQLDTOConstructer_FromEntity()
         {
+            Organisation organisation = new Organisation()
+            {
+                Id = 1,
+                Name = "organisation"
+            };
+            
             Teacher teacher = new Teacher()
             {
                 Id = 9,
@@ -335,7 +375,8 @@ namespace RPLP.UnitTesting.EntityTests
                     new Classroom()
                     {
                         Id = 2,
-                        Name = "ProjetSynthese"
+                        Name = "ProjetSynthese",
+                        Organisation = organisation
                     }
                 }
             };

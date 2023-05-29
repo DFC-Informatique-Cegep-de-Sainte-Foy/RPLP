@@ -1,0 +1,74 @@
+﻿@model RPLP.MVC.Models.GestionDonneeViewModel
+
+<form id="reactivateAssignmentForm">
+    <div class="titlePartial">
+    <h2 >Reactiver un Travail</H2>
+    </div>
+
+    <div class="form-group">
+        <select id="reactiverAssignmentDropdown" class="form-control">
+
+        </select>
+        <br />
+    </div>
+
+  <input type="button" id="btnReactiverAssignment" class="btn-lg btn-danger titlePartial" onclick="reactiverAssignment.choisirAssignment()" value="Reactiver">
+  <input type="button" class="btn-lg btn-primary titlePartial" onclick="reactiverAssignment.refreshForm()" value=" Rafraîchir le formulaire">
+</form>
+
+<script src="/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        var option = document.createElement("option");
+        option.text = "Faites un choix";
+        option.value = -1;
+        var select = document.getElementById("reactiverAssignmentDropdown");
+        select.appendChild(option);
+
+        @foreach (var d in Model.DeactivateAssignment)
+        {
+            @:var option = document.createElement("option");
+            @:option.text = "@d.Name";
+            @:option.value = "@d.Name";
+            @:var select = document.getElementById("reactiverAssignmentDropdown");
+            @:select.appendChild(option);
+        }
+    });
+
+    var reactiverAssignment = {};
+    var Assignment;
+
+    reactiverAssignment.refreshForm = function ()
+    {
+       document.getElementById("reactivateAssignmentForm").reset();
+       document.getElementById("reactiverAssignmentDropdown").value = -1;
+    }
+    
+    reactiverAssignment.choisirAssignment = function ()
+        {
+           if(document.getElementById("reactiverAssignmentDropdown").value == -1)
+           {
+                $('input[name=btnReactiverAssignment]').prop('disabled', true);
+           } else {
+               $('input[name=btnReactiverAssignment]').prop('disabled', '');
+    
+                var name = document.getElementById("reactiverAssignmentDropdown").value;  
+                var Assignments = JSON.parse('@Html.Raw(Json.Serialize(Model.DeactivateAssignment))');
+                Assignment = Assignments.find(Assignment => Assignment.name == name);
+                reactiverAssignment.reactivateAssignment(Assignment.id, name);
+           }
+        }
+
+    reactiverAssignment.reactivateAssignment = function (AssignmentId, AssignmentName)
+    {
+        var ajaxURL = '/RPLP/POSTReactivateAssignment';
+
+        $.post(ajaxURL,{
+           AssignmentId : AssignmentId,
+           AssignmentName : AssignmentName,
+        },
+        function(data, status){
+            alert("Data: " + data + "\nStatus: " + status);
+        });
+    }
+</script>

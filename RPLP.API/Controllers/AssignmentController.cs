@@ -38,6 +38,21 @@ namespace RPLP.API.Controllers
             }
 
         }
+        
+        [HttpGet("Deactivated")]
+        public ActionResult<IEnumerable<Assignment>> GetDeactivatedAssignments()
+        {
+            try
+            {
+                Logging.Instance.Journal(new Log("api/Assignment/Deactivated", 200, "AssignmentController - GET méthode GetDeactivatedAssignment"));
+
+                return Ok(this._depot.GetAssignmentsInactives());
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
 
         [HttpGet("Id/{id}")]
         public ActionResult<Assignment> GetAssignmentById(int id)
@@ -156,6 +171,36 @@ namespace RPLP.API.Controllers
             catch (Exception)
             {
 
+                throw;
+            }
+        }
+        
+        [HttpPost("Name/{AssignmentName}/Id/{AssignmentId}Reactivate")]
+        public ActionResult ReactivateAssignment(string AssignmentName, int AssignmentId)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(AssignmentName))
+                {
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                        "AssignmentController - ReactivateAssignment - assignmentName passé en paramêtre est invalide", 0));
+                }
+                
+                if (AssignmentId <=0)
+                {
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                        "AssignmentController - ReactivateAssignment - assignmentId passé en paramêtre est invalide", 0));
+                }
+
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"api/Classroom/Reactivate", 204, "ClassroomController - POST méthode ReactivateClassroom"));
+
+                this._depot.ReactivateAssignment(AssignmentName, AssignmentId);
+                return NoContent();
+            }
+            catch (Exception e)
+            {
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(e.Message, e.StackTrace.Replace(System.Environment.NewLine, "."),
+                    "AssignmentController - ReactivateAssignment - catch", 0));
                 throw;
             }
         }

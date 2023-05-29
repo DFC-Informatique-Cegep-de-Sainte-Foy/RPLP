@@ -39,10 +39,10 @@
 
     ajouterTeacher.verifyDataThenCreate = function()
     {
-        var username = document.getElementById("InputGithubUsernameAjouterTeacher").value ;
-        var prenom = document.getElementById("InputPrenomAjouterTeacher").value ;
-        var nom = document.getElementById("InputNomAjouterTeacher").value ;
-        var email = document.getElementById("inputEmailAjouterTeacher").value ;
+        var username = document.getElementById("InputGithubUsernameAjouterTeacher").value.trim() ;
+        var prenom = document.getElementById("InputPrenomAjouterTeacher").value.trim() ;
+        var nom = document.getElementById("InputNomAjouterTeacher").value.trim() ;
+        var email = document.getElementById("inputEmailAjouterTeacher").value.trim() ;
 
         if(username == "" || prenom == "" || nom == "" || email == "" )
         {

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RPLP.JOURNALISATION;
 using RPLP.MVC.Models;
 using System.Diagnostics;
 
@@ -18,15 +19,26 @@ namespace RPLP.MVC.Controllers
             return View();
         }
 
-        // public IActionResult Privacy()
-        // {
-        //     return View();
-        // }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        public IActionResult Error(int? statusCode = null)
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            List<int> statues = new List<int>() { 400, 401, 402, 403, 404, 405, 406, 407, 408, 500, 501, 502, 503, 504 };
+
+            if (statusCode.HasValue)
+            {
+                if (statues.Contains((int)statusCode))
+                {
+                    var viewName = statusCode.ToString();
+                    return View(viewName);
+                }
+                else
+                {
+                    return View((object)400);
+                }
+            }
+            else
+            {
+                return View((object)400);
+            }
         }
     }
 }

@@ -2,14 +2,14 @@
 
 <form id="modifyStudentForm">
     <div class="titlePartial">
-    <h2 >Modifier un étudiant</H2>
+        <h2 >Modifier un étudiant</H2>
     </div>
 
     <div class="form-group">
         <select id="modifyStudentDropdown" class="form-control" onchange="modifierStudent.choisirStudent()">
 
         </select>
-        <br />
+        <br/>
     </div>
 
     <div class="form-group">
@@ -37,8 +37,13 @@
         <input type="email" class="form-control" name="InputEmailModifyStudent" id="InputEmailModifyStudent" disabled>
     </div>
 
-  <input type="button" class="btn-lg btn-warning titlePartial" onclick="modifierStudent.verifyDataThenCreate()" value="Modifier">
-  <input type="button" class="btn-lg btn-primary titlePartial" onclick="modifierStudent.refreshForm()" value=" Rafraîchir le formulaire">
+    <div class="form-group">
+        <input type="checkbox" class="form-check-input" id="inputCheckBoxModifyStudentIsTutor">
+        <label for="inputCheckBoxModifyStudentIsTutor" class="form-check-label">Check pour Tuteur</label>
+    </div>
+
+    <input type="button" class="btn-lg btn-warning titlePartial" onclick="modifierStudent.verifyDataThenCreate()" value="Modifier">
+    <input type="button" class="btn-lg btn-primary titlePartial" onclick="modifierStudent.refreshForm()" value=" Rafraîchir le formulaire">
 </form>
 
 <script src="/lib/jquery/dist/jquery.min.js"></script>
@@ -71,6 +76,7 @@
        $('input[name=InputNomModifyStudent]').prop('disabled', true);
        $('input[name=InputEmailModifyStudent]').prop('disabled', true);
        $('input[name=InputMatriculeModifyStudent]').prop('disabled', true);
+       $('input[name=inputCheckBoxModifyStudentIsTutor]').prop('disabled', true);
        document.getElementById("modifyStudentDropdown").value = -1;
     }
 
@@ -83,18 +89,21 @@
             $('input[name=InputNomModifyStudent]').prop('disabled', true);
             $('input[name=InputEmailModifyStudent]').prop('disabled', true);
             $('input[name=InputMatriculeModifyStudent]').prop('disabled', true);
+            $('input[name=inputCheckBoxModifyStudentIsTutor]').prop('disabled', true);
 
             document.getElementById("InputGithubUsernameModifyStudent").value = "";
             document.getElementById("InputPrenomModifyStudent").value = ""
             document.getElementById("InputNomModifyStudent").value = "";
             document.getElementById("InputEmailModifyStudent").value = "";
             document.getElementById("InputMatriculeModifyStudent").value = "";
+            document.getElementById("inputCheckBoxModifyStudentIsTutor").checked = false;
        } else {
             $('input[name=InputGithubUsernameModifyStudent]').prop('disabled', '');
             $('input[name=InputPrenomModifyStudent]').prop('disabled', '');
             $('input[name=InputNomModifyStudent]').prop('disabled', '');
             $('input[name=InputEmailModifyStudent]').prop('disabled', '');
             $('input[name=InputMatriculeModifyStudent]').prop('disabled', '');
+            $('input[name=inputCheckBoxModifyStudentIsTutor]').prop('disabled', '');
 
             var Username = document.getElementById("modifyStudentDropdown").value;  
             var students = JSON.parse('@Html.Raw(Json.Serialize(Model.Students))');
@@ -105,26 +114,28 @@
             document.getElementById("InputNomModifyStudent").value = student.lastName;
             document.getElementById("InputEmailModifyStudent").value = student.email;
             document.getElementById("InputMatriculeModifyStudent").value = student.matricule;
+            document.getElementById("inputCheckBoxModifyStudentIsTutor").checked = student.isTuteur;
        }
     }
 
     modifierStudent.verifyDataThenCreate = function()
     {
-        var username = document.getElementById("InputGithubUsernameModifyStudent").value ;
-        var prenom = document.getElementById("InputPrenomModifyStudent").value ;
-        var nom = document.getElementById("InputNomModifyStudent").value ;
-        var email = document.getElementById("InputEmailModifyStudent").value ;
-        var matricule = document.getElementById("InputMatriculeModifyStudent").value;
+        var username = document.getElementById("InputGithubUsernameModifyStudent").value.trim() ;
+        var prenom = document.getElementById("InputPrenomModifyStudent").value.trim() ;
+        var nom = document.getElementById("InputNomModifyStudent").value.trim() ;
+        var email = document.getElementById("InputEmailModifyStudent").value.trim() ;
+        var matricule = document.getElementById("InputMatriculeModifyStudent").value.trim();
+        var isTuteur = document.getElementById("inputCheckBoxModifyStudentIsTutor").checked;
 
         if(username == "" || prenom == "" || nom == "" || email == "" || matricule == "" )
         {
             alert("Veulliez remplir les champs vide");
         } else {
-           modifierStudent.modifyStudent(student.id, username, prenom, nom, email, matricule);
+           modifierStudent.modifyStudent(student.id, username, prenom, nom, email, isTuteur, matricule);
         }
     }
 
-    modifierStudent.modifyStudent = function(id, username, firstName, lastName, email, matricule)
+    modifierStudent.modifyStudent = function(id, username, firstName, lastName, email, isTuteur, matricule)
     {
         var ajaxURL = '/RPLP/POSTUpsertStudent';
 
@@ -134,6 +145,7 @@
            FirstName : firstName,
            LastName : lastName,
            Email : email,
+           IsTuteur : isTuteur,
            Matricule : matricule
         },
         function(data, status){

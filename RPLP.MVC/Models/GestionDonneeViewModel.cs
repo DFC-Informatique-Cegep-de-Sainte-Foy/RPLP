@@ -9,7 +9,10 @@
         public List<TeacherViewModel> Teachers { get; set; }
         public List<StudentViewModel> Students { get; set; }
         public List<AssignmentViewModel> Assignments { get; set; }
+        public List<AssignmentViewModel> DeactivateAssignment { get; set; }
         public List<ClassroomViewModel> Classes { get; set; }
+        public List<ClassroomViewModel> DeactivateClassroom { get; set; }
+        public List<OrganisationViewModel> DeactivateOrganisations { get; set; }
         public List<AdministratorViewModel> DeactivatedAdministrators { get; set; }
         public List<StudentViewModel> DeactivatedStudents { get; set; }
         public List<TeacherViewModel> DeactivatedTeachers { get; set; }
@@ -21,9 +24,12 @@
             Organisations = new List<OrganisationViewModel>();
             Teachers = new List<TeacherViewModel>();
             Assignments = new List<AssignmentViewModel>();
+            DeactivateAssignment = new List<AssignmentViewModel>();
             Students = new List<StudentViewModel>();
             Classes = new List<ClassroomViewModel>();
+            DeactivateClassroom = new List<ClassroomViewModel>();
             AllOrgs = new List<OrganisationViewModel>();
+            DeactivateOrganisations = new List<OrganisationViewModel>();
             DeactivatedAdministrators = new List<AdministratorViewModel>();
             DeactivatedStudents = new List<StudentViewModel>();
             DeactivatedTeachers = new List<TeacherViewModel>();

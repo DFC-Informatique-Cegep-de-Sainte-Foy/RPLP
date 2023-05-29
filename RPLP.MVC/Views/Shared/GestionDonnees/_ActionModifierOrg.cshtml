@@ -69,7 +69,7 @@
 
     modifyOrg.verifyDataThenCreate = function()
     {
-        var orgName = document.getElementById("InputOrgNameModifyOrg").value ;
+        var orgName = document.getElementById("InputOrgNameModifyOrg").value.trim() ;
 
         if(orgName == "" )
         {

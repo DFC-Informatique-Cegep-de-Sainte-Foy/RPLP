@@ -87,7 +87,16 @@ namespace RPLP.UnitTesting.EntityTests
             {
                 Id = 2,
                 Name = "RPLP",
-                ClassroomName = "ProjetSynthese",
+                Classroom = new Classroom_SQLDTO()
+                {
+                    Name = "classroom",
+                    Id = 1,
+                    Organisation = new Organisation_SQLDTO()
+                    {
+                        Id = 1,
+                        Name = "organisation"
+                    }
+                },
                 Description = "Do it",
                 DistributionDate = DateTime.Now,
                 DeliveryDeadline = DateTime.Now.AddDays(1)
@@ -98,7 +107,7 @@ namespace RPLP.UnitTesting.EntityTests
             Assert.NotNull(assignment);
             Assert.Equal(assignmentSQLDTO.Id, assignment.Id);
             Assert.Equal(assignmentSQLDTO.Name, assignment.Name);
-            Assert.Equal(assignmentSQLDTO.ClassroomName, assignment.ClassroomName);
+            Assert.Equal(assignmentSQLDTO.Classroom.Id, assignment.Classroom.Id);
             Assert.Equal(assignmentSQLDTO.Description, assignment.Description);
             Assert.Equal(assignmentSQLDTO.DeliveryDeadline, assignment.DeliveryDeadline);
             Assert.Equal(assignmentSQLDTO.DistributionDate, assignment.DistributionDate);
@@ -107,18 +116,17 @@ namespace RPLP.UnitTesting.EntityTests
         [Fact]
         public void Test_Classroom_ToEntity()
         {
+            Organisation_SQLDTO organisationSqldto = new Organisation_SQLDTO()
+            {
+                Name = "organisation",
+                Id = 1
+            };
+            
             Classroom_SQLDTO classroomSQLDTO = new Classroom_SQLDTO()
             {
                 Id = 1,
                 Name = "ProjetSynthese",
-                Assignments = new List<Assignment_SQLDTO>()
-                {
-                    new Assignment_SQLDTO()
-                    {
-                        Id = 1,
-                        Name = "RPLP"
-                    }
-                },
+                Organisation = organisationSqldto,
                 Students = new List<Student_SQLDTO>()
                 {
                     new Student_SQLDTO()
@@ -137,12 +145,24 @@ namespace RPLP.UnitTesting.EntityTests
                 }
             };
 
+            List<Assignment_SQLDTO> assignmentSqldtos = new List<Assignment_SQLDTO>()
+            {
+                new Assignment_SQLDTO()
+                {
+                    Name = "assignment",
+                    Id = 1,
+                    Classroom = classroomSQLDTO
+                }
+            };
+
+            classroomSQLDTO.Assignments = assignmentSqldtos;
+
             Classroom classroom = classroomSQLDTO.ToEntity();
 
             Assert.NotNull(classroom);
             Assert.Equal(classroomSQLDTO.Id, classroom.Id);
             Assert.Equal(classroomSQLDTO.Name, classroom.Name);
-            Assert.Equal(classroomSQLDTO.OrganisationName, classroom.OrganisationName);
+            Assert.Equal(classroomSQLDTO.Organisation.Id, classroom.Organisation.Id);
             Assert.Equal(classroomSQLDTO.Assignments.First().Name, classroom.Assignments.First().Name);
             Assert.Equal(classroomSQLDTO.Students.First().Username, classroom.Students.First().Username);
             Assert.Equal(classroomSQLDTO.Teachers.First().Username, classroom.Teachers.First().Username);
@@ -186,7 +206,7 @@ namespace RPLP.UnitTesting.EntityTests
             Assert.NotNull(classroom);
             Assert.Equal(classroomSQLDTO.Id, classroom.Id);
             Assert.Equal(classroomSQLDTO.Name, classroom.Name);
-            Assert.Equal(classroomSQLDTO.OrganisationName, classroom.OrganisationName);
+            Assert.Equal(classroomSQLDTO.OrganisationId, classroom.Organisation.Id);
             Assert.NotNull(classroom.Assignments);
             Assert.Empty(classroom.Assignments);
             Assert.NotNull(classroom.Students);
@@ -284,8 +304,21 @@ namespace RPLP.UnitTesting.EntityTests
                 Id = 3,
                 Name = "ThPaquet",
                 FullName = "Thierry Paquet",
-                OrganisationName = "CEGEP Ste-Foy"
+                OrganisationId = 1
             };
+            Organisation_SQLDTO organisation_SQLDTO = new Organisation_SQLDTO()
+            {
+                Id = 1,
+                Name = "CEGEP Ste-Foy",
+                Administrators = new List<Administrator_SQLDTO>()
+                {
+                    new Administrator_SQLDTO()
+                    {
+                        Username = "ThPaquet"
+                    }
+                }
+            };
+            repository_SQLDTO.Organisation = organisation_SQLDTO;
 
             Repository repository = repository_SQLDTO.ToEntity();
 
@@ -293,7 +326,7 @@ namespace RPLP.UnitTesting.EntityTests
             Assert.Equal(repository_SQLDTO.Id, repository.Id);
             Assert.Equal(repository_SQLDTO.Name, repository.Name);
             Assert.Equal(repository_SQLDTO.FullName, repository.FullName);
-            Assert.Equal(repository_SQLDTO.OrganisationName, repository.OrganisationName);
+            Assert.Equal(repository_SQLDTO.OrganisationId, repository.Organisation.Id);
         }
 
         [Fact]

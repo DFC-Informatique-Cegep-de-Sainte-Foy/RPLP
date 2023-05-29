@@ -9,6 +9,7 @@ namespace RPLP.MVC.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
+        public bool IsTuteur { get; set; }
         public string Matricule { get; set; }
 
         public StudentViewModel()
@@ -23,8 +24,8 @@ namespace RPLP.MVC.Models
             this.FirstName = p_student.FirstName;
             this.LastName = p_student.LastName;
             this.Email = p_student.Email;
+            this.IsTuteur = p_student.IsTutor;
             this.Matricule = p_student.Matricule;
         }
-
     }
 }

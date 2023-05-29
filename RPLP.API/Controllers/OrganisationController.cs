@@ -38,6 +38,21 @@ namespace RPLP.API.Controllers
                 throw;
             }
         }
+        
+        [HttpGet("Deactivated")]
+        public ActionResult<IEnumerable<Organisation>> GetDeactivatedOrganisations()
+        {
+            try
+            {
+                Logging.Instance.Journal(new Log("api/Organisation/Deactivated", 200, "OrganisationController - GET méthode GetDeactivatedOrganisations"));
+
+                return Ok(this._depot.GetOrganisationsInactives());
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
 
         [HttpGet("Id/{id}")]
         public ActionResult<Organisation> GetOrganisationById(int id)
@@ -217,6 +232,28 @@ namespace RPLP.API.Controllers
                 Logging.Instance.Journal(new Log($"api/Organisation/Name/{organisationName}", 204, "OrganisationController - DELETE méthode DeleteOrganisation"));
 
                 this._depot.DeleteOrganisation(organisationName);
+                return NoContent();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        
+        [HttpPost("Reactivate")]
+        public ActionResult ReactivateOrganisation([FromBody] Organisation p_organisation)
+        {
+            try
+            {
+                if (p_organisation is null)
+                {
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                        "OrganisationController - ReactivateOrganisation - p_organisation passé en paramêtre null", 0));
+                }
+
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"api/Organisation/Reactivate", 204, "OrganisationController - POST méthode ReactivateOrganisation"));
+
+                this._depot.ReactivateOrganisation(p_organisation);
                 return NoContent();
             }
             catch (Exception)

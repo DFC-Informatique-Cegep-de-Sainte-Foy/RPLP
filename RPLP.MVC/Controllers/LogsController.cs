@@ -1,7 +1,10 @@
 using System.Data;
 using System.Diagnostics;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RPLP.JOURNALISATION;
+using RPLP.MVC.Models;
 
 namespace RPLP.MVC.Controllers;
 
@@ -9,12 +12,25 @@ public class LogsController : Controller
 {
     private string _path = @"/var/log/rplp";
     private string _fileName = "Log_Revue_Par_Les_Paires.csv";
-    
+
+    private readonly HttpClient _httpClient;
+
+
+    public LogsController()
+    {
+        this._httpClient = new HttpClient();
+        this._httpClient.BaseAddress = new Uri("http://rplp.api/api/");
+        this._httpClient.DefaultRequestHeaders.Accept
+            .Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+        this._httpClient.DefaultRequestHeaders.Accept
+            .Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/octet-stream"));
+    }
+
+
     [HttpGet]
     public ActionResult ClearLogs()
     {
         RPLP.JOURNALISATION.Logging.Instance.ClearLogs();
-        RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Methode ClearLogs appeler"));
         return Ok();
     }
     
@@ -28,55 +44,89 @@ public class LogsController : Controller
         return File(fs, "application/octet-stream", $"{Guid.NewGuid()}_Logs.csv");
     }
 
+    public IActionResult Error(int? statusCode = null)
+    {
+        List<int> statues = new List<int>() { 400, 401, 402, 403, 404, 405, 406, 407, 408, 500, 501, 502, 503, 504 };
+
+        if (statusCode.HasValue)
+        {
+            if (statues.Contains((int)statusCode))
+            {
+                var viewName = statusCode.ToString();
+                return View(viewName);
+            }
+            else
+            {
+                return View((object)400);
+            }
+        }
+        else
+        {
+            return View((object)400);
+        }
+    }
+    [Authorize]
     public IActionResult Index()
     {
+        string? email = User.FindFirst(u => u.Type == ClaimTypes.Email)?.Value;
 
-        string filePath = Path.Combine(_path, _fileName);
+        string? userType = this._httpClient
+                    .GetFromJsonAsync<string>($"Verificator/UserType/{email}")
+                    .Result;
 
-        if (string.IsNullOrWhiteSpace(filePath))
+        if (userType == "")
         {
-            RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                           "LogsController - Index - la variable filePath est null ou vide", 0));
+            return Error(403);
         }
-
-        if (!System.IO.File.Exists(filePath))
+        else
         {
-            RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                          "LogsController - Index - le fichier /var/log/rplp/Log_Revue_Par_Les_Paires.csv est introuvable ", 0));
-        }
+            string filePath = Path.Combine(_path, _fileName);
 
-        string csvData = System.IO.File.ReadAllText(filePath);
-        DataTable dt = new DataTable();
-        bool firstRow = true;
-        foreach (string row in csvData.Split('\n'))
-        {
-            if (!string.IsNullOrEmpty(row))
+            if (string.IsNullOrWhiteSpace(filePath))
+            {
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                               "LogsController - Index - la variable filePath est null ou vide", 0));
+            }
+
+            if (!System.IO.File.Exists(filePath))
+            {
+                RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                              "LogsController - Index - le fichier /var/log/rplp/Log_Revue_Par_Les_Paires.csv est introuvable ", 0));
+            }
+
+            string csvData = System.IO.File.ReadAllText(filePath);
+            DataTable dt = new DataTable();
+            bool firstRow = true;
+            foreach (string row in csvData.Split('\n'))
             {
                 if (!string.IsNullOrEmpty(row))
                 {
-                    if (firstRow)
+                    if (!string.IsNullOrEmpty(row))
                     {
-                        foreach (string cell in row.Split('~'))
+                        if (firstRow)
                         {
-                            dt.Columns.Add(cell.Trim());
-                        }
+                            foreach (string cell in row.Split('~'))
+                            {
+                                dt.Columns.Add(cell.Trim());
+                            }
 
-                        firstRow = false;
-                    }
-                    else
-                    {
-                        dt.Rows.Add();
-                        int i = 0;
-                        foreach (string cell in row.Split('~'))
+                            firstRow = false;
+                        }
+                        else
                         {
-                            dt.Rows[dt.Rows.Count - 1][i] = cell.Trim();
-                            i++;
+                            dt.Rows.Add();
+                            int i = 0;
+                            foreach (string cell in row.Split('~'))
+                            {
+                                dt.Rows[dt.Rows.Count - 1][i] = cell.Trim();
+                                i++;
+                            }
                         }
                     }
                 }
             }
-        }
 
-        return View(dt);
+            return View(dt);
+        }
     }
 }

@@ -22,7 +22,7 @@ namespace RPLP.API.Controllers
         private GithubPRCommentFetcher _githubPRCommentFetcher;
         private ScriptGithubRPLP _scriptGithub;
 
-        public GithubController(IConfiguration configuration, IDepotClassroom depotClassroom, IDepotRepository depotRepository, IDepotOrganisation depotOrganisation, IDepotAllocation depotAllocation)
+        public GithubController(IConfiguration configuration, IDepotClassroom depotClassroom, IDepotRepository depotRepository, IDepotOrganisation depotOrganisation, IDepotAllocation depotAllocation, IDepotStudent depotStudent)
         {
             if (configuration == null)
             {
@@ -34,7 +34,7 @@ namespace RPLP.API.Controllers
 
             _githubAction = new GithubApiAction(token);
             _githubPRCommentFetcher = new GithubPRCommentFetcher(token, depotClassroom, depotRepository);
-            _scriptGithub = new ScriptGithubRPLP(depotClassroom, depotRepository, depotOrganisation, depotAllocation, token);
+            _scriptGithub = new ScriptGithubRPLP(depotClassroom, depotRepository, depotOrganisation, depotAllocation, depotStudent, token);
         }
 
         [HttpGet("/test/{organisationName}/{classroomName}/{assignmentName}/{numberOfReviews}")]
@@ -684,6 +684,7 @@ namespace RPLP.API.Controllers
             }
         }
 
+
         [HttpGet("{organisationName}/{classroomName}/{assignmentName}/PullRequests/Comments/File")]
         public FileStreamResult GetFileWithCommentsOfPullRequestByAssignmentForAllRepositories(string organisationName, string classroomName, string assignmentName)
         {
@@ -715,7 +716,7 @@ namespace RPLP.API.Controllers
                     RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "GithubController - GetFileWithCommentsOfPullRequestByAssignmentForAllRepositories - variable reviewerUsers assigné de la méthode GetCommentsReviewsAndIssuesByReviewersAsync est null", 0));
                 }
-                
+
                 var stream = new MemoryStream(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(reviewerUsers)));
 
                 if (stream.Length <= 0)

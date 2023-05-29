@@ -18,6 +18,8 @@ using System;
 using System.Xml.Linq;
 using RPLP.DAL.SQL.Migrations;
 using RPLP.SERVICES.InterfacesDepots;
+using Microsoft.AspNetCore.Http;
+using System.Net.Http.Headers;
 
 namespace RPLP.MVC.Controllers
 {
@@ -28,7 +30,8 @@ namespace RPLP.MVC.Controllers
         private object classroomName;
 
         public RPLPController(IConfiguration configuration, IDepotClassroom depotClassroom,
-            IDepotRepository depotRepository, IDepotOrganisation depotOrganisation, IDepotAllocation depotAllocation)
+            IDepotRepository depotRepository, IDepotOrganisation depotOrganisation, IDepotAllocation depotAllocation,
+            IDepotStudent depotStudent)
         {
             if (configuration == null)
             {
@@ -40,6 +43,7 @@ namespace RPLP.MVC.Controllers
             string token = configuration.GetValue<string>("Token");
             GithubApiAction _githubAction = new GithubApiAction(token);
             _scriptGithub = new ScriptGithubRPLP(depotClassroom, depotRepository, depotOrganisation, depotAllocation,
+                depotStudent,
                 token);
 
             this._httpClient = new HttpClient();
@@ -52,6 +56,29 @@ namespace RPLP.MVC.Controllers
 
         #region Views
 
+        public IActionResult Error(int? statusCode = null)
+        {
+            List<int> statues = new List<int>()
+                { 400, 401, 402, 403, 404, 405, 406, 407, 408, 500, 501, 502, 503, 504 };
+
+            if (statusCode.HasValue)
+            {
+                if (statues.Contains((int)statusCode))
+                {
+                    var viewName = statusCode.ToString();
+                    return View(viewName);
+                }
+                else
+                {
+                    return View((object)400);
+                }
+            }
+            else
+            {
+                return View((object)400);
+            }
+        }
+
         [Authorize]
         public IActionResult Index()
         {
@@ -60,30 +87,36 @@ namespace RPLP.MVC.Controllers
                 PeerReviewViewModel model = new PeerReviewViewModel();
                 List<Organisation>? organisations = new List<Organisation>();
 
-
                 string? email = User.FindFirst(u => u.Type == ClaimTypes.Email)?.Value;
 
                 string? userType = this._httpClient
                     .GetFromJsonAsync<string>($"Verificator/UserType/{email}")
                     .Result;
 
-                if (userType == typeof(Administrator).ToString())
+                if (userType == "")
                 {
-                    organisations = this._httpClient
-                        .GetFromJsonAsync<List<Organisation>>($"Administrator/Email/{email}/Organisations")
-                        .Result;
+                    return Error(403);
                 }
-
-                else if (userType == typeof(Teacher).ToString())
+                else
                 {
-                    organisations = this._httpClient
-                        .GetFromJsonAsync<List<Organisation>>($"Teacher/Email/{email}/Organisations")
-                        .Result;
+                    if (userType == typeof(Administrator).ToString())
+                    {
+                        organisations = this._httpClient
+                            .GetFromJsonAsync<List<Organisation>>($"Administrator/Email/{email}/Organisations")
+                            .Result;
+                    }
+
+                    else if (userType == typeof(Teacher).ToString())
+                    {
+                        organisations = this._httpClient
+                            .GetFromJsonAsync<List<Organisation>>($"Teacher/Email/{email}/Organisations")
+                            .Result;
+                    }
+
+                    organisations.ForEach(o => model.Organisations.Add(new OrganisationViewModel { Name = o.Name }));
+
+                    return View(model);
                 }
-
-                organisations.ForEach(o => model.Organisations.Add(new OrganisationViewModel { Name = o.Name }));
-
-                return View(model);
             }
             catch (Exception)
             {
@@ -91,11 +124,19 @@ namespace RPLP.MVC.Controllers
             }
         }
 
+        [Authorize]
         public IActionResult GestionDonnees()
         {
             GestionDonneeViewModel model = getGestionDonneeModel();
 
-            return View("GestionDonnees", model);
+            if (model == null)
+            {
+                return Error(403);
+            }
+            else
+            {
+                return View("GestionDonnees", model);
+            }
         }
 
         #endregion
@@ -112,167 +153,190 @@ namespace RPLP.MVC.Controllers
                     .GetFromJsonAsync<string>($"Verificator/UserType/{email}")
                     .Result;
 
-                GestionDonneeViewModel model = new GestionDonneeViewModel();
-
-                if (userType == typeof(Administrator).ToString())
+                if (userType == "")
                 {
-                    model.RoleType = "Administrator";
-                }
-                else if (userType == typeof(Teacher).ToString())
-                {
-                    model.RoleType = "Teacher";
+                    return null;
                 }
 
-                List<Administrator> adminsResult = this._httpClient
-                    .GetFromJsonAsync<List<Administrator>>($"Administrator")
-                    .Result;
+                {
+                    GestionDonneeViewModel model = new GestionDonneeViewModel();
 
-
-                if (adminsResult.Count >= 1)
-                    adminsResult.ForEach(admin =>
+                    if (userType == typeof(Administrator).ToString())
                     {
-                        if (admin.Email != email)
+                        model.RoleType = "Administrator";
+                    }
+                    else if (userType == typeof(Teacher).ToString())
+                    {
+                        model.RoleType = "Teacher";
+                    }
+
+                    List<Administrator> adminsResult = this._httpClient
+                        .GetFromJsonAsync<List<Administrator>>($"Administrator")
+                        .Result;
+
+
+                    if (adminsResult.Count >= 1)
+                        adminsResult.ForEach(admin =>
                         {
-                            model.Administrators.Add(new AdministratorViewModel
+                            if (admin.Email != email)
                             {
-                                Id = admin.Id, Email = admin.Email, Token = admin.Token, FirstName = admin.FirstName,
-                                LastName = admin.LastName, Username = admin.Username
+                                model.Administrators.Add(new AdministratorViewModel
+                                {
+                                    Id = admin.Id,
+                                    Email = admin.Email,
+                                    Token = admin.Token,
+                                    FirstName = admin.FirstName,
+                                    LastName = admin.LastName,
+                                    Username = admin.Username
+                                });
+                            }
+                        });
+                    else
+                    {
+                        RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                            new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                            "RPLPController - getGestionDonneeModel - la variable adminsResult est null ou vide", 0));
+                    }
+
+                    List<Organisation> organisationsResult = new List<Organisation>();
+                    List<Classroom> classroomsResult = new List<Classroom>();
+
+                    if (userType == typeof(Administrator).ToString())
+                    {
+                        Administrator administrator = this._httpClient
+                            .GetFromJsonAsync<Administrator>($"Administrator/Email/{email}")
+                            .Result;
+
+                        organisationsResult = this._httpClient
+                            .GetFromJsonAsync<List<Organisation>>($"Administrator/Email/{email}/Organisations")
+                            .Result;
+
+                        List<Organisation> allOrgs = this._httpClient
+                            .GetFromJsonAsync<List<Organisation>>($"Organisation")
+                            .Result;
+
+                        classroomsResult = this._httpClient
+                            .GetFromJsonAsync<List<Classroom>>($"Classroom")
+                            .Result;
+
+                        allOrgs.ForEach(organisation => model.AllOrgs.Add(new OrganisationViewModel
+                            { Id = organisation.Id, Name = organisation.Name }));
+
+                        model.DeactivatedAdministrators = GetDeactivatedAdministratorsList();
+                        model.DeactivatedStudents = GetDeactivatedStudentsList();
+                        model.DeactivatedTeachers = GetDeactivatedTeachersList();
+                        model.DeactivateOrganisations = GetDeactivatedOrganisationsList();
+                        model.DeactivateClassroom = GetDeactivateClassroomList();
+                        model.DeactivateAssignment = GetDeactivateAssignmentList();
+                    }
+                    else if (userType == typeof(Teacher).ToString())
+                    {
+                        Teacher teacher = this._httpClient
+                            .GetFromJsonAsync<Teacher>($"Teacher/Email/{email}")
+                            .Result;
+
+                        organisationsResult = this._httpClient
+                            .GetFromJsonAsync<List<Organisation>>($"Teacher/Username/{teacher.Username}/Organisations")
+                            .Result;
+
+                        classroomsResult = this._httpClient
+                            .GetFromJsonAsync<List<Classroom>>($"Teacher/Username/{teacher.Username}/Classrooms")
+                            .Result;
+                    }
+
+                    if (organisationsResult.Count >= 1)
+                        organisationsResult.ForEach(organisation =>
+                        {
+                            model.Organisations.Add(new OrganisationViewModel
+                                { Id = organisation.Id, Name = organisation.Name });
+                        });
+                    //else
+                    //{
+                    //    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    //         "RPLPController - getGestionDonneeModel - la variable organisationsResult est null ou vide"));
+                    //}
+
+                    if (classroomsResult.Count >= 1)
+                        classroomsResult.ForEach(classroom =>
+                        {
+                            model.Classes.Add(new ClassroomViewModel { Id = classroom.Id, Name = classroom.Name });
+                        });
+                    //else
+                    //{
+                    //    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    //         "RPLPController - getGestionDonneeModel - la variable classroomsResult est null ou vide"));
+                    //}
+
+
+                    List<Teacher> teachersResult = this._httpClient
+                        .GetFromJsonAsync<List<Teacher>>($"Teacher")
+                        .Result;
+
+                    if (teachersResult.Count >= 1)
+                        teachersResult.ForEach(teacher =>
+                        {
+                            model.Teachers.Add(new TeacherViewModel
+                            {
+                                Id = teacher.Id,
+                                Email = teacher.Email,
+                                FirstName = teacher.FirstName,
+                                LastName = teacher.LastName,
+                                Username = teacher.Username
                             });
-                        }
-                    });
-                else
-                {
-                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
-                        new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                        "RPLPController - getGestionDonneeModel - la variable adminsResult est null ou vide", 0));
-                }
-
-                List<Organisation> organisationsResult = new List<Organisation>();
-                List<Classroom> classroomsResult = new List<Classroom>();
-
-                if (userType == typeof(Administrator).ToString())
-                {
-                    Administrator administrator = this._httpClient
-                        .GetFromJsonAsync<Administrator>($"Administrator/Email/{email}")
-                        .Result;
-
-                    organisationsResult = this._httpClient
-                        .GetFromJsonAsync<List<Organisation>>($"Administrator/Email/{email}/Organisations")
-                        .Result;
-
-                    List<Organisation> allOrgs = this._httpClient
-                        .GetFromJsonAsync<List<Organisation>>($"Organisation")
-                        .Result;
-
-                    classroomsResult = this._httpClient
-                        .GetFromJsonAsync<List<Classroom>>($"Classroom")
-                        .Result;
-
-                    allOrgs.ForEach(organisation => model.AllOrgs.Add(new OrganisationViewModel
-                        { Id = organisation.Id, Name = organisation.Name }));
-
-                    model.DeactivatedAdministrators = GetDeactivatedAdministratorsList();
-                    model.DeactivatedStudents = GetDeactivatedStudentsList();
-                    model.DeactivatedTeachers = GetDeactivatedTeachersList();
-                }
-                else if (userType == typeof(Teacher).ToString())
-                {
-                    Teacher teacher = this._httpClient
-                        .GetFromJsonAsync<Teacher>($"Teacher/Email/{email}")
-                        .Result;
-
-                    organisationsResult = this._httpClient
-                        .GetFromJsonAsync<List<Organisation>>($"Teacher/Username/{teacher.Username}/Organisations")
-                        .Result;
-
-                    classroomsResult = this._httpClient
-                        .GetFromJsonAsync<List<Classroom>>($"Teacher/Username/{teacher.Username}/Classrooms")
-                        .Result;
-                }
-
-                if (organisationsResult.Count >= 1)
-                    organisationsResult.ForEach(organisation =>
-                    {
-                        model.Organisations.Add(new OrganisationViewModel
-                            { Id = organisation.Id, Name = organisation.Name });
-                    });
-                //else
-                //{
-                //    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                //         "RPLPController - getGestionDonneeModel - la variable organisationsResult est null ou vide"));
-                //}
-
-                if (classroomsResult.Count >= 1)
-                    classroomsResult.ForEach(classroom =>
-                    {
-                        model.Classes.Add(new ClassroomViewModel { Id = classroom.Id, Name = classroom.Name });
-                    });
-                //else
-                //{
-                //    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                //         "RPLPController - getGestionDonneeModel - la variable classroomsResult est null ou vide"));
-                //}
-
-
-                List<Teacher> teachersResult = this._httpClient
-                    .GetFromJsonAsync<List<Teacher>>($"Teacher")
-                    .Result;
-
-                if (teachersResult.Count >= 1)
-                    teachersResult.ForEach(teacher =>
-                    {
-                        model.Teachers.Add(new TeacherViewModel
-                        {
-                            Id = teacher.Id, Email = teacher.Email, FirstName = teacher.FirstName,
-                            LastName = teacher.LastName, Username = teacher.Username
                         });
-                    });
-                //else
-                //{
-                //    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                //         "RPLPController - getGestionDonneeModel - la variable teachersResult est null ou vide"));
-                //}
+                    //else
+                    //{
+                    //    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    //         "RPLPController - getGestionDonneeModel - la variable teachersResult est null ou vide"));
+                    //}
 
-                List<Assignment> assignmentsResult = this._httpClient
-                    .GetFromJsonAsync<List<Assignment>>($"Assignment")
-                    .Result;
+                    List<Assignment> assignmentsResult = this._httpClient
+                        .GetFromJsonAsync<List<Assignment>>($"Assignment")
+                        .Result;
 
-                if (assignmentsResult.Count >= 1)
-                    assignmentsResult.ForEach(assignment =>
-                    {
-                        model.Assignments.Add(new AssignmentViewModel
+                    if (assignmentsResult.Count >= 1)
+                        assignmentsResult.ForEach(assignment =>
                         {
-                            Id = assignment.Id, Name = assignment.Name, Deadline = assignment.DeliveryDeadline,
-                            Description = assignment.Description
+                            model.Assignments.Add(new AssignmentViewModel
+                            {
+                                Id = assignment.Id,
+                                Name = assignment.Name,
+                                Deadline = assignment.DeliveryDeadline,
+                                Description = assignment.Description
+                            });
                         });
-                    });
-                //else
-                //{
-                //    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                //         "RPLPController - getGestionDonneeModel - la variable assignmentsResult est null ou vide"));
-                //}
+                    //else
+                    //{
+                    //    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    //         "RPLPController - getGestionDonneeModel - la variable assignmentsResult est null ou vide"));
+                    //}
 
-                List<Student> studentsResult = this._httpClient
-                    .GetFromJsonAsync<List<Student>>($"Student")
-                    .Result;
+                    List<Student> studentsResult = this._httpClient
+                        .GetFromJsonAsync<List<Student>>($"Student")
+                        .Result;
 
-                if (studentsResult.Count >= 1)
-                    studentsResult.ForEach(student =>
-                    {
-                        model.Students.Add(new StudentViewModel
+                    if (studentsResult.Count >= 1)
+                        studentsResult.ForEach(student =>
                         {
-                            Id = student.Id, Username = student.Username, Email = student.Email,
-                            FirstName = student.FirstName, LastName = student.LastName,
-                            Matricule = student.Matricule
+                            model.Students.Add(new StudentViewModel
+                            {
+                                Id = student.Id,
+                                Username = student.Username,
+                                Email = student.Email,
+                                FirstName = student.FirstName,
+                                LastName = student.LastName,
+                                IsTuteur = student.IsTutor,
+                                Matricule = student.Matricule
+                            });
                         });
-                    });
-                //else
-                //{
-                //    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                //         "RPLPController - getGestionDonneeModel - la variable studentsResult est null ou vide"));
-                //}
+                    //else
+                    //{
+                    //    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                    //         "RPLPController - getGestionDonneeModel - la variable studentsResult est null ou vide"));
+                    //}
 
-                return model;
+                    return model;
+                }
             }
             catch (Exception)
             {
@@ -293,6 +357,66 @@ namespace RPLP.MVC.Controllers
                     .ToList();
 
                 return administratorViewModels;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        private List<OrganisationViewModel> GetDeactivatedOrganisationsList()
+        {
+            try
+            {
+                List<Organisation> deactivatedOrganisations = this._httpClient
+                    .GetFromJsonAsync<List<Organisation>>("Organisation/Deactivated")
+                    .Result;
+                List<OrganisationViewModel> organisationViewModels = new List<OrganisationViewModel>();
+
+                deactivatedOrganisations.ForEach(org => organisationViewModels.Add(new OrganisationViewModel
+                    { Id = org.Id, Name = org.Name }));
+
+                return organisationViewModels;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        private List<ClassroomViewModel> GetDeactivateClassroomList()
+        {
+            try
+            {
+                List<Classroom> deactivatedClassrooms = this._httpClient
+                    .GetFromJsonAsync<List<Classroom>>("Classroom/Deactivated")
+                    .Result;
+                List<ClassroomViewModel> classroomViewModels = new List<ClassroomViewModel>();
+
+                deactivatedClassrooms.ForEach(clas => classroomViewModels.Add(new ClassroomViewModel()
+                    { Id = clas.Id, Name = clas.Name, OrganisationName = clas.Organisation.Name }));
+
+                return classroomViewModels;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        private List<AssignmentViewModel> GetDeactivateAssignmentList()
+        {
+            try
+            {
+                List<Assignment> deactivatedAssignments = this._httpClient
+                    .GetFromJsonAsync<List<Assignment>>("Assignment/Deactivated")
+                    .Result;
+                List<AssignmentViewModel> assignmentViewModels = new List<AssignmentViewModel>();
+
+                deactivatedAssignments.ForEach(ass => assignmentViewModels.Add(new AssignmentViewModel()
+                    { Id = ass.Id, Name = ass.Name, Description = ass.Description }));
+
+                return assignmentViewModels;
             }
             catch (Exception)
             {
@@ -373,8 +497,10 @@ namespace RPLP.MVC.Controllers
         #endregion
 
         #region ActionGet
+
         [HttpGet]
-        public ActionResult<AllocationsViewModel> GetAllocationsInformations(string classroomName, string assignementName)
+        public ActionResult<AllocationsViewModel> GetAllocationsInformations(string classroomName,
+            string assignementName)
         {
             List<AllocationViewModel> allocations = new List<AllocationViewModel>();
 
@@ -382,40 +508,48 @@ namespace RPLP.MVC.Controllers
             {
                 if (!String.IsNullOrEmpty(classroomName) && !String.IsNullOrEmpty(assignementName))
                 {
-                    List<Allocation>? allocationsInDB = this._httpClient.GetFromJsonAsync<List<Allocation>>($"/api/Allocation").Result;
-                    //Logging.Instance.Journal(new Log("Allocation", $"RPLPController - GetAllocationsInformations - {allocationsInDB[0].Id} - Count: {allocationsInDB.Count}"));
+                    List<Allocation>? allocationsInDB =
+                        this._httpClient.GetFromJsonAsync<List<Allocation>>($"/api/Allocation").Result;
 
                     List<Student>? students = _httpClient.GetFromJsonAsync<List<Student>>($"/api/Student").Result;
-                    //if (students.Count > 0)
-                    //{
-                    //    Logging.Instance.Journal(new Log("Student", $"RPLPController - GetAllocationsInformations - {students[0].Username} - Count: {students.Count}"));
-                    //}
 
                     List<Teacher>? teachers = _httpClient.GetFromJsonAsync<List<Teacher>>($"/api/Teacher").Result;
-                    //if (teachers.Count > 0)
-                    //{
-                    //    Logging.Instance.Journal(new Log("Teacher", $"RPLPController - GetAllocationsInformations - {teachers[0].Username} - Count: {teachers.Count}"));
-                    //}
 
-                    List<Repository>? repositories = _httpClient.GetFromJsonAsync<List<Repository>>($"/api/Repository").Result;
-                    //Logging.Instance.Journal(new Log("Repository", $"RPLPController - GetAllocationsInformations - {repositories[0].Name} - Count: {repositories.Count}"));
+                    List<Student>? classroomsStudent = _httpClient
+                        .GetFromJsonAsync<List<Student>>($"/api/Classroom/Name/{classroomName.Trim()}/Students").Result;
+
+                    List<Repository>? repositories =
+                        _httpClient.GetFromJsonAsync<List<Repository>>($"/api/Repository").Result;
+
                     if (allocationsInDB is not null)
                     {
                         foreach (Allocation allocation in allocationsInDB)
                         {
-                            //Logging.Instance.Journal(new Log("Allocation allocation in allocationsInDB", $"RPLPController - GetAllocationsInformations - {allocation.Id}"));
+                            Repository? repository = repositories.Where(r => r.Id == allocation.RepositoryId)
+                                .FirstOrDefault();
 
-                            Repository? repository = repositories.Where(r => r.Id == allocation.RepositoryId).FirstOrDefault();
-                            //Logging.Instance.Journal(new Log("Repository", $"RPLPController - GetAllocationsInformations - {repository.Name}"));
-
-                            //Logging.Instance.Journal(new Log("repository.Name.ToLower().Contains(assignementName.ToLower())", $"RPLPController - GetAllocationsInformations - {repository.Name.ToLower().Contains(assignementName.ToLower())} - assignementName: {assignementName.ToLower()}"));
-                            if (repository.Name.ToLower().Contains(assignementName.ToLower()))
+                            if (repository.Name.ToLower().Contains(assignementName.ToLower().Trim()))
                             {
                                 Student? student = students.Where(s => s.Id == allocation.StudentId).FirstOrDefault();
                                 Teacher? teacher = teachers.Where(t => t.Id == allocation.TeacherId).FirstOrDefault();
-                                AllocationViewModel allocationViewModel = student is null ? new AllocationViewModel(allocation.Id, repository.Name, null, teacher.Username, allocation.Status)
-                                    : new AllocationViewModel(allocation.Id, repository.Name, student.Username, null, allocation.Status);
-                                //Logging.Instance.Journal(new Log("AllocationViewModel", $"RPLPController - GetAllocationsInformations - {allocationViewModel.RepositoryName}"));
+                                AllocationViewModel allocationViewModel;
+
+                                if (teacher != null)
+                                {
+                                    allocationViewModel = new AllocationViewModel(allocation.Id, repository.Name, null,
+                                        teacher.Username, null, allocation.Status);
+                                }
+                                else if (classroomsStudent.Find(s => s.Id == student.Id) != null)
+                                {
+                                    allocationViewModel = new AllocationViewModel(allocation.Id, repository.Name,
+                                        student.Username, null, null, allocation.Status);
+                                }
+                                else
+                                {
+                                    allocationViewModel = new AllocationViewModel(allocation.Id, repository.Name, null,
+                                        null, student.Username, allocation.Status);
+                                }
+
                                 allocations.Add(allocationViewModel);
                             }
                         }
@@ -426,7 +560,8 @@ namespace RPLP.MVC.Controllers
             {
                 throw;
             }
-            AllocationsViewModel allocationsViewModel = new AllocationsViewModel(allocations, assignementName);
+
+            AllocationsViewModel allocationsViewModel = new AllocationsViewModel(allocations, assignementName.Trim());
             return allocationsViewModel;
         }
 
@@ -447,8 +582,8 @@ namespace RPLP.MVC.Controllers
                 numberOfValidRepos = this._httpClient
                     .GetFromJsonAsync<List<Repository>>("Repository")
                     .Result
-                    .Where(repo => repo.Name.ToLower().Contains(assignmentName.ToLower())
-                                   && repo.Name.Length > assignmentName.Length)
+                    .Where(repo => repo.Name.ToLower().Contains(assignmentName.ToLower().Trim())
+                                   && repo.Name.Length > assignmentName.Trim().Length)
                     .ToList()
                     .Count;
             }
@@ -500,17 +635,20 @@ namespace RPLP.MVC.Controllers
                     {
                         classes.Add(new ClassroomViewModel
                         {
-                            Id = classroom.Id, Name = classroom.Name, OrganisationName = classroom.OrganisationName
+                            Id = classroom.Id,
+                            Name = classroom.Name,
+                            OrganisationName = orgName
                         });
                     }
                 }
+
                 else if (userType == typeof(Teacher).ToString())
                 {
                     Teacher? teacher = this._httpClient
                         .GetFromJsonAsync<Teacher>($"Teacher/Email/{email}")
                         .Result;
 
-                    classes = GetClassroomsOfTeacherInOrganisation(teacher.Username, orgName);
+                    classes = GetClassroomsOfTeacherInOrganisation(teacher.Username, orgName.Trim());
                 }
 
                 return classes;
@@ -539,7 +677,7 @@ namespace RPLP.MVC.Controllers
 
                 List<AssignmentViewModel> assignments = new List<AssignmentViewModel>();
                 List<Assignment> databaseAssignments = this._httpClient
-                    .GetFromJsonAsync<List<Assignment>>($"Classroom/Assignments/{classroomName}")
+                    .GetFromJsonAsync<List<Assignment>>($"Classroom/Assignments/{classroomName.Trim()}")
                     .Result;
 
                 if (databaseAssignments == null)
@@ -597,7 +735,7 @@ namespace RPLP.MVC.Controllers
 
                 List<Classroom>? databaseClasses = this._httpClient
                     .GetFromJsonAsync<List<Classroom>>(
-                        $"Teacher/Email/{teacherEmail}/Organisation/{p_organisationName}/Classrooms")
+                        $"Teacher/Email/{teacherEmail}/Organisation/{p_organisationName.Trim()}/Classrooms")
                     .Result;
 
                 if (databaseClasses == null)
@@ -611,7 +749,7 @@ namespace RPLP.MVC.Controllers
                 foreach (Classroom classroom in databaseClasses)
                 {
                     classes.Add(new ClassroomViewModel
-                        { Id = classroom.Id, Name = classroom.Name, OrganisationName = classroom.OrganisationName });
+                        { Id = classroom.Id, Name = classroom.Name, OrganisationName = p_organisationName.Trim() });
                 }
 
                 return classes;
@@ -640,7 +778,7 @@ namespace RPLP.MVC.Controllers
 
                 List<AssignmentViewModel> assignments = new List<AssignmentViewModel>();
                 List<Assignment>? databaseAssignments = this._httpClient
-                    .GetFromJsonAsync<List<Assignment>>($"Assignment/Classroom/{classroomName}/Assignments")
+                    .GetFromJsonAsync<List<Assignment>>($"Assignment/Classroom/{classroomName.Trim()}/Assignments")
                     .Result;
 
                 if (databaseAssignments == null)
@@ -685,7 +823,7 @@ namespace RPLP.MVC.Controllers
                 List<AdministratorViewModel> admins = new List<AdministratorViewModel>();
 
                 List<Administrator> databaseAdminInOrg = this._httpClient
-                    .GetFromJsonAsync<List<Administrator>>($"Organisation/Name/{orgName}/Administrators")
+                    .GetFromJsonAsync<List<Administrator>>($"Organisation/Name/{orgName.Trim()}/Administrators")
                     .Result;
 
                 List<Administrator> databaseAdmin = this._httpClient
@@ -714,8 +852,12 @@ namespace RPLP.MVC.Controllers
                     {
                         admins.Add(new AdministratorViewModel
                         {
-                            Id = admin.Id, Username = admin.Username, Token = admin.Token, FirstName = admin.FirstName,
-                            LastName = admin.LastName, Email = admin.Email
+                            Id = admin.Id,
+                            Username = admin.Username,
+                            Token = admin.Token,
+                            FirstName = admin.FirstName,
+                            LastName = admin.LastName,
+                            Email = admin.Email
                         });
                     }
                 }
@@ -746,7 +888,7 @@ namespace RPLP.MVC.Controllers
                 List<AdministratorViewModel> admins = new List<AdministratorViewModel>();
 
                 List<Administrator> databaseAdminInOrg = this._httpClient
-                    .GetFromJsonAsync<List<Administrator>>($"Organisation/Name/{orgName}/Administrators")
+                    .GetFromJsonAsync<List<Administrator>>($"Organisation/Name/{orgName.Trim()}/Administrators")
                     .Result;
 
                 if (databaseAdminInOrg == null)
@@ -761,8 +903,12 @@ namespace RPLP.MVC.Controllers
                 {
                     admins.Add(new AdministratorViewModel
                     {
-                        Id = admin.Id, Token = admin.Token, Username = admin.Username, FirstName = admin.FirstName,
-                        LastName = admin.LastName, Email = admin.Email
+                        Id = admin.Id,
+                        Token = admin.Token,
+                        Username = admin.Username,
+                        FirstName = admin.FirstName,
+                        LastName = admin.LastName,
+                        Email = admin.Email
                     });
                 }
 
@@ -794,7 +940,7 @@ namespace RPLP.MVC.Controllers
 
                 List<Teacher> databaseTeacherInClassroom = this._httpClient
                     .GetFromJsonAsync<List<Teacher>>($"Teacher")
-                    .Result.Where(teacher => teacher.Classes.Any(classroom => classroom.Name == classroomName))
+                    .Result.Where(teacher => teacher.Classes.Any(classroom => classroom.Name == classroomName.Trim()))
                     .ToList();
 
                 List<Teacher> databaseTeacher = this._httpClient
@@ -825,8 +971,11 @@ namespace RPLP.MVC.Controllers
                         {
                             teachers.Add(new TeacherViewModel
                             {
-                                Id = teacher.Id, Username = teacher.Username, FirstName = teacher.FirstName,
-                                LastName = teacher.LastName, Email = teacher.Email
+                                Id = teacher.Id,
+                                Username = teacher.Username,
+                                FirstName = teacher.FirstName,
+                                LastName = teacher.LastName,
+                                Email = teacher.Email
                             });
                         }
                     }
@@ -860,7 +1009,7 @@ namespace RPLP.MVC.Controllers
 
                 List<Teacher> databaseTeacherInClassroom = this._httpClient
                     .GetFromJsonAsync<List<Teacher>>($"Teacher")
-                    .Result.Where(teacher => teacher.Classes.Any(classroom => classroom.Name == classroomName))
+                    .Result.Where(teacher => teacher.Classes.Any(classroom => classroom.Name == classroomName.Trim()))
                     .ToList();
 
                 if (databaseTeacherInClassroom == null)
@@ -876,8 +1025,11 @@ namespace RPLP.MVC.Controllers
                     {
                         teachers.Add(new TeacherViewModel
                         {
-                            Id = teacher.Id, Username = teacher.Username, FirstName = teacher.FirstName,
-                            LastName = teacher.LastName, Email = teacher.Email
+                            Id = teacher.Id,
+                            Username = teacher.Username,
+                            FirstName = teacher.FirstName,
+                            LastName = teacher.LastName,
+                            Email = teacher.Email
                         });
                     }
 
@@ -889,30 +1041,21 @@ namespace RPLP.MVC.Controllers
             }
         }
 
+
         [HttpGet]
         public ActionResult<List<StudentViewModel>> GetTutors(string classroomName)
         {
             try
             {
-                Logging.Instance.Journal(new Log("api", 0, $"RPLPController - GET méthode GetTutors"));
+                Logging.Instance.Journal(new Log("api", 0,
+                    $"RPLPController - GET méthode GetTutors(string classroomName = {classroomName})"));
 
                 List<StudentViewModel> tutors = new List<StudentViewModel>();
 
-                List<Student> databaseTutorInClassroom = this._httpClient
-                    .GetFromJsonAsync<List<Student>>($"Student")
-                    .Result.Where(tutor => tutor.Classes.Any(classroom => classroom.Name == classroomName)).ToList();
-
                 List<Student> databaseTutor = this._httpClient
-                    .GetFromJsonAsync<List<Student>>($"Student")
-                    .Result;
-
-                if (databaseTutorInClassroom == null)
-                {
-                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
-                        new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                        "RPLPController - GetTutors - La liste databaseTutorInClassroom assignée à partir de la méthode this._httpClient.GetFromJsonAsync<List<Student>>($\"Student\").Result.Where(tutor => tutor.Classes.Any(classroom => classroom.Name == classroomName)).ToList(); est null",
-                        0));
-                }
+                    .GetFromJsonAsync<List<Student>>($"Student/Tutors")
+                    .Result.Where(s => s.Classes.All(classroom => classroom.Name != classroomName.Trim()))
+                    .ToList();
 
                 if (databaseTutor == null)
                 {
@@ -922,29 +1065,18 @@ namespace RPLP.MVC.Controllers
                         0));
                 }
 
-                if (databaseTutorInClassroom.Count >= 1 || databaseTutor.Count >= 1)
+                foreach (var tutor in databaseTutor)
                 {
-                    foreach (Student tutor in databaseTutor)
+                    tutors.Add(new StudentViewModel
                     {
-                        bool estInclus = false;
-
-                        foreach (Student student in databaseTutorInClassroom)
-                        {
-                            if (student.Id == tutor.Id)
-                            {
-                                estInclus = true;
-                            }
-                        }
-
-                        if (!estInclus)
-                        {
-                            tutors.Add(new StudentViewModel
-                            {
-                                Id = tutor.Id, Username = tutor.Username, FirstName = tutor.FirstName,
-                                LastName = tutor.LastName, Email = tutor.Email
-                            });
-                        }
-                    }
+                        Id = tutor.Id,
+                        Username = tutor.Username,
+                        FirstName = tutor.FirstName,
+                        LastName = tutor.LastName,
+                        Email = tutor.Email,
+                        Matricule = tutor.Matricule,
+                        IsTuteur = tutor.IsTutor
+                    });
                 }
 
                 return tutors;
@@ -974,7 +1106,7 @@ namespace RPLP.MVC.Controllers
                 List<AssignmentViewModel> assignments = new List<AssignmentViewModel>();
 
                 List<Assignment> databaseAssignmentInClassroom = this._httpClient
-                    .GetFromJsonAsync<List<Assignment>>($"Classroom/Name/{classroomName}/Assignments")
+                    .GetFromJsonAsync<List<Assignment>>($"Classroom/Name/{classroomName.Trim()}/Assignments")
                     .Result;
 
 
@@ -1019,7 +1151,7 @@ namespace RPLP.MVC.Controllers
 
                 List<StudentViewModel> students = new List<StudentViewModel>();
                 List<Student> databaseStudents = this._httpClient
-                    .GetFromJsonAsync<List<Student>>($"Classroom/Name/{ClassroomName}/Students")
+                    .GetFromJsonAsync<List<Student>>($"Classroom/Name/{ClassroomName.Trim()}/Students")
                     .Result;
 
                 if (databaseStudents == null)
@@ -1035,8 +1167,13 @@ namespace RPLP.MVC.Controllers
                     {
                         students.Add(new StudentViewModel
                         {
-                            Id = student.Id, Email = student.Email, FirstName = student.FirstName,
-                            LastName = student.LastName, Username = student.Username, Matricule = student.Matricule
+                            Id = student.Id,
+                            Email = student.Email,
+                            FirstName = student.FirstName,
+                            LastName = student.LastName,
+                            Username = student.Username,
+                            IsTuteur = student.IsTutor,
+                            Matricule = student.Matricule
                         });
                     }
 
@@ -1066,7 +1203,7 @@ namespace RPLP.MVC.Controllers
 
                 List<StudentViewModel> students = new List<StudentViewModel>();
                 List<Student> databaseStudentsInClassroom = this._httpClient
-                    .GetFromJsonAsync<List<Student>>($"Classroom/Name/{ClassroomName}/Students")
+                    .GetFromJsonAsync<List<Student>>($"Classroom/Name/{ClassroomName.Trim()}/Students")
                     .Result;
 
                 List<Student> databaseStudents = this._httpClient
@@ -1097,8 +1234,13 @@ namespace RPLP.MVC.Controllers
                         {
                             students.Add(new StudentViewModel
                             {
-                                Id = student.Id, Email = student.Email, FirstName = student.FirstName,
-                                LastName = student.LastName, Username = student.Username, Matricule = student.Matricule
+                                Id = student.Id,
+                                Email = student.Email,
+                                FirstName = student.FirstName,
+                                LastName = student.LastName,
+                                Username = student.Username,
+                                IsTuteur = student.IsTutor,
+                                Matricule = student.Matricule
                             });
                         }
                     }
@@ -1118,7 +1260,6 @@ namespace RPLP.MVC.Controllers
         {
             try
             {
-
                 if (string.IsNullOrWhiteSpace(organisationName))
                 {
                     RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
@@ -1154,7 +1295,8 @@ namespace RPLP.MVC.Controllers
                 Logging.Instance.Journal(new Log("api", 200,
                     $"RPLPController - GET méthode StartStudentAssignationScript(string organisationName = {organisationName}, string classroomName = {classroomName}, string assignmentName = {assignmentName}, int numberOfReviews = {numberOfReviews})"));
 
-                _scriptGithub.ScriptAssignStudentToAssignmentReview(organisationName, classroomName, assignmentName,
+                _scriptGithub.ScriptAssignStudentToAssignmentReview(organisationName.Trim(), classroomName.Trim(),
+                    assignmentName.Trim(),
                     numberOfReviews);
                 return Ok();
             }
@@ -1205,8 +1347,61 @@ namespace RPLP.MVC.Controllers
                 Logging.Instance.Journal(new Log("api", 200,
                     $"RPLPController - GET méthode StartTeachertAssignationScript(string organisationName = {organisationName}, string classroomName = {classroomName}, string assignmentName = {assignmentName}, string teacherUsername = {teacherUsername})"));
 
-                _scriptGithub.ScriptAssignTeacherToAssignmentReview(organisationName, classroomName, assignmentName,
-                    teacherUsername);
+                _scriptGithub.ScriptAssignTeacherToAssignmentReview(organisationName.Trim(), classroomName.Trim(),
+                    assignmentName.Trim(),
+                    teacherUsername.Trim());
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet]
+        public ActionResult StartTutortAssignationScript(string organisationName, string classroomName,
+            string assignmentName, string tutorUsername)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(organisationName))
+                {
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                        new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                        "RPLPController - StartTutortAssignationScript - organisationName passé en paramètre est vide",
+                        0));
+                }
+
+                if (string.IsNullOrWhiteSpace(classroomName))
+                {
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                        new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                        "RPLPController - StartTutortAssignationScript - classroomName passé en paramètre est vide",
+                        0));
+                }
+
+                if (string.IsNullOrWhiteSpace(assignmentName))
+                {
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                        new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                        "RPLPController - StartTutortAssignationScript - assignmentName passé en paramètre est vide",
+                        0));
+                }
+
+                if (string.IsNullOrWhiteSpace(tutorUsername))
+                {
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentOutOfRangeException().ToString(),
+                        new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                        "RPLPController - StartTutortAssignationScript - teacherUsername passé en paramètre est vide",
+                        0));
+                }
+
+                Logging.Instance.Journal(new Log("api", 200,
+                    $"RPLPController - GET méthode StartTutortAssignationScript(string organisationName = {organisationName}, string classroomName = {classroomName}, string assignmentName = {assignmentName}, string tutorUsername = {tutorUsername})"));
+
+                _scriptGithub.ScriptAssignTutorToAssignmentReview(organisationName.Trim(), classroomName.Trim(),
+                    assignmentName.Trim(),
+                    tutorUsername.Trim());
                 return Ok();
             }
             catch (Exception ex)
@@ -1252,9 +1447,12 @@ namespace RPLP.MVC.Controllers
                     $"RPLPController - GET méthode DownloadCommentsOfPullRequestByAssignment(string organisationName = {organisationName}, string classroomName = {classroomName}, string assignmentName = {assignmentName})"));
 
                 stream = await this._httpClient.GetStreamAsync(
-                    $"Github/{organisationName}/{classroomName}/{assignmentName}/PullRequests/Comments/File");
+                    $"Github/{organisationName.Trim()}/{classroomName.Trim()}/{assignmentName.Trim()}/PullRequests/Comments/File");
+
                 fileStreamResult = new FileStreamResult(stream, "application/octet-stream");
-                fileStreamResult.FileDownloadName = $"Comments_{assignmentName}_{DateTime.Now}.json";
+
+
+                fileStreamResult.FileDownloadName = $"Comments_{assignmentName.Trim()}_{DateTime.Now}.json";
             }
             catch (Exception)
             {
@@ -1319,8 +1517,12 @@ namespace RPLP.MVC.Controllers
 
                 Administrator admin = new Administrator
                 {
-                    Id = Id, Username = Username, FirstName = FirstName, LastName = LastName, Email = Email,
-                    Token = Token
+                    Id = Id,
+                    Username = Username.Trim(),
+                    FirstName = FirstName.Trim(),
+                    LastName = LastName.Trim(),
+                    Email = Email.Trim(),
+                    Token = Token.Trim()
                 };
 
                 Task<HttpResponseMessage> response = this._httpClient
@@ -1357,7 +1559,7 @@ namespace RPLP.MVC.Controllers
                         "RPLPController - POSTUpsertOrg - OrgName passé en paramètre est vide", 0));
                 }
 
-                Organisation org = new Organisation { Id = Id, Name = OrgName };
+                Organisation org = new Organisation { Id = Id, Name = OrgName.Trim() };
 
                 Task<HttpResponseMessage> response = this._httpClient
                     .PostAsJsonAsync<Organisation>($"Organisation", org);
@@ -1400,10 +1602,20 @@ namespace RPLP.MVC.Controllers
                         "RPLPController - POSTUpsertClassroom - OrganisationName passé en paramètre est vide", 0));
                 }
 
+                Organisation organisation = this._httpClient
+                    .GetFromJsonAsync<List<Organisation>>("Organisation")
+                    .Result
+                    .FirstOrDefault(o => o.Name == OrganisationName.Trim());
+
                 Classroom classroom = new Classroom
                 {
-                    Id = Id, Name = ClassroomName, OrganisationName = OrganisationName,
-                    Assignments = new List<Assignment>(), Students = new List<Student>(), Teachers = new List<Teacher>()
+                    Id = Id,
+                    Name = ClassroomName.Trim(),
+                    Organisation = organisation,
+                    Assignments = new List<Assignment>(),
+                    Students = new List<Student>(),
+                    Teachers = new List<Teacher>(),
+                    ActiveAssignment = null
                 };
 
                 if (Id != 0)
@@ -1431,7 +1643,6 @@ namespace RPLP.MVC.Controllers
                             0));
                     }
 
-
                     if (databaseAssignments.Count >= 1)
                         foreach (Assignment assignment in databaseAssignments)
                         {
@@ -1457,7 +1668,7 @@ namespace RPLP.MVC.Controllers
 
         [HttpPost]
         public ActionResult<string> POSTUpsertStudent(int Id, string Email, string FirstName, string LastName,
-            string Username, string Matricule)
+            string Username, bool IsTuteur, string Matricule)
         {
             try
             {
@@ -1505,8 +1716,14 @@ namespace RPLP.MVC.Controllers
 
                 Student student = new Student
                 {
-                    Id = Id, Email = Email, FirstName = FirstName, LastName = LastName, Username = Username,
-                    Classes = new List<Classroom>(), Matricule = Matricule
+                    Id = Id,
+                    Email = Email.Trim(),
+                    FirstName = FirstName.Trim(),
+                    LastName = LastName.Trim(),
+                    Username = Username.Trim(),
+                    Classes = new List<Classroom>(),
+                    IsTutor = IsTuteur,
+                    Matricule = Matricule.Trim()
                 };
 
                 Task<HttpResponseMessage> response = this._httpClient
@@ -1525,49 +1742,46 @@ namespace RPLP.MVC.Controllers
         }
 
         [HttpPost]
-        public ActionResult<string> POSTUpsertBatchStudent(string StudentString)
+        public ActionResult<string> POSTUpsertBatchStudent(string students)
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(StudentString))
+                if (string.IsNullOrWhiteSpace(students))
                 {
                     RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
                         new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                        "RPLPController - POSTUpsertBatchStudent - StudentString passé en paramètre est vide", 0));
+                        "RPLPController - POSTUpsertBatchStudent - students passé en paramètre est vide", 0));
                 }
 
-                string[] SplitStudents = StudentString.Split("\n");
+                List<Student_JSONDTO> studentsJson =
+                    JsonConvert.DeserializeObject<List<Student_JSONDTO>>(students);
+
                 HttpResponseMessage result = new HttpResponseMessage();
 
-                foreach (string rawStudent in SplitStudents)
+                foreach (Student_JSONDTO student in studentsJson)
                 {
-                    string[] student = rawStudent.Split(";");
-                    string studentUsername = "";
-
-                    if (student.Count() >= 5)
-                    {
-                        studentUsername = JsonConvert.DeserializeObject<string>(student[3].Replace("=", ""));
-                    }
-
-                    string studentMatricule = JsonConvert.DeserializeObject<string>(student[0].Replace("=", ""));
-                    string studentLastName = JsonConvert.DeserializeObject<string>(student[1].Replace("=", ""));
-                    string studentFirstName = JsonConvert.DeserializeObject<string>(student[2].Replace("=", ""));
+                    string studentMatricule = student.studentId;
+                    string studentLastName = student.lastName;
+                    string studentFirstName = student.firstName;
+                    string studentUsername = student.username;
                     string studentEmail = studentMatricule + "@csfoy.ca";
-
-                    if (studentUsername == "")
-                        studentUsername = studentMatricule;
 
                     Student studentObj = new Student
                     {
-                        Id = 0, Email = studentEmail, FirstName = studentFirstName, LastName = studentLastName,
-                        Username = studentUsername, Classes = new List<Classroom>(), Matricule = studentMatricule
+                        Id = 0,
+                        Email = studentEmail,
+                        FirstName = studentFirstName,
+                        LastName = studentLastName,
+                        Username = studentUsername,
+                        Classes = new List<Classroom>(),
+                        Matricule = studentMatricule
                     };
 
                     Task<HttpResponseMessage> response = this._httpClient
                         .PostAsJsonAsync<Student>($"Student", studentObj);
 
                     Logging.Instance.Journal(new Log("api", (int)response.Result.StatusCode,
-                        $"RPLPController - POST méthode POSTUpsertBatchStudent(string StudentString = {StudentString})"));
+                        $"RPLPController - POST méthode POSTUpsertBatchStudent(string StudentString = {students})"));
 
                     result = response.Result;
                 }
@@ -1621,11 +1835,11 @@ namespace RPLP.MVC.Controllers
                     $"RPLPController - GET méthode DownloadSingleRepository(string organisationName = {organisationName}, string classroomName = {classroomName}, string assignmentName = {assignmentName}, string studentUsername = {studentUsername})"));
 
                 string url =
-                    $"Github/Telechargement/{organisationName}/{classroomName}/{assignmentName}/{studentUsername}";
+                    $"Github/Telechargement/{organisationName.Trim()}/{classroomName.Trim()}/{assignmentName.Trim()}/{studentUsername.Trim()}";
                 Console.Out.WriteLine($"Trying to download single repository. URL : {url}");
                 stream = await this._httpClient.GetStreamAsync(url);
                 fileStreamResult = new FileStreamResult(stream, "application/octet-stream");
-                fileStreamResult.FileDownloadName = $"{assignmentName}-{studentUsername}.zip";
+                fileStreamResult.FileDownloadName = $"{assignmentName.Trim()}-{studentUsername.Trim()}.zip";
             }
             catch (Exception)
             {
@@ -1648,11 +1862,12 @@ namespace RPLP.MVC.Controllers
                 Logging.Instance.Journal(new Log("api", 0,
                     $"RPLPController - GET méthode DownloadAllRepositoriesForAssignment(string organisationName = {organisationName}, string classroomName = {classroomName}, string assignmentName = {assignmentName})"));
 
-                string url = $"Github/Telechargement/{organisationName}/{classroomName}/{assignmentName}";
+                string url =
+                    $"Github/Telechargement/{organisationName.Trim()}/{classroomName.Trim()}/{assignmentName.Trim()}";
                 Console.Out.WriteLine($"Trying to DownloadAllRepositoriesForAssignment - URL : {url}");
                 stream = await this._httpClient.GetStreamAsync(url);
                 fileStreamResult = new FileStreamResult(stream, "application/octet-stream");
-                fileStreamResult.FileDownloadName = $"{assignmentName}-{classroomName}.zip";
+                fileStreamResult.FileDownloadName = $"{assignmentName.Trim()}-{classroomName.Trim()}.zip";
             }
             catch (Exception ex)
             {
@@ -1699,7 +1914,7 @@ namespace RPLP.MVC.Controllers
             Logging.Instance.Journal(new Log("api", 0,
                 $"RPLPController - GET méthode RemoveCollaboratorsFromAssignmentRepositories(string organisationName = {organisationName}, string classroomName = {classroomName}, string assignmentName = {assignmentName})"));
 
-            _scriptGithub.ScriptRemoveStudentCollaboratorsFromAssignment(organisationName, classroomName,
+            _scriptGithub.ScriptRemoveStudentCollaboratorsFromAssignment(organisationName.Trim(), classroomName.Trim(),
                 assignmentName);
             return Ok();
         }
@@ -1748,7 +1963,11 @@ namespace RPLP.MVC.Controllers
 
                 Teacher teacher = new Teacher
                 {
-                    Id = Id, Email = Email, FirstName = FirstName, LastName = LastName, Username = Username,
+                    Id = Id,
+                    Email = Email.Trim(),
+                    FirstName = FirstName.Trim(),
+                    LastName = LastName.Trim(),
+                    Username = Username.Trim(),
                     Classes = new List<Classroom>()
                 };
 
@@ -1793,6 +2012,7 @@ namespace RPLP.MVC.Controllers
                         new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                         "RPLPController - POSTNewAssignment - Description passé en paramètre est vide", 0));
                 }
+
                 if (DeliveryDeadline == DateTime.MinValue)
                 {
                     RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentOutOfRangeException().ToString(),
@@ -1804,24 +2024,21 @@ namespace RPLP.MVC.Controllers
                 Logging.Instance.Journal(new Log("api", 0,
                     $"RPLPController - POST méthode POSTNewAssignment(string Name = {Name}, string ClassroomName = {ClassroomName}, string Description = {Description}, DateTime? DeliveryDeadline = {DeliveryDeadline})"));
 
+                Classroom classroom = this._httpClient.GetFromJsonAsync<List<Classroom>>("Classroom").Result
+                    .FirstOrDefault(c => c.Name == ClassroomName.Trim());
+
                 Assignment newAssignment = new Assignment
                 {
-                    Id = 0, Name = Name, ClassroomName = ClassroomName, Description = Description,
-                    DeliveryDeadline = DeliveryDeadline, DistributionDate = DateTime.Now
+                    Id = 0,
+                    Name = Name.Trim(),
+                    Classroom = classroom,
+                    Description = Description,
+                    DeliveryDeadline = DeliveryDeadline,
+                    DistributionDate = DateTime.Now
                 };
 
                 Task<HttpResponseMessage> response = this._httpClient
                     .PostAsJsonAsync<Assignment>($"Assignment", newAssignment);
-                response.Wait();
-
-                if (!response.IsCompleted)
-                {
-                    return response.Result.StatusCode.ToString();
-                }
-
-                response = this._httpClient
-                    .PostAsJsonAsync($"Classroom/Name/{ClassroomName}/Assignments/Add/{Name}", "");
-
                 response.Wait();
 
                 return response.Result.StatusCode.ToString();
@@ -1874,10 +2091,17 @@ namespace RPLP.MVC.Controllers
                         0));
                 }
 
+                Classroom classroom = this._httpClient.GetFromJsonAsync<List<Classroom>>("Classroom").Result
+                    .FirstOrDefault(c => c.Name == ClassroomName.Trim());
+
                 Assignment Assignment = new Assignment
                 {
-                    Id = Id, Name = Name, Description = Description, DeliveryDeadline = DeliveryDeadline,
-                    ClassroomName = ClassroomName, DistributionDate = DateTime.Now
+                    Id = Id,
+                    Name = Name.Trim(),
+                    Description = Description,
+                    DeliveryDeadline = DeliveryDeadline,
+                    Classroom = classroom,
+                    DistributionDate = DateTime.Now
                 };
 
                 Task<HttpResponseMessage> response = this._httpClient
@@ -1915,7 +2139,7 @@ namespace RPLP.MVC.Controllers
                 }
 
                 Task<HttpResponseMessage> response = this._httpClient
-                    .PostAsJsonAsync($"Administrator/Username/{AdminUsername}/Orgs/Add/{OrgName}", "");
+                    .PostAsJsonAsync($"Administrator/Username/{AdminUsername.Trim()}/Orgs/Add/{OrgName.Trim()}", "");
                 response.Wait();
 
                 Logging.Instance.Journal(new Log("api", (int)response.Result.StatusCode,
@@ -1949,7 +2173,8 @@ namespace RPLP.MVC.Controllers
                 }
 
                 Task<HttpResponseMessage> response = this._httpClient
-                    .PostAsJsonAsync($"Classroom/Name/{ClassroomName}/Students/Add/{StudentUsername}", "");
+                    .PostAsJsonAsync($"Classroom/Name/{ClassroomName.Trim()}/Students/Add/{StudentUsername.Trim()}",
+                        "");
                 response.Wait();
 
                 Logging.Instance.Journal(new Log("api", (int)response.Result.StatusCode,
@@ -1984,21 +2209,18 @@ namespace RPLP.MVC.Controllers
                         0));
                 }
 
-                // Vérifier si le StudentString brise le fichier des Logs en ajoutant plus de lignes
                 Logging.Instance.Journal(new Log("api", 0,
                     $"RPLPController - POST méthode POSTAddStudentToClassroomBatch(string ClassroomName = {ClassroomName}, string StudentString = {StudentString})"));
 
-                string[] SplitStudents = StudentString.Split("\n");
+                List<string> SplitStudents = JsonConvert.DeserializeObject<List<string>>(StudentString);
+
                 HttpResponseMessage result = new HttpResponseMessage();
 
-                foreach (string rawStudent in SplitStudents)
+                foreach (string studentId in SplitStudents)
                 {
-                    string[] student = rawStudent.Split(";");
-
-                    string studentMatricule = JsonConvert.DeserializeObject<string>(student[0].Replace("=", ""));
-
                     Task<HttpResponseMessage> response = this._httpClient
-                        .PostAsJsonAsync($"Classroom/Name/{ClassroomName}/Students/Add/Matricule/{studentMatricule}",
+                        .PostAsJsonAsync(
+                            $"Classroom/Name/{ClassroomName.Trim()}/Students/Add/Matricule/{studentId.Trim()}",
                             "");
 
                     result = response.Result;
@@ -2032,7 +2254,8 @@ namespace RPLP.MVC.Controllers
                 }
 
                 Task<HttpResponseMessage> response = this._httpClient
-                    .PostAsJsonAsync($"Classroom/Name/{ClassroomName}/Teachers/Add/{TeacherUsername}", "");
+                    .PostAsJsonAsync($"Classroom/Name/{ClassroomName.Trim()}/Teachers/Add/{TeacherUsername.Trim()}",
+                        "");
                 response.Wait();
 
                 Logging.Instance.Journal(new Log("api", (int)response.Result.StatusCode,
@@ -2068,7 +2291,8 @@ namespace RPLP.MVC.Controllers
                 }
 
                 Task<HttpResponseMessage> response = this._httpClient
-                    .PostAsJsonAsync($"Classroom/Name/{ClassroomName}/Teachers/Remove/{TeacherUsername}", "");
+                    .PostAsJsonAsync($"Classroom/Name/{ClassroomName.Trim()}/Teachers/Remove/{TeacherUsername.Trim()}",
+                        "");
                 response.Wait();
 
                 Logging.Instance.Journal(new Log("api", (int)response.Result.StatusCode,
@@ -2104,7 +2328,8 @@ namespace RPLP.MVC.Controllers
                 }
 
                 Task<HttpResponseMessage> response = this._httpClient
-                    .PostAsJsonAsync($"Classroom/Name/{ClassroomName}/Assignments/Remove/{AssignmentName}", "");
+                    .PostAsJsonAsync(
+                        $"Classroom/Name/{ClassroomName.Trim()}/Assignments/Remove/{AssignmentName.Trim()}", "");
                 response.Wait();
 
                 Logging.Instance.Journal(new Log("api", (int)response.Result.StatusCode,
@@ -2140,7 +2365,8 @@ namespace RPLP.MVC.Controllers
                 }
 
                 Task<HttpResponseMessage> response = this._httpClient
-                    .PostAsJsonAsync($"Classroom/Name/{ClassroomName}/Students/Remove/{StudentUsername}", "");
+                    .PostAsJsonAsync($"Classroom/Name/{ClassroomName.Trim()}/Students/Remove/{StudentUsername.Trim()}",
+                        "");
                 response.Wait();
 
                 Logging.Instance.Journal(new Log("api", (int)response.Result.StatusCode,
@@ -2174,7 +2400,7 @@ namespace RPLP.MVC.Controllers
                 }
 
                 Task<HttpResponseMessage> response = this._httpClient
-                    .PostAsJsonAsync($"Administrator/Username/{AdminUsername}/Orgs/Remove/{OrgName}", "");
+                    .PostAsJsonAsync($"Administrator/Username/{AdminUsername.Trim()}/Orgs/Remove/{OrgName.Trim()}", "");
                 response.Wait();
 
                 Logging.Instance.Journal(new Log("api", (int)response.Result.StatusCode,
@@ -2201,7 +2427,7 @@ namespace RPLP.MVC.Controllers
                 }
 
                 Task<HttpResponseMessage> response = this._httpClient
-                    .DeleteAsync($"Administrator/Username/{Username}");
+                    .DeleteAsync($"Administrator/Username/{Username.Trim()}");
                 response.Wait();
 
                 Logging.Instance.Journal(new Log("api", (int)response.Result.StatusCode,
@@ -2228,7 +2454,7 @@ namespace RPLP.MVC.Controllers
                 }
 
                 Task<HttpResponseMessage> response = this._httpClient
-                    .DeleteAsync($"Assignment/Name/{AssignmentName}");
+                    .DeleteAsync($"Assignment/Name/{AssignmentName.Trim()}");
                 response.Wait();
 
                 Logging.Instance.Journal(new Log("api", (int)response.Result.StatusCode,
@@ -2255,7 +2481,7 @@ namespace RPLP.MVC.Controllers
                 }
 
                 Task<HttpResponseMessage> response = this._httpClient
-                    .DeleteAsync($"Organisation/Name/{OrgName}");
+                    .DeleteAsync($"Organisation/Name/{OrgName.Trim()}");
                 response.Wait();
 
                 Logging.Instance.Journal(new Log("api", (int)response.Result.StatusCode,
@@ -2282,7 +2508,7 @@ namespace RPLP.MVC.Controllers
                 }
 
                 Task<HttpResponseMessage> response = this._httpClient
-                    .DeleteAsync($"Classroom/Name/{ClassroomName}");
+                    .DeleteAsync($"Classroom/Name/{ClassroomName.Trim()}");
                 response.Wait();
 
                 Logging.Instance.Journal(new Log("api", (int)response.Result.StatusCode,
@@ -2309,7 +2535,7 @@ namespace RPLP.MVC.Controllers
                 }
 
                 Task<HttpResponseMessage> response = this._httpClient
-                    .DeleteAsync($"Student/Username/{StudentUsername}");
+                    .DeleteAsync($"Student/Username/{StudentUsername.Trim()}");
                 response.Wait();
 
                 Logging.Instance.Journal(new Log("api", (int)response.Result.StatusCode,
@@ -2336,7 +2562,7 @@ namespace RPLP.MVC.Controllers
                 }
 
                 Task<HttpResponseMessage> response = this._httpClient
-                    .DeleteAsync($"Teacher/Username/{TeacherUsername}");
+                    .DeleteAsync($"Teacher/Username/{TeacherUsername.Trim()}");
                 response.Wait();
 
                 Logging.Instance.Journal(new Log("api", (int)response.Result.StatusCode,
@@ -2363,11 +2589,106 @@ namespace RPLP.MVC.Controllers
                 }
 
                 Task<HttpResponseMessage> response = this._httpClient
-                    .GetAsync($"Administrator/Reactivate/{username}");
+                    .GetAsync($"Administrator/Reactivate/{username.Trim()}");
                 response.Wait();
 
                 Logging.Instance.Journal(new Log("api", (int)response.Result.StatusCode,
                     $"RPLPController - POST méthode POSTReactivateAdmin(string username = {username})"));
+
+                return response.Result.StatusCode.ToString();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        [HttpPost]
+        public ActionResult<string> POSTReactivateOrg(int orgId, string orgName)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(orgName))
+                {
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                        new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                        "RPLPController - POSTReactivateOrg - orgName passé en paramètre est vide", 0));
+                }
+
+                Organisation org = new Organisation { Id = orgId, Name = orgName.Trim() };
+
+                Task<HttpResponseMessage> response = this._httpClient
+                    .PostAsJsonAsync($"Organisation/Reactivate", org);
+                response.Wait();
+
+                Logging.Instance.Journal(new Log("api", (int)response.Result.StatusCode,
+                    $"RPLPController - POST méthode POSTReactivateOrg()"));
+
+                return response.Result.StatusCode.ToString();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public ActionResult<string> POSTReactivateClassroom(int ClassroomId, string ClassroomName)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(ClassroomName))
+                {
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                        new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                        "RPLPController - POSTReactivateClassroom - ClassroomName passé en paramètre est vide", 0));
+                }
+
+                if (ClassroomId <= 0)
+                {
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                        new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                        "RPLPController - POSTReactivateClassroom - ClassroomId passé en paramètre est invalide", 0));
+                }
+
+                Task<HttpResponseMessage> response = this._httpClient
+                    .PostAsJsonAsync($"Classroom/Name/{ClassroomName.Trim()}/Id/{ClassroomId}Reactivate", "");
+                response.Wait();
+
+                Logging.Instance.Journal(new Log("api", (int)response.Result.StatusCode,
+                    $"RPLPController - POST méthode POSTReactivateClassroom()"));
+
+                return response.Result.StatusCode.ToString();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public ActionResult<string> POSTReactivateAssignment(int AssignmentId, string AssignmentName)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(AssignmentName))
+                {
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                        new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                        "RPLPController - POSTReactivateAssignment - AssignmentName passé en paramètre est vide", 0));
+                }
+
+                if (AssignmentId <= 0)
+                {
+                    RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(),
+                        new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
+                        "RPLPController - POSTReactivateAssignment - AssignmentId passé en paramètre est invalide", 0));
+                }
+
+                Task<HttpResponseMessage> response = this._httpClient
+                    .PostAsJsonAsync($"Assignment/Name/{AssignmentName.Trim()}/Id/{AssignmentId}Reactivate", "");
+                response.Wait();
+
+                Logging.Instance.Journal(new Log("api", (int)response.Result.StatusCode,
+                    $"RPLPController - POST méthode POSTReactivateAssignment()"));
 
                 return response.Result.StatusCode.ToString();
             }
@@ -2390,7 +2711,7 @@ namespace RPLP.MVC.Controllers
                 }
 
                 Task<HttpResponseMessage> response = this._httpClient
-                    .GetAsync($"Student/Reactivate/{username}");
+                    .GetAsync($"Student/Reactivate/{username.Trim()}");
                 response.Wait();
 
                 Logging.Instance.Journal(new Log("api", (int)response.Result.StatusCode,
@@ -2417,7 +2738,7 @@ namespace RPLP.MVC.Controllers
                 }
 
                 Task<HttpResponseMessage> response = this._httpClient
-                    .GetAsync($"Teacher/Reactivate/{username}");
+                    .GetAsync($"Teacher/Reactivate/{username.Trim()}");
                 response.Wait();
 
                 Logging.Instance.Journal(new Log("api", (int)response.Result.StatusCode,
@@ -2441,7 +2762,7 @@ namespace RPLP.MVC.Controllers
             Logging.Instance.Journal(new Log("api", 200, $"RPLPController - POST méthode StartScriptCoherence"));
 
             this._scriptGithub.EnsureOrganisationRepositoriesAreInDB();
-            this._scriptGithub.ValidateAllRepositoriesHasBranch();
+            //this._scriptGithub.ValidateAllRepositoriesHasBranch();
             return Ok();
         }
 

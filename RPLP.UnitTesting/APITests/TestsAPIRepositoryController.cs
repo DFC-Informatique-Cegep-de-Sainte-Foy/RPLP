@@ -113,7 +113,7 @@ namespace RPLP.UnitTesting.APITests
         }
 
         [Fact]
-        public void Test_DeleteRepository()
+        public void Test_DeleteRepositoryParRepoName()
         {
             var logMock = new Mock<IManipulationLogs>();
             Logging.Instance.ManipulationLog = logMock.Object;
@@ -123,7 +123,7 @@ namespace RPLP.UnitTesting.APITests
             var response = controller.DeleteRepository("ThPaquet");
 
             var result = Assert.IsType<NoContentResult>(response);
-            depot.Verify(d => d.DeleteRepository("ThPaquet"));
+            depot.Verify(d => d.DeleteRepositoryParRepoName("ThPaquet"));
             Assert.NotNull(result);
         }
     }

@@ -31,19 +31,19 @@ namespace RPLP.UnitTesting.DepotTests
                         new Classroom_SQLDTO()
                         {
                             Name = "ProjetSynthese",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "RPLP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "OOP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = false
                         }
                     },
@@ -101,19 +101,19 @@ namespace RPLP.UnitTesting.DepotTests
                         new Classroom_SQLDTO()
                         {
                             Name = "ProjetSynthese",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "RPLP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "OOP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = false
                         }
                     },
@@ -170,19 +170,19 @@ namespace RPLP.UnitTesting.DepotTests
                         new Classroom_SQLDTO()
                         {
                             Name = "ProjetSynthese",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "RPLP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "OOP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = false
                         }
                     },
@@ -246,19 +246,19 @@ namespace RPLP.UnitTesting.DepotTests
                         new Classroom_SQLDTO()
                         {
                             Name = "ProjetSynthese",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "RPLP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "OOP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = false
                         }
                     },
@@ -320,19 +320,19 @@ namespace RPLP.UnitTesting.DepotTests
                         new Classroom_SQLDTO()
                         {
                             Name = "ProjetSynthese",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "RPLP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "OOP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = false
                         }
                     },
@@ -394,19 +394,19 @@ namespace RPLP.UnitTesting.DepotTests
                         new Classroom_SQLDTO()
                         {
                             Name = "ProjetSynthese",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "RPLP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "OOP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = false
                         }
                     },
@@ -465,19 +465,19 @@ namespace RPLP.UnitTesting.DepotTests
                         new Classroom_SQLDTO()
                         {
                             Name = "ProjetSynthese",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "RPLP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "OOP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = false
                         }
                     },
@@ -539,19 +539,19 @@ namespace RPLP.UnitTesting.DepotTests
                         new Classroom_SQLDTO()
                         {
                             Name = "ProjetSynthese",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "RPLP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "OOP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = false
                         }
                     },
@@ -601,35 +601,16 @@ namespace RPLP.UnitTesting.DepotTests
             {
                 new Teacher_SQLDTO()
                 {
+                    Id = 1,
                     Username = "ThPaquet",
                     FirstName = "Thierry",
                     LastName = "Paquet",
                     Email = "ThPaquet@hotmail.com",
-                    Classes =
-                    {
-                        new Classroom_SQLDTO()
-                        {
-                            Name = "ProjetSynthese",
-                            OrganisationName = "CEGEP Ste-Foy",
-                            Active = true
-                        },
-                        new Classroom_SQLDTO()
-                        {
-                            Name = "RPLP",
-                            OrganisationName = "CEGEP Ste-Foy",
-                            Active = true
-                        },
-                        new Classroom_SQLDTO()
-                        {
-                            Name = "OOP",
-                            OrganisationName = "CEGEP Ste-Foy",
-                            Active = false
-                        }
-                    },
                     Active = true
                 },
                 new Teacher_SQLDTO()
                 {
+                     Id = 2,
                     Username = "ikeameatbol",
                     FirstName = "Jonathan",
                     LastName = "Blouin",
@@ -638,6 +619,7 @@ namespace RPLP.UnitTesting.DepotTests
                 },
                 new Teacher_SQLDTO()
                 {
+                     Id = 3,
                     Username = "BACenComm",
                     FirstName = "Melissa",
                     LastName = "Lachapelle",
@@ -649,23 +631,44 @@ namespace RPLP.UnitTesting.DepotTests
             {
                 new Classroom_SQLDTO
                 {
+                    Id = 1,
                     Name = "ProjetSynthese",
-                    OrganisationName = "CEGEP Ste-Foy",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = teachersDB,
                     Active = true
                 },
                 new Classroom_SQLDTO()
-                {
+                { 
+                    Id= 2,
                     Name = "RPLP",
-                    OrganisationName = "CEGEP Ste-Foy",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = teachersDB,
                     Active = true
                 }
             };
+            List<Organisation_SQLDTO> organisationsDB = new List<Organisation_SQLDTO>()
+            {
+                new Organisation_SQLDTO()
+                {
+                    Id = 1,
+                    Name = "CEGEP Ste-Foy",
+                    Administrators = new List<Administrator_SQLDTO>(),
+                    Active = true
+                },
+                new Organisation_SQLDTO()
+                {
+                    Id = 2,
+                    Name = "College Edouard-Montpetit",
+                    Administrators = new List<Administrator_SQLDTO>(),
+                    Active = true
+                },
+            };
+
+            
 
             var logMock = new Mock<IManipulationLogs>();
             Logging.Instance.ManipulationLog = logMock.Object;
@@ -673,13 +676,18 @@ namespace RPLP.UnitTesting.DepotTests
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Classrooms).ReturnsDbSet(classroomBD);
             context.Setup(x => x.Teachers).ReturnsDbSet(teachersDB);
+            context.Setup(x => x.Organisations).ReturnsDbSet(organisationsDB);
             DepotTeacher depot = new DepotTeacher(context.Object);
 
-            Teacher_SQLDTO thPaquetInContext = teachersDB.FirstOrDefault(t => t.Email == "ThPaquet@hotmail.com");
-            Assert.NotNull(thPaquetInContext);
-            Assert.True(thPaquetInContext.Active);
-            Assert.Contains(thPaquetInContext.Classes, c => c.Name == "ProjetSynthese" && c.OrganisationName == "CEGEP Ste-Foy");
-            Assert.Contains(thPaquetInContext.Classes, c => c.Name == "RPLP" && c.OrganisationName == "CEGEP Ste-Foy");
+            foreach (Classroom_SQLDTO classroom in classroomBD)
+            {
+                classroom.Organisation = organisationsDB.Where(x => x.Id == classroom.OrganisationId).FirstOrDefault();
+            }
+
+            Classroom_SQLDTO classroom_ = classroomBD.Where(x => x.Teachers.Any(t => t.Email == "ThPaquet@hotmail.com")).FirstOrDefault(); 
+            Assert.NotNull(classroom_);
+            Assert.True(classroom_.Active);
+            Assert.Contains(classroom_.Teachers, c => c.Email == "ThPaquet@hotmail.com");
 
             List<Classroom> classes = depot.GetTeacherClassesInOrganisationByEmail("ThPaquet@hotmail.com", "CEGEP Ste-Foy");
 
@@ -695,35 +703,16 @@ namespace RPLP.UnitTesting.DepotTests
             {
                 new Teacher_SQLDTO()
                 {
+                    Id = 1,
                     Username = "ThPaquet",
                     FirstName = "Thierry",
                     LastName = "Paquet",
                     Email = "ThPaquet@hotmail.com",
-                    Classes =
-                    {
-                        new Classroom_SQLDTO()
-                        {
-                            Name = "ProjetSynthese",
-                            OrganisationName = "CEGEP Ste-Foy",
-                            Active = true
-                        },
-                        new Classroom_SQLDTO()
-                        {
-                            Name = "RPLP",
-                            OrganisationName = "CEGEP Ste-Foy",
-                            Active = true
-                        },
-                        new Classroom_SQLDTO()
-                        {
-                            Name = "OOP",
-                            OrganisationName = "CEGEP Ste-Foy",
-                            Active = false
-                        }
-                    },
                     Active = true
                 },
                 new Teacher_SQLDTO()
                 {
+                     Id = 2,
                     Username = "ikeameatbol",
                     FirstName = "Jonathan",
                     LastName = "Blouin",
@@ -732,6 +721,7 @@ namespace RPLP.UnitTesting.DepotTests
                 },
                 new Teacher_SQLDTO()
                 {
+                     Id = 3,
                     Username = "BACenComm",
                     FirstName = "Melissa",
                     LastName = "Lachapelle",
@@ -739,49 +729,67 @@ namespace RPLP.UnitTesting.DepotTests
                     Active = false
                 }
             };
+            List<Classroom_SQLDTO> classroomBD = new List<Classroom_SQLDTO>
+            {
+                new Classroom_SQLDTO
+                {
+                    Id = 1,
+                    Name = "ProjetSynthese",
+                    OrganisationId = 1,
+                    Assignments = new List<Assignment_SQLDTO>(),
+                    Students = new List<Student_SQLDTO>(),
+                    Teachers = teachersDB,
+                    Active = true
+                },
+                new Classroom_SQLDTO()
+                {
+                    Id= 2,
+                    Name = "RPLP",
+                    OrganisationId = 1,
+                    Assignments = new List<Assignment_SQLDTO>(),
+                    Students = new List<Student_SQLDTO>(),
+                    Teachers = teachersDB,
+                    Active = true
+                }
+            };
             List<Organisation_SQLDTO> organisationsDB = new List<Organisation_SQLDTO>()
             {
                 new Organisation_SQLDTO()
                 {
+                    Id = 1,
                     Name = "CEGEP Ste-Foy",
                     Administrators = new List<Administrator_SQLDTO>(),
                     Active = true
                 },
                 new Organisation_SQLDTO()
                 {
+                    Id = 2,
                     Name = "College Edouard-Montpetit",
                     Administrators = new List<Administrator_SQLDTO>(),
                     Active = true
                 },
-                new Organisation_SQLDTO()
-                {
-                    Name = "Universite Laval",
-                    Administrators = new List<Administrator_SQLDTO>(),
-                    Active = false
-                },
             };
+
+            foreach (Classroom_SQLDTO classroom_ in classroomBD)
+            {
+                classroom_.Organisation = organisationsDB.Where(x => x.Id == classroom_.OrganisationId).FirstOrDefault();
+            }
+            teachersDB[0].Classes = classroomBD;
 
             var logMock = new Mock<IManipulationLogs>();
             Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Classrooms).ReturnsDbSet(classroomBD);
             context.Setup(x => x.Teachers).ReturnsDbSet(teachersDB);
             context.Setup(x => x.Organisations).ReturnsDbSet(organisationsDB);
             DepotTeacher depot = new DepotTeacher(context.Object);
-
-            organisationsDB.Add(new Organisation_SQLDTO()
-            {
-                Active = true,
-                Name = "CEGEP Ste-Foy"
-            });
 
             List<Organisation> organisations = depot.GetTeacherOrganisations("ThPaquet");
 
             Assert.NotNull(organisations);
             Assert.Equal(1, organisations.Count);
-            Assert.Contains(organisations, o => o.Name == "CEGEP Ste-Foy");
-           
-            
+            Assert.Contains(organisations, o => o.Name == "CEGEP Ste-Foy");        
         }
 
 
@@ -801,19 +809,19 @@ namespace RPLP.UnitTesting.DepotTests
                         new Classroom_SQLDTO()
                         {
                             Name = "ProjetSynthese",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "RPLP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "OOP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = false
                         }
                     },
@@ -857,6 +865,13 @@ namespace RPLP.UnitTesting.DepotTests
         [Fact]
         private void Test_GetTeacherClassesInOrganisation()
         {
+            Organisation_SQLDTO organisation = new Organisation_SQLDTO
+            {
+                Active = true,
+                Administrators = new List<Administrator_SQLDTO>(),
+                Id = 1,
+                Name = "CEGEP Ste-Foy"
+            };
             List<Teacher_SQLDTO> teachersDB = new List<Teacher_SQLDTO>()
             {
                 new Teacher_SQLDTO()
@@ -870,19 +885,19 @@ namespace RPLP.UnitTesting.DepotTests
                         new Classroom_SQLDTO()
                         {
                             Name = "ProjetSynthese",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "RPLP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "OOP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = false
                         }
                     },
@@ -910,7 +925,8 @@ namespace RPLP.UnitTesting.DepotTests
                 new Classroom_SQLDTO
                 {
                     Name = "ProjetSynthese",
-                    OrganisationName = "CEGEP Ste-Foy",
+                    OrganisationId = 1,
+                    Organisation = organisation,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = teachersDB,
@@ -919,12 +935,17 @@ namespace RPLP.UnitTesting.DepotTests
                 new Classroom_SQLDTO()
                 {
                     Name = "RPLP",
-                    OrganisationName = "CEGEP Ste-Foy",
+                    OrganisationId = 1,
+                    Organisation = organisation,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = teachersDB,
                     Active = true
                 }
+            };
+            List<Organisation_SQLDTO> organisationDB = new List<Organisation_SQLDTO>
+            {
+                organisation
             };
 
             var logMock = new Mock<IManipulationLogs>();
@@ -933,6 +954,7 @@ namespace RPLP.UnitTesting.DepotTests
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Classrooms).ReturnsDbSet(classroomBD);
             context.Setup(x => x.Teachers).ReturnsDbSet(teachersDB);
+            context.Setup(x => x.Organisations).ReturnsDbSet(organisationDB);
             DepotTeacher depot = new DepotTeacher(context.Object);
 
             List<Classroom> classes = depot.GetTeacherClassesInOrganisation("ThPaquet", "CEGEP Ste-Foy");
@@ -940,8 +962,6 @@ namespace RPLP.UnitTesting.DepotTests
             Assert.Equal(2, classes.Count);
             Assert.Contains(classes, c => c.Name == "RPLP");
             Assert.DoesNotContain(classes, c => c.Name == "OOP");
-           
-            
         }
 
         [Fact]
@@ -960,19 +980,19 @@ namespace RPLP.UnitTesting.DepotTests
                         new Classroom_SQLDTO()
                         {
                             Name = "ProjetSynthese",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "RPLP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "OOP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = false
                         }
                     },
@@ -1000,7 +1020,7 @@ namespace RPLP.UnitTesting.DepotTests
                 new Classroom_SQLDTO
                 {
                     Name = "ProjetSynthese",
-                    OrganisationName = "CEGEP Ste-Foy",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -1009,7 +1029,7 @@ namespace RPLP.UnitTesting.DepotTests
                 new Classroom_SQLDTO()
                 {
                     Name = "RPLP",
-                    OrganisationName = "CEGEP Ste-Foy",
+                    OrganisationId = 1,
                     Assignments = new List<Assignment_SQLDTO>(),
                     Students = new List<Student_SQLDTO>(),
                     Teachers = new List<Teacher_SQLDTO>(),
@@ -1080,14 +1100,14 @@ namespace RPLP.UnitTesting.DepotTests
                 {
                     Id = 1,
                     Name = "ProjetSynthese",
-                    OrganisationName = "CEGEP Ste-Foy",
+                    OrganisationId = 1,
                     Active = true
                 },
                 new Classroom_SQLDTO()
                 {
                     Id=2,
                     Name = "RPLP",
-                    OrganisationName = "CEGEP Ste-Foy",
+                    OrganisationId = 1,
                     Active = true
                 }
             };
@@ -1187,19 +1207,19 @@ namespace RPLP.UnitTesting.DepotTests
                         new Classroom_SQLDTO()
                         {
                             Name = "ProjetSynthese",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "RPLP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "OOP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = false
                         }
                     },
@@ -1276,19 +1296,19 @@ namespace RPLP.UnitTesting.DepotTests
                         new Classroom_SQLDTO()
                         {
                             Name = "ProjetSynthese",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "RPLP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "OOP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = false
                         }
                     },
@@ -1368,19 +1388,19 @@ namespace RPLP.UnitTesting.DepotTests
                         new Classroom_SQLDTO()
                         {
                             Name = "ProjetSynthese",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "RPLP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "OOP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = false
                         }
                     },
@@ -1442,19 +1462,19 @@ namespace RPLP.UnitTesting.DepotTests
                         new Classroom_SQLDTO()
                         {
                             Name = "ProjetSynthese",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "RPLP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "OOP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = false
                         }
                     },
@@ -1534,19 +1554,19 @@ namespace RPLP.UnitTesting.DepotTests
                         new Classroom_SQLDTO()
                         {
                             Name = "ProjetSynthese",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "RPLP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "OOP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = false
                         }
                     },
@@ -1622,19 +1642,19 @@ namespace RPLP.UnitTesting.DepotTests
                         new Classroom_SQLDTO()
                         {
                             Name = "ProjetSynthese",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "RPLP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "OOP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = false
                         }
                     },
@@ -1714,19 +1734,19 @@ namespace RPLP.UnitTesting.DepotTests
                         new Classroom_SQLDTO()
                         {
                             Name = "ProjetSynthese",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "RPLP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "OOP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = false
                         }
                     },
@@ -1796,19 +1816,19 @@ namespace RPLP.UnitTesting.DepotTests
                         new Classroom_SQLDTO()
                         {
                             Name = "ProjetSynthese",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "RPLP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "OOP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = false
                         }
                     },
@@ -1886,19 +1906,19 @@ namespace RPLP.UnitTesting.DepotTests
                         new Classroom_SQLDTO()
                         {
                             Name = "ProjetSynthese",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "RPLP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "OOP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = false
                         }
                     },
@@ -1974,19 +1994,19 @@ namespace RPLP.UnitTesting.DepotTests
                         new Classroom_SQLDTO()
                         {
                             Name = "ProjetSynthese",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "RPLP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "OOP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = false
                         }
                     },
@@ -2066,19 +2086,19 @@ namespace RPLP.UnitTesting.DepotTests
                         new Classroom_SQLDTO()
                         {
                             Name = "ProjetSynthese",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "RPLP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "OOP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = false
                         }
                     },
@@ -2148,19 +2168,19 @@ namespace RPLP.UnitTesting.DepotTests
                         new Classroom_SQLDTO()
                         {
                             Name = "ProjetSynthese",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "RPLP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "OOP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = false
                         }
                     },
@@ -2218,19 +2238,19 @@ namespace RPLP.UnitTesting.DepotTests
                         new Classroom_SQLDTO()
                         {
                             Name = "ProjetSynthese",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "RPLP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = true
                         },
                         new Classroom_SQLDTO()
                         {
                             Name = "OOP",
-                            OrganisationName = "CEGEP Ste-Foy",
+                            OrganisationId = 1,
                             Active = false
                         }
                     },

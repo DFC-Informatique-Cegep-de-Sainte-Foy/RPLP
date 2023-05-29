@@ -5,8 +5,7 @@
 
     <div class="form-group">
         <label for="InputAjouterStudentBAtch">Students</label>
-         <textarea class="form-control rounded-0" id="InputAjouterStudentBAtch" rows="10" placeholder='="matricule";="nom";="prénom";="username";
-...'></textarea>
+         <textarea class="form-control rounded-0" id="InputAjouterStudentBAtch" rows="10" placeholder='matricule;nom;prénom;username'></textarea>
     </div>
 
   <input type="button" class="btn-lg btn-success titlePartial" onclick="ajouterStudentBatch.createNewStudent()" value="Créer">
@@ -20,11 +19,12 @@
     {
         var ajaxURL = '/RPLP/POSTUpsertBatchStudent';
         var studentString = document.getElementById("InputAjouterStudentBAtch").value;
+        var students = ajouterStudentBatch.validateDataTextArea(studentString);
 
-        if(studentString != null || studentString != "")
+        if(students != null || students.length > 0)
         {
             $.post(ajaxURL,{
-                StudentString: studentString
+                students: JSON.stringify(students)
             },
             function(data, status){
                 alert("Data: " + data + "\nStatus: " + status);
@@ -32,5 +32,36 @@
         } else {
             alert("Veuillez remplir le champ")
         }
-    }
+    };
+    
+    ajouterStudentBatch.validateDataTextArea = function (textAreaData){
+        var studentsList = [];
+        var splitedTextbyRows = textAreaData.split(/\r?\n/);
+        
+        for (let i = 0; i < splitedTextbyRows.length; i++){
+            let splitedRowByComponents = splitedTextbyRows[i].split(';');
+            if (splitedRowByComponents.length < 3 || splitedRowByComponents.length > 4){
+                alert("les données saisis ne sont pas bien formatées");
+                return [];
+                }
+            else if (splitedRowByComponents.length < 4){
+                studentsList.push({
+                    studentId:splitedRowByComponents[0],
+                    lastName:splitedRowByComponents[1],
+                    firstName:splitedRowByComponents[2],
+                    username:splitedRowByComponents[0]
+                    });
+                }
+            else{
+                studentsList.push({
+                    studentId:splitedRowByComponents[0],
+                    lastName:splitedRowByComponents[1],
+                    firstName:splitedRowByComponents[2],
+                    username:splitedRowByComponents[3]
+                    });
+            } 
+        }
+        return studentsList;
+    };
+        
 </script>

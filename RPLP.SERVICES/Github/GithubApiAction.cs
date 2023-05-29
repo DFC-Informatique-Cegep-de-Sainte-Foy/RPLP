@@ -54,6 +54,7 @@ namespace RPLP.SERVICES.Github
 
         public List<Repository_JSONDTO> GetOrganisationRepositoriesGithub(string p_organisationName)
         {
+            Logging.Instance.Journal(new Log($"debug - GetOrganisationRepositoriesGithub({p_organisationName})"));
             if (string.IsNullOrWhiteSpace(p_organisationName))
             {
                 RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
@@ -84,7 +85,7 @@ namespace RPLP.SERVICES.Github
 
                 ++page;
             }
-
+            Logging.Instance.Journal(new Log($"debug - GetOrganisationRepositoriesGithub : repositoriesFromAllPages.Count({repositoriesFromAllPages.Count})"));
             return repositoriesFromAllPages;
         }
 
@@ -179,22 +180,16 @@ namespace RPLP.SERVICES.Github
                    "GithubApiAction - GetRepositoryBranchesGithub - p_repositoryName passé en paramètre est vide", 0));
             }
 
-            Logging.Instance.Journal(new Log($"GithubApiAction - GetRepositoryBranchesGithub - Début - p_organisationName -> {p_organisationName} / p_repositoryName -> {p_repositoryName}"));
-
             string fullPath = _getBranchesFromRepositoryCommitGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName);
-
-            Logging.Instance.Journal(new Log($"GithubApiAction - GetRepositoryBranchesGithub - fullPath -> {fullPath}"));
 
             if (string.IsNullOrWhiteSpace(fullPath))
             {
                 RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
                     "GithubApiAction - GetRepositoryBranchesGithub - la variable fullPath assigné par la méthode _getBranchesFromRepositoryCommitGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName) est vide", 0));
             }
-            RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"fullPath: {fullPath}"));
+
             Task <List<Branch_JSONDTO>> refsJSON = RepositoryBranchesGithubApiRequest(fullPath);
             refsJSON.Wait();
-
-            // Logging.Instance.Journal(new Log($"GithubApiAction - GetRepositoryBranchesGithub - fin - refsJSON.Result[0].reference -> {refsJSON.Result[0].reference}"));
 
             return refsJSON.Result;
         }
@@ -219,7 +214,7 @@ namespace RPLP.SERVICES.Github
                 string JSONContent = await response.Content.ReadAsStringAsync();
                 refs = JsonConvert.DeserializeObject<List<Branch_JSONDTO>>(JSONContent);
             }
-            RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"GithubApiAction - RepositoryBranchesGithubApiRequest(string p_githubLink: {p_githubLink}) - refs: {refs.Count}"));
+
             return refs;
         }
 
@@ -362,9 +357,7 @@ namespace RPLP.SERVICES.Github
             }
 
             Task<string> statusCode = NewBranchGithubApiRequest(fullPath, p_sha, p_newBranchName);
-            RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"GithubApiAction - CreateNewBranchForFeedbackGitHub - statusCode: {statusCode.Result} - organisationName:{p_organisationName} - p_repositoryName:{p_repositoryName} - p_newBranchName: {p_newBranchName}"));
             statusCode.Wait();
-            RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"GithubApiAction - CreateNewBranchForFeedbackGitHub - statusCode.Wait() - statusCode: {statusCode.Result}"));
 
             return statusCode.Result;
         }
@@ -379,7 +372,6 @@ namespace RPLP.SERVICES.Github
             };
             
             string branchRequest = JsonConvert.SerializeObject(branch_request);
-            RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"GithubApiAction - NewBranchForFeedbackGithubApiRequest - branchRequest: {branchRequest} - p_githubLink: {p_githubLink} - p_newBranchName: {p_newBranchName}"));
 
             HttpResponseMessage response = await _httpClient.PostAsync(p_githubLink, new StringContent(branchRequest, Encoding.UTF8, "application/json"));
 
@@ -438,9 +430,7 @@ namespace RPLP.SERVICES.Github
             }
 
             Task<string> statusCode = NewPullRequestGitHubApiRequest(fullPath, p_targetBranch, p_title, p_body, p_fromBranch);
-            RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"GithubApiAction - CreateNewPullRequestGitHub - statusCode: {statusCode.Result} - organisationName:{p_organisationName} - p_repositoryName:{p_repositoryName} - p_body: {p_body}"));
             statusCode.Wait();
-            RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"GithubApiAction - CreateNewPullRequestGitHub - statusCode: {statusCode.Result} - organisationName:{p_organisationName} - p_repositoryName:{p_repositoryName} - p_body: {p_body}"));
 
             return statusCode.Result;
         }
@@ -457,8 +447,6 @@ namespace RPLP.SERVICES.Github
             string pullRequest = JsonConvert.SerializeObject(pullRequest_request);
 
             HttpResponseMessage response = await _httpClient.PostAsync(p_githubLink, new StringContent(pullRequest, Encoding.UTF8, "application/vnd.github+json"));
-
-            RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"GithubApiAction - NewPullRequestGitHubApiRequest - pullRequest: {pullRequest} - response: {response.StatusCode.ToString()}"));
 
             HttpHeaders headers = response.Headers;
             int remaining = 0;
@@ -498,15 +486,12 @@ namespace RPLP.SERVICES.Github
             if (string.IsNullOrWhiteSpace(fullPath))
             {
                 RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
-                    "GithubApiAction - AddStudentAsCollaboratorToPeerRepositoryGithub - la variable fullPath assigné par la méthode _addorRemoveCollaboratorToRepositoryGithub.Replace(organisationName, p_organisationName).Replace(repositoryName, p_repositoryName).Replace(studentUsername, p_studentUsername) est vide", 0));
+                    $"GithubApiAction - AddStudentAsCollaboratorToPeerRepositoryGithub - la variable fullPath assigné par la méthode _addorRemoveCollaboratorToRepositoryGithub.Replace(organisationName, {p_organisationName}).Replace(repositoryName, {p_repositoryName}).Replace(studentUsername, {p_studentUsername}) est vide", 0));
             }
 
             Task<string> statusCode = AddStudentAsCollaboratorToPeerRepositoryGithubApiRequest(fullPath);
-            RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"GithubApiAction - CreateNewPullRequestFeedbackGitHub - statusCode: {statusCode.Result} - organisationName:{p_organisationName} - p_repositoryName:{p_repositoryName} - p_studentUsername: {p_studentUsername}"));
             statusCode.Wait();
-            RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"GithubApiAction - CreateNewPullRequestFeedbackGitHub - statusCode: {statusCode.Result} - organisationName:{p_organisationName} - p_repositoryName:{p_repositoryName} - p_studentUsername: {p_studentUsername}"));
-
-
+            
             return statusCode.Result;
         }
 
@@ -537,9 +522,7 @@ namespace RPLP.SERVICES.Github
 
             return collaboratorsResult.Result;
         }
-
-
-      
+        
         private async Task<List<Collaborator_JSONDTO>> GetCollaboratorFromStudentRepositoryGithubGithubApiRequest(string p_githubLink)
         {
             List<Collaborator_JSONDTO> collaborators = new List<Collaborator_JSONDTO>();
@@ -564,13 +547,10 @@ namespace RPLP.SERVICES.Github
             return collaborators;
         }
 
-
         private async Task<string> AddStudentAsCollaboratorToPeerRepositoryGithubApiRequest(string p_githubLink)
         {
             string permission = "{\"permission\":\"Triage\"}";
             HttpResponseMessage response = await _httpClient.PutAsync(p_githubLink, new StringContent(permission, Encoding.UTF8, "application/json"));
-
-            RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"GithubApiAction - AddStudentAsCollaboratorToPeerRepositoryGithubApiRequest - permission: {permission} - response: {response.StatusCode.ToString()}"));
 
             HttpHeaders headers = response.Headers;
             int remaining = 0;
@@ -581,7 +561,6 @@ namespace RPLP.SERVICES.Github
             }
 
             RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(p_githubLink, (int)response.StatusCode, remaining, "Requête PUT pour l'ajout d'un étudiant en tant que collaborateur à un dépot"));
-
             return response.StatusCode.ToString();
         }
 
@@ -786,15 +765,7 @@ namespace RPLP.SERVICES.Github
             }
 
             HttpResponseMessage response = await _httpClient.PutAsync(p_githubLink, new StringContent(contentRequest, Encoding.UTF8, "application/vnd.github+json"));
-
-            RPLP.JOURNALISATION.Logging.Instance.Journal(new Log($"GitHubApiAction - addFileToContentsGithubApiRequest" +
-                                                        $"requete vers: {p_githubLink}" +
-                                                        $"brachName: {p_branchName}" +
-                                                        $"content: {p_content}" +
-                                                        $"message: {p_message}" +
-                                                        $"contentRequest: {contentRequest}"));
-
-            
+           
             HttpHeaders headers = response.Headers;
             int remaining = 0;
             IEnumerable<string> headerValues;
