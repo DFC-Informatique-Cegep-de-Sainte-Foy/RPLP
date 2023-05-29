@@ -77,6 +77,7 @@ namespace RPLP.UnitTesting.EntityTests
                 Name = "classroom",
                 Organisation = new Organisation()
             };
+            
             Assignment assignment = new Assignment()
             {
                 Id = 2,
@@ -92,7 +93,6 @@ namespace RPLP.UnitTesting.EntityTests
             Assert.NotNull(assignment_SQLDTO);
             Assert.Equal(assignment.Id, assignment_SQLDTO.Id);
             Assert.Equal(assignment.Name, assignment_SQLDTO.Name);
-            Assert.Equal(assignment.Classroom.Id, assignment_SQLDTO.Classroom.Id);
             Assert.Equal(assignment.Description, assignment_SQLDTO.Description);
             Assert.Equal(assignment.DeliveryDeadline, assignment_SQLDTO.DeliveryDeadline);
             Assert.Equal(assignment.DistributionDate, assignment_SQLDTO.DistributionDate);

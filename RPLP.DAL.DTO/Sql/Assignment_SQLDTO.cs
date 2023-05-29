@@ -30,7 +30,7 @@ namespace RPLP.DAL.DTO.Sql
         {
             this.Id = p_assignment.Id;
             this.Name = p_assignment.Name;
-            this.Classroom = new Classroom_SQLDTO(p_assignment.Classroom);
+            this.Classroom = new Classroom_SQLDTO();
             this.Description = p_assignment.Description;
             this.DeliveryDeadline = p_assignment.DeliveryDeadline;
             this.DistributionDate = p_assignment.DistributionDate;

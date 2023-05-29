@@ -64,6 +64,14 @@ namespace RPLP.DAL.DTO.Sql
             this.Students = students;
             this.Teachers = teachers;
             this.Assignments = assignments;
+
+            if (this.Assignments.Count > 0)
+            {
+                foreach (Assignment_SQLDTO assignment in this.Assignments)
+                {
+                    assignment.Classroom = this;
+                }
+            }
             this.Active = true;
         }
 

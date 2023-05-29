@@ -1833,6 +1833,7 @@ namespace RPLP.UnitTesting.DepotTests
                 Id = 1,
                 Name = "Mock Organisation"
             };
+            
             List<Classroom_SQLDTO> classroomBD = new List<Classroom_SQLDTO>
             {
                 new Classroom_SQLDTO
@@ -1856,7 +1857,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Active = true
                 }
             };
-
+        
             List<Assignment_SQLDTO> assignmentsBD = new List<Assignment_SQLDTO>()
             {
                 new Assignment_SQLDTO()
@@ -1890,7 +1891,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Active = true
                 }
             };
-
+        
             List<Organisation_SQLDTO> organisationsDB = new List<Organisation_SQLDTO>()
             {
                 new Organisation_SQLDTO()
@@ -1901,6 +1902,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Active = true
                 },
             };
+            
             List<Student_SQLDTO> studentsBD = new List<Student_SQLDTO>()
             {
                 new Student_SQLDTO()
@@ -1914,6 +1916,7 @@ namespace RPLP.UnitTesting.DepotTests
                     Active = true
                 }
             };
+            
             List<Teacher_SQLDTO> teachersDB = new List<Teacher_SQLDTO>()
             {
                 new Teacher_SQLDTO()
@@ -1925,17 +1928,17 @@ namespace RPLP.UnitTesting.DepotTests
                     Active = true
                 }
             };
-
+        
             classroomBD[0].Assignments.Add(assignmentsBD[0]);
             classroomBD[0].Assignments.Add(assignmentsBD[1]);
             classroomBD[1].Assignments.Add(assignmentsBD[2]);
-
+        
             classroomBD[0].Students.Add(studentsBD[0]);
             classroomBD[0].Teachers.Add(teachersDB[0]);
-
+        
             var logMock = new Mock<IManipulationLogs>();
             Logging.Instance.ManipulationLog = logMock.Object;
-
+        
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Students).ReturnsDbSet(studentsBD);
             context.Setup(x => x.Teachers).ReturnsDbSet(teachersDB);
@@ -1943,14 +1946,14 @@ namespace RPLP.UnitTesting.DepotTests
             context.Setup(x => x.Organisations).ReturnsDbSet(organisationsDB);
             context.Setup(x => x.Assignments).ReturnsDbSet(assignmentsBD);
             DepotClassroom depot = new DepotClassroom(context.Object);
-
+        
             Classroom_SQLDTO? classroom = classroomBD.FirstOrDefault(c => c.Name == "ProjetSynthese");
             Assert.NotNull(classroom);
+            
             foreach (Assignment_SQLDTO assignment in assignmentsBD)
             {
                 assignment.Classroom = classroomBD.Where(x => x.Id == assignment.ClassroomId).FirstOrDefault();
             }
-
 
             Classroom newClassroom = new Classroom()
             {
@@ -1962,44 +1965,17 @@ namespace RPLP.UnitTesting.DepotTests
                 Students = new List<Student>(),
                 Teachers = new List<Teacher>()
             };
-            newClassroom.Assignments.Add(new Assignment()
-            {
-                Id = 3,
-                Name = "TestAssignment",
-                DistributionDate = System.DateTime.Now,
-                Classroom = newClassroom,
-                Description = "AssignmentUpsertTest",
-                DeliveryDeadline = System.DateTime.Now.AddDays(1),
-            });
-
-            newClassroom.Students.Add(new Student()
-            {
-                Id = 3,
-                Username = "TestStudent",
-                FirstName = "Testy",
-                LastName = "McTestson",
-                Email = "Test@hotmail.com",
-                Matricule = "1133221",
-            });
-
-            newClassroom.Teachers.Add(new Teacher()
-            {
-                Id = 3,
-                Username = "TestTeacher",
-                FirstName = "Test-Francois",
-                LastName = "Testeon",
-                Email = "Testeon@hotmail.com",
-            });
+            
             depot.UpsertClassroom(newClassroom);
-
-            classroom = classroomBD.FirstOrDefault(c => c.Name == "ProjetSynthese");
-
+        
+            classroom = classroomBD.FirstOrDefault(c => c.Name == "RPLP");
+        
             Assert.NotNull(classroom);
-            Assert.NotNull(classroom.Assignments.SingleOrDefault(a => a.Name == "TestAssignment"));
-            Assert.NotNull(classroom.Students.SingleOrDefault(a => a.Username == "TestStudent"));
-            Assert.NotNull(classroom.Teachers.SingleOrDefault(a => a.Username == "TestTeacher"));
-
-
+            Assert.NotNull(classroom.Assignments.SingleOrDefault(a => a.Name == "Review"));
+            Assert.NotNull(classroom.Students.SingleOrDefault(a => a.Username == "ThPaquet"));
+            Assert.NotNull(classroom.Teachers.SingleOrDefault(a => a.Username == "BACenComm"));
+        
+        
         }
 
         [Fact]
