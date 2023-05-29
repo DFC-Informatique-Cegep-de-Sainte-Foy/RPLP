@@ -54,6 +54,7 @@ namespace RPLP.SERVICES.Github
 
         public List<Repository_JSONDTO> GetOrganisationRepositoriesGithub(string p_organisationName)
         {
+            Logging.Instance.Journal(new Log($"debug - GetOrganisationRepositoriesGithub({p_organisationName})"));
             if (string.IsNullOrWhiteSpace(p_organisationName))
             {
                 RPLP.JOURNALISATION.Logging.Instance.Journal(new Log(new ArgumentNullException().ToString(), new StackTrace().ToString().Replace(System.Environment.NewLine, "."),
@@ -84,7 +85,7 @@ namespace RPLP.SERVICES.Github
 
                 ++page;
             }
-
+            Logging.Instance.Journal(new Log($"debug - GetOrganisationRepositoriesGithub : repositoriesFromAllPages.Count({repositoriesFromAllPages.Count})"));
             return repositoriesFromAllPages;
         }
 

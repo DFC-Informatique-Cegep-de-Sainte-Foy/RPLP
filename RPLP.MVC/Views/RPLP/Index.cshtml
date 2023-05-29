@@ -311,7 +311,6 @@
         if (classroomName != "") {
             SelectedClassroomName = classroomName;
             GetAssignmentsOfClassroomByName(SelectedClassroomName);
-            GetStudentsOfClassroomByName(SelectedClassroomName);
             GetStudentsInClassroomByClassroomName(classroomName);
             GetTeacherInClassroomByClassroomName(classroomName);
             GetTutors(classroomName);
@@ -365,7 +364,6 @@
             select.appendChild(option);
         });
     }
-
 
     ShowTutors = function () {
         const classes = document.getElementById("selectTutor");
@@ -459,29 +457,6 @@
                 assignments = data;
 
                 ShowAssignments();
-            },
-            error: function (ex) {
-            }
-        });
-    }
-
-    function GetStudentsOfClassroomByName(classroomName) {
-        var ajaxURL = '/RPLP/GetStudentsOfClassroomByName';
-
-        $.ajax({
-            type: 'GET',
-            url: ajaxURL,
-            data: { classroomName: classroomName },
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            beforeSend: function () {
-            },
-            success: function (data) {
-                students = data;
-                $('selectStudent').empty();
-                students.forEach(student => {
-                    $('selectStudent').append($("<option />").val(student.Name).text(student.Name));
-                });
             },
             error: function (ex) {
             }
