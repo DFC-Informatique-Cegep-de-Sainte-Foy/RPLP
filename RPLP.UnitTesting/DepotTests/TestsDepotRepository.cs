@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Moq;
 using Moq.EntityFrameworkCore;
+using RPLP.DAL.DTO.Json;
 using RPLP.DAL.DTO.Sql;
 using RPLP.DAL.SQL;
 using RPLP.DAL.SQL.Depots;
@@ -235,24 +236,55 @@ namespace RPLP.UnitTesting.DepotTests
                         Active = false
                     },
                 };
+            List<Organisation_SQLDTO> organisationsDB = new List<Organisation_SQLDTO>()
+            {
+                new Organisation_SQLDTO()
+                {
+                    Id=1,
+                    Name = "CEGEP Ste-Foy",
+                    Administrators = new List<Administrator_SQLDTO>(),
+                    Active = true
+                },
+                new Organisation_SQLDTO()
+                {
+                    Id=2,
+                    Name = "College Edouard-Montpetit",
+                    Administrators = new List<Administrator_SQLDTO>(),
+                    Active = true
+                },
+                new Organisation_SQLDTO()
+                {
+                    Id=3,
+                    Name = "Universite Laval",
+                    Administrators = new List<Administrator_SQLDTO>(),
+                    Active = false
+                },
+            };
+
+            foreach (Repository_SQLDTO repository_ in repositoriesDB)
+            {
+                repository_.Organisation = organisationsDB.Where(x => x.Id == repository_.OrganisationId).FirstOrDefault();
+            }
 
             var logMock = new Mock<IManipulationLogs>();
             Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Repositories).ReturnsDbSet(repositoriesDB);
+            context.Setup(x => x.Organisations).ReturnsDbSet(organisationsDB);
             context.Setup(m => m.Repositories.Add(It.IsAny<Repository_SQLDTO>())).Callback<Repository_SQLDTO>(repositoriesDB.Add);
             DepotRepository depot = new DepotRepository(context.Object);
             
             Organisation mockOrganisation = new Organisation()
             {
-                Administrators = new List<Administrator>(),
-                Id = 1,
+                Id = 4,
+                Administrators = new List<Administrator>(),      
                 Name = "Mock Organisation"
             };
 
             Repository repository = new Repository()
             {
+                Id= 4,
                 Name = "testrepo",
                 FullName = "Test Repository",
                 Organisation = mockOrganisation
@@ -265,7 +297,6 @@ namespace RPLP.UnitTesting.DepotTests
             Assert.NotNull(repositorySQL);
             Assert.Equal("testrepo", repositorySQL.Name);
             Assert.Equal("Test Repository", repositorySQL.FullName);
-            Assert.Equal(1, repositorySQL.OrganisationId);
             Assert.True(repositorySQL.Active);
            
             
@@ -301,35 +332,70 @@ namespace RPLP.UnitTesting.DepotTests
                         Active = false
                     },
                 };
+            List<Organisation_SQLDTO> organisationsDB = new List<Organisation_SQLDTO>()
+            {
+                new Organisation_SQLDTO()
+                {
+                    Id=1,
+                    Name = "CEGEP Ste-Foy",
+                    Administrators = new List<Administrator_SQLDTO>(),
+                    Active = true
+                },
+                new Organisation_SQLDTO()
+                {
+                    Id=2,
+                    Name = "College Edouard-Montpetit",
+                    Administrators = new List<Administrator_SQLDTO>(),
+                    Active = true
+                },
+                new Organisation_SQLDTO()
+                {
+                    Id=3,
+                    Name = "Universite Laval",
+                    Administrators = new List<Administrator_SQLDTO>(),
+                    Active = false
+                },
+            };
+
+            foreach (Repository_SQLDTO repository_ in repositoriesDB)
+            {
+                repository_.Organisation = organisationsDB.Where(x => x.Id == repository_.OrganisationId).FirstOrDefault();
+            }
 
             var logMock = new Mock<IManipulationLogs>();
             Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Organisations).ReturnsDbSet(organisationsDB);
             context.Setup(x => x.Repositories).ReturnsDbSet(repositoriesDB);
             DepotRepository depot = new DepotRepository(context.Object);
             
             Organisation mockOrganisation = new Organisation()
             {
                 Administrators = new List<Administrator>(),
-                Id = 1,
+                Id = 4,
                 Name = "Mock Organisation"
             };
 
-            Repository? repository = repositoriesDB.FirstOrDefault(r => r.Name == "ThPaquet").ToEntity();
+            Repository_SQLDTO? repository = repositoriesDB.FirstOrDefault(r => r.Name == "ThPaquet");
             Assert.NotNull(repository);
 
-            repository.FullName = "Test Repository";
-            repository.Organisation = mockOrganisation;
+            Repository _repository = new Repository()
+            {
+                Id = repository.Id,
+                Name = repository.Name,
+                FullName = "Test Repository",
+                Organisation = mockOrganisation
+            };
 
-            depot.UpsertRepository(repository);
+            depot.UpsertRepository(_repository);
 
             Repository_SQLDTO? repositorySQL = repositoriesDB.FirstOrDefault(r => r.Name == "ThPaquet");
 
             Assert.NotNull(repositorySQL);
             Assert.Equal("ThPaquet", repositorySQL.Name);
             Assert.Equal("Test Repository", repositorySQL.FullName);
-            Assert.Equal(1, repositorySQL.OrganisationId);
+            Assert.Equal(4, repositorySQL.OrganisationId);
             Assert.True(repositorySQL.Active);
            
             
@@ -365,12 +431,42 @@ namespace RPLP.UnitTesting.DepotTests
                         Active = false
                     },
                 };
+            List<Organisation_SQLDTO> organisationsDB = new List<Organisation_SQLDTO>()
+            {
+                new Organisation_SQLDTO()
+                {
+                    Id=1,
+                    Name = "CEGEP Ste-Foy",
+                    Administrators = new List<Administrator_SQLDTO>(),
+                    Active = true
+                },
+                new Organisation_SQLDTO()
+                {
+                    Id=2,
+                    Name = "College Edouard-Montpetit",
+                    Administrators = new List<Administrator_SQLDTO>(),
+                    Active = true
+                },
+                new Organisation_SQLDTO()
+                {
+                    Id=3,
+                    Name = "Universite Laval",
+                    Administrators = new List<Administrator_SQLDTO>(),
+                    Active = false
+                },
+            };
+
+            foreach (Repository_SQLDTO repository_ in repositoriesDB)
+            {
+                repository_.Organisation = organisationsDB.Where(x => x.Id == repository_.OrganisationId).FirstOrDefault();
+            }
 
             var logMock = new Mock<IManipulationLogs>();
             Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Repositories).ReturnsDbSet(repositoriesDB);
+            context.Setup(x => x.Organisations).ReturnsDbSet(organisationsDB);
             DepotRepository depot = new DepotRepository(context.Object);
             
             Repository mockRepository = new Repository()
@@ -419,12 +515,42 @@ namespace RPLP.UnitTesting.DepotTests
                         Active = false
                     },
                 };
+            List<Organisation_SQLDTO> organisationsDB = new List<Organisation_SQLDTO>()
+            {
+                new Organisation_SQLDTO()
+                {
+                    Id=1,
+                    Name = "CEGEP Ste-Foy",
+                    Administrators = new List<Administrator_SQLDTO>(),
+                    Active = true
+                },
+                new Organisation_SQLDTO()
+                {
+                    Id=2,
+                    Name = "College Edouard-Montpetit",
+                    Administrators = new List<Administrator_SQLDTO>(),
+                    Active = true
+                },
+                new Organisation_SQLDTO()
+                {
+                    Id=3,
+                    Name = "Universite Laval",
+                    Administrators = new List<Administrator_SQLDTO>(),
+                    Active = false
+                },
+            };
+
+            foreach (Repository_SQLDTO repository_ in repositoriesDB)
+            {
+                repository_.Organisation = organisationsDB.Where(x => x.Id == repository_.OrganisationId).FirstOrDefault();
+            }
 
             var logMock = new Mock<IManipulationLogs>();
             Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Repositories).ReturnsDbSet(repositoriesDB);
+            context.Setup(x => x.Organisations).ReturnsDbSet(organisationsDB);
             DepotRepository depot = new DepotRepository(context.Object);
 
             List<Repository> repositories = depot.GetRepositories();
@@ -464,17 +590,47 @@ namespace RPLP.UnitTesting.DepotTests
                         Active = false
                     },
                 };
+            List<Organisation_SQLDTO> organisationsDB = new List<Organisation_SQLDTO>()
+            {
+                new Organisation_SQLDTO()
+                {
+                    Id=1,
+                    Name = "CEGEP Ste-Foy",
+                    Administrators = new List<Administrator_SQLDTO>(),
+                    Active = true
+                },
+                new Organisation_SQLDTO()
+                {
+                    Id=2,
+                    Name = "College Edouard-Montpetit",
+                    Administrators = new List<Administrator_SQLDTO>(),
+                    Active = true
+                },
+                new Organisation_SQLDTO()
+                {
+                    Id=3,
+                    Name = "Universite Laval",
+                    Administrators = new List<Administrator_SQLDTO>(),
+                    Active = false
+                },
+            };
+
+            foreach (Repository_SQLDTO repository_ in repositoriesDB)
+            {
+                repository_.Organisation = organisationsDB.Where(x => x.Id == repository_.OrganisationId).FirstOrDefault();
+            }
 
             var logMock = new Mock<IManipulationLogs>();
             Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Repositories).ReturnsDbSet(repositoriesDB);
+            context.Setup(x => x.Organisations).ReturnsDbSet(organisationsDB);
             DepotRepository depot = new DepotRepository(context.Object);
 
-            List<Repository> repositories = depot.GetRepositoriesFromOrganisationName("RPLP");
+            List<Repository> repositories = depot.GetRepositoriesFromOrganisationName("CEGEP Ste-Foy");
 
-            Assert.Equal(2, repositories.Count);
+            Assert.Equal(3, repositories.Count);
            
             
         }
@@ -509,19 +665,49 @@ namespace RPLP.UnitTesting.DepotTests
                         Active = false
                     },
                 };
+            List<Organisation_SQLDTO> organisationsDB = new List<Organisation_SQLDTO>()
+            {
+                new Organisation_SQLDTO()
+                {
+                    Id=1,
+                    Name = "CEGEP Ste-Foy",
+                    Administrators = new List<Administrator_SQLDTO>(),
+                    Active = true
+                },
+                new Organisation_SQLDTO()
+                {
+                    Id=2,
+                    Name = "College Edouard-Montpetit",
+                    Administrators = new List<Administrator_SQLDTO>(),
+                    Active = true
+                },
+                new Organisation_SQLDTO()
+                {
+                    Id=3,
+                    Name = "Universite Laval",
+                    Administrators = new List<Administrator_SQLDTO>(),
+                    Active = false
+                },
+            };
+
+            foreach (Repository_SQLDTO repository_ in repositoriesDB)
+            {
+                repository_.Organisation = organisationsDB.Where(x => x.Id == repository_.OrganisationId).FirstOrDefault();
+            }
 
             var logMock = new Mock<IManipulationLogs>();
             Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Repositories).ReturnsDbSet(repositoriesDB);
+            context.Setup(x => x.Organisations).ReturnsDbSet(organisationsDB);
             DepotRepository depot = new DepotRepository(context.Object);
             
             Repository mockRepository = new Repository()
             {
-                FullName = "BACenComm",
-                Id = 1,
+                Id = 3,
                 Name = "BACenComm",
+                FullName = "Melissa Lachapelle",
                 Organisation = new Organisation()
             };
 
@@ -558,23 +744,51 @@ namespace RPLP.UnitTesting.DepotTests
                         Name = "BACenComm",
                         FullName = "Melissa Lachapelle",
                         OrganisationId = 1,
-                        Active = false
+                        Active = true
                     },
                 };
+            List<Organisation_SQLDTO> organisationsDB = new List<Organisation_SQLDTO>()
+            {
+                new Organisation_SQLDTO()
+                {
+                    Id=1,
+                    Name = "CEGEP Ste-Foy",
+                    Administrators = new List<Administrator_SQLDTO>(),
+                    Active = true
+                },
+                new Organisation_SQLDTO()
+                {
+                    Id=2,
+                    Name = "College Edouard-Montpetit",
+                    Administrators = new List<Administrator_SQLDTO>(),
+                    Active = true
+                },
+                new Organisation_SQLDTO()
+                {
+                    Id=3,
+                    Name = "Universite Laval",
+                    Administrators = new List<Administrator_SQLDTO>(),
+                    Active = false
+                },
+            };
 
+            foreach (Repository_SQLDTO repository_ in repositoriesDB)
+            {
+                repository_.Organisation = organisationsDB.Where(x => x.Id == repository_.OrganisationId).FirstOrDefault();
+            }
             var logMock = new Mock<IManipulationLogs>();
             Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
             context.Setup(x => x.Repositories).ReturnsDbSet(repositoriesDB);
+            context.Setup(x => x.Organisations).ReturnsDbSet(organisationsDB);
             DepotRepository depot = new DepotRepository(context.Object);
             
             Repository mockRepository = new Repository()
             {
-                FullName = "BACenComm",
-                Id = 1,
+                Id = 3,
                 Name = "BACenComm",
-                Organisation = new Organisation()
+                FullName = "Melissa Lachapelle",
             };
 
             depot.ReactivateRepository(mockRepository);

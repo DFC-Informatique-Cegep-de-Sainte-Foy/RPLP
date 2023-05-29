@@ -154,8 +154,11 @@ namespace RPLP.DAL.SQL.Depots
                 assignmentResult.Classroom = new Classroom_SQLDTO(p_assignment.Classroom);
                 assignmentResult.Description = p_assignment.Description;
                 assignmentResult.DeliveryDeadline = p_assignment.DeliveryDeadline;
-                
-                this._context.Entry<Classroom_SQLDTO>(assignmentResult.Classroom).State = EntityState.Unchanged;
+
+                if (this._context.ChangeTracker != null)
+                {
+                    this._context.Entry<Classroom_SQLDTO>(assignmentResult.Classroom).State = EntityState.Unchanged;
+                }
 
                 this._context.Update(assignmentResult);
                 this._context.SaveChanges();
@@ -172,7 +175,10 @@ namespace RPLP.DAL.SQL.Depots
                 assignmentDTO.DeliveryDeadline = p_assignment.DeliveryDeadline;
                 assignmentDTO.Active = true;
 
-                this._context.Entry<Classroom_SQLDTO>(assignmentDTO.Classroom).State = EntityState.Unchanged;
+                if (this._context.ChangeTracker != null)
+                {
+                    this._context.Entry<Classroom_SQLDTO>(assignmentDTO.Classroom).State = EntityState.Unchanged;
+                }
 
                 this._context.Assignments.Add(assignmentDTO);
                 this._context.SaveChanges();
@@ -201,7 +207,11 @@ namespace RPLP.DAL.SQL.Depots
                     this._context.Classrooms.AsNoTracking().SingleOrDefault(c => c.Id == assignmentResult.ClassroomId);
                 
                 assignmentResult.Active = false;
-                this._context.Entry<Classroom_SQLDTO>(assignmentResult.Classroom).State = EntityState.Unchanged;
+
+                if (this._context.ChangeTracker != null)
+                {
+                    this._context.Entry<Classroom_SQLDTO>(assignmentResult.Classroom).State = EntityState.Unchanged;
+                }
 
                 this._context.Update(assignmentResult);
                 this._context.SaveChanges();

@@ -30,7 +30,7 @@ namespace RPLP.DAL.DTO.Sql
         {
             this.Id = p_assignment.Id;
             this.Name = p_assignment.Name;
-            this.Classroom = new Classroom_SQLDTO(p_assignment.Classroom);
+            this.Classroom = new Classroom_SQLDTO();
             this.Description = p_assignment.Description;
             this.DeliveryDeadline = p_assignment.DeliveryDeadline;
             this.DistributionDate = p_assignment.DistributionDate;
@@ -41,10 +41,10 @@ namespace RPLP.DAL.DTO.Sql
         {
             if (this.DeliveryDeadline != null)
             {
-                return new Assignment(this.Id, this.Name, new Classroom(this.Id, this.Name, this.Classroom.Organisation.ToEntity()), this.Description, this.DeliveryDeadline, this.DistributionDate);
+                return new Assignment(this.Id, this.Name, new Classroom(this.Classroom.Id, this.Classroom.Name, this.Classroom.Organisation.ToEntity()), this.Description, this.DeliveryDeadline, this.DistributionDate);
             }
 
-            return new Assignment(this.Id, this.Name, new Classroom(this.Id, this.Name, this.Classroom.Organisation.ToEntity()), this.Description, this.DistributionDate);
+            return new Assignment(this.Id, this.Name, new Classroom(this.Classroom.Id, this.Classroom.Name, this.Classroom.Organisation.ToEntity()), this.Description, this.DistributionDate);
         }
     }
 }

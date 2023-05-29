@@ -17,10 +17,10 @@
         <input type="text" class="form-control" name="InputGithubUsernameModifyAdmin" id="InputGithubUsernameModifyAdmin" disabled>
     </div>
 
-    <div class="form-group">
+@*    <div class="form-group">
         <label for="InputGithubTokenModifyAdmin">Github Token</label>
         <input type="text" class="form-control" name="InputGithubTokenModifyAdmin" id="InputGithubTokenModifyAdmin" disabled>
-    </div>
+    </div>*@
 
     <div class="form-group">
         <label for="InputPrenomModifyAdmin">Prénom</label>
@@ -67,7 +67,7 @@
     {
        document.getElementById("modifyAdminForm").reset();
        $('input[name=InputGithubUsernameModifyAdmin]').prop('disabled', true);
-       $('input[name=InputGithubTokenModifyAdmin]').prop('disabled', true);
+       //$('input[name=InputGithubTokenModifyAdmin]').prop('disabled', true);
        $('input[name=InputPrenomModifyAdmin]').prop('disabled', true);
        $('input[name=InputNomModifyAdmin]').prop('disabled', true);
        $('input[name=InputEmailModifyAdmin]').prop('disabled', true);
@@ -79,19 +79,19 @@
        if(document.getElementById("modifyAdminDropdown").value == -1)
        {
             $('input[name=InputGithubUsernameModifyAdmin]').prop('disabled', true);
-            $('input[name=InputGithubTokenModifyAdmin]').prop('disabled', true);
+            //$('input[name=InputGithubTokenModifyAdmin]').prop('disabled', true);
             $('input[name=InputPrenomModifyAdmin]').prop('disabled', true);
             $('input[name=InputNomModifyAdmin]').prop('disabled', true);
             $('input[name=InputEmailModifyAdmin]').prop('disabled', true);
 
             document.getElementById("InputGithubUsernameModifyAdmin").value = "";
-            document.getElementById("InputGithubTokenModifyAdmin").value = "";
+            //document.getElementById("InputGithubTokenModifyAdmin").value = "";
             document.getElementById("InputPrenomModifyAdmin").value = ""
             document.getElementById("InputNomModifyAdmin").value = "";
             document.getElementById("InputEmailModifyAdmin").value = "";
        } else {
             $('input[name=InputGithubUsernameModifyAdmin]').prop('disabled', '');
-            $('input[name=InputGithubTokenModifyAdmin]').prop('disabled', '');
+            //$('input[name=InputGithubTokenModifyAdmin]').prop('disabled', '');
             $('input[name=InputPrenomModifyAdmin]').prop('disabled', '');
             $('input[name=InputNomModifyAdmin]').prop('disabled', '');
             $('input[name=InputEmailModifyAdmin]').prop('disabled', '');
@@ -101,7 +101,7 @@
             admin = admins.find(admin => admin.email == email);
 
             document.getElementById("InputGithubUsernameModifyAdmin").value = admin.username;
-            document.getElementById("InputGithubTokenModifyAdmin").value = admin.token;
+            //document.getElementById("InputGithubTokenModifyAdmin").value = admin.token;
             document.getElementById("InputPrenomModifyAdmin").value = admin.firstName;
             document.getElementById("InputNomModifyAdmin").value = admin.lastName;
             document.getElementById("InputEmailModifyAdmin").value = admin.email;
@@ -112,12 +112,12 @@
     {
         var id = admin.id;
         var username = document.getElementById("InputGithubUsernameModifyAdmin").value ;
-        var token = document.getElementById("InputGithubTokenModifyAdmin").value ;
+        var token = "none";
         var prenom = document.getElementById("InputPrenomModifyAdmin").value ;
         var nom = document.getElementById("InputNomModifyAdmin").value ;
         var email = document.getElementById("InputEmailModifyAdmin").value ;
 
-        if(username == "" || token == "" || prenom == "" || nom == "" || email == "" )
+        if(username == "" || prenom == "" || nom == "" || email == "" )
         {
             alert("Veulliez remplir les champs vide");
         } else {
