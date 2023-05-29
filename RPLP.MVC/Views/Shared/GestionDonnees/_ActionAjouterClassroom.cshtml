@@ -53,8 +53,8 @@
 
     ajouterClassroom.verifyDataThenCreate = function()
     {
-        var className = document.getElementById("InputOrgNameAjouterClassroom").value;
-        var orgName = document.getElementById("AjouterClassroomOrgNameDropdown").value;
+        var className = document.getElementById("InputOrgNameAjouterClassroom").value.trim();
+        var orgName = document.getElementById("AjouterClassroomOrgNameDropdown").value.trim();
 
         if(className == "" | orgName == "" )
         {

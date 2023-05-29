@@ -44,11 +44,11 @@
 
     ajouterAdmin.verifyDataThenCreate = function()
     {
-        var username = document.getElementById("InputGithubUsernameAjouterAdmin").value ;
+        var username = document.getElementById("InputGithubUsernameAjouterAdmin").value.trim();
         var token = "none";
-        var prenom = document.getElementById("InputPrenomAjouterAdmin").value ;
-        var nom = document.getElementById("InputNomAjouterAdmin").value ;
-        var email = document.getElementById("inputEmailAjouterAdmin").value ;
+        var prenom = document.getElementById("InputPrenomAjouterAdmin").value.trim();
+        var nom = document.getElementById("InputNomAjouterAdmin").value.trim();
+        var email = document.getElementById("inputEmailAjouterAdmin").value.trim();
 
         if(username == "" || prenom == "" || nom == "" || email == "" )
         {

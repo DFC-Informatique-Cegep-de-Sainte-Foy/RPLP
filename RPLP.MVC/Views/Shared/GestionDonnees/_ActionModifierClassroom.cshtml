@@ -108,7 +108,7 @@
     modifyClassroom.verifyDataThenCreate = function()
     {
         var className = document.getElementById("modifyClassroomDropdown").value;
-        var modifiedClassName = document.getElementById("InputClassroomNameModifyClassroom").value;
+        var modifiedClassName = document.getElementById("InputClassroomNameModifyClassroom").value.trim();
         var orgName = document.getElementById("modifyClassroomOrgDropdown").value ;
 
         var classes = JSON.parse('@Html.Raw(Json.Serialize(Model.Classes))');

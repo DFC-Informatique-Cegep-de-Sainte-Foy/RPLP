@@ -49,11 +49,11 @@
 
     ajouterStudent.verifyDataThenCreate = function()
     {
-        var username = document.getElementById("InputGithubUsernameAjouterStudent").value ;
-        var prenom = document.getElementById("InputPrenomAjouterStudent").value ;
-        var nom = document.getElementById("InputNomAjouterStudent").value ;
-        var email = document.getElementById("inputEmailAjouterStudent").value ;
-        var matricule = document.getElementById("InputMatriculeAjouterStudent").value ;
+        var username = document.getElementById("InputGithubUsernameAjouterStudent").value.trim() ;
+        var prenom = document.getElementById("InputPrenomAjouterStudent").value.trim() ;
+        var nom = document.getElementById("InputNomAjouterStudent").value.trim() ;
+        var email = document.getElementById("inputEmailAjouterStudent").value.trim() ;
+        var matricule = document.getElementById("InputMatriculeAjouterStudent").value.trim() ;
         var isTuteur = document.getElementById("inputCheckBoxIsTutor").checked;
 
         if(username == "" || prenom == "" || nom == "" || email == "" || matricule == "" )

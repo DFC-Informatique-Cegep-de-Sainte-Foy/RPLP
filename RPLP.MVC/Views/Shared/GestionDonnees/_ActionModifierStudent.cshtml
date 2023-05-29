@@ -120,11 +120,11 @@
 
     modifierStudent.verifyDataThenCreate = function()
     {
-        var username = document.getElementById("InputGithubUsernameModifyStudent").value ;
-        var prenom = document.getElementById("InputPrenomModifyStudent").value ;
-        var nom = document.getElementById("InputNomModifyStudent").value ;
-        var email = document.getElementById("InputEmailModifyStudent").value ;
-        var matricule = document.getElementById("InputMatriculeModifyStudent").value;
+        var username = document.getElementById("InputGithubUsernameModifyStudent").value.trim() ;
+        var prenom = document.getElementById("InputPrenomModifyStudent").value.trim() ;
+        var nom = document.getElementById("InputNomModifyStudent").value.trim() ;
+        var email = document.getElementById("InputEmailModifyStudent").value.trim() ;
+        var matricule = document.getElementById("InputMatriculeModifyStudent").value.trim();
         var isTuteur = document.getElementById("inputCheckBoxModifyStudentIsTutor").checked;
 
         if(username == "" || prenom == "" || nom == "" || email == "" || matricule == "" )
