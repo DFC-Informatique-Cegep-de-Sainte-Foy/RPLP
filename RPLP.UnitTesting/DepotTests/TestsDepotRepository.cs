@@ -119,6 +119,16 @@ namespace RPLP.UnitTesting.DepotTests
         [Fact]
         public void Test_GetRepositoryByName()
         {
+            List<Organisation_SQLDTO> organisationsDB = new List<Organisation_SQLDTO>()
+            {
+                new Organisation_SQLDTO()
+                {
+                    Active = true,
+                    Id = 1,
+                    Name = "organisation"
+                }
+            };
+            
             List<Repository_SQLDTO> repositoriesDB = new List<Repository_SQLDTO>()
                 {
                     new Repository_SQLDTO()
@@ -127,6 +137,12 @@ namespace RPLP.UnitTesting.DepotTests
                         Name = "ThPaquet",
                         FullName = "Thierry Paquet",
                         OrganisationId = 1,
+                        Organisation = new Organisation_SQLDTO()
+                        {
+                            Active = true,
+                            Id = 1,
+                            Name = "organisation"
+                        },
                         Active = true
                     },
                     new Repository_SQLDTO()
@@ -135,6 +151,12 @@ namespace RPLP.UnitTesting.DepotTests
                         Name = "ikeameatbol",
                         FullName = "Jonathan Blouin",
                         OrganisationId = 1,
+                        Organisation = new Organisation_SQLDTO()
+                        {
+                            Active = true,
+                            Id = 1,
+                            Name = "organisation"
+                        },
                         Active = true
                     },
                     new Repository_SQLDTO()
@@ -143,6 +165,12 @@ namespace RPLP.UnitTesting.DepotTests
                         Name = "BACenComm",
                         FullName = "Melissa Lachapelle",
                         OrganisationId = 1,
+                        Organisation = new Organisation_SQLDTO()
+                        {
+                            Active = true,
+                            Id = 1,
+                            Name = "organisation"
+                        },
                         Active = false
                     },
                 };
@@ -151,6 +179,7 @@ namespace RPLP.UnitTesting.DepotTests
             Logging.Instance.ManipulationLog = logMock.Object;
 
             Mock<RPLPDbContext> context = new Mock<RPLPDbContext>();
+            context.Setup(x => x.Organisations).ReturnsDbSet(organisationsDB);
             context.Setup(x => x.Repositories).ReturnsDbSet(repositoriesDB);
             DepotRepository depot = new DepotRepository(context.Object);
 
