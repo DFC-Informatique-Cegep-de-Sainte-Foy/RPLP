@@ -69,6 +69,7 @@ namespace RPLP.DAL.SQL.Depots
 
             Repository_SQLDTO? repository = this._context.Repositories.FirstOrDefault(repository =>
                 repository.Name == p_repositoryName && repository.Active);
+            
 
             if (repository == null)
             {
@@ -82,6 +83,10 @@ namespace RPLP.DAL.SQL.Depots
                 RPLP.JOURNALISATION.Logging.Instance.Journal(new Log("Repository",
                     $"DepotRepository - Method - GetRepositoryByName(string p_repositoryName) - Return Repository"));
             }
+
+            
+            repository.Organisation = this._context.Organisations.AsNoTrackingWithIdentityResolution()
+                                                      .SingleOrDefault(o => o.Id == repository.OrganisationId);
 
             return repository.ToEntity();
         }
