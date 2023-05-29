@@ -223,12 +223,12 @@
     modifierAssignment.verifyDataThenCreate = function()
     {
         var id = modelAssignment.id
-        var name = document.getElementById("InputAssignmentNameModifyAssignment").value;
-        var description = document.getElementById("InputAssignmentDescriptionModifyAssignment").value;
+        var name = document.getElementById("InputAssignmentNameModifyAssignment").value.trim();
+        var description = document.getElementById("InputAssignmentDescriptionModifyAssignment").value.trim();
         var deadline = document.getElementById("InputAssignmentDeadlineModifyAssignment").value;
         var classroomName = document.getElementById("modifyAssignmentClassroomDropdown").value;
 
-        if(name == "")
+        if(name == "", description == "")
         {
             alert("Veulliez remplir le nom du travail");
         } else {

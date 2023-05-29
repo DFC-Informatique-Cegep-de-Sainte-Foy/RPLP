@@ -111,11 +111,11 @@
     modifierAdmin.verifyDataThenModify = function()
     {
         var id = admin.id;
-        var username = document.getElementById("InputGithubUsernameModifyAdmin").value ;
+        var username = document.getElementById("InputGithubUsernameModifyAdmin").value.trim() ;
         var token = "none";
-        var prenom = document.getElementById("InputPrenomModifyAdmin").value ;
-        var nom = document.getElementById("InputNomModifyAdmin").value ;
-        var email = document.getElementById("InputEmailModifyAdmin").value ;
+        var prenom = document.getElementById("InputPrenomModifyAdmin").value.trim() ;
+        var nom = document.getElementById("InputNomModifyAdmin").value.trim() ;
+        var email = document.getElementById("InputEmailModifyAdmin").value.trim() ;
 
         if(username == "" || prenom == "" || nom == "" || email == "" )
         {

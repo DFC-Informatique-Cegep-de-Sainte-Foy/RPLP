@@ -24,7 +24,7 @@
 
     ajouterOrg.verifyDataThenCreate = function()
     {
-        var orgName = document.getElementById("InputOrgNameAjouterOrg").value ;
+        var orgName = document.getElementById("InputOrgNameAjouterOrg").value.trim();
 
         if(orgName == "" )
         {
